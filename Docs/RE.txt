@@ -1,0 +1,10 @@
+#README:
+#Regular patterns are expressed in such a way that they are unix compatible
+#When in doubt, try to grep with these patterns via -P
+#to be separated with the -=- sign, this is unique enough that java token patterns likely wouldnt include them
+#
+UNICODE -=- \u[a-fA-F0-9]{4}
+#Technically this should be CR (\r), LF (\n), or Both (\r\n)
+#Consider commenting this out and just creating the NFA manually
+LINE_TERMINATOR -=- $
+
