@@ -1,7 +1,3 @@
-# Created by https://www.gitignore.io/api/c++
-# Edit at https://www.gitignore.io/?templates=c++
-
-### C++ ###
 # Prerequisites
 *.d
 
@@ -35,4 +31,22 @@
 *.out
 *.app
 
-# End of https://www.gitignore.io/api/c++
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Vim
+.vimrc
+.ycm_extra_conf.py
+
+# Target
+joosc
