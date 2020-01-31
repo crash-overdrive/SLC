@@ -3,4 +3,4 @@
 all:
 	cmake -H. -Bbuild
 	cmake --build build
-	cp build/bin/joosc .
+	ln -s build/bin/joosc .
