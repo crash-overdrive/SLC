@@ -4,10 +4,12 @@ SLC is a compiler. Tell our story here...
 
 ### Development
 
-The project uses CMake as a build tool. To generate a Makefile for your platform, simply run
+The project uses CMake as a build tool. To build the `Makefile` out-of-source, run
 
 ```sh
-$ cmake .
+$ mkdir build
+$ cd build
+$ cmake ..
 ```
 
 Then, to build the `joosc` executable, run
@@ -16,11 +18,14 @@ Then, to build the `joosc` executable, run
 $ make
 ```
 
-To run tests with Valgrind,
+The executable will be under the `bin` directory.
+
+To run tests,
 
 ```sh
-$ ctest -T memcheck
+$ ctest
 ```
+To run tests with Valgrind, add `-T memcheck` option.
 
 To submit the project to Marmoset,
 
