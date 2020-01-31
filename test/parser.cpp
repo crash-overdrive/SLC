@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include "parser.hpp"
 
 TEST_CASE("Done return true", "[parser]") {
