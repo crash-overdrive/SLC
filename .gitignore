@@ -52,3 +52,6 @@ DartConfiguration.tcl
 # Target
 joosc
 joosc-test
+
+# Zip
+*.zip
