@@ -2,7 +2,7 @@
 
 SLC is a compiler. Tell our story here...
 
-### Development
+### Installation
 
 The project uses CMake as a build tool. To build the `Makefile` out-of-source, run
 
@@ -20,15 +20,17 @@ $ make
 
 The executable will be under the `bin` directory.
 
-To run tests,
+### Development
+
+To run tests, go to build directory, run
 
 ```sh
 $ ctest
 ```
 To run tests with Valgrind, add `-T memcheck` option.
 
-To submit the project to Marmoset,
+To submit a project to Marmoset, go to root directory, run
 
 ```sh
-make submit
+./bin/submit.sh A1
 ```
