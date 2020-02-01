@@ -32,5 +32,5 @@ To run tests with Valgrind, add `-T memcheck` option.
 To submit a project to Marmoset, go to root directory, run
 
 ```sh
-./bin/submit.sh A1
+./tools/submit.sh A1
 ```
