@@ -32,7 +32,7 @@
 *.app
 
 build/*
-src/config.hpp
+*config.hpp
 
 # Vim
 .vimrc
