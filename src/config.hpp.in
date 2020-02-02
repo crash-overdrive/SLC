@@ -5,4 +5,5 @@
 
 const std::string lr1_file = \
 	"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/joos.lr1";
+
 #endif // CONFIG_HPP
