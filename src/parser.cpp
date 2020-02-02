@@ -5,7 +5,7 @@
 
 bool Parser::done() {
 	std::ifstream file;
-	file.open(library_directory + "/grammar/sample.cfg");
+	file.open(lr1_file);
 	file.close();
 	return false;
 }
