@@ -15,7 +15,7 @@ target_link_libraries(joosc-test slc)
 add_custom_command(TARGET joosc-test POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${CMAKE_CURRENT_SOURCE_DIR}/data
-  $<TARGET_FILE_DIR:joosc-test>/testdata
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata
 )
 
 include(CTest)
