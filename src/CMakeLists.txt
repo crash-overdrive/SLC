@@ -8,16 +8,21 @@ file(GLOB SOURCES *.cpp)
 
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp)
 
-add_library(slc SHARED ${SOURCES} ${HEADER_FILES})
-target_include_directories(slc PRIVATE .)
-
+set(LR1_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1)
+set(CFG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/joos.cfg)
 get_target_property(JLALR_JAR jlalr JAR_FILE)
-add_custom_command(TARGET slc POST_BUILD
+add_custom_command(
+  OUTPUT ${LR1_FILE}
   COMMAND ${Java_JAVA_EXECUTABLE} -jar ${JLALR_JAR}
-  < "${CMAKE_CURRENT_SOURCE_DIR}/grammar/joos.cfg"
-  > $<TARGET_FILE_DIR:slc>/joos.lr1
+  < ${CFG_FILE} > ${LR1_FILE}
+  DEPENDS ${CFG_FILE}
   COMMENT "Converting .cfg to .lr1"
 )
+add_custom_target(lr1 DEPENDS ${LR1_FILE})
+
+add_library(slc SHARED ${SOURCES} ${HEADER_FILES})
+add_dependencies(slc lr1)
+target_include_directories(slc PRIVATE .)
 
 add_executable(joosc Main.cpp)
 target_link_libraries(joosc slc)
