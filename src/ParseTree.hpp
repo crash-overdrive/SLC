@@ -51,6 +51,6 @@ private:
 
 std::ostream &operator<<(std::ostream &Stream, const Tree &T);
 
-}; // namespace Parse
+} // namespace Parse
 
 #endif // PARSETREE_HPP
