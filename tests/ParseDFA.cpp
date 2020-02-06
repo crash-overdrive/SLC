@@ -31,7 +31,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
     Parse::Tree T = DFA.buildTree();
     std::ostringstream Oss;
     Oss << T;
-    std::ifstream TestTree(TestDataDir + "/grammar/sample.pt");
+    std::ifstream TestTree(TestDataDir + "/grammar/sample.tree");
     std::ostringstream OssFile;
     OssFile << TestTree.rdbuf();
     REQUIRE(Oss.str() == OssFile.str());
