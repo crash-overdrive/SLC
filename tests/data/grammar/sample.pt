@@ -1,0 +1,6 @@
+S
+ BOF
+ expr
+  term
+   id
+ EOF
