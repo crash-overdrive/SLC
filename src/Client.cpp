@@ -32,7 +32,10 @@ bool Client::parse(Parse::DFA &Parser, std::istream &IStream,
                    std::ostream &OStream) {
   bool flag = parse(Parser, IStream);
   if (flag) {
-    OStream << Parser.buildTree();
+    OStream << Parser.buildTree() << std::endl;
+  } else {
+    OStream << "Error: Input does not conformed to joos.cfg\n";
+    OStream << Parser.buildTree() << std::endl;
   }
   return flag;
 }
