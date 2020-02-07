@@ -1,10 +1,125 @@
-#README:
+README:
 #Regular patterns are expressed in such a way that they are unix compatible
 #When in doubt, try to grep with these patterns via -P
 #to be separated with the -=- sign, this is unique enough that java token patterns likely wouldnt include them
-#
+
+#regexr.com -> really good resource for regex validation
+
 UNICODE -=- \u[a-fA-F0-9]{4}
 #Technically this should be CR (\r), LF (\n), or Both (\r\n)
+
 #Consider commenting this out and just creating the NFA manually
 LINE_TERMINATOR -=- $
+
+#\s is regex's treatment of regular expression
+#Not very helpful, admittedly, so this should match space, \t, \r and \n.
+
+WHITESPACE -=- \s
+
+COMMENT -=- (\/\/[^\n]*)|\/\*[^*]*\*([^\/][^*]*\*)*\/
+
+ABSTRACT -=- abstract
+
+BOOLEAN -=- boolean
+
+BREAK -=- break
+
+BYTE -=- byte
+
+CASE -=- case
+
+CATCH -=- catch
+
+CHAR -=- char
+
+CLASS -=- class
+
+CONST -=- const
+
+CONTINUE -=- continue
+
+DEFAULT -=- default
+
+DO -=- do
+
+DOUBLE -=- double
+
+ELSE -=- else
+
+EXTENDS -=- extends
+
+FINAL -=- final
+
+FINALLY -=- finally
+
+FLOAT -=- float
+
+FOR -=- for
+
+GOTO -=- goto
+
+IF -=- if
+
+IMPLEMENTS -=- implements
+
+IMPORT -=- import
+
+INSTANCEOF -=- instanceof
+
+INT -=- int
+
+INTERFACE -=- interface
+
+LONG -=- long
+
+NATIVE -=- native
+
+NEW -=- new
+
+PACKAGE -=- package
+
+PRIVATE -=- private
+
+PROTECTED -=- protected
+
+PUBLIC -=- public
+
+RETURN -=- return
+
+SHORT -=- short
+
+STATIC -=- static
+
+STRICTFP -=- strictfp
+
+SUPER -=- super
+
+SWITCH -=- switch
+
+SYNCHRONIZED -=- synchronized
+
+THIS -=- this
+
+THROW -=- throw
+
+THROWS -=- throws
+
+TRANSIENT -=- transient
+
+TRY -=- try
+
+VOID -=- void
+
+VOLATILE -=- volatile
+
+WHILE -=- while
+
+OCTINTEGERLITERAL -=- 0[0-9]*
+
+DECINTEGERLITERAL -=- 0|[1-9][0-9]*
+
+HexIntegerLiteral -=- 0x[0-9a-fA-F]+
+
+
+
 
