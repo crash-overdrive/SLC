@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
       return 0;
   }
   if (InputToken && OutputParse) {
-      return Client::parse(Parser, IStream, std::cout) ? 0 : 42;
+      return Client::parse(Parser, IStream, std::cerr) ? 0 : 42;
   }
 
   std::string extension("java");
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     return 42;
   }
   if (OutputToken) {
-    return Client::scan(IStream, std::cout) ? 0 : 42;
+    return Client::scan(IStream, std::cerr) ? 0 : 42;
   } else {
     return Client::preProcess(IStream) ? 0 : 42;
   }
