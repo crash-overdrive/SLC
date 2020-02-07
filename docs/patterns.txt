@@ -3,3 +3,14 @@
 \u1234
 \uffff
 \ufF12
+/*
+
+This is special
+
+*/
+
+block2
+
+/*
+dddd
+*/
