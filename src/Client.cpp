@@ -13,9 +13,15 @@ bool Client::scanOnly(std::istream &Stream) {
 }
 
 bool Client::parseOnly(std::istream &Stream) {
-  (void)Stream;
-  (void)Output;
-  return true;
+  std::string Token;
+  while (Stream >> Token) {
+    Parser->read(Token);
+    if (Parser->error()) {
+      return false;
+    }
+    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+  return Parser->accept();
 }
 
 void Client::setParser(Parse::DFA &Parser) {
