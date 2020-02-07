@@ -11,6 +11,7 @@ class DFA {
 public:
   DFA();
   void read(const std::string &Token);
+  void clear();
   bool error() const;
   bool accept() const;
   Tree buildTree();

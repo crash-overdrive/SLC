@@ -25,6 +25,13 @@ void Parse::DFA::read(const std::string &Token) {
   errorState = true;
 }
 
+void Parse::DFA::clear() {
+  StateStack.clear();
+  NodeStack.clear();
+  errorState = false;
+  Current = States[0];
+}
+
 bool Parse::DFA::error() const { return errorState; }
 
 bool Parse::DFA::accept() const {
