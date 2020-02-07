@@ -13,13 +13,11 @@ TEST_CASE("client detects JoosW", "[client]") {
   LRStream.open(JoosLRFile);
 
   Parser.configure(LRStream);
-  Client.setParser(Parser);
-  Client.setOutput(OStream);
 
-  SECTION("scanner only accept") {
+  SECTION("scanner accept") {
     std::ifstream JoosStream;
     JoosStream.open(TestDataDir + "/marmoset/J1_publicclasses.java");
-    REQUIRE(Client.scanOnly(JoosStream));
+    REQUIRE(Client.scan(JoosStream));
 
     std::ifstream TokenStream;
     TokenStream.open(TestDataDir + "/grammar/J1_publicclasses.token");
@@ -27,32 +25,32 @@ TEST_CASE("client detects JoosW", "[client]") {
     REQUIRE(TokenString == OStream.str());
   }
 
-  SECTION("parser only accept") {
+  SECTION("parser accept") {
     std::ifstream TokenStream;
     TokenStream.open(TestDataDir + "/grammar/sample.token");
-    REQUIRE(Client.parseOnly(TokenStream));
+    REQUIRE(Client.parse(Parser, TokenStream));
     TokenStream.clear();
     TokenStream.open(TestDataDir + "/grammar/J1_publicclasses.token");
-    REQUIRE(!Client.parseOnly(TokenStream));
+    REQUIRE(!Client.parse(Parser, TokenStream));
   }
 
-  SECTION("scanner only rejects") {
+  SECTION("scanner rejects") {
     std::ifstream JoosStream;
     JoosStream.open(TestDataDir +
                     "/marmoset/Je_1_NonJoosConstructs_Unicode.java");
-    REQUIRE(!Client.scanOnly(JoosStream));
+    REQUIRE(!Client.scan(JoosStream));
   }
 
-  SECTION("parser only rejects") {
+  SECTION("parser rejects") {
     std::ifstream TokenStream;
     TokenStream.open(TestDataDir + "/grammar/reject.token");
-    REQUIRE(!Client.parseOnly(TokenStream));
+    REQUIRE(!Client.parse(Parser, TokenStream));
   }
 
   SECTION("preprocessor parser reject") {
     std::ifstream JoosStream;
     JoosStream.open(TestDataDir +
                     "/marmoset/Je_1_NonJoosConstructs_Volatile.java");
-    REQUIRE(!Client.scanOnly(JoosStream));
+    REQUIRE(!Client.scan(JoosStream));
   }
 }

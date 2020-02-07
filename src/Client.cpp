@@ -1,33 +1,38 @@
 #include "Client.hpp"
 
-Client::Client() : Output(nullptr), Parser(nullptr) {}
-
-bool Client::preProcess(std::istream &Stream) {
-  (void)Stream;
+bool Client::preProcess(std::istream &IStream) {
+  (void)IStream;
   return true;
 }
 
-bool Client::scanOnly(std::istream &Stream) {
-  (void)Stream;
+bool Client::scan(std::istream &IStream) {
+  (void)IStream;
   return true;
 }
 
-bool Client::parseOnly(std::istream &Stream) {
+bool Client::scan(std::istream &IStream, std::ostream &OStream) {
+  (void)IStream;
+  (void)OStream;
+  return true;
+}
+
+bool Client::parse(Parse::DFA &Parser, std::istream &IStream) {
   std::string Token;
-  while (Stream >> Token) {
-    Parser->read(Token);
-    if (Parser->error()) {
+  while (IStream >> Token) {
+    Parser.read(Token);
+    if (Parser.error()) {
       return false;
     }
-    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    IStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
-  return Parser->accept();
+  return Parser.accept();
 }
 
-void Client::setParser(Parse::DFA &Parser) {
-  this->Parser = &Parser;
-}
-
-void Client::setOutput(std::ostream &Stream) {
-  Output = &Stream;
+bool Client::parse(Parse::DFA &Parser, std::istream &IStream,
+                   std::ostream &OStream) {
+  bool flag = parse(Parser, IStream);
+  if (flag) {
+    OStream << Parser.buildTree();
+  }
+  return flag;
 }
