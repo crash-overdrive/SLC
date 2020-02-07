@@ -29,8 +29,11 @@ TEST_CASE("client detects JoosW", "[client]") {
 
   SECTION("parser only accept") {
     std::ifstream TokenStream;
-    TokenStream.open(TestDataDir + "/grammar/J1_publicclasses.token");
+    TokenStream.open(TestDataDir + "/grammar/sample.token");
     REQUIRE(Client.parseOnly(TokenStream));
+    TokenStream.clear();
+    TokenStream.open(TestDataDir + "/grammar/J1_publicclasses.token");
+    REQUIRE(!Client.parseOnly(TokenStream));
   }
 
   SECTION("scanner only rejects") {
