@@ -3,6 +3,6 @@
 
 #include <string>
 
-const std::string JoosLRFile = "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/joos.lr1";
+const std::string JoosLRFile = "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1";
 
 #endif // CONFIG_HPP
