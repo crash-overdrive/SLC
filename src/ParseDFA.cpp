@@ -6,54 +6,6 @@ Parse::DFA::DFA()
     : Productions(), States(), FinalProductions(), StateStack(), NodeStack(),
       errorState(false), Current(States[0]) {}
 
-void Parse::DFA::configure(std::istream &Stream) {
-  unsigned int NumLines;
-  Stream >> NumLines;
-  for (unsigned int i = 0; i < NumLines + 1; i++) {
-    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  }
-  Stream >> NumLines;
-  for (unsigned int i = 0; i < NumLines + 1; i++) {
-    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  }
-  Stream >> StartSymbol >> NumLines;
-  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  for (unsigned int i = 0; i < NumLines; i++) {
-    std::string Line;
-    std::string Symbol;
-    std::getline(Stream, Line);
-    std::istringstream Iss(Line);
-    Iss >> Symbol;
-    Productions[i].LHS = Symbol;
-    if (Symbol == StartSymbol) {
-      FinalProductions.emplace_back(Productions[i]);
-    }
-    while (Iss >> Symbol) {
-      Productions[i].RHS.emplace_back(Symbol);
-    }
-  }
-  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  Stream >> NumLines;
-  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  for (unsigned int i = 0; i < NumLines; i++) {
-    std::string Line;
-    std::getline(Stream, Line);
-    std::istringstream Iss(Line);
-
-    unsigned int StateNum;
-    std::string LookAhead;
-    std::string ActionName;
-    unsigned int LastNum;
-    Iss >> StateNum >> LookAhead >> ActionName >> LastNum;
-    DFA::State &State = States[StateNum];
-    if (ActionName == "reduce") {
-      State.Reduces.emplace(LookAhead, Productions[LastNum]);
-    } else if (ActionName == "shift") {
-      State.Shifts.emplace(LookAhead, States[LastNum]);
-    }
-  }
-}
-
 void Parse::DFA::read(const std::string &Token) {
   if (errorState)
     return;
@@ -121,4 +73,53 @@ void Parse::DFA::reduce(const Production &Production) {
   }
   NodeStack.emplace_back(std::move(Parent));
   Current = StateStack.back();
+}
+
+std::istream &Parse::operator>>(std::istream &Stream, DFA &DFA) {
+  unsigned int NumLines;
+  Stream >> NumLines;
+  for (unsigned int i = 0; i < NumLines + 1; i++) {
+    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+  Stream >> NumLines;
+  for (unsigned int i = 0; i < NumLines + 1; i++) {
+    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+  Stream >> DFA.StartSymbol >> NumLines;
+  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  for (unsigned int i = 0; i < NumLines; i++) {
+    std::string Line;
+    std::string Symbol;
+    std::getline(Stream, Line);
+    std::istringstream Iss(Line);
+    Iss >> Symbol;
+    DFA.Productions[i].LHS = Symbol;
+    if (Symbol == DFA.StartSymbol) {
+      DFA.FinalProductions.emplace_back(DFA.Productions[i]);
+    }
+    while (Iss >> Symbol) {
+      DFA.Productions[i].RHS.emplace_back(Symbol);
+    }
+  }
+  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  Stream >> NumLines;
+  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  for (unsigned int i = 0; i < NumLines; i++) {
+    std::string Line;
+    std::getline(Stream, Line);
+    std::istringstream Iss(Line);
+
+    unsigned int StateNum;
+    std::string LookAhead;
+    std::string ActionName;
+    unsigned int LastNum;
+    Iss >> StateNum >> LookAhead >> ActionName >> LastNum;
+    DFA::State &State = DFA.States[StateNum];
+    if (ActionName == "reduce") {
+      State.Reduces.emplace(LookAhead, DFA.Productions[LastNum]);
+    } else if (ActionName == "shift") {
+      State.Shifts.emplace(LookAhead, DFA.States[LastNum]);
+    }
+  }
+  return Stream;
 }

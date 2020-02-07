@@ -8,11 +8,11 @@
 TEST_CASE("client detects JoosW", "[client]") {
   Parse::DFA Parser;
   std::ostringstream OStream;
-  std::ifstream LRStream;
+  std::ifstream ParserStream;
   Client Client;
-  LRStream.open(JoosLRFile);
+  ParserStream.open(JoosLRFile);
 
-  Parser.configure(LRStream);
+  ParserStream >> Parser;
 
   SECTION("scanner accept") {
     std::ifstream JoosStream;

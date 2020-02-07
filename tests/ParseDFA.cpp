@@ -8,7 +8,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
   Parse::DFA DFA;
   std::ifstream Stream;
   Stream.open(TestDataDir + "/grammar/sample.lr1");
-  DFA.configure(Stream);
+  Stream >> DFA;
 
   SECTION("DFA rejects") {
     DFA.read("BOF");
