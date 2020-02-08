@@ -8,7 +8,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
   Parse::DFA DFA;
   std::ifstream Stream;
   Stream.open(TestDataDir + "/grammar/sample.lr1");
-  DFA.configure(Stream);
+  Stream >> DFA;
 
   SECTION("DFA rejects") {
     DFA.read("BOF");
@@ -29,12 +29,12 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
     REQUIRE(!DFA.error());
 
     Parse::Tree T = DFA.buildTree();
-    std::ostringstream Oss;
-    Oss << T;
-    std::ifstream TestTree(TestDataDir + "/grammar/sample.pt");
-    std::ostringstream OssFile;
-    OssFile << TestTree.rdbuf();
-    REQUIRE(Oss.str() == OssFile.str());
+    std::ostringstream OSStream;
+    OSStream << T;
+
+    std::ifstream TreeStream(TestDataDir + "/grammar/sample.tree");
+    std::string TreeString(std::istreambuf_iterator<char>(TreeStream), {});
+    REQUIRE(TreeString == OSStream.str());
   }
 
   SECTION("DFA accepts complex") {

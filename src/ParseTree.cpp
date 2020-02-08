@@ -1,29 +1,38 @@
 #include "ParseTree.hpp"
 
-Parse::Node::Node(std::string Name) : Name(Name), Level(0), Children() {}
+Parse::Node::Node(std::string Name) : Name(Name), Level(0) {}
 
-void Parse::Node::addChild(std::unique_ptr<Parse::Node> Child) {
+void Parse::Node::addChild(std::unique_ptr<Node> Child) {
   Children.emplace_back(std::move(Child));
+  std::unique_ptr<Node> &ChildRef = Children.back();
+  ChildrenCache.emplace(ChildRef->Name, *ChildRef);
 }
 
 std::string Parse::Node::getName() const { return Name; }
 
 size_t Parse::Node::getLevel() const { return Level; }
 
+Parse::Node *Parse::Node::find(const std::string &String) const {
+  auto it = ChildrenCache.find(String);
+  return (it != ChildrenCache.end()) ? &(it->second) : nullptr;
+}
+
 Parse::Tree::Tree(std::unique_ptr<Node> Head) : Head(std::move(Head)) {
   this->Head->Level = 0;
-  for (const auto &Parent : *this) {
+  for (auto &Parent : *this) {
+    std::pair<std::string, Node &> Pair(Parent.getName(), Parent);
+    TreeCache.insert(std::move(Pair));
     for (auto &Child : Parent.Children) {
       Child->Level = Parent.Level + 1;
     }
   }
 }
 
-Parse::Tree::Iterator::Iterator(Node *Ptr) : Ptr(Ptr), Vector() {}
+Parse::Tree::Iterator::Iterator(Node *Ptr) : Ptr(Ptr) {}
 
 Parse::Tree::Iterator &Parse::Tree::Iterator::operator++() {
   for (auto It = Ptr->Children.rbegin(); It != Ptr->Children.rend(); ++It) {
-    Vector.push_back(It->get());
+    Vector.emplace_back(It->get());
   }
   if (Vector.empty()) {
     Ptr = nullptr;
@@ -36,12 +45,19 @@ Parse::Tree::Iterator &Parse::Tree::Iterator::operator++() {
 
 Parse::Node &Parse::Tree::Iterator::operator*() const { return *Ptr; }
 
+Parse::Node *Parse::Tree::Iterator::operator->() { return Ptr; }
+
 bool Parse::Tree::Iterator::operator!=(const Iterator &Iter) const {
   return Ptr != Iter.Ptr;
 }
 
 bool Parse::Tree::Iterator::operator==(const Iterator &Iter) const {
   return Ptr == Iter.Ptr;
+}
+
+std::pair<Parse::Tree::MMapIt, Parse::Tree::MMapIt>
+Parse::Tree::equalRange(const std::string &String) {
+  return TreeCache.equal_range(String);
 }
 
 Parse::Tree::Iterator Parse::Tree::begin() const {

@@ -10,8 +10,8 @@ namespace Parse {
 class DFA {
 public:
   DFA();
-  void configure(std::istream &Stream);
   void read(const std::string &Token);
+  void clear();
   bool error() const;
   bool accept() const;
   Tree buildTree();
@@ -27,6 +27,7 @@ private:
     std::unordered_map<std::string, const Production &> Reduces;
   };
 
+  friend std::istream &operator>>(std::istream &Stream, DFA &DFA);
   std::unordered_map<unsigned int, Production> Productions;
   std::unordered_map<unsigned int, State> States;
   std::vector<std::reference_wrapper<const Production>> FinalProductions;
@@ -38,6 +39,8 @@ private:
   void shift(const State &State);
   void reduce(const Production &Production);
 };
+
+std::istream &operator>>(std::istream &Stream, Parse::DFA &DFA);
 
 } // namespace Parse
 
