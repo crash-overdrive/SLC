@@ -32,7 +32,7 @@ Parse::Tree::Iterator::Iterator(Node *Ptr) : Ptr(Ptr) {}
 
 Parse::Tree::Iterator &Parse::Tree::Iterator::operator++() {
   for (auto It = Ptr->Children.rbegin(); It != Ptr->Children.rend(); ++It) {
-    Vector.push_back(It->get());
+    Vector.emplace_back(It->get());
   }
   if (Vector.empty()) {
     Ptr = nullptr;
