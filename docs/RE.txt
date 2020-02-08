@@ -1,4 +1,4 @@
-README:
+#README:
 #Regular patterns are expressed in such a way that they are unix compatible
 #When in doubt, try to grep with these patterns via -P
 #to be separated with the -=- sign, this is unique enough that java token patterns likely wouldnt include them
@@ -118,7 +118,9 @@ OCTINTEGERLITERAL -=- 0[0-9]*
 
 DECINTEGERLITERAL -=- 0|[1-9][0-9]*
 
-HexIntegerLiteral -=- 0x[0-9a-fA-F]+
+HEXINTEGERLITERAL -=- 0x[0-9a-fA-F]+
+
+BOOLEANLITERAL -=- 
 
 
 
