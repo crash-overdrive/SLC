@@ -1,9 +1,31 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <vector>
 
-constexpr int EPSILON = -1;
+constexpr char EPSILON = -1;
+
+class DfaTransition {
+  public:
+  std::vector<int> previousState;
+  std::vector<int> nextState;
+  char transitionSymbol;
+
+  DfaTransition(std::vector<int> previousState, std::vector<int> nextState, char transitionSymbol):
+  previousState(previousState), nextState(nextState), transitionSymbol(transitionSymbol) {};
+};
+
+class Dfa {
+  public:
+  std::vector<std::vector<int>> states;
+  std::vector<char> alphabets;
+  std::vector<DfaTransition> transitions;
+  std::vector<int> startStates;
+  std::vector<int> acceptingStates;
+};
+
+namespace Lex {
 
 class NfaTransition {
   public:
@@ -18,7 +40,7 @@ class NfaTransition {
 class Nfa {
   public:
   std::vector<int> states;
-  // std::vector<char> alphabets;
+  std::vector<char> alphabets;
   std::vector<NfaTransition> transitions;
   int startState;
   std::vector<int> acceptingStates;
@@ -31,6 +53,10 @@ class Nfa {
     for (int count = 1; count <= numberOfStates; ++count) {
       states.push_back(count);
     }
+  }
+
+  void setAlphabets(std::vector<char> givenAlphabets) {
+    alphabets = givenAlphabets;
   }
 
   void addTransition(int previousState, int nextState, char transitionSymbol) {
@@ -54,16 +80,16 @@ class Nfa {
   }
 
   void shiftStates(int shiftValue) {
-    for (int i = 0; i < states.size(); ++i) {
+    for (size_t i = 0; i < states.size(); ++i) {
       states[i] += shiftValue;
     }
 
-    for (int i = 0; i < transitions.size(); ++i) {
+    for (size_t i = 0; i < transitions.size(); ++i) {
       transitions[i].previousState += shiftValue;
       transitions[i].nextState += shiftValue;
     }
 
-    for(int i = 0; i < acceptingStates.size(); ++i) {
+    for(size_t i = 0; i < acceptingStates.size(); ++i) {
       acceptingStates[i] += shiftValue;
     }
 
@@ -99,6 +125,60 @@ class Nfa {
 
     std::sort(epsilonClosureList.begin(), epsilonClosureList.end());
     return epsilonClosureList;
+  }
+
+  std::vector<int> getDfaStartStates() {
+    return epsilonClosure({startState});
+  }
+
+  std::vector<std::vector<int>> getDfaStates() {
+    std::vector<std::vector<int>> dfaStates = {getDfaStartStates()};
+    std::vector<std::vector<int>> workList = {getDfaStartStates()};
+
+    std::cout << "Got DFA start state.." << std::endl;
+
+    while (!workList.empty()) {
+      std::vector<int> currentStates = workList.back();
+      std::set<int> statesReachable;
+
+      workList.pop_back();
+
+      std::cout << "After popping Size: " << workList.size() << " Popped from Worklist: ";
+      for (auto const& num: currentStates) {
+        std::cout << num << " ";
+      }
+      std::cout << std::endl;
+
+      for (auto const& alphabet: alphabets) {
+        for (auto const& state: currentStates) {
+          for (auto const& transition: transitions) {
+            if (transition.previousState == state && transition.transitionSymbol == alphabet) {
+              statesReachable.insert(transition.nextState);
+            }
+          }
+        }
+      }
+
+      std::vector<int> states(statesReachable.begin(), statesReachable.end());
+      states = epsilonClosure(states);
+
+      if (!states.empty() && (std::find(workList.begin(), workList.end(), states) == workList.end())
+       && (std::find(dfaStates.begin(), dfaStates.end(), states) == dfaStates.end())) {
+        dfaStates.push_back(states);
+        workList.push_back(states);
+      }
+    }
+    return dfaStates;
+  }
+
+  Dfa convertToDfa() {
+    Dfa convertedDfa;
+    convertedDfa.alphabets = alphabets;
+    convertedDfa.startStates = getDfaStartStates();
+    convertedDfa.states = getDfaStates();
+    // convertedDfa.transitions = getDfaTransitions();
+    // convertedDfa.acceptingStates = getDfaAcceptingTransitions();
+    return convertedDfa;
   }
 };
 
@@ -252,16 +332,14 @@ class DFA {
   std::vector<int> acceptingStates;
 };
 
-DFA nfaToDfaConversion(Nfa nfa) {
-
-}
-
 class Definition {
   public:
   std::string type;
   std::string regex;
   Definition(std::string type, std::string regex): type(type), regex(regex) {};
 };
+
+} // Lex
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -272,7 +350,7 @@ int main(int argc, char *argv[]) {
   std::ifstream file;
   file.open(argv[1]);
 
-  std::vector<Definition> definitions;
+  std::vector<Lex::Definition> definitions;
   std::string delimiter = " -=- ";
 
   if (file.is_open()) {
@@ -282,7 +360,7 @@ int main(int argc, char *argv[]) {
         std::getline(file, line);
         // std::cout << "Read: " << line << std::endl;
         int position = line.find(delimiter);
-        definitions.push_back(Definition(line.substr(0, position), line.substr(position + delimiter.length())));
+        definitions.push_back(Lex::Definition(line.substr(0, position), line.substr(position + delimiter.length())));
       }
       file.close();
   } else {
@@ -295,7 +373,7 @@ int main(int argc, char *argv[]) {
    std::cout << "[" << definition.type << "] {" << definition.regex << "}" << std::endl;
   }
 
-  Nfa nfa;
+  Lex::Nfa nfa;
   nfa.initialiseStates(4);
   nfa.addTransition(1, 2, 0);
   nfa.addTransition(1, 3, EPSILON);
