@@ -4,7 +4,6 @@
 #include <string>
 
 const std::string JoosLRFile = "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1";
-
-const std::string 
+const std::string TokensFile = "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex";
 
 #endif // CONFIG_HPP

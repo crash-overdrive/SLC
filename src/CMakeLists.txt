@@ -8,8 +8,10 @@ file(GLOB SOURCES *.cpp)
 
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp)
 
-set(LR1_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex COPYONLY)
+
 set(CFG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/joos.cfg)
+set(LR1_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1)
 get_target_property(JLALR_JAR jlalr JAR_FILE)
 add_custom_command(
   OUTPUT ${LR1_FILE}
