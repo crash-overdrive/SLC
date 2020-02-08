@@ -1,9 +1,29 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <vector>
 
-constexpr int EPSILON = -1;
+constexpr char EPSILON = 255;
+
+class DfaTransition {
+  public:
+  std::vector<int> previousState;
+  std::vector<int> nextState;
+  char transitionSymbol;
+
+  DfaTransition(std::vector<int> previousState, std::vector<int> nextState, char transitionSymbol):
+  previousState(previousState), nextState(nextState), transitionSymbol(transitionSymbol) {};
+};
+
+class Dfa {
+  public:
+  std::vector<std::vector<int>> states;
+  std::vector<char> alphabets;
+  std::vector<DfaTransition> transitions;
+  std::vector<int> startStates;
+  std::vector<int> acceptingStates;
+};
 
 class NfaTransition {
   public:
@@ -18,7 +38,7 @@ class NfaTransition {
 class Nfa {
   public:
   std::vector<int> states;
-  // std::vector<char> alphabets;
+  std::vector<char> alphabets;
   std::vector<NfaTransition> transitions;
   int startState;
   std::vector<int> acceptingStates;
@@ -31,6 +51,10 @@ class Nfa {
     for (int count = 1; count <= numberOfStates; ++count) {
       states.push_back(count);
     }
+  }
+
+  void setAlphabets(std::vector<char> givenAlphabets) {
+    alphabets = givenAlphabets;
   }
 
   void addTransition(int previousState, int nextState, char transitionSymbol) {
@@ -99,6 +123,60 @@ class Nfa {
 
     std::sort(epsilonClosureList.begin(), epsilonClosureList.end());
     return epsilonClosureList;
+  }
+
+  std::vector<int> getDfaStartStates() {
+    return epsilonClosure({startState});
+  }
+
+  std::vector<std::vector<int>> getDfaStates() {
+    std::vector<std::vector<int>> dfaStates = {getDfaStartStates()};
+    std::vector<std::vector<int>> workList = {getDfaStartStates()};
+
+    std::cout << "Got DFA start state.." << std::endl;
+
+    while (!workList.empty()) {
+      std::vector<int> currentStates = workList.back();
+      std::set<int> statesReachable;
+
+      workList.pop_back();
+
+      std::cout << "After popping Size: " << workList.size() << " Popped from Worklist: ";
+      for (auto const& num: currentStates) {
+        std::cout << num << " ";
+      }
+      std::cout << std::endl;
+
+      for (auto const& alphabet: alphabets) {
+        for (auto const& state: currentStates) {
+          for (auto const& transition: transitions) {
+            if (transition.previousState == state && transition.transitionSymbol == alphabet) {
+              statesReachable.insert(transition.nextState);
+            }
+          }
+        }
+      }
+
+      std::vector<int> states(statesReachable.begin(), statesReachable.end());
+      states = epsilonClosure(states);
+
+      if (!states.empty() && (std::find(workList.begin(), workList.end(), states) == workList.end())
+       && (std::find(dfaStates.begin(), dfaStates.end(), states) == dfaStates.end())) {
+        dfaStates.push_back(states);
+        workList.push_back(states);
+      }
+    }
+    return dfaStates;
+  }
+
+  Dfa convertToDfa() {
+    Dfa convertedDfa;
+    convertedDfa.alphabets = alphabets;
+    convertedDfa.startStates = getDfaStartStates();
+    convertedDfa.states = getDfaStates();
+    // convertedDfa.transitions = getDfaTransitions();
+    // convertedDfa.acceptingStates = getDfaAcceptingTransitions();
+    return convertedDfa;
   }
 };
 
@@ -233,29 +311,6 @@ Nfa plus(Nfa nfa) {
   return finalNfa;
 }
 
-class DfaTransition {
-  public:
-  std::vector<int> previousState;
-  std::vector<int> nextState;
-  char transitionSymbol;
-
-  DfaTransition(std::vector<int> previousState, std::vector<int> nextState, char transitionSymbol):
-  previousState(previousState), nextState(nextState), transitionSymbol(transitionSymbol) {};
-};
-
-class DFA {
-  public:
-  std::vector<std::vector<int>> states;
-  // std::vector<char> alphabets;
-  std::vector<DfaTransition> transitions;
-  int startState;
-  std::vector<int> acceptingStates;
-};
-
-DFA nfaToDfaConversion(Nfa nfa) {
-
-}
-
 class Definition {
   public:
   std::string type;
@@ -297,6 +352,7 @@ int main(int argc, char *argv[]) {
 
   Nfa nfa;
   nfa.initialiseStates(4);
+  nfa.setAlphabets({0,1, EPSILON});
   nfa.addTransition(1, 2, 0);
   nfa.addTransition(1, 3, EPSILON);
   nfa.addTransition(2, 2, 1);
@@ -306,16 +362,27 @@ int main(int argc, char *argv[]) {
   nfa.addTransition(4, 3, 0);
   nfa.setStartState(1);
   nfa.setAcceptingStates({3,4});
+
+  std::cout << "Epsilon clsoure is for 1 is: ";
   std::vector<int> test1 = nfa.epsilonClosure({1});
   for (auto const& num: test1) {
     std::cout << num << " ";
   }
-
   std::cout << std::endl;
 
+  std::cout << "Epsilon clsoure is for {2 3} is: ";
   std::vector<int> test2 = nfa.epsilonClosure({2,3});
   for (auto const& num: test2) {
     std::cout << num << " ";
+  }
+  std::cout << std::endl;
+
+  std::vector<std::vector<int>> dfaStates = nfa.getDfaStates();
+  for (auto const& dfaState: dfaStates) {
+    for (auto const& state: dfaState) {
+      std::cout << state << " ";
+    }
+    std::cout << std::endl;
   }
   return 0;
 }
