@@ -2,8 +2,11 @@
 #define PARSETREE_HPP
 
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace Parse {
@@ -14,25 +17,27 @@ public:
   void addChild(std::unique_ptr<Node> child);
   std::string getName() const;
   size_t getLevel() const;
+  Node *find(const std::string &String) const;
 
 private:
   friend class Tree;
   std::string Name;
   size_t Level;
   std::vector<std::unique_ptr<Node>> Children;
+  std::unordered_map<std::string, Node &> ChildrenCache;
 };
 
 class Tree {
 public:
+  using MMapIt = std::multimap<std::string, Node &>::iterator;
   Tree(std::unique_ptr<Node> Head);
 
   class Iterator {
   public:
     Iterator(Node *Ptr);
     Iterator &operator++();
-    Node *get();
     Node &operator*() const;
-    Node *operator->() const;
+    Node *operator->();
     bool operator!=(const Iterator &Iter) const;
     bool operator==(const Iterator &Iter) const;
 
@@ -41,12 +46,13 @@ public:
     std::vector<Node *> Vector;
   };
 
+  std::pair<MMapIt, MMapIt> equalRange(const std::string &String);
   Iterator begin() const;
   Iterator end() const;
 
 private:
-  friend std::ostream &operator<<(std::ostream &Stream, const Tree &T);
   std::unique_ptr<Node> Head;
+  std::multimap<std::string, Node &> TreeCache;
 };
 
 std::ostream &operator<<(std::ostream &Stream, const Tree &T);
