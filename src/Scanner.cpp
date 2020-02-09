@@ -1,86 +1,50 @@
+#include "Scanner.hpp"
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <set>
 #include <vector>
 
 namespace Lex {
   constexpr char EPSILON = -1;
-  class DfaTransition {
-    public:
-    std::vector<int> previousState;
-    std::vector<int> nextState;
-    char transitionSymbol;
 
-    DfaTransition(std::vector<int> previousState, std::vector<int> nextState, char transitionSymbol):
-    previousState(previousState), nextState(nextState), transitionSymbol(transitionSymbol) {};
-  };
+  int Nfa::getNumberOfStates() {
+    return states.size();
+  }
 
-  class Dfa {
-    public:
-    std::vector<std::vector<int>> states;
-    std::vector<char> alphabets;
-    std::vector<DfaTransition> transitions;
-    std::vector<int> startStates;
-    std::vector<int> acceptingStates;
-  };
-
-  class NfaTransition {
-    public:
-    int previousState;
-    int nextState;
-    char transitionSymbol;
-
-    NfaTransition(int previousState, int nextState, char transitionSymbol):
-    previousState(previousState), nextState(nextState), transitionSymbol(transitionSymbol) {};
-  };
-
-  class Nfa {
-    public:
-    std::vector<int> states;
-    std::vector<char> alphabets;
-    std::vector<NfaTransition> transitions;
-    int startState;
-    std::vector<int> acceptingStates;
-
-    int getNumberOfStates() {
-      return states.size();
+  void Nfa::initialiseStates(int numberOfStates) {
+    for (int count = 1; count <= numberOfStates; ++count) {
+      states.push_back(count);
     }
+  }
 
-    void initialiseStates(int numberOfStates) {
-      for (int count = 1; count <= numberOfStates; ++count) {
-        states.push_back(count);
-      }
+  void Nfa::setAlphabets(std::vector<char> givenAlphabets) {
+    alphabets = givenAlphabets;
+  }
+
+  void Nfa::addTransition(int previousState, int nextState, char transitionSymbol) {
+    transitions.push_back(NfaTransition(previousState, nextState, transitionSymbol));
+  }
+
+  void Nfa::setAcceptingStates(std::vector<int> newAcceptingStates) {
+    acceptingStates = newAcceptingStates;
+  }
+
+  std::vector<int> Nfa::getAcceptingStates() {
+    return acceptingStates;
+  }
+
+  void Nfa::setStartState(int state) {
+    startState = state;
+  }
+
+  int Nfa::getStartState() {
+    return startState;
+  }
+
+  void Nfa::shiftStates(int shiftValue) {
+    for (size_t i = 0; i < states.size(); ++i) {
+      states[i] += shiftValue;
     }
-
-    void setAlphabets(std::vector<char> givenAlphabets) {
-      alphabets = givenAlphabets;
-    }
-
-    void addTransition(int previousState, int nextState, char transitionSymbol) {
-      transitions.push_back(NfaTransition(previousState, nextState, transitionSymbol));
-    }
-
-    void setAcceptingStates(std::vector<int> newAcceptingStates) {
-      acceptingStates = newAcceptingStates;
-    }
-
-    std::vector<int> getAcceptingStates() {
-      return acceptingStates;
-    }
-
-    void setStartState(int state) {
-      startState = state;
-    }
-
-    int getStartState() {
-      return startState;
-    }
-
-    void shiftStates(int shiftValue) {
-      for (size_t i = 0; i < states.size(); ++i) {
-        states[i] += shiftValue;
-      }
 
       for (size_t i = 0; i < transitions.size(); ++i) {
         transitions[i].previousState += shiftValue;
@@ -94,42 +58,42 @@ namespace Lex {
       startState += shiftValue;
     }
 
-    std::vector<int> epsilonClosure(std::vector<int> givenStates) {
-      for (auto const& state: givenStates) {
-        if (std::find(states.begin(), states.end(), state) == states.end()) {
-          std::cout << "Error computing Epsilon closure for state: " << state << " .. State doesnt exist in Nfa" << std::endl;
-          return {};
-        }
+  std::vector<int> Nfa::epsilonClosure(std::vector<int> givenStates) {
+    for (auto const& state: givenStates) {
+      if (std::find(states.begin(), states.end(), state) == states.end()) {
+        std::cout << "Error computing Epsilon closure for state: " << state << " .. State doesnt exist in Nfa" << std::endl;
+        return {};
       }
+    }
 
-      std::vector<int> workList = givenStates;
-      std::vector<int> epsilonClosureList = givenStates;
+    std::vector<int> workList = givenStates;
+    std::vector<int> epsilonClosureList = givenStates;
 
-      while (!workList.empty()) {
-        int currentState = workList.back();
+    while (!workList.empty()) {
+      int currentState = workList.back();
 
-        workList.pop_back();
+      workList.pop_back();
 
-        for(auto const& transition: transitions) {
-          if (transition.transitionSymbol == EPSILON && transition.previousState == currentState) {
-            int newState = transition.nextState;
-            if (std::find(epsilonClosureList.begin(), epsilonClosureList.end(), newState) == epsilonClosureList.end()) {
-              epsilonClosureList.push_back(newState);
-              workList.push_back(newState);
-            }
+      for(auto const& transition: transitions) {
+        if (transition.transitionSymbol == EPSILON && transition.previousState == currentState) {
+          int newState = transition.nextState;
+          if (std::find(epsilonClosureList.begin(), epsilonClosureList.end(), newState) == epsilonClosureList.end()) {
+            epsilonClosureList.push_back(newState);
+            workList.push_back(newState);
           }
         }
       }
-
-      std::sort(epsilonClosureList.begin(), epsilonClosureList.end());
-      return epsilonClosureList;
     }
 
-    std::vector<int> getDfaStartStates() {
-      return epsilonClosure({startState});
-    }
+    std::sort(epsilonClosureList.begin(), epsilonClosureList.end());
+    return epsilonClosureList;
+  }
 
-    std::vector<std::vector<int>> getDfaStates() {
+  std::vector<int> Nfa::getDfaStartStates() {
+    return epsilonClosure({startState});
+  }
+
+    std::vector<std::vector<int>> Nfa::getDfaStates() {
       std::vector<std::vector<int>> dfaStates = {getDfaStartStates()};
       std::vector<std::vector<int>> workList = {getDfaStartStates()};
 
@@ -177,7 +141,7 @@ namespace Lex {
       return dfaStates;
     }
 
-    Dfa convertToDfa() {
+    Dfa Nfa::convertToDfa() {
       Dfa convertedDfa;
       convertedDfa.alphabets = alphabets;
       convertedDfa.startStates = getDfaStartStates();
@@ -186,7 +150,6 @@ namespace Lex {
       // convertedDfa.acceptingStates = getDfaAcceptingTransitions();
       return convertedDfa;
     }
-  };
 
   Nfa concatenate(Nfa firstNfa, Nfa secondNfa) {
     Nfa finalNfa;
@@ -319,48 +282,41 @@ namespace Lex {
     return finalNfa;
   }
 
-  class Definition {
-    public:
-    std::string type;
-    std::string regex;
-    Definition(std::string type, std::string regex): type(type), regex(regex) {};
-  };
-
-
-
-}
+} // namespace Lex
 
   int main(int argc, char *argv[]) {
-    if (argc != 2) {
-      std::cout << "Invalid number of arguments passed, required: 2, got: " << argc << std::endl;
-      return 42;
-    }
+    (void)argc;
+    (void)argv;
+    //if (argc != 2) {
+      //std::cout << "Invalid number of arguments passed, required: 2, got: " << argc << std::endl;
+      //return 42;
+    //}
 
-    std::ifstream file;
-    file.open(argv[1]);
+    //std::ifstream file;
+    //file.open(argv[1]);
 
-    std::vector<Lex::Definition> definitions;
-    std::string delimiter = " -=- ";
+    //std::vector<Lex::Definition> definitions;
+    //std::string delimiter = " -=- ";
 
-    if (file.is_open()) {
-        while (!file.eof()) {
-          std::string line;
+    //if (file.is_open()) {
+        //while (!file.eof()) {
+          //std::string line;
 
-          std::getline(file, line);
-          // std::cout << "Read: " << line << std::endl;
-          int position = line.find(delimiter);
-          definitions.push_back(Lex::Definition(line.substr(0, position), line.substr(position + delimiter.length())));
-        }
-        file.close();
-    } else {
-      std::cout << "File: " << argv[1] << " not found.. quitting" << std::endl;
-      return 42;
-    }
+          //std::getline(file, line);
+          //// std::cout << "Read: " << line << std::endl;
+          //int position = line.find(delimiter);
+          //definitions.push_back(Lex::Definition(line.substr(0, position), line.substr(position + delimiter.length())));
+        //}
+        //file.close();
+    //} else {
+      //std::cout << "File: " << argv[1] << " not found.. quitting" << std::endl;
+      //return 42;
+    //}
 
-    std::cout << "Definitions generated: " << std::endl;
-    for(auto const& definition: definitions) {
-    std::cout << "[" << definition.type << "] {" << definition.regex << "}" << std::endl;
-    }
+    //std::cout << "Definitions generated: " << std::endl;
+    //for(auto const& definition: definitions) {
+    //std::cout << "[" << definition.type << "] {" << definition.regex << "}" << std::endl;
+    //}
 
     Lex::Nfa nfa;
     nfa.initialiseStates(4);
