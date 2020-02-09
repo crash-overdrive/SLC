@@ -112,13 +112,13 @@ VOLATILE -=- volatile
 
 WHILE -=- while
 
-OCT_INT_LITERAL -=- 0[0-9]*
+OCT_INT_LITERAL -=- 0[0-9]+
 
 DEC_INT_LITERAL -=- 0|[1-9][0-9]*
 
 HEX_INT_LITERAL -=- 0x[0-9a-fA-F]+
 
-BOOLEANLITERAL -=- (true)|(false)
+BOOLEAN_LITERAL -=- (true)|(false)
 
 CHAR_LITERAL -=- '[^'\\\r\n]|(\\[nr\\'tbf"])'
 
@@ -132,7 +132,7 @@ RPAREN -=- \)
 
 LBRKT -=- \[
 
-RBRKT -=- \] 
+RBRKT -=- \]
 
 LBRAC -=- {
 
@@ -219,4 +219,4 @@ RIGHTSHIFT_EQUALS -=- >>=
 
 UNSIGNED_RIGHTSHIFT_EQUALS -=- >>>=
 
-IDENTIFIER -=- [a-zA-Z_$][a-zA-Z0-9_$]*
+ID -=- [a-zA-Z_$][a-zA-Z0-9_$]*
