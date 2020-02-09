@@ -42,7 +42,7 @@ struct Dfa {
   std::vector<char> alphabets;
   std::vector<DfaTransition> transitions;
   std::vector<int> startStates;
-  std::vector<int> acceptingStates;
+  std::vector<std::vector<int>> acceptingStates;
 };
 
 struct NfaTransition {
@@ -66,21 +66,20 @@ public:
   int getNumberOfStates();
   void initialiseStates(int numberOfStates);
   void setAlphabets(std::vector<char> givenAlphabets);
-  void addTransition(int previousState, int nextState, char transitionSymbol);
   void setAcceptingStates(std::vector<int> newAcceptingStates);
+  std::vector<int> getAcceptingStates();
   void setStartState(int state);
+  int getStartState();
+  void shiftStates(int shiftValue);
+  void addTransition(int previousState, int nextState, char transitionSymbol);
+
   std::vector<int> epsilonClosure(std::vector<int> givenStates);
   std::vector<int> getDfaStartStates();
   void
   computeDfaStatesAndTransitions(std::vector<std::vector<int>> &dfaStates,
                                  std::vector<DfaTransition> &dfaTransitions);
-  std::vector<std::vector<int>> getDfaStates();
+  std::vector<std::vector<int>> getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates);
   Dfa convertToDfa();
-
-  int getStartState();
-  void shiftStates(int shiftValue);
-
-  std::vector<int> getAcceptingStates();
 };
 
 Nfa concatenate(Nfa firstNfa, Nfa secondNfa);

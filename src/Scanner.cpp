@@ -1,8 +1,9 @@
-#include "Scanner.hpp"
 #include <algorithm>
 #include <fstream>
 #include <set>
 #include <vector>
+
+#include "Scanner.hpp"
 
 namespace Lex {
 
@@ -80,7 +81,6 @@ std::vector<int> Nfa::epsilonClosure(std::vector<int> givenStates) {
       }
     }
   }
-
   std::sort(epsilonClosureList.begin(), epsilonClosureList.end());
   return epsilonClosureList;
 }
@@ -94,6 +94,11 @@ void Nfa::computeDfaStatesAndTransitions(
     std::vector<DfaTransition> &dfaTransitions) {
   dfaStates = {getDfaStartStates()};
   std::vector<std::vector<int>> workList = {getDfaStartStates()};
+
+  std::vector<int> trapState = {-1};
+  for (auto const& alphabet: alphabets) {
+    dfaTransitions.push_back(DfaTransition(trapState, trapState, alphabet));
+  }
 
   while (!workList.empty()) {
     std::vector<int> currentStates = workList.back();
@@ -122,7 +127,7 @@ void Nfa::computeDfaStatesAndTransitions(
       std::vector<int> states(statesReachable.begin(), statesReachable.end());
 
       states = epsilonClosure(states);
-      dfaTransitions.push_back(DfaTransition(currentStates, states, alphabet));
+
 
       // std::cout << "Transition: " << int {alphabet} << std::endl << "Result:
       // "; for (auto const& state: states) {
@@ -130,16 +135,33 @@ void Nfa::computeDfaStatesAndTransitions(
       // }
       // std::cout << std::endl;
 
-      if (!states.empty() &&
-          (std::find(workList.begin(), workList.end(), states) ==
-           workList.end()) &&
-          (std::find(dfaStates.begin(), dfaStates.end(), states) ==
-           dfaStates.end())) {
-        dfaStates.push_back(states);
-        workList.push_back(states);
+      if (!states.empty()) {
+        dfaTransitions.push_back(DfaTransition(currentStates, states, alphabet));
+
+        if ((std::find(workList.begin(), workList.end(), states) == workList.end()) &&
+        (std::find(dfaStates.begin(), dfaStates.end(), states) == dfaStates.end())) {
+          dfaStates.push_back(states);
+          workList.push_back(states);
+        }
+      } else {
+        dfaTransitions.push_back(DfaTransition(currentStates, trapState, alphabet));
       }
     }
   }
+}
+
+std::vector<std::vector<int>> Nfa::getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates) {
+  std::vector<std::vector<int>> dfaAcceptingStates;
+
+  for (auto const& dfaState: dfaStates) {
+    for (auto const& acceptingState: acceptingStates) {
+      if (std::find(dfaState.begin(), dfaState.end(), acceptingState) != dfaState.end()) {
+        dfaAcceptingStates.push_back(dfaState);
+        break;
+      }
+    }
+  }
+  return dfaAcceptingStates;
 }
 
 Dfa Nfa::convertToDfa() {
@@ -147,7 +169,7 @@ Dfa Nfa::convertToDfa() {
   convertedDfa.alphabets = alphabets;
   convertedDfa.startStates = getDfaStartStates();
   computeDfaStatesAndTransitions(convertedDfa.states, convertedDfa.transitions);
-  // convertedDfa.acceptingStates = getDfaAcceptingTransitions();
+  convertedDfa.acceptingStates = getDfaAcceptingStates(convertedDfa.states);
   return convertedDfa;
 }
 
@@ -355,47 +377,60 @@ int main(int argc, char *argv[]) {
 
   nfa.setStartState(1);
 
-  nfa.setAcceptingStates({3, 4});
+  nfa.setAcceptingStates({3,4});
 
-  std::cout << "Epsilon clsoure is for {1} is: ";
-  std::vector<int> test1 = nfa.epsilonClosure({1});
-  for (auto const &num : test1) {
-    std::cout << num << " ";
+  // std::cout << "Epsilon clsoure is for {1} is: ";
+  // std::vector<int> test1 = nfa.epsilonClosure({1});
+  // for (auto const& num: test1) {
+  //   std::cout << num << " ";
+  // }
+  // std::cout << std::endl;
+
+  // std::cout << "Epsilon clsoure for {4} is: ";
+  // std::vector<int> test2 = nfa.epsilonClosure({4});
+  // for (auto const& num: test2) {
+  //   std::cout << num << " ";
+  // }
+  // std::cout << std::endl;
+
+  Lex::Dfa dfa = nfa.convertToDfa();
+
+  std::cout << "Dfa start state: ";
+  for (auto const& state: dfa.startStates) {
+    std::cout << state << " ";
   }
   std::cout << std::endl;
-
-  std::cout << "Epsilon clsoure for {4} is: ";
-  std::vector<int> test2 = nfa.epsilonClosure({4});
-  for (auto const &num : test2) {
-    std::cout << num << " ";
-  }
-  std::cout << std::endl;
-
-  Lex::Dfa dfa;
-  nfa.computeDfaStatesAndTransitions(dfa.states, dfa.transitions);
 
   std::cout << "Dfa states" << std::endl;
-  for (auto const &dfaState : dfa.states) {
-    for (auto const &state : dfaState) {
+  for (auto const& dfaState: dfa.states) {
+    for (auto const& state: dfaState) {
+      std::cout << state << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << "Dfa Accepting states" << std::endl;
+  for (auto const& dfaAcceptingState: dfa.acceptingStates) {
+    for (auto const& state: dfaAcceptingState) {
       std::cout << state << " ";
     }
     std::cout << std::endl;
   }
 
   std::cout << "Dfa transitions" << std::endl;
-  for (auto const &dfaTransition : dfa.transitions) {
-    std::cout << "Transition character: " << int{dfaTransition.transitionSymbol}
-              << std::endl;
+  for (auto const& dfaTransition: dfa.transitions) {
     std::cout << "Previous State: ";
-    for (auto const &state : dfaTransition.previousStates) {
+    for (auto const& state: dfaTransition.previousStates) {
       std::cout << state << " ";
     }
     std::cout << std::endl;
+    std::cout << "Transition character: " << int {dfaTransition.transitionSymbol} << std::endl;
     std::cout << "Next State: ";
-    for (auto const &state : dfaTransition.nextStates) {
+    for (auto const& state: dfaTransition.nextStates) {
       std::cout << state << " ";
     }
     std::cout << std::endl;
   }
+
   return 0;
 }
