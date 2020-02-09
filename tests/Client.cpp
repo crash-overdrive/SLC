@@ -37,22 +37,32 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   Parse::DFA Parser;
   std::ifstream ParserStream;
   ParserStream.open(JoosLRFile);
-
   ParserStream >> Parser;
+  std::ifstream TokenStream;
+
   SECTION("parser accept") {
-    std::ifstream TokenStream;
-    TokenStream.open(TestDataDir + "/grammar/J1_publicclasses.token");
-    REQUIRE(Client::parse(Parser, TokenStream));
+    std::vector<std::string> FileNames{"J1_abstractclass.token",
+                                       "J1_publicclasses.token"};
+    for (const auto &FileName : FileNames) {
+      TokenStream.open(TestDataDir + "/grammar/" + FileName);
+      REQUIRE(Client::parse(Parser, TokenStream));
+      std::cout << Parser.buildTree();
+      TokenStream.close();
+      TokenStream.clear();
+      Parser.clear();
+    }
   }
 
   SECTION("parser rejects") {
-    std::ifstream TokenStream;
-    TokenStream.open(TestDataDir + "/grammar/SimpleReject.token");
-    REQUIRE(!Client::parse(Parser, TokenStream));
-    TokenStream.clear();
-    Parser.clear();
-    TokenStream.open(TestDataDir + "/grammar/MissingClassBody.token");
-    REQUIRE(!Client::parse(Parser, TokenStream));
+    std::vector<std::string> FileNames{"SimpleReject.token",
+                                       "MissingClassBody.token"};
+    for (const auto &FileName : FileNames) {
+      TokenStream.open(TestDataDir + "/grammar/" + FileName);
+      REQUIRE(!Client::parse(Parser, TokenStream));
+      TokenStream.close();
+      TokenStream.clear();
+      Parser.clear();
+    }
   }
 }
 

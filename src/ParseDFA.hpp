@@ -1,8 +1,8 @@
 #ifndef PARSEDFA_HPP
 #define PARSEDFA_HPP
 
-#include "ParseTree.hpp"
 #include "LexToken.hpp"
+#include "ParseTree.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -31,12 +31,12 @@ private:
   friend std::istream &operator>>(std::istream &Stream, DFA &DFA);
   std::unordered_map<unsigned int, Production> Productions;
   std::unordered_map<unsigned int, State> States;
-  std::vector<std::reference_wrapper<const Production>> FinalProductions;
-  std::vector<std::reference_wrapper<const State>> StateStack;
+  std::vector<const Production *> FinalProductions;
+  std::vector<const State *> StateStack;
   std::vector<std::unique_ptr<Node>> NodeStack;
   std::string StartSymbol;
   bool errorState;
-  State &Current;
+  const State *Current;
   void shift(const State &State);
   void reduce(const Production &Production);
 };
