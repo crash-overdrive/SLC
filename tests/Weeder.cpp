@@ -2,10 +2,7 @@
 #include "catch.hpp"
 
 TEST_CASE("Weeder can parse tree defined rules", "[weeder]") {
-  std::unique_ptr<Parse::Node> Node = std::make_unique<Parse::Node>("Root");
-  Node->addChild(std::make_unique<Parse::Node>("Child1"));
-  Node->addChild(std::make_unique<Parse::Node>("Child2"));
-  Parse::Tree Tree(std::move(Node));
+  Parse::Tree Tree(std::make_unique<Parse::Node>("Root"));
   Parse::Weeder Weeder;
 
   SECTION("Weeder accepts") {
