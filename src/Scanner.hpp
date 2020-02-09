@@ -25,12 +25,12 @@ struct Definition {
 };
 
 struct DfaTransition {
-  std::vector<int> previousState;
-  std::vector<int> nextState;
+  std::vector<int> previousStates;
+  std::vector<int> nextStates;
   char transitionSymbol;
 
-  DfaTransition(std::vector<int> previousState, std::vector<int> nextState, char transitionSymbol):
-    previousState(previousState), nextState(nextState), transitionSymbol(transitionSymbol) {};
+  DfaTransition(std::vector<int> previousStates, std::vector<int> nextStates, char transitionSymbol):
+    previousStates(previousStates), nextStates(nextStates), transitionSymbol(transitionSymbol) {};
 };
 
 struct Dfa {
@@ -67,6 +67,7 @@ public:
   void setStartState(int state);
   std::vector<int> epsilonClosure(std::vector<int> givenStates);
   std::vector<int> getDfaStartStates();
+  void computeDfaStatesAndTransitions(std::vector<std::vector<int>>& dfaStates, std::vector<DfaTransition>& dfaTransitions);
   std::vector<std::vector<int>> getDfaStates();
   Dfa convertToDfa();
 

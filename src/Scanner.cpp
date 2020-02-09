@@ -93,22 +93,20 @@ namespace Lex {
     return epsilonClosure({startState});
   }
 
-    std::vector<std::vector<int>> Nfa::getDfaStates() {
-      std::vector<std::vector<int>> dfaStates = {getDfaStartStates()};
+    void Nfa::computeDfaStatesAndTransitions(std::vector<std::vector<int>>& dfaStates, std::vector<DfaTransition>& dfaTransitions) {
+      dfaStates = {getDfaStartStates()};
       std::vector<std::vector<int>> workList = {getDfaStartStates()};
-
-      std::cout << "Got DFA start state.." << std::endl;
 
       while (!workList.empty()) {
         std::vector<int> currentStates = workList.back();
 
         workList.pop_back();
 
-        std::cout << "After popping Size: " << workList.size() << std::endl << "Popped from Worklist: ";
-        for (auto const& num: currentStates) {
-          std::cout << num << " ";
-        }
-        std::cout << std::endl;
+        // std::cout << "Popped from Worklist: ";
+        // for (auto const& num: currentStates) {
+        //   std::cout << num << " ";
+        // }
+        // std::cout << std::endl;
 
         for (auto const& alphabet: alphabets) {
           std::set<int> statesReachable;
@@ -116,7 +114,7 @@ namespace Lex {
           for (auto const& state: currentStates) {
             for (auto const& transition: transitions) {
               if (transition.previousState == state && transition.transitionSymbol == alphabet) {
-                std::cout << "State: " << state << " Alphabet: " << int{alphabet} << " State added: " << transition.nextState << std::endl;
+                // std::cout << "State: " << state << " Alphabet: " << int{alphabet} << " State added: " << transition.nextState << std::endl;
                 statesReachable.insert(transition.nextState);
               }
             }
@@ -124,12 +122,13 @@ namespace Lex {
           std::vector<int> states(statesReachable.begin(), statesReachable.end());
 
           states = epsilonClosure(states);
+          dfaTransitions.push_back(DfaTransition(currentStates, states, alphabet));
 
-          std::cout << "Transition: " << int {alphabet} << std::endl << "Result: ";
-          for (auto const& state: states) {
-            std::cout << state << " ";
-          }
-          std::cout << std::endl;
+          // std::cout << "Transition: " << int {alphabet} << std::endl << "Result: ";
+          // for (auto const& state: states) {
+          //   std::cout << state << " ";
+          // }
+          // std::cout << std::endl;
 
           if (!states.empty() && (std::find(workList.begin(), workList.end(), states) == workList.end())
           && (std::find(dfaStates.begin(), dfaStates.end(), states) == dfaStates.end())) {
@@ -138,15 +137,13 @@ namespace Lex {
           }
         }
       }
-      return dfaStates;
     }
 
     Dfa Nfa::convertToDfa() {
       Dfa convertedDfa;
       convertedDfa.alphabets = alphabets;
       convertedDfa.startStates = getDfaStartStates();
-      convertedDfa.states = getDfaStates();
-      // convertedDfa.transitions = getDfaTransitions();
+      computeDfaStatesAndTransitions(convertedDfa.states, convertedDfa.transitions);
       // convertedDfa.acceptingStates = getDfaAcceptingTransitions();
       return convertedDfa;
     }
@@ -349,9 +346,27 @@ namespace Lex {
     }
     std::cout << std::endl;
 
-    std::vector<std::vector<int>> dfaStates = nfa.getDfaStates();
-    for (auto const& dfaState: dfaStates) {
+    Lex::Dfa dfa;
+    nfa.computeDfaStatesAndTransitions(dfa.states, dfa.transitions);
+
+    std::cout << "Dfa states" << std::endl;
+    for (auto const& dfaState: dfa.states) {
       for (auto const& state: dfaState) {
+        std::cout << state << " ";
+      }
+      std::cout << std::endl;
+    }
+
+    std::cout << "Dfa transitions" << std::endl;
+    for (auto const& dfaTransition: dfa.transitions) {
+      std::cout << "Transition character: " << int {dfaTransition.transitionSymbol} << std::endl;
+      std::cout << "Previous State: ";
+      for (auto const& state: dfaTransition.previousStates) {
+        std::cout << state << " ";
+      }
+      std::cout << std::endl;
+      std::cout << "Next State: ";
+      for (auto const& state: dfaTransition.nextStates) {
         std::cout << state << " ";
       }
       std::cout << std::endl;
