@@ -13,7 +13,7 @@ TEST_CASE("scanner extracts tokens properly", "[scanner-dfa]") {
   nfa.addTransition(3, 4, 0);
   nfa.addTransition(4, 3, 0);
   nfa.setStartState(1);
-  nfa.setAcceptingStates({3, 4});
+  //nfa.setAcceptingStates({3, 4});
 
   SECTION("epsilon closure test") {
     std::vector<int> test1{1, 2, 3};
@@ -51,7 +51,7 @@ TEST_CASE("scanner converts nfa to dfa", "[nfa-dfa]") {
     nfa.addTransition(10, 1, 'e');
 
     nfa.setStartState(1);
-    nfa.setAcceptingStates({12});
+    //nfa.setAcceptingStates({12});
 	
 	Lex::Dfa dfa = nfa.convertToDfa();
 	

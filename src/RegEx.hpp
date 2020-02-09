@@ -1,8 +1,8 @@
-#pragma once
-#include "Scanner.hpp"
+//#pragma once
+//#include "Scanner.hpp"
 
-namespace RegularExpression{
+//namespace RegularExpression{
 
-Nfa constructNfa(std::string expression);
+//Nfa constructNfa(std::string expression);
 
-}
+//}
