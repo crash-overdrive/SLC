@@ -126,13 +126,13 @@ STRING_LITERAL -=- "([^"\\\r\n]|\\[btnfr"'\\])*"
 
 NULL_LITERAL -=- null
 
-LPAREN -=- (
+LPAREN -=- \(
 
-RPAREN -=- )
+RPAREN -=- \)
 
-LBRKT -=- [
+LBRKT -=- \[
 
-RBRKT -=- ] 
+RBRKT -=- \] 
 
 LBRAC -=- {
 
@@ -142,7 +142,7 @@ SEMI -=- ;
 
 COMMA -=- ,
 
-DOT -=- .
+DOT -=- \.
 
 ASSIGN -=- =
 
@@ -155,7 +155,7 @@ EXCLAIMATION -=- !
 #Note: Bitwise compliment
 TILDA -=- ~
 
-QUESTION -=- ?
+QUESTION -=- \?
 
 COLON -=- :
 
@@ -169,25 +169,25 @@ NOT_EQUAL -=- !=
 
 AND -=- &&
 
-OR -=- ||
+OR -=- \|\|
 
-INCREMENT -=- ++
+INCREMENT -=- \+\+
 
 DECREMENT -=- --
 
-ADDITION -=- +
+ADDITION -=- \+
 
 SUBTRACTION -=- -
 
-MULTIPLICATION -=- *
+MULTIPLICATION -=- \*
 
 DIVISION -=- /
 
 BITWISEAND -=- &
 
-BITWISEOR -=- |
+BITWISEOR -=- \|
 
-BITWISEXOR -=- ^
+BITWISEXOR -=- \^
 
 MODULUS -=- %
 
@@ -197,19 +197,19 @@ RIGHT_SHIFT -=- >>
 
 UNSIGNED_RIGHT_SHIFT -=- >>>
 
-PLUS_EQUALS -=- +=
+PLUS_EQUALS -=- \+=
 
 MINUS_EQUALS -=- -=
 
-MULTIPLY_EQUALS -=- *=
+MULTIPLY_EQUALS -=- \*=
 
 DIVISION_EQUALS -=- /=
 
 BITWISEAND_EQUALS -=- &=
 
-BITWISEOR_EQUALS -=- |=
+BITWISEOR_EQUALS -=- \|=
 
-BITWISEXOR_EQUALS -=- ^=
+BITWISEXOR_EQUALS -=- \^=
 
 MODULUS_EQUALS -=- %=
 

@@ -6,7 +6,7 @@
 
 namespace Lex {
 
-char EPSILON = -1;
+constexpr char EPSILON = -1;
 
 class Scanner {
 public:
@@ -26,6 +26,24 @@ struct Definition {
   std::string regex;
 };
 
+struct NfaAcceptingState {
+  int nfaState;
+  std::string tokenKind;
+  int priority;
+
+  NfaAcceptingState(int nfaState, std::string tokenKind, int priority) :
+  nfaState(nfaState), tokenKind(tokenKind), priority(priority) {};
+};
+
+struct DfaAcceptingState {
+  std::vector<int> dfaStates;
+  std::string tokenKind;
+  int priority;
+
+  DfaAcceptingState(std::vector<int> dfaStates, std::string tokenKind, int priority) :
+  dfaStates(dfaStates), tokenKind(tokenKind), priority(priority) {};
+};
+
 struct DfaTransition {
   std::vector<int> previousStates;
   std::vector<int> nextStates;
@@ -42,7 +60,7 @@ struct Dfa {
   std::vector<char> alphabets;
   std::vector<DfaTransition> transitions;
   std::vector<int> startStates;
-  std::vector<std::vector<int>> acceptingStates;
+  std::vector<DfaAcceptingState> acceptingStates;
 };
 
 struct NfaTransition {
@@ -61,13 +79,14 @@ public:
   std::vector<char> alphabets;
   std::vector<NfaTransition> transitions;
   int startState;
-  std::vector<int> acceptingStates;
+  std::vector<NfaAcceptingState> acceptingStates;
 
   int getNumberOfStates();
   void initialiseStates(int numberOfStates);
   void setAlphabets(std::vector<char> givenAlphabets);
-  void setAcceptingStates(std::vector<int> newAcceptingStates);
-  std::vector<int> getAcceptingStates();
+  void setAcceptingStates(std::vector<NfaAcceptingState> newAcceptingStates);
+  std::vector<NfaAcceptingState> getAcceptingStates();
+  void setAcceptingStatesTokenAndPriority(std::string token, int priority);
   void setStartState(int state);
   int getStartState();
   void shiftStates(int shiftValue);
@@ -78,7 +97,7 @@ public:
   void
   computeDfaStatesAndTransitions(std::vector<std::vector<int>> &dfaStates,
                                  std::vector<DfaTransition> &dfaTransitions);
-  std::vector<std::vector<int>> getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates);
+  std::vector<DfaAcceptingState> getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates);
   Dfa convertToDfa();
 };
 
