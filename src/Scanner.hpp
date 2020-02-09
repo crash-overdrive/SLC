@@ -6,6 +6,8 @@
 
 namespace Lex {
 
+char EPSILON = -1;
+
 class Scanner {
 public:
   void read(const char c);
