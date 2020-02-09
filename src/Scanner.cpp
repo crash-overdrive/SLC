@@ -5,8 +5,6 @@
 
 #include "Scanner.hpp"
 
-
-
 int Lex::Nfa::getNumberOfStates() { return states.size(); }
 
 void Lex::Nfa::initialiseStates(int numberOfStates) {
