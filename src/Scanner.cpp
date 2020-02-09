@@ -23,11 +23,18 @@ void Lex::Nfa::addTransition(int previousState, int nextState,
       NfaTransition(previousState, nextState, transitionSymbol));
 }
 
-void Lex::Nfa::setAcceptingStates(std::vector<int> newAcceptingStates) {
+void Lex::Nfa::setAcceptingStates(std::vector<Lex::NfaAcceptingState> newAcceptingStates) {
   acceptingStates = newAcceptingStates;
 }
 
-std::vector<int> Lex::Nfa::getAcceptingStates() { return acceptingStates; }
+std::vector<Lex::NfaAcceptingState> Lex::Nfa::getAcceptingStates() { return acceptingStates; }
+
+void Lex::Nfa::setAcceptingStatesTokenAndPriority(std::string token, int priority) {
+  for (size_t counter = 0; counter < acceptingStates.size(); ++counter) {
+    acceptingStates[counter].priority = priority;
+    acceptingStates[counter].tokenKind = token;
+  }
+}
 
 void Lex::Nfa::setStartState(int state) { startState = state; }
 
@@ -44,7 +51,7 @@ void Lex::Nfa::shiftStates(int shiftValue) {
   }
 
   for (size_t i = 0; i < acceptingStates.size(); ++i) {
-    acceptingStates[i] += shiftValue;
+    acceptingStates[i].nfaState += shiftValue;
   }
 
   startState += shiftValue;
@@ -148,15 +155,22 @@ void Lex::Nfa::computeDfaStatesAndTransitions(
   }
 }
 
-std::vector<std::vector<int>> Lex::Nfa::getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates) {
-  std::vector<std::vector<int>> dfaAcceptingStates;
+std::vector<Lex::DfaAcceptingState> Lex::Nfa::getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates) {
+  std::vector<Lex::DfaAcceptingState> dfaAcceptingStates;
 
   for (auto const& dfaState: dfaStates) {
+    int priority = INT32_MAX;
+    std::string token;
     for (auto const& acceptingState: acceptingStates) {
-      if (std::find(dfaState.begin(), dfaState.end(), acceptingState) != dfaState.end()) {
-        dfaAcceptingStates.push_back(dfaState);
-        break;
+      if (std::find(dfaState.begin(), dfaState.end(), acceptingState.nfaState) != dfaState.end()) {
+        if (acceptingState.priority < priority) {
+          priority = acceptingState.priority;
+          token = acceptingState.tokenKind;
+        }
       }
+    }
+    if (priority != INT32_MAX) {
+      dfaAcceptingStates.push_back(DfaAcceptingState(dfaState, token, priority));
     }
   }
   return dfaAcceptingStates;
@@ -198,7 +212,7 @@ Lex::Nfa Lex::concatenate(Nfa firstNfa, Nfa secondNfa) {
   // add epsilon transitions from first Nfa accepting state to second Nfa start
   // state
   for (auto const &firstNfaAcceptingState : firstNfa.acceptingStates) {
-    finalNfa.addTransition(firstNfaAcceptingState, secondNfa.getStartState(),
+    finalNfa.addTransition(firstNfaAcceptingState.nfaState, secondNfa.getStartState(),
                            EPSILON);
   }
 
@@ -244,7 +258,7 @@ Lex::Nfa Lex::orSelection(Nfa firstNfa, Nfa secondNfa) {
   finalNfa.addTransition(auxillaryState, secondNfa.getStartState(), EPSILON);
 
   // set accepting state of final Nfa to accepting state of first and second Nfa
-  std::vector<int> acceptingStates(firstNfa.getAcceptingStates());
+  std::vector<NfaAcceptingState> acceptingStates(firstNfa.getAcceptingStates());
   acceptingStates.insert(acceptingStates.end(),
                          secondNfa.getAcceptingStates().begin(),
                          secondNfa.getAcceptingStates().end());
@@ -277,11 +291,11 @@ Lex::Nfa Lex::kleeneStar(Nfa nfa) {
   // add epsilon transition from accepting state of given Nfa to new auxillary
   // state
   for (auto const &nfaAcceptingState : nfa.acceptingStates) {
-    finalNfa.addTransition(nfaAcceptingState, auxillaryState, EPSILON);
+    finalNfa.addTransition(nfaAcceptingState.nfaState, auxillaryState, EPSILON);
   }
 
   // set accepting states of final Nfa to new auxillary state
-  finalNfa.setAcceptingStates({auxillaryState});
+  finalNfa.setAcceptingStates({NfaAcceptingState(auxillaryState, "", INT32_MAX)});
 
   // set start state of Final Nfa to new auxillary state
   finalNfa.setStartState(auxillaryState);
@@ -310,11 +324,11 @@ Lex::Nfa Lex::plus(Nfa nfa) {
   // add epsilon transition from accepting state of given Nfa to new auxillary
   // state
   for (auto const &nfaAcceptingState : nfa.acceptingStates) {
-    finalNfa.addTransition(nfaAcceptingState, auxillaryState, EPSILON);
+    finalNfa.addTransition(nfaAcceptingState.nfaState, auxillaryState, EPSILON);
   }
 
   // set accepting states of final Nfa to new auxillary state
-  finalNfa.setAcceptingStates({auxillaryState});
+  finalNfa.setAcceptingStates({NfaAcceptingState(auxillaryState, "", INT32_MAX)});
 
   // set start state of Final Nfa to start state of given Nfa
   finalNfa.setStartState(nfa.getStartState());
@@ -373,7 +387,8 @@ int main(int argc, char *argv[]) {
 
   nfa.setStartState(1);
 
-  nfa.setAcceptingStates({3,4});
+  nfa.setAcceptingStates({Lex::NfaAcceptingState(3, "Higher", 3),
+  Lex::NfaAcceptingState(2, "Lower", 4)});
 
   // std::cout << "Epsilon clsoure is for {1} is: ";
   // std::vector<int> test1 = nfa.epsilonClosure({1});
@@ -407,7 +422,51 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Dfa Accepting states" << std::endl;
   for (auto const& dfaAcceptingState: dfa.acceptingStates) {
-    for (auto const& state: dfaAcceptingState) {
+    std::cout << "Token: " << dfaAcceptingState.tokenKind << " Priority: " << dfaAcceptingState.priority << std::endl;
+    for (auto const& state: dfaAcceptingState.dfaStates) {
+      std::cout << state << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << "Dfa transitions" << std::endl;
+  for (auto const& dfaTransition: dfa.transitions) {
+    std::cout << "Previous State: ";
+    for (auto const& state: dfaTransition.previousStates) {
+      std::cout << state << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Transition character: " << int {dfaTransition.transitionSymbol} << std::endl;
+    std::cout << "Next State: ";
+    for (auto const& state: dfaTransition.nextStates) {
+      std::cout << state << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << "Setting nfa token to Random and all priority to 50" << std::endl;
+  nfa.setAcceptingStatesTokenAndPriority("RANDOM", 50);
+
+  dfa = nfa.convertToDfa();
+
+  std::cout << "Dfa start state: ";
+  for (auto const& state: dfa.startStates) {
+    std::cout << state << " ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "Dfa states" << std::endl;
+  for (auto const& dfaState: dfa.states) {
+    for (auto const& state: dfaState) {
+      std::cout << state << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << "Dfa Accepting states" << std::endl;
+  for (auto const& dfaAcceptingState: dfa.acceptingStates) {
+    std::cout << "Token: " << dfaAcceptingState.tokenKind  << " Priority: " << dfaAcceptingState.priority << std::endl;
+    for (auto const& state: dfaAcceptingState.dfaStates) {
       std::cout << state << " ";
     }
     std::cout << std::endl;
