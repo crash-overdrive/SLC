@@ -1,11 +1,11 @@
-#include "Config.hpp"
-#include "TestConfig.hpp"
-#include "ParseDFA.hpp"
 #include "Weeder.hpp"
+#include "Config.hpp"
+#include "ParseDFA.hpp"
+#include "TestConfig.hpp"
 #include "catch.hpp"
 #include <fstream>
 
-TEST_CASE("weeder can reject non-Joos", "[weeder]") {
+TEST_CASE("weeder detects JoosW", "[weeder]") {
   Parse::DFA Parser;
   std::ifstream ParserStream;
   ParserStream.open(JoosLRFile);
