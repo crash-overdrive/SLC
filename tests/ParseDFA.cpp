@@ -11,20 +11,20 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
   Stream >> DFA;
 
   SECTION("DFA rejects") {
-    DFA.read("BOF");
-    DFA.read("id");
-    DFA.read("-");
+    DFA.read({"BOF", "BOF"});
+    DFA.read({"id", "3"});
+    DFA.read({"-", "-"});
     REQUIRE(!DFA.accept());
     REQUIRE(!DFA.error());
-    DFA.read("EOF");
+    DFA.read({"EOF", "EOF"});
     REQUIRE(DFA.error());
     REQUIRE(!DFA.accept());
   }
 
   SECTION("DFA accepts basic") {
-    DFA.read("BOF");
-    DFA.read("id");
-    DFA.read("EOF");
+    DFA.read({"BOF", "BOF"});
+    DFA.read({"id", "2"});
+    DFA.read({"EOF", "EOF"});
     REQUIRE(DFA.accept());
     REQUIRE(!DFA.error());
 
@@ -38,20 +38,24 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
   }
 
   SECTION("DFA accepts complex") {
-    std::vector<std::string> V{"BOF", "id", "-", "(",  "id",
-                               "-",   "id", ")", "EOF"};
-    for (const auto &Token : V) {
-      DFA.read(Token);
+    std::vector<Lex::Token> V{
+        {"BOF", "BOF"}, {"id", "3"}, {"-", "-"}, {"(", "("},     {"id", "5"},
+        {"-", "-"},     {"id", "4"}, {")", ")"}, {"EOF", "EOF"},
+    };
+    for (const auto &Tok: V) {
+      DFA.read(Tok);
     }
     REQUIRE(DFA.accept());
     REQUIRE(!DFA.error());
   }
 
   SECTION("DFA reject complex") {
-    std::vector<std::string> V{"BOF", "id", "-", "(", "id",
-                               "-",   "id", ")", "id"};
-    for (const auto &Token : V) {
-      DFA.read(Token);
+    std::vector<Lex::Token> V{
+        {"BOF", "BOF"}, {"id", "3"}, {"-", "-"},  {"(", "("},
+        {"id", "5"},    {"-", "-"},  {"id", "4"}, {"id", "3"},
+    };
+    for (const auto &Tok : V) {
+      DFA.read(Tok);
     }
     REQUIRE(!DFA.accept());
     REQUIRE(DFA.error());

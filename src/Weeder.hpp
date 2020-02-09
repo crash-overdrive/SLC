@@ -5,13 +5,13 @@
 
 namespace Weed {
 
-bool FileNameCompare(const Parse::Tree &Tree, const std::string &Name);
+bool FileNameCompare(Parse::Tree &T, const std::string &Name);
 
-bool AbstractFinalClass(const Parse::Tree &Tree);
+bool AbstractFinalClass(const Parse::Tree &T);
 
-typedef bool(*Check)(const Parse::Tree &Tree);
+typedef bool (*Check)(const Parse::Tree &T);
 extern const std::vector<Check> JoosChecks;
 
-} // namespace Parse
+} // namespace Weed
 
 #endif // WEEDER_HPP

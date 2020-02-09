@@ -4,22 +4,23 @@
 
 Parse::DFA::DFA()
     : Productions(), States(), FinalProductions(), StateStack(), NodeStack(),
-      errorState(false), Current(States[0]) {}
+      errorState(false), Current(&States[0]) {}
 
-void Parse::DFA::read(const std::string &Token) {
-  if (errorState)
+void Parse::DFA::read(const Lex::Token &Tok) {
+  if (errorState) {
     return;
-  auto ReducesIt = Current.Reduces.find(Token);
-  while (ReducesIt != Current.Reduces.end()) {
+  }
+  auto ReducesIt = Current->Reduces.find(Tok.Type);
+  while (ReducesIt != Current->Reduces.end()) {
     const Production &Production = ReducesIt->second;
     reduce(Production);
-    shift(Current.Shifts.at(Production.LHS));
-    ReducesIt = Current.Reduces.find(Token);
+    shift(Current->Shifts.at(Production.LHS));
+    ReducesIt = Current->Reduces.find(Tok.Type);
   }
-  auto ShiftsIt = Current.Shifts.find(Token);
-  if (ShiftsIt != Current.Shifts.end()) {
+  auto ShiftsIt = Current->Shifts.find(Tok.Type);
+  if (ShiftsIt != Current->Shifts.end()) {
     shift(ShiftsIt->second);
-    NodeStack.emplace_back(std::make_unique<Node>(Token));
+    NodeStack.emplace_back(std::make_unique<Node>(Tok.Type, Tok.Lexeme));
     return;
   }
   errorState = true;
@@ -29,14 +30,14 @@ void Parse::DFA::clear() {
   StateStack.clear();
   NodeStack.clear();
   errorState = false;
-  Current = States[0];
+  Current = &States[0];
 }
 
 bool Parse::DFA::error() const { return errorState; }
 
 bool Parse::DFA::accept() const {
   for (const auto &Production : FinalProductions) {
-    const std::vector<std::string> &RHS = Production.get().RHS;
+    const std::vector<std::string> &RHS = Production->RHS;
     if (RHS.size() != NodeStack.size()) {
       continue;
     }
@@ -64,8 +65,8 @@ Parse::Tree Parse::DFA::buildTree() {
 }
 
 void Parse::DFA::shift(const State &State) {
-  StateStack.emplace_back(State);
-  Current = State;
+  StateStack.emplace_back(&State);
+  Current = &State;
 }
 
 void Parse::DFA::reduce(const Production &Production) {
@@ -102,7 +103,7 @@ std::istream &Parse::operator>>(std::istream &Stream, DFA &DFA) {
     Iss >> Symbol;
     DFA.Productions[i].LHS = Symbol;
     if (Symbol == DFA.StartSymbol) {
-      DFA.FinalProductions.emplace_back(DFA.Productions[i]);
+      DFA.FinalProductions.emplace_back(&DFA.Productions[i]);
     }
     while (Iss >> Symbol) {
       DFA.Productions[i].RHS.emplace_back(Symbol);

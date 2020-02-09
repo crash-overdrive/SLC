@@ -13,15 +13,18 @@ namespace Parse {
 
 class Node {
 public:
-  Node(std::string Name);
+  Node(const std::string &Name);
+  Node(const std::string &Name, const std::string &Tag);
   void addChild(std::unique_ptr<Node> child);
   std::string getName() const;
   size_t getLevel() const;
-  Node *find(const std::string &String) const;
+  const std::vector<std::unique_ptr<Node>> &getChildren() const;
+  const Node *find(const std::string &String) const;
 
 private:
   friend class Tree;
   std::string Name;
+  std::string Tag;
   size_t Level;
   std::vector<std::unique_ptr<Node>> Children;
   std::unordered_map<std::string, Node &> ChildrenCache;
@@ -29,7 +32,7 @@ private:
 
 class Tree {
 public:
-  using MMapIt = std::multimap<std::string, Node &>::iterator;
+  using MMapIt = std::multimap<std::string, Node &>::const_iterator;
   Tree(std::unique_ptr<Node> Head);
 
   class Iterator {
@@ -46,7 +49,7 @@ public:
     std::vector<Node *> Vector;
   };
 
-  std::pair<MMapIt, MMapIt> equalRange(const std::string &String);
+  std::pair<MMapIt, MMapIt> equalRange(const std::string &String) const;
   Iterator begin() const;
   Iterator end() const;
 

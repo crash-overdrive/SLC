@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-TEST_CASE("parse tree implementation", "[Parse Tree]") {
+TEST_CASE("parse tree interacts", "[Parse Tree]") {
   std::unique_ptr<Parse::Node> Node = std::make_unique<Parse::Node>("Root");
   Node->addChild(std::make_unique<Parse::Node>("Child1"));
   Node->addChild(std::make_unique<Parse::Node>("Child2"));
