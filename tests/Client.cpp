@@ -35,7 +35,6 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   SECTION("parser accept") {
     std::ifstream TokenStream;
     TokenStream.open(TestDataDir + "/grammar/J1_publicclasses.token");
-    std::cout << Parser.buildTree();
     REQUIRE(Client::parse(Parser, TokenStream));
   }
 
