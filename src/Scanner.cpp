@@ -5,37 +5,37 @@
 
 #include "Scanner.hpp"
 
-namespace Lex {
 
-int Nfa::getNumberOfStates() { return states.size(); }
 
-void Nfa::initialiseStates(int numberOfStates) {
+int Lex::Nfa::getNumberOfStates() { return states.size(); }
+
+void Lex::Nfa::initialiseStates(int numberOfStates) {
   for (int count = 1; count <= numberOfStates; ++count) {
     states.push_back(count);
   }
 }
 
-void Nfa::setAlphabets(std::vector<char> givenAlphabets) {
+void Lex::Nfa::setAlphabets(std::vector<char> givenAlphabets) {
   alphabets = givenAlphabets;
 }
 
-void Nfa::addTransition(int previousState, int nextState,
+void Lex::Nfa::addTransition(int previousState, int nextState,
                         char transitionSymbol) {
   transitions.push_back(
       NfaTransition(previousState, nextState, transitionSymbol));
 }
 
-void Nfa::setAcceptingStates(std::vector<int> newAcceptingStates) {
+void Lex::Nfa::setAcceptingStates(std::vector<int> newAcceptingStates) {
   acceptingStates = newAcceptingStates;
 }
 
-std::vector<int> Nfa::getAcceptingStates() { return acceptingStates; }
+std::vector<int> Lex::Nfa::getAcceptingStates() { return acceptingStates; }
 
-void Nfa::setStartState(int state) { startState = state; }
+void Lex::Nfa::setStartState(int state) { startState = state; }
 
-int Nfa::getStartState() { return startState; }
+int Lex::Nfa::getStartState() { return startState; }
 
-void Nfa::shiftStates(int shiftValue) {
+void Lex::Nfa::shiftStates(int shiftValue) {
   for (size_t i = 0; i < states.size(); ++i) {
     states[i] += shiftValue;
   }
@@ -52,7 +52,7 @@ void Nfa::shiftStates(int shiftValue) {
   startState += shiftValue;
 }
 
-std::vector<int> Nfa::epsilonClosure(std::vector<int> givenStates) {
+std::vector<int> Lex::Nfa::epsilonClosure(std::vector<int> givenStates) {
   for (auto const &state : givenStates) {
     if (std::find(states.begin(), states.end(), state) == states.end()) {
       std::cout << "Error computing Epsilon closure for state: " << state
@@ -85,11 +85,11 @@ std::vector<int> Nfa::epsilonClosure(std::vector<int> givenStates) {
   return epsilonClosureList;
 }
 
-std::vector<int> Nfa::getDfaStartStates() {
+std::vector<int> Lex::Nfa::getDfaStartStates() {
   return epsilonClosure({startState});
 }
 
-void Nfa::computeDfaStatesAndTransitions(
+void Lex::Nfa::computeDfaStatesAndTransitions(
     std::vector<std::vector<int>> &dfaStates,
     std::vector<DfaTransition> &dfaTransitions) {
   dfaStates = {getDfaStartStates()};
@@ -150,7 +150,7 @@ void Nfa::computeDfaStatesAndTransitions(
   }
 }
 
-std::vector<std::vector<int>> Nfa::getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates) {
+std::vector<std::vector<int>> Lex::Nfa::getDfaAcceptingStates(std::vector<std::vector<int>> dfaStates) {
   std::vector<std::vector<int>> dfaAcceptingStates;
 
   for (auto const& dfaState: dfaStates) {
@@ -164,7 +164,7 @@ std::vector<std::vector<int>> Nfa::getDfaAcceptingStates(std::vector<std::vector
   return dfaAcceptingStates;
 }
 
-Dfa Nfa::convertToDfa() {
+Lex::Dfa Lex::Nfa::convertToDfa() {
   Dfa convertedDfa;
   convertedDfa.alphabets = alphabets;
   convertedDfa.startStates = getDfaStartStates();
@@ -173,7 +173,7 @@ Dfa Nfa::convertToDfa() {
   return convertedDfa;
 }
 
-Nfa concatenate(Nfa firstNfa, Nfa secondNfa) {
+Lex::Nfa Lex::concatenate(Nfa firstNfa, Nfa secondNfa) {
   Nfa finalNfa;
 
   // shift second Nfa states so that states dont clash
@@ -212,7 +212,7 @@ Nfa concatenate(Nfa firstNfa, Nfa secondNfa) {
   return finalNfa;
 }
 
-Nfa orSelection(Nfa firstNfa, Nfa secondNfa) {
+Lex::Nfa Lex::orSelection(Nfa firstNfa, Nfa secondNfa) {
   Nfa finalNfa;
 
   // Auxillary state introduced: stateSize1 + stateSize2 + 1
@@ -258,7 +258,7 @@ Nfa orSelection(Nfa firstNfa, Nfa secondNfa) {
   return finalNfa;
 }
 
-Nfa kleeneStar(Nfa nfa) {
+Lex::Nfa Lex::kleeneStar(Nfa nfa) {
   Nfa finalNfa;
 
   // Auxillary state introduced: stateSize+1
@@ -291,7 +291,7 @@ Nfa kleeneStar(Nfa nfa) {
   return finalNfa;
 }
 
-Nfa plus(Nfa nfa) {
+Lex::Nfa Lex::plus(Nfa nfa) {
   Nfa finalNfa;
 
   // Auxillary state introduced: stateSize+1
@@ -323,8 +323,6 @@ Nfa plus(Nfa nfa) {
 
   return finalNfa;
 }
-
-} // namespace Lex
 
 int main(int argc, char *argv[]) {
   (void)argc;
