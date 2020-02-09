@@ -15,7 +15,11 @@ std::string Parse::Node::getName() const { return Name; }
 
 size_t Parse::Node::getLevel() const { return Level; }
 
-Parse::Node *Parse::Node::find(const std::string &String) const {
+const std::vector<std::unique_ptr<Parse::Node>> &Parse::Node::getChildren() const {
+  return Children;
+}
+
+const Parse::Node *Parse::Node::find(const std::string &String) const {
   auto it = ChildrenCache.find(String);
   return (it != ChildrenCache.end()) ? &(it->second) : nullptr;
 }

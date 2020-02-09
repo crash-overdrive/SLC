@@ -18,7 +18,8 @@ public:
   void addChild(std::unique_ptr<Node> child);
   std::string getName() const;
   size_t getLevel() const;
-  Node *find(const std::string &String) const;
+  const std::vector<std::unique_ptr<Node>> &getChildren() const;
+  const Node *find(const std::string &String) const;
 
 private:
   friend class Tree;
