@@ -5,7 +5,6 @@
 #include <vector>
 
 namespace Lex {
-constexpr char EPSILON = -1;
 
 int Nfa::getNumberOfStates() { return states.size(); }
 
