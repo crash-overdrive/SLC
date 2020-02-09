@@ -19,7 +19,7 @@ private:
 };
 
 struct Definition {
-  Definition(std::string type, std::string regex) : type(type), regex(regex) {};
+  Definition(std::string type, std::string regex) : type(type), regex(regex){};
   std::string type;
   std::string regex;
 };
@@ -29,8 +29,10 @@ struct DfaTransition {
   std::vector<int> nextStates;
   char transitionSymbol;
 
-  DfaTransition(std::vector<int> previousStates, std::vector<int> nextStates, char transitionSymbol):
-    previousStates(previousStates), nextStates(nextStates), transitionSymbol(transitionSymbol) {};
+  DfaTransition(std::vector<int> previousStates, std::vector<int> nextStates,
+                char transitionSymbol)
+      : previousStates(previousStates), nextStates(nextStates),
+        transitionSymbol(transitionSymbol){};
 };
 
 struct Dfa {
@@ -48,7 +50,7 @@ struct NfaTransition {
 
   NfaTransition(int previousState, int nextState, char transitionSymbol)
       : previousState(previousState), nextState(nextState),
-      transitionSymbol(transitionSymbol){};
+        transitionSymbol(transitionSymbol){};
 };
 
 class Nfa {
@@ -67,13 +69,14 @@ public:
   void setStartState(int state);
   std::vector<int> epsilonClosure(std::vector<int> givenStates);
   std::vector<int> getDfaStartStates();
-  void computeDfaStatesAndTransitions(std::vector<std::vector<int>>& dfaStates, std::vector<DfaTransition>& dfaTransitions);
+  void
+  computeDfaStatesAndTransitions(std::vector<std::vector<int>> &dfaStates,
+                                 std::vector<DfaTransition> &dfaTransitions);
   std::vector<std::vector<int>> getDfaStates();
   Dfa convertToDfa();
 
   int getStartState();
   void shiftStates(int shiftValue);
-
 
   std::vector<int> getAcceptingStates();
 };
