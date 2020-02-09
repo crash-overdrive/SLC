@@ -2,6 +2,7 @@
 #define PARSEDFA_HPP
 
 #include "ParseTree.hpp"
+#include "LexToken.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -10,7 +11,7 @@ namespace Parse {
 class DFA {
 public:
   DFA();
-  void read(const std::string &Token);
+  void read(const Lex::Token &Tok);
   void clear();
   bool error() const;
   bool accept() const;

@@ -6,20 +6,20 @@ Parse::DFA::DFA()
     : Productions(), States(), FinalProductions(), StateStack(), NodeStack(),
       errorState(false), Current(States[0]) {}
 
-void Parse::DFA::read(const std::string &Token) {
+void Parse::DFA::read(const Lex::Token &Tok) {
   if (errorState)
     return;
-  auto ReducesIt = Current.Reduces.find(Token);
+  auto ReducesIt = Current.Reduces.find(Tok.Type);
   while (ReducesIt != Current.Reduces.end()) {
     const Production &Production = ReducesIt->second;
     reduce(Production);
     shift(Current.Shifts.at(Production.LHS));
-    ReducesIt = Current.Reduces.find(Token);
+    ReducesIt = Current.Reduces.find(Tok.Type);
   }
-  auto ShiftsIt = Current.Shifts.find(Token);
+  auto ShiftsIt = Current.Shifts.find(Tok.Type);
   if (ShiftsIt != Current.Shifts.end()) {
     shift(ShiftsIt->second);
-    NodeStack.emplace_back(std::make_unique<Node>(Token));
+    NodeStack.emplace_back(std::make_unique<Node>(Tok.Type, Tok.Lexeme));
     return;
   }
   errorState = true;

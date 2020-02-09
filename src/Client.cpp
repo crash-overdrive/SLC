@@ -17,9 +17,9 @@ bool Client::scan(std::istream &IStream, std::ostream &OStream) {
 }
 
 bool Client::parse(Parse::DFA &Parser, std::istream &IStream) {
-  std::string Token;
-  while (IStream >> Token) {
-    Parser.read(Token);
+  Lex::Token Tok;
+  while (IStream >> Tok) {
+    Parser.read(Tok);
     if (Parser.error()) {
       return false;
     }

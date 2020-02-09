@@ -13,7 +13,8 @@ namespace Parse {
 
 class Node {
 public:
-  Node(std::string Name);
+  Node(const std::string &Name);
+  Node(const std::string &Name, const std::string &Tag);
   void addChild(std::unique_ptr<Node> child);
   std::string getName() const;
   size_t getLevel() const;
@@ -22,6 +23,7 @@ public:
 private:
   friend class Tree;
   std::string Name;
+  std::string Tag;
   size_t Level;
   std::vector<std::unique_ptr<Node>> Children;
   std::unordered_map<std::string, Node &> ChildrenCache;

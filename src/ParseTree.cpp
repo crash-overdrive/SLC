@@ -1,6 +1,9 @@
 #include "ParseTree.hpp"
 
-Parse::Node::Node(std::string Name) : Name(Name), Level(0) {}
+Parse::Node::Node(const std::string &Name) : Name(Name), Tag(), Level(0) {}
+
+Parse::Node::Node(const std::string &Name, const std::string &Tag)
+    : Name(Name), Tag(Tag), Level(0) {}
 
 void Parse::Node::addChild(std::unique_ptr<Node> Child) {
   Children.emplace_back(std::move(Child));
@@ -20,7 +23,7 @@ Parse::Node *Parse::Node::find(const std::string &String) const {
 Parse::Tree::Tree(std::unique_ptr<Node> Head) : Head(std::move(Head)) {
   this->Head->Level = 0;
   for (auto &Parent : *this) {
-    std::pair<std::string, Node &> Pair(Parent.getName(), Parent);
+    std::pair<std::string, Node &> Pair(Parent.Name, Parent);
     TreeCache.insert(std::move(Pair));
     for (auto &Child : Parent.Children) {
       Child->Level = Parent.Level + 1;
