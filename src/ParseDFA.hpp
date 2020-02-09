@@ -44,4 +44,4 @@ std::istream &operator>>(std::istream &Stream, Parse::DFA &DFA);
 
 } // namespace Parse
 
-#endif // PARSER_HPP
+#endif // PARSERDFA_HPP

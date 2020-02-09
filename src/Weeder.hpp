@@ -1,28 +1,17 @@
-#ifndef WEEDER_H
-#define WEEDER_H
+#ifndef WEEDER_HPP
+#define WEEDER_HPP
 
 #include "ParseTree.hpp"
-#include <functional>
 
-namespace Parse {
+namespace Weed {
 
-using Check = std::function<bool(Parse::Tree &)>;
+bool FileNameCompare(const Parse::Tree &Tree, const std::string &Name);
 
-class Weeder {
-public:
-  Weeder();
-  Weeder(const std::vector<std::reference_wrapper<Check>> &Checks);
-  void addCheck(Check &Check);
-  bool verify(Parse::Tree &Tree) const;
+bool AbstractFinalClass(const Parse::Tree &Tree);
 
-private:
-  std::vector<std::reference_wrapper<Check>> Checks;
-};
-
-extern const Check AbstractFinalClass;
-
+typedef bool(*Check)(const Parse::Tree &Tree);
 extern const std::vector<Check> JoosChecks;
 
 } // namespace Parse
 
-#endif // WEEDER_H
+#endif // WEEDER_HPP

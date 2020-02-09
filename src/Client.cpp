@@ -39,3 +39,12 @@ bool Client::parse(Parse::DFA &Parser, std::istream &IStream,
   }
   return flag;
 }
+
+bool Client::weed(Parse::Tree &Tree) {
+  for (const auto &Check : Weed::JoosChecks) {
+    if (!Check(Tree)) {
+      return false;
+    }
+  }
+  return true;
+}

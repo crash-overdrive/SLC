@@ -1,25 +1,10 @@
 #include "Weeder.hpp"
 
-Parse::Weeder::Weeder() : Checks() {}
-
-Parse::Weeder::Weeder(const std::vector<std::reference_wrapper<Check>> &Checks)
-    : Checks(Checks) {}
-
-void Parse::Weeder::addCheck(Check &Check) { Checks.emplace_back(Check); }
-
-bool Parse::Weeder::verify(Tree &Tree) const {
-  for (auto &Check : Checks) {
-    if (!Check(Tree))
-      return false;
-  }
+bool Weed::AbstractFinalClass(const Parse::Tree &Tree) {
+  (void)Tree;
   return true;
 }
 
-const Parse::Check AbstractFinalClass = [](Parse::Tree &T) {
-  (void)T;
-  return true;
-};
-
-const std::vector<Parse::Check> JoosChecks{
-    AbstractFinalClass,
+const std::vector<Weed::Check> Weed::JoosChecks{
+  AbstractFinalClass,
 };

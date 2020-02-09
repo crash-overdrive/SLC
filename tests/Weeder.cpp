@@ -1,30 +1,24 @@
+#include "Config.hpp"
+#include "TestConfig.hpp"
+#include "ParseDFA.hpp"
 #include "Weeder.hpp"
 #include "catch.hpp"
+#include <fstream>
 
-TEST_CASE("Weeder can parse tree defined rules", "[weeder]") {
-  Parse::Tree Tree(std::make_unique<Parse::Node>("Root"));
-  Parse::Weeder Weeder;
+TEST_CASE("weeder can reject non-Joos", "[weeder]") {
+  Parse::DFA Parser;
+  std::ifstream ParserStream;
+  ParserStream.open(JoosLRFile);
+  ParserStream >> Parser;
+  std::ifstream TokenStream;
 
-  SECTION("Weeder accepts") {
-    Parse::Check check1 = [](Parse::Tree &Tree) {
-      (void)Tree;
-      return true;
-    };
-    Weeder.addCheck(check1);
-    REQUIRE(Weeder.verify(Tree));
-  }
+  auto weedTest = [&](const std::string &Name, const Weed::Check &Check) {
+    TokenStream.open(TestDataDir + "/grammar/" + Name);
+    Parse::Tree Tree = Parser.buildTree();
+    return Check(Tree);
+  };
 
-  SECTION("Weeder rejects") {
-    Parse::Check check1 = [](Parse::Tree &Tree) {
-      (void)Tree;
-      return true;
-    };
-    Parse::Check check2 = [](Parse::Tree &Tree) {
-      (void)Tree;
-      return false;
-    };
-    Weeder.addCheck(check1);
-    Weeder.addCheck(check2);
-    REQUIRE(!Weeder.verify(Tree));
+  SECTION("weeder rejects Abstract and Final in Class") {
+    REQUIRE(!weedTest("J1_publicclasses.token", Weed::AbstractFinalClass));
   }
 }
