@@ -2,13 +2,13 @@
 #include "Config.hpp"
 #include <fstream>
 
-static bool hasEnding(const std::string &FullString,
-                      const std::string &Ending) {
-  if (FullString.length() < Ending.length()) {
+static bool hasExtension(const std::string &FullString,
+                      const std::string &Ext) {
+  if (FullString.length() < Ext.length()) {
     return false;
   }
-  size_t start = FullString.length() - Ending.length();
-  return FullString.compare(start, Ending.length(), Ending) == 0;
+  size_t Position = FullString.find(".");
+  return FullString.compare(Position, Ext.size(), Ext) == 0;
 }
 
 int main(int argc, char *argv[]) {
@@ -63,8 +63,8 @@ int main(int argc, char *argv[]) {
       return Client::parse(Parser, IStream, std::cerr) ? 0 : 42;
   }
 
-  std::string extension("java");
-  if (!hasEnding(FileName, extension)) {
+  std::string extension(".java");
+  if (!hasExtension(FileName, extension)) {
     std::cerr << "error: expect " << FileName << " to end with .java"
               << std::endl;
     return 42;
