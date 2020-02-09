@@ -2,15 +2,6 @@
 #include "Config.hpp"
 #include <fstream>
 
-static bool hasExtension(const std::string &FullString,
-                      const std::string &Ext) {
-  if (FullString.length() < Ext.length()) {
-    return false;
-  }
-  size_t Position = FullString.find(".");
-  return FullString.compare(Position, Ext.size(), Ext) == 0;
-}
-
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cerr << "usage: missing input file" << std::endl;
@@ -56,22 +47,16 @@ int main(int argc, char *argv[]) {
   ParserStream.open(JoosLRFile);
   ParserStream >> Parser;
   if (InputToken && OutputToken) {
-      std::cout << IStream.rdbuf();
-      return 0;
+    std::cout << IStream.rdbuf();
+    return 0;
   }
   if (InputToken && OutputParse) {
-      return Client::parse(Parser, IStream, std::cerr) ? 0 : 42;
+    return Client::parse(Parser, IStream, std::cerr) ? 0 : 42;
   }
 
-  std::string extension(".java");
-  if (!hasExtension(FileName, extension)) {
-    std::cerr << "error: expect " << FileName << " to end with .java"
-              << std::endl;
-    return 42;
-  }
   if (OutputToken) {
     return Client::scan(IStream, std::cerr) ? 0 : 42;
   } else {
-    return Client::preProcess(IStream) ? 0 : 42;
+    return Client::preProcess(IStream, FileName) ? 0 : 42;
   }
 }

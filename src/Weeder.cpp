@@ -16,7 +16,7 @@ static const Parse::Node *getOnlyChild(const Parse::Node *Node) {
 }
 
 static std::set<std::string> flatten(const Parse::Node *Node,
-                                        const std::string &Name) {
+                                     const std::string &Name) {
   std::set<std::string> S;
   while (Node->find(Node->getName())) {
     const Parse::Node *Target = getOnlyChild(getOtherChild(Node));
@@ -27,7 +27,7 @@ static std::set<std::string> flatten(const Parse::Node *Node,
   return S;
 }
 
-bool Weed::AbstractFinalClass(Parse::Tree &T) {
+bool Weed::AbstractFinalClass(const Parse::Tree &T) {
   auto Range = T.equalRange("ClassDecl");
   for (auto i = Range.first; i != Range.second; ++i) {
     const Parse::Node *ModifierNode = i->second.find("ModifiersOpt");
@@ -40,5 +40,5 @@ bool Weed::AbstractFinalClass(Parse::Tree &T) {
 }
 
 const std::vector<Weed::Check> Weed::JoosChecks{
-  AbstractFinalClass,
+    AbstractFinalClass,
 };

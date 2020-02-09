@@ -15,7 +15,8 @@ std::string Parse::Node::getName() const { return Name; }
 
 size_t Parse::Node::getLevel() const { return Level; }
 
-const std::vector<std::unique_ptr<Parse::Node>> &Parse::Node::getChildren() const {
+const std::vector<std::unique_ptr<Parse::Node>> &
+Parse::Node::getChildren() const {
   return Children;
 }
 
@@ -63,7 +64,7 @@ bool Parse::Tree::Iterator::operator==(const Iterator &Iter) const {
 }
 
 std::pair<Parse::Tree::MMapIt, Parse::Tree::MMapIt>
-Parse::Tree::equalRange(const std::string &String) {
+Parse::Tree::equalRange(const std::string &String) const {
   return TreeCache.equal_range(String);
 }
 

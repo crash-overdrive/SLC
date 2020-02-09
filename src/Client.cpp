@@ -1,8 +1,18 @@
 #include "Client.hpp"
 
-bool Client::preProcess(std::istream &IStream) {
+bool Client::preProcess(std::istream &IStream, const std::string &FileName) {
   (void)IStream;
+  (void)FileName;
   return true;
+}
+
+bool Client::verifyFileName(const std::string &FileName) {
+  const std::string Ext(".java");
+  if (FileName.length() < Ext.length()) {
+    return false;
+  }
+  size_t Position = FileName.find(".");
+  return FileName.compare(Position, Ext.size(), Ext) == 0;
 }
 
 bool Client::scan(std::istream &IStream) {
@@ -40,7 +50,8 @@ bool Client::parse(Parse::DFA &Parser, std::istream &IStream,
   return flag;
 }
 
-bool Client::weed(Parse::Tree &Tree) {
+bool Client::weed(const Parse::Tree &Tree, const std::string &Name) {
+  (void)Name;
   for (const auto &Check : Weed::JoosChecks) {
     if (!Check(Tree)) {
       return false;

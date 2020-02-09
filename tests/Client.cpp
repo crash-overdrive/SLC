@@ -5,6 +5,13 @@
 #include <fstream>
 #include <sstream>
 
+TEST_CASE("client detects extension error JoosW", "[client-filename]") {
+  REQUIRE(!Client::verifyFileName(
+      "Je_1_ClassDeclaration_WrongFileName_Dot.foo.java"));
+  REQUIRE(!Client::verifyFileName("foo.txt"));
+  REQUIRE(Client::verifyFileName("good.java"));
+}
+
 TEST_CASE("client scanner detects JoosW", "[client-scanner]") {
   SECTION("scanner accept") {
     std::ostringstream OStream;
@@ -54,6 +61,7 @@ TEST_CASE("client preprocessor detects JoosW", "[client-preprocess]") {
     std::ifstream JoosStream;
     JoosStream.open(TestDataDir +
                     "/marmoset/Je_1_NonJoosConstructs_Volatile.java");
-    REQUIRE(!Client::preProcess(JoosStream));
+    REQUIRE(!Client::preProcess(JoosStream,
+                                "Je_1_NonJoosConstructs_Volatile.java"));
   }
 }

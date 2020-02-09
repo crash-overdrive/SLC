@@ -32,7 +32,7 @@ private:
 
 class Tree {
 public:
-  using MMapIt = std::multimap<std::string, Node &>::iterator;
+  using MMapIt = std::multimap<std::string, Node &>::const_iterator;
   Tree(std::unique_ptr<Node> Head);
 
   class Iterator {
@@ -49,7 +49,7 @@ public:
     std::vector<Node *> Vector;
   };
 
-  std::pair<MMapIt, MMapIt> equalRange(const std::string &String);
+  std::pair<MMapIt, MMapIt> equalRange(const std::string &String) const;
   Iterator begin() const;
   Iterator end() const;
 
