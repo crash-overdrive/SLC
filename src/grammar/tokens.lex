@@ -219,4 +219,4 @@ RIGHTSHIFT_EQUALS -=- >>=
 
 UNSIGNED_RIGHTSHIFT_EQUALS -=- >>>=
 
-ID -=- [a-zA-Z_$][a-zA-Z0-9_$]*
+IDENTIFIER -=- [a-zA-Z_$][a-zA-Z0-9_$]*
