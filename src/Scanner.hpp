@@ -20,19 +20,19 @@ private:
   // NFA
 };
 
-struct Definition {
-  Definition(std::string type, std::string regex) : type(type), regex(regex){};
+struct RegexDefinition {
   std::string type;
   std::string regex;
+
+  RegexDefinition(std::string type, std::string regex) : type(type), regex(regex){};
 };
 
-struct NfaAcceptingState {
-  int nfaState;
-  std::string tokenKind;
-  int priority;
+struct Token {
+  std::string kind;
+  std::string lexeme;
 
-  NfaAcceptingState(int nfaState, std::string tokenKind, int priority) :
-  nfaState(nfaState), tokenKind(tokenKind), priority(priority) {};
+  Token() : kind("UNINITIALISED_TOKEN"), lexeme("") {};
+  Token(std::string kind, std::string lexeme) : kind(kind), lexeme(lexeme) {};
 };
 
 struct DfaAcceptingState {
@@ -40,6 +40,7 @@ struct DfaAcceptingState {
   std::string tokenKind;
   int priority;
 
+  DfaAcceptingState(): dfaStates({-1}), tokenKind("UNINITIALISED"), priority(INT32_MAX) {};
   DfaAcceptingState(std::vector<int> dfaStates, std::string tokenKind, int priority) :
   dfaStates(dfaStates), tokenKind(tokenKind), priority(priority) {};
 };
@@ -61,6 +62,36 @@ struct Dfa {
   std::vector<DfaTransition> transitions;
   std::vector<int> startStates;
   std::vector<DfaAcceptingState> acceptingStates;
+
+  std::vector<int> currentStates;
+  std::vector<char> processedTransitionSymbols;
+  Token lastKnownAcceptingToken;
+
+  // returns false if we ever get into a stuck state, true otherwise
+  // updates processedTransitionSymbols
+  // updates lastKnownAcceptingState, lastKnownAcceptingLexeme and
+  // processedTransitionSymbols if we ever get into an accepting state
+  bool transitionForward(char symbol);
+
+  // returns last known accepting token, resets value of lastKnownAcceptingToken
+  Token getLastKnownAcceptingToken();
+
+  // resets the current state of Dfa to the start state
+  void resetDfa();
+
+  std::vector<Token> maximalMunch();
+};
+
+struct NfaAcceptingState {
+  int nfaState;
+  std::string tokenKind;
+  int priority;
+
+  NfaAcceptingState(int nfaState) :
+  nfaState(nfaState), tokenKind("UNINITIALISED"), priority(INT32_MAX) {};
+
+  NfaAcceptingState(int nfaState, std::string tokenKind, int priority) :
+  nfaState(nfaState), tokenKind(tokenKind), priority(priority) {};
 };
 
 struct NfaTransition {
@@ -101,10 +132,10 @@ public:
   Dfa convertToDfa();
 };
 
-Nfa concatenate(Nfa firstNfa, Nfa secondNfa);
-Nfa orSelection(Nfa firstNfa, Nfa secondNfa);
-Nfa kleeneStar(Nfa nfa);
-Nfa plus(Nfa nfa);
+Nfa concatenate(Nfa& firstNfa, Nfa& secondNfa);
+Nfa orSelection(Nfa& firstNfa, Nfa& secondNfa);
+Nfa kleeneStar(Nfa& nfa);
+Nfa plus(Nfa& nfa);
 
 std::istream &operator>>(std::istream &IStream, Scanner &Scanner);
 
