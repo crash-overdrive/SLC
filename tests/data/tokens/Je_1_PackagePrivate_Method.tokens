@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_PackagePrivate_Method
+IDENTIFIER Je_1_PackagePrivate_Method
 LBRAC {
 PUBLIC public
-ID Je_1_PackagePrivate_Method
+IDENTIFIER Je_1_PackagePrivate_Method
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,7 +12,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
@@ -23,7 +23,7 @@ RBRAC }
 STATIC static
 VOID void
 PACKAGE package
-ID PrivateMethod
+IDENTIFIER PrivateMethod
 LPAREN (
 RPAREN )
 LBRAC {

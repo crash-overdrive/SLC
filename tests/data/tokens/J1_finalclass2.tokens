@@ -2,10 +2,10 @@ BOF BOF
 PUBLIC public
 FINAL final
 CLASS class
-ID J1_finalclass2
+IDENTIFIER J1_finalclass2
 LBRAC {
 PUBLIC public
-ID J1_finalclass2
+IDENTIFIER J1_finalclass2
 LPAREN (
 RPAREN )
 LBRAC {
@@ -13,7 +13,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

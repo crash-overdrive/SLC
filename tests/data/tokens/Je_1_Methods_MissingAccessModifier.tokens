@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_Methods_MissingAccessModifier
+IDENTIFIER Je_1_Methods_MissingAccessModifier
 LBRAC {
 PUBLIC public
-ID Je_1_Methods_MissingAccessModifier
+IDENTIFIER Je_1_Methods_MissingAccessModifier
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,7 +12,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
@@ -21,7 +21,7 @@ DEC_INT_LITERAL 123
 SEMI ;
 RBRAC }
 INT int
-ID bar
+IDENTIFIER bar
 LPAREN (
 RPAREN )
 LBRAC {

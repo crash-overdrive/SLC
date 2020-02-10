@@ -1,13 +1,13 @@
 BOF BOF
 PUBLIC public
 INT int
-ID erface
-ID Je_1_Interface_StaticMethod
+IDENTIFIER erface
+IDENTIFIER Je_1_Interface_StaticMethod
 LBRAC {
 PUBLIC public
 STATIC static
 VOID void
-ID foo
+IDENTIFIER foo
 LPAREN (
 RPAREN )
 SEMI ;

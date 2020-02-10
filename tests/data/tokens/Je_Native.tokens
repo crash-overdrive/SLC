@@ -1,12 +1,12 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_Native
+IDENTIFIER Je_Native
 LBRAC {
 PUBLIC public
 NATIVE native
 INT int
-ID m
+IDENTIFIER m
 LPAREN (
 RPAREN )
 SEMI ;

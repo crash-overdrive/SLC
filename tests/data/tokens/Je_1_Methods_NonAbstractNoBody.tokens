@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_NonAbstractMethod_Body
+IDENTIFIER Je_1_NonAbstractMethod_Body
 LBRAC {
 PUBLIC public
-ID Je_1_NonAbstractMethod_Body
+IDENTIFIER Je_1_NonAbstractMethod_Body
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,7 +12,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
@@ -22,7 +22,7 @@ SEMI ;
 RBRAC }
 PUBLIC public
 VOID void
-ID foo
+IDENTIFIER foo
 LPAREN (
 RPAREN )
 SEMI ;

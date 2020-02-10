@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_VoidType_Formals
+IDENTIFIER Je_1_VoidType_Formals
 LBRAC {
 PUBLIC public
-ID Je_1_VoidType_Formals
+IDENTIFIER Je_1_VoidType_Formals
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,10 +12,10 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 VOID void
-ID foo
+IDENTIFIER foo
 RPAREN )
 LBRAC {
 RETURN return

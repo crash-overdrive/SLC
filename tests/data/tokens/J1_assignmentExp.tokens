@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID J1_assignmentExp
+IDENTIFIER J1_assignmentExp
 LBRAC {
 PUBLIC public
-ID J1_assignmentExp
+IDENTIFIER J1_assignmentExp
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,12 +12,12 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
 INT int
-ID i
+IDENTIFIER i
 ASSIGN =
 DEC_INT_LITERAL 1
 MULTIPLICATION *
@@ -30,7 +30,7 @@ ADDITION +
 DEC_INT_LITERAL 3
 SEMI ;
 RETURN return
-ID i
+IDENTIFIER i
 SEMI ;
 RBRAC }
 RBRAC }

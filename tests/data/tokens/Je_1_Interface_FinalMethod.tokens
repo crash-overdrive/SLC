@@ -1,13 +1,13 @@
 BOF BOF
 PUBLIC public
 INT int
-ID erface
-ID Je_1_Interface_FinalMethod
+IDENTIFIER erface
+IDENTIFIER Je_1_Interface_FinalMethod
 LBRAC {
 PUBLIC public
 FINAL final
 VOID void
-ID foo
+IDENTIFIER foo
 LPAREN (
 RPAREN )
 SEMI ;

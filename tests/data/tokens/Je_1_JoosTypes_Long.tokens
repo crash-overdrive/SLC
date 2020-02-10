@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_JoosTypes_Long
+IDENTIFIER Je_1_JoosTypes_Long
 LBRAC {
 PUBLIC public
-ID Je_1_JoosTypes_Long
+IDENTIFIER Je_1_JoosTypes_Long
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,12 +12,12 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
 LONG long
-ID y
+IDENTIFIER y
 ASSIGN =
 LPAREN (
 LONG long

@@ -1,6 +1,6 @@
 BOF BOF
 PUBLIC public
 INT int
-ID erface
-ID Je_1_Interface_NoBody
+IDENTIFIER erface
+IDENTIFIER Je_1_Interface_NoBody
 EOF EOF

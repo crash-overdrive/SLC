@@ -1,8 +1,8 @@
 BOF BOF
 PUBLIC public
 INT int
-ID erface
-ID J1w_Interface
+IDENTIFIER erface
+IDENTIFIER J1w_Interface
 LBRAC {
 RBRAC }
 EOF EOF

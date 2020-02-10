@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID WrongName
+IDENTIFIER WrongName
 LBRAC {
 PUBLIC public
-ID WrongName
+IDENTIFIER WrongName
 LPAREN (
 RPAREN )
 LBRAC {

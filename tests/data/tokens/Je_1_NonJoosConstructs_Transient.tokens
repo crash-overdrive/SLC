@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_NonJoosConstructs_Transient
+IDENTIFIER Je_1_NonJoosConstructs_Transient
 LBRAC {
 PUBLIC public
-ID Je_1_NonJoosConstructs_Transient
+IDENTIFIER Je_1_NonJoosConstructs_Transient
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,12 +12,12 @@ RBRAC }
 PUBLIC public
 TRANSIENT transient
 INT int
-ID x
+IDENTIFIER x
 SEMI ;
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_Identifiers_Private
+IDENTIFIER Je_1_Identifiers_Private
 LBRAC {
 PUBLIC public
-ID Je_1_Identifiers_Private
+IDENTIFIER Je_1_Identifiers_Private
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,7 +12,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

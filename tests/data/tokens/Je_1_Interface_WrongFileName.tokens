@@ -1,8 +1,8 @@
 BOF BOF
 PUBLIC public
 INT int
-ID erface
-ID WrongName
+IDENTIFIER erface
+IDENTIFIER WrongName
 LBRAC {
 RBRAC }
 EOF EOF

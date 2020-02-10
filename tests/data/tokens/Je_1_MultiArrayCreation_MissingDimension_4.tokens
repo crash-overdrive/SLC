@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_MultiArrayCreation_MissingDimension_4
+IDENTIFIER Je_1_MultiArrayCreation_MissingDimension_4
 LBRAC {
 PUBLIC public
-ID Je_1_MultiArrayCreation_MissingDimension_4
+IDENTIFIER Je_1_MultiArrayCreation_MissingDimension_4
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,7 +12,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
@@ -23,7 +23,7 @@ LBRKT [
 RBRKT ]
 LBRKT [
 RBRKT ]
-ID array
+IDENTIFIER array
 ASSIGN =
 NEW new
 INT int

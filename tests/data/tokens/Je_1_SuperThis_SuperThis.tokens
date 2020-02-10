@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_SuperThis_SuperThis
+IDENTIFIER Je_1_SuperThis_SuperThis
 LBRAC {
 PUBLIC public
-ID Je_1_SuperThis_SuperThis
+IDENTIFIER Je_1_SuperThis_SuperThis
 LPAREN (
 RPAREN )
 LBRAC {
@@ -19,7 +19,7 @@ SEMI ;
 RBRAC }
 PUBLIC public
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

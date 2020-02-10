@@ -1,13 +1,13 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_Formals_Initializer_Constructor
+IDENTIFIER Je_1_Formals_Initializer_Constructor
 LBRAC {
 PUBLIC public
-ID Je_1_Formals_Initializer_Constructor
+IDENTIFIER Je_1_Formals_Initializer_Constructor
 LPAREN (
 INT int
-ID abc
+IDENTIFIER abc
 ASSIGN =
 DEC_INT_LITERAL 123
 RPAREN )
@@ -16,7 +16,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

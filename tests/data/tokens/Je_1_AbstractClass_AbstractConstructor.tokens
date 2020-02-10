@@ -2,11 +2,11 @@ BOF BOF
 PUBLIC public
 ABSTRACT abstract
 CLASS class
-ID Je_1_AbstractClass_AbstractConstructor
+IDENTIFIER Je_1_AbstractClass_AbstractConstructor
 LBRAC {
 PUBLIC public
 ABSTRACT abstract
-ID Je_1_AbstractClass_AbstractConstructor
+IDENTIFIER Je_1_AbstractClass_AbstractConstructor
 LPAREN (
 RPAREN )
 SEMI ;

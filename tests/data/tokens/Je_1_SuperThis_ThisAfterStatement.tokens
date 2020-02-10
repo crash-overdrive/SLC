@@ -1,15 +1,15 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_SuperThis_ThisAfterStatement
+IDENTIFIER Je_1_SuperThis_ThisAfterStatement
 LBRAC {
 PUBLIC public
-ID Je_1_SuperThis_ThisAfterStatement
+IDENTIFIER Je_1_SuperThis_ThisAfterStatement
 LPAREN (
 RPAREN )
 LBRAC {
 INT int
-ID j
+IDENTIFIER j
 ASSIGN =
 DEC_INT_LITERAL 0
 SEMI ;
@@ -20,7 +20,7 @@ SEMI ;
 RBRAC }
 PUBLIC public
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

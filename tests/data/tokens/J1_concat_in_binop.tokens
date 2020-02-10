@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID J1_concat_in_binop
+IDENTIFIER J1_concat_in_binop
 LBRAC {
 PUBLIC public
-ID J1_concat_in_binop
+IDENTIFIER J1_concat_in_binop
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,17 +12,17 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
-ID String
-ID x
+IDENTIFIER String
+IDENTIFIER x
 ASSIGN =
 STRING_LITERAL ""
 SEMI ;
-ID String
-ID y
+IDENTIFIER String
+IDENTIFIER y
 ASSIGN =
 LPAREN (
 STRING_LITERAL "Result: "
@@ -30,7 +30,7 @@ ADDITION +
 LPAREN (
 STRING_LITERAL "abc"
 ADDITION +
-ID x
+IDENTIFIER x
 ASSIGN =
 ASSIGN =
 NULL_LITERAL null
@@ -40,9 +40,9 @@ SEMI ;
 RETURN return
 DEC_INT_LITERAL 110
 ADDITION +
-ID y
+IDENTIFIER y
 DOT .
-ID length
+IDENTIFIER length
 LPAREN (
 RPAREN )
 SEMI ;

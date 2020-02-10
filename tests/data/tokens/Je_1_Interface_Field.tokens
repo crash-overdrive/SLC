@@ -1,12 +1,12 @@
 BOF BOF
 PUBLIC public
 INT int
-ID erface
-ID Je_1_Interface_Field
+IDENTIFIER erface
+IDENTIFIER Je_1_Interface_Field
 LBRAC {
 PUBLIC public
 INT int
-ID field
+IDENTIFIER field
 SEMI ;
 RBRAC }
 EOF EOF

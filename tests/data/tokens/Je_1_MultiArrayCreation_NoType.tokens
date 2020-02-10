@@ -1,10 +1,10 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_MultiArrayCreation_NoType
+IDENTIFIER Je_1_MultiArrayCreation_NoType
 LBRAC {
 PUBLIC public
-ID Je_1_MultiArrayCreation_NoType
+IDENTIFIER Je_1_MultiArrayCreation_NoType
 LPAREN (
 RPAREN )
 LBRAC {
@@ -12,7 +12,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
@@ -21,7 +21,7 @@ LBRKT [
 RBRKT ]
 LBRKT [
 RBRKT ]
-ID a
+IDENTIFIER a
 ASSIGN =
 NEW new
 LBRKT [

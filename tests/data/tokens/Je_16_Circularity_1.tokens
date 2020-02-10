@@ -1,13 +1,13 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_16_Circularity_1
+IDENTIFIER Je_16_Circularity_1
 LBRAC {
 PUBLIC public
-ID Je_16_Circularity_1
+IDENTIFIER Je_16_Circularity_1
 LPAREN (
 INT int
-ID i
+IDENTIFIER i
 RPAREN )
 LBRAC {
 THIS this
@@ -16,7 +16,7 @@ RPAREN )
 SEMI ;
 RBRAC }
 PUBLIC public
-ID Je_16_Circularity_1
+IDENTIFIER Je_16_Circularity_1
 LPAREN (
 RPAREN )
 LBRAC {
@@ -29,7 +29,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {

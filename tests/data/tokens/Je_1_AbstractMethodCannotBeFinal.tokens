@@ -2,10 +2,10 @@ BOF BOF
 PUBLIC public
 ABSTRACT abstract
 CLASS class
-ID Je_1_AbstractMethodCannotBeFinal
+IDENTIFIER Je_1_AbstractMethodCannotBeFinal
 LBRAC {
 PUBLIC public
-ID Je_1_AbstractMethodCannotBeFinal
+IDENTIFIER Je_1_AbstractMethodCannotBeFinal
 LPAREN (
 RPAREN )
 LBRAC {
@@ -14,7 +14,7 @@ PUBLIC public
 FINAL final
 ABSTRACT abstract
 VOID void
-ID foo
+IDENTIFIER foo
 LPAREN (
 RPAREN )
 SEMI ;

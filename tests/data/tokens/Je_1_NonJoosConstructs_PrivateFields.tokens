@@ -1,14 +1,14 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID Je_1_NonJoosConstructs_PrivateFields
+IDENTIFIER Je_1_NonJoosConstructs_PrivateFields
 LBRAC {
 PRIVATE private
 INT int
-ID x
+IDENTIFIER x
 SEMI ;
 PUBLIC public
-ID Je_1_NonJoosConstructs_PrivateFields
+IDENTIFIER Je_1_NonJoosConstructs_PrivateFields
 LPAREN (
 RPAREN )
 LBRAC {
@@ -16,7 +16,7 @@ RBRAC }
 PUBLIC public
 STATIC static
 INT int
-ID test
+IDENTIFIER test
 LPAREN (
 RPAREN )
 LBRAC {
