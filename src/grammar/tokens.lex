@@ -144,6 +144,14 @@ COMMA -=- ,
 
 DOT -=- \.
 
+EQUAL -=- ==
+
+LESSER_OR_EQUAL -=- <=
+
+GREATER_OR_EQUAL -=- >=
+
+NOT_EQUAL -=- !=
+
 ASSIGN -=- =
 
 GREATER -=- >
@@ -158,14 +166,6 @@ TILDA -=- ~
 QUESTION -=- \?
 
 COLON -=- :
-
-EQUAL -=- ==
-
-LESSER_OR_EQUAL -=- <=
-
-GREATER_OR_EQUAL -=- >=
-
-NOT_EQUAL -=- !=
 
 AND -=- &&
 
