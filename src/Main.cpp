@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
     std::cout << IStream.rdbuf();
     return 0;
   }
-  if (InputToken && OutputParse) {
+  if (InputToken) {
+    std::cerr << "Parsing tokens";
     return Client::parse(Parser, IStream, std::cerr) ? 0 : 42;
   }
 

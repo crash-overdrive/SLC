@@ -3,4 +3,3 @@
 all:
 	cmake -H. -Bbuild
 	cmake --build build
-	ln -s build/bin/joosc .
