@@ -1,7 +1,6 @@
 BOF BOF
 PUBLIC public
-INT int
-IDENTIFIER erface
+INTERFACE interface
 IDENTIFIER J1w_Interface
 LBRAC {
 RBRAC }

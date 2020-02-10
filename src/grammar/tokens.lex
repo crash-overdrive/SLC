@@ -64,9 +64,9 @@ IMPORT -=- import
 
 INSTANCEOF -=- instanceof
 
-INT -=- int
-
 INTERFACE -=- interface
+
+INT -=- int
 
 LONG -=- long
 
