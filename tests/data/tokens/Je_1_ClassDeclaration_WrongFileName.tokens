@@ -1,0 +1,13 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID WrongName
+LBRACE {
+PUBLIC public
+ID WrongName
+LPAREN (
+RPAREN )
+LBRACE {
+RBRACE }
+RBRACE }
+EOF EOF

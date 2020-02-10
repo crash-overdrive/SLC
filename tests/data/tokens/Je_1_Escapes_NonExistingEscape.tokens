@@ -1,0 +1,27 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID Je_1_Escapes_NonExistingEscape
+LBRACE {
+PUBLIC public
+ID Je_1_Escapes_NonExistingEscape
+LPAREN (
+RPAREN )
+LBRACE {
+RBRACE }
+PUBLIC public
+STATIC static
+INT int
+ID test
+LPAREN (
+RPAREN )
+LBRACE {
+CHAR char
+ID c
+ASSIGN =
+Error could not find any token anymore: 
+'\a'; 
+	return 123;
+    }
+}
+

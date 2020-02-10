@@ -1,0 +1,29 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID J1_octal_escape4
+LBRACE {
+PUBLIC public
+ID J1_octal_escape4
+LPAREN (
+RPAREN )
+LBRACE {
+RBRACE }
+PUBLIC public
+STATIC static
+INT int
+ID test
+LPAREN (
+RPAREN )
+LBRACE {
+ID String
+ID s
+ASSIGN =
+Error could not find any token anymore: 
+"\3\20\100(";
+	int r = 0;
+	for (int i=0; i<s.length(); i=i+1) r=r+(int)s.charAt(i);
+	return r;
+    }
+}
+

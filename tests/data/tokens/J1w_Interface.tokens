@@ -1,0 +1,8 @@
+BOF BOF
+PUBLIC public
+INT int
+ID erface
+ID J1w_Interface
+LBRACE {
+RBRACE }
+EOF EOF

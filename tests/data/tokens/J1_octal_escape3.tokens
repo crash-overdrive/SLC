@@ -1,0 +1,26 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID J1_octal_escape3
+LBRACE {
+PUBLIC public
+ID J1_octal_escape3
+LPAREN (
+RPAREN )
+LBRACE {
+RBRACE }
+PUBLIC public
+STATIC static
+INT int
+ID test
+LPAREN (
+RPAREN )
+LBRACE {
+RETURN return
+LPAREN (
+INT int
+RPAREN )
+Error could not find any token anymore: 
+'\7'+(int)'\77'+53;}
+}
+

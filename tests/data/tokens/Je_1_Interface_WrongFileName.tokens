@@ -1,0 +1,8 @@
+BOF BOF
+PUBLIC public
+INT int
+ID erface
+ID WrongName
+LBRACE {
+RBRACE }
+EOF EOF

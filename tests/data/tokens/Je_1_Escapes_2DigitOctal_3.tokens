@@ -1,0 +1,28 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID Je_1_Escapes_2DigitOctal_3
+LBRACE {
+PUBLIC public
+ID Je_1_Escapes_2DigitOctal_3
+LPAREN (
+RPAREN )
+LBRACE {
+RBRACE }
+PUBLIC public
+STATIC static
+INT int
+ID test
+LPAREN (
+RPAREN )
+LBRACE {
+ID String
+ID s
+ASSIGN =
+Error could not find any token anymore: 
+"\80";
+	return 123;
+    }
+}
+
+

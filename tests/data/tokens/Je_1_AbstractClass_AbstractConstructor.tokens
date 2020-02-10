@@ -1,0 +1,14 @@
+BOF BOF
+PUBLIC public
+ABSTRACT abstract
+CLASS class
+ID Je_1_AbstractClass_AbstractConstructor
+LBRACE {
+PUBLIC public
+ABSTRACT abstract
+ID Je_1_AbstractClass_AbstractConstructor
+LPAREN (
+RPAREN )
+SEMI ;
+RBRACE }
+EOF EOF

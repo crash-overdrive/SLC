@@ -1,0 +1,14 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID Je_Native
+LBRACE {
+PUBLIC public
+NATIVE native
+INT int
+ID m
+LPAREN (
+RPAREN )
+SEMI ;
+RBRACE }
+EOF EOF

@@ -1,0 +1,27 @@
+BOF BOF
+PUBLIC public
+CLASS class
+ID Je_1_Escapes_3DigitOctal_3
+LBRACE {
+PUBLIC public
+ID Je_1_Escapes_3DigitOctal_3
+LPAREN (
+RPAREN )
+LBRACE {
+RBRACE }
+PUBLIC public
+STATIC static
+INT int
+ID test
+LPAREN (
+RPAREN )
+LBRACE {
+CHAR char
+ID s
+ASSIGN =
+Error could not find any token anymore: 
+'\400';
+	return 123;
+    }
+}
+
