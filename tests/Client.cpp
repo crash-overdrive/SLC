@@ -175,9 +175,9 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
     };
     for (const auto &FileName : FileNames) {
       TokenStream.open(TestDataDir + "/tokens/" + FileName);
-      std::cout << FileName;
+      INFO( "Reading File: " << FileName );
       CHECK(Client::parse(Parser, TokenStream));
-      std::cout << Parser.buildTree();
+      INFO( "Build Tree: " << Parser.buildTree());
       TokenStream.close();
       TokenStream.clear();
       Parser.clear();
@@ -186,7 +186,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
 
   SECTION("parser rejects") {
     std::vector<std::string> FileNames{
-	"Je_16_Circularity_1.tokens",
+"Je_16_Circularity_1.tokens",
 "Je_16_Circularity_2.tokens",
 "Je_16_Circularity_3.tokens",
 "Je_16_Circularity_4_Rhoshaped.tokens",
@@ -378,6 +378,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
 	};
     for (const auto &FileName : FileNames) {
       TokenStream.open(TestDataDir + "/tokens/" + FileName);
+      INFO( "Reading File: " << FileName );
       CHECK(!Client::parse(Parser, TokenStream));
       TokenStream.close();
       TokenStream.clear();
