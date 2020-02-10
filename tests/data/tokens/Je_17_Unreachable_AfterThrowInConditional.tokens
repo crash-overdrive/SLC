@@ -2,13 +2,13 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID Je_17_Unreachable_AfterThrowInConditional
-LBRACE {
+LBRAC {
 PUBLIC public
 ID Je_17_Unreachable_AfterThrowInConditional
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
@@ -18,7 +18,7 @@ RPAREN )
 THROW throw
 ID s
 ID Exception
-LBRACE {
+LBRAC {
 INT int
 ID j
 ASSIGN =
@@ -47,6 +47,6 @@ SEMI ;
 RETURN return
 DEC_INT_LITERAL 123
 SEMI ;
-RBRACE }
-RBRACE }
+RBRAC }
+RBRAC }
 EOF EOF

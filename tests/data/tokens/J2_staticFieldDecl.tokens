@@ -2,7 +2,7 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J2_staticFieldDecl
-LBRACE {
+LBRAC {
 PROTECTED protected
 STATIC static
 INT int
@@ -14,15 +14,15 @@ PUBLIC public
 ID J2_staticFieldDecl
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 RETURN return
 ID J2_staticFieldDecl
 DOT .
@@ -30,6 +30,6 @@ ID field
 ADDITION +
 DEC_INT_LITERAL 100
 SEMI ;
-RBRACE }
-RBRACE }
+RBRAC }
+RBRAC }
 EOF EOF

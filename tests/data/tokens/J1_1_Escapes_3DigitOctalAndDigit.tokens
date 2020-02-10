@@ -2,27 +2,44 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_1_Escapes_3DigitOctalAndDigit
-LBRACE {
+LBRAC {
 PUBLIC public
 ID J1_1_Escapes_3DigitOctalAndDigit
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 ID String
 ID s
 ASSIGN =
-Error could not find any token anymore: 
-"\1674";
-	return s.charAt(0) + s.charAt(1) - '0';
-    }
-
-}
-
+STRING_LITERAL "\1674"
+SEMI ;
+RETURN return
+ID s
+DOT .
+CHAR char
+ID At
+LPAREN (
+DEC_INT_LITERAL 0
+RPAREN )
+ADDITION +
+ID s
+DOT .
+CHAR char
+ID At
+LPAREN (
+DEC_INT_LITERAL 1
+RPAREN )
+SUBTRACTION -
+CHAR_LITERAL '0'
+SEMI ;
+RBRAC }
+RBRAC }
+EOF EOF

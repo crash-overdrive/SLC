@@ -3,6 +3,6 @@ PUBLIC public
 INT int
 ID erface
 ID WrongName
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 EOF EOF

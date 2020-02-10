@@ -2,26 +2,28 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID Je_1_Escapes_1DigitOctal_4
-LBRACE {
+LBRAC {
 PUBLIC public
 ID Je_1_Escapes_1DigitOctal_4
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 ID String
 ID c
 ASSIGN =
-Error could not find any token anymore: 
-"\9";
-	return 123;
-    }
-}
-
+STRING_LITERAL "\9"
+SEMI ;
+RETURN return
+DEC_INT_LITERAL 123
+SEMI ;
+RBRAC }
+RBRAC }
+EOF EOF

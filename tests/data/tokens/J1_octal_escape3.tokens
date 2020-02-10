@@ -2,25 +2,33 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_octal_escape3
-LBRACE {
+LBRAC {
 PUBLIC public
 ID J1_octal_escape3
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 RETURN return
 LPAREN (
 INT int
 RPAREN )
-Error could not find any token anymore: 
-'\7'+(int)'\77'+53;}
-}
-
+CHAR_LITERAL '\7'
+ADDITION +
+LPAREN (
+INT int
+RPAREN )
+CHAR_LITERAL '\77'
+ADDITION +
+DEC_INT_LITERAL 53
+SEMI ;
+RBRAC }
+RBRAC }
+EOF EOF

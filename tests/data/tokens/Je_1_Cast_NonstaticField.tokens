@@ -2,7 +2,7 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID Je_1_Cast_NonstaticField
-LBRACE {
+LBRAC {
 PUBLIC public
 INT int
 ID value
@@ -13,15 +13,15 @@ PUBLIC public
 ID Je_1_Cast_NonstaticField
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 INT int
 ID a
 ASSIGN =
@@ -38,6 +38,6 @@ SEMI ;
 RETURN return
 ID a
 SEMI ;
-RBRACE }
-RBRACE }
+RBRAC }
+RBRAC }
 EOF EOF

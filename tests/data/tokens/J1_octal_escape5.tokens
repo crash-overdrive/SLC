@@ -2,28 +2,73 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_octal_escape5
-LBRACE {
+LBRAC {
 PUBLIC public
 ID J1_octal_escape5
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 ID String
 ID s
 ASSIGN =
-Error could not find any token anymore: 
-"\421abc\2400xyz\377\19\400";
-	String s2 = (char)34 + "1abc" + (char)160 + "0xyz" + (char)255 + (char)1 + "9 0";
-	if (s.equals((Object)s2)) return 123;
-	else return 0;
-    }
-}
-
+STRING_LITERAL "\421abc\2400xyz\377\19\400"
+SEMI ;
+ID String
+ID s2
+ASSIGN =
+LPAREN (
+CHAR char
+RPAREN )
+DEC_INT_LITERAL 34
+ADDITION +
+STRING_LITERAL "1abc"
+ADDITION +
+LPAREN (
+CHAR char
+RPAREN )
+DEC_INT_LITERAL 160
+ADDITION +
+STRING_LITERAL "0xyz"
+ADDITION +
+LPAREN (
+CHAR char
+RPAREN )
+DEC_INT_LITERAL 255
+ADDITION +
+LPAREN (
+CHAR char
+RPAREN )
+DEC_INT_LITERAL 1
+ADDITION +
+STRING_LITERAL "9 0"
+SEMI ;
+IF if
+LPAREN (
+ID s
+DOT .
+ID equals
+LPAREN (
+LPAREN (
+ID Object
+RPAREN )
+ID s2
+RPAREN )
+RPAREN )
+RETURN return
+DEC_INT_LITERAL 123
+SEMI ;
+ELSE else
+RETURN return
+DEC_INT_LITERAL 0
+SEMI ;
+RBRAC }
+RBRAC }
+EOF EOF

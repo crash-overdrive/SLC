@@ -2,7 +2,7 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID Je_Native
-LBRACE {
+LBRAC {
 PUBLIC public
 NATIVE native
 INT int
@@ -10,5 +10,5 @@ ID m
 LPAREN (
 RPAREN )
 SEMI ;
-RBRACE }
+RBRAC }
 EOF EOF
