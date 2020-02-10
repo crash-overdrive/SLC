@@ -3,10 +3,10 @@ PUBLIC public
 INT int
 ID erface
 ID Je_1_Interface_Field
-LBRACE {
+LBRAC {
 PUBLIC public
 INT int
 ID field
 SEMI ;
-RBRACE }
+RBRAC }
 EOF EOF

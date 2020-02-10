@@ -3,7 +3,7 @@ PUBLIC public
 INT int
 ID erface
 ID Je_1_Interface_StaticMethod
-LBRACE {
+LBRAC {
 PUBLIC public
 STATIC static
 VOID void
@@ -11,5 +11,5 @@ ID foo
 LPAREN (
 RPAREN )
 SEMI ;
-RBRACE }
+RBRAC }
 EOF EOF

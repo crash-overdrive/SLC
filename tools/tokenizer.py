@@ -14,7 +14,8 @@ def look_matching(d, raw):
             if token not in REJECTS:
                 print(token + ' ' + string)
             return string
-    print('Error could not find any token anymore: \n' + raw)
+
+    sys.stderr.write('Error could not find any token anymore: \n' + sys.argv[2])
     sys.exit(42)
 
 

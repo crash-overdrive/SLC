@@ -2,13 +2,13 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_char
-LBRACE {
+LBRAC {
 PUBLIC public
 ID J1_char
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PROTECTED protected
 CHAR char
 ID x
@@ -24,7 +24,7 @@ INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 ID J1_char
 ID obj
 ASSIGN =
@@ -46,6 +46,6 @@ INT int
 RPAREN )
 ID y
 SEMI ;
-RBRACE }
-RBRACE }
+RBRAC }
+RBRAC }
 EOF EOF

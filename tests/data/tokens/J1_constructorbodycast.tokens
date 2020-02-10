@@ -2,7 +2,7 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_constructorbodycast
-LBRACE {
+LBRAC {
 PUBLIC public
 INT int
 ID x
@@ -11,7 +11,7 @@ PUBLIC public
 ID J1_constructorbodycast
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 ID String
 ID String
 ASSIGN =
@@ -34,7 +34,7 @@ ID i
 ADDITION +
 DEC_INT_LITERAL 1
 RPAREN )
-LBRACE {
+LBRAC {
 ID String
 ASSIGN =
 LPAREN (
@@ -46,7 +46,7 @@ ID String
 RPAREN )
 STRING_LITERAL "World"
 SEMI ;
-RBRACE }
+RBRAC }
 THIS this
 DOT .
 ID x
@@ -59,14 +59,14 @@ RPAREN )
 ADDITION +
 DEC_INT_LITERAL 68
 SEMI ;
-RBRACE }
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 RETURN return
 NEW new
 ID J1_constructorbodycast
@@ -75,6 +75,6 @@ RPAREN )
 DOT .
 ID x
 SEMI ;
-RBRACE }
-RBRACE }
+RBRAC }
+RBRAC }
 EOF EOF

@@ -2,26 +2,20 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID Je_1_NonJoosConstructs_Unicode
-LBRACE {
+LBRAC {
 PUBLIC public
 ID Je_1_NonJoosConstructs_Unicode
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 ID String
 ID x
 ASSIGN =
-Error could not find any token anymore: 
-"\u16aa";
-	return 123;
-    }
-}
-

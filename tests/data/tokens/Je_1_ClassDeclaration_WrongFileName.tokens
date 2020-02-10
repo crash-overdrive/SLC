@@ -2,12 +2,12 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID WrongName
-LBRACE {
+LBRAC {
 PUBLIC public
 ID WrongName
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
-RBRACE }
+LBRAC {
+RBRAC }
+RBRAC }
 EOF EOF

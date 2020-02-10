@@ -2,25 +2,21 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_octal_escape2
-LBRACE {
+LBRAC {
 PUBLIC public
 ID J1_octal_escape2
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 RETURN return
 LPAREN (
 INT int
 RPAREN )
-Error could not find any token anymore: 
-'\173';}
-}
-

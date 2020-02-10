@@ -2,20 +2,20 @@ BOF BOF
 PUBLIC public
 CLASS class
 ID J1_char_escape3
-LBRACE {
+LBRAC {
 PUBLIC public
 ID J1_char_escape3
 LPAREN (
 RPAREN )
-LBRACE {
-RBRACE }
+LBRAC {
+RBRAC }
 PUBLIC public
 STATIC static
 INT int
 ID test
 LPAREN (
 RPAREN )
-LBRACE {
+LBRAC {
 INT int
 ID r
 ASSIGN =
@@ -99,12 +99,3 @@ ID J1_char_escape3
 DOT .
 ID eq
 LPAREN (
-Error could not find any token anymore: 
-"\134123", ((char)92+"123"))) r=r+1;
-	if (J1_char_escape3.eq("\13412", ((char)92+"12"))) r=r+1;
-	if (J1_char_escape3.eq("\1341", ((char)92+"1"))) r=r+1;
-	return r+117;
-    }
-    public static boolean eq(String a, String b) {return a.equals((Object)b);}
-}
-
