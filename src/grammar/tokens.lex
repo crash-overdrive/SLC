@@ -120,7 +120,7 @@ HEX_INT_LITERAL -=- 0x[0-9a-fA-F]+
 
 BOOLEAN_LITERAL -=- (true)|(false)
 
-CHAR_LITERAL -=- '[^'\\\r\n]|(\\[nr\\'tbf"])|(\\([0-3]?[0-9][0-9]?))'
+CHAR_LITERAL -=- '([^'\\\r\n]|(\\[nr\\'tbf"])|(\\([0-3]?[0-9][0-9]?)))'
 
 STRING_LITERAL -=- "([^"\\\r\n]|\\[btnfr"'\\]|(\\[0-3]?[0-9][0-9]?))*"
 
