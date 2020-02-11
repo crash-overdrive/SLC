@@ -25,7 +25,7 @@ def maximal_matching(d, raw):
 		if matching is not None:
 			candidates.append((matching, token))
 	maxlen = 0
-	for matching in candidates:
+	for matching, token in candidates:
 		if len(matching.group(0)) > maxlen:
 			maxlen = len(matching.group(0))
 	for matching, token in candidates:
