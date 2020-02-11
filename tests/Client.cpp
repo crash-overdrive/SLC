@@ -379,7 +379,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
     for (const auto &FileName : FileNames) {
       TokenStream.open(TestDataDir + "/tokens/" + FileName);
       INFO( "Reading File: " << FileName );
-      //CHECK(!Client::parse(Parser, TokenStream));
+      CHECK(!Client::parse(Parser, TokenStream));
       TokenStream.close();
       TokenStream.clear();
       Parser.clear();
