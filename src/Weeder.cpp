@@ -28,9 +28,9 @@ static std::set<std::string> flatten(const Parse::Node *Node,
 }
 
 bool Weed::AbstractFinalClass(const Parse::Tree &T) {
-  auto Range = T.equalRange("ClassDecl");
+  auto Range = T.equalRange("ClassDeclaration");
   for (auto i = Range.first; i != Range.second; ++i) {
-    const Parse::Node *ModifierNode = i->second.find("ModifiersOpt");
+    const Parse::Node *ModifierNode = i->second.find("ModifiersList");
     std::set<std::string> S(flatten(ModifierNode, "Modifier"));
     if (S.find("ABSTRACT") != S.end() && S.find("FINAL") != S.end()) {
       return false;

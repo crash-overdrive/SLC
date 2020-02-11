@@ -41,13 +41,15 @@ bool Client::parse(Parse::DFA &Parser, std::istream &IStream) {
 bool Client::parse(Parse::DFA &Parser, std::istream &IStream,
                    std::ostream &OStream) {
   bool flag = parse(Parser, IStream);
+  Parse::Tree T = Parser.buildTree();
   if (flag) {
-    OStream << Parser.buildTree() << std::endl;
+    OStream << T << std::endl;
   } else {
     OStream << "Error: Input does not conformed to joos.cfg\n";
-    OStream << Parser.buildTree() << std::endl;
+    OStream << T << std::endl;
+    return false;
   }
-  return flag;
+  return weed(T, "");
 }
 
 bool Client::weed(const Parse::Tree &Tree, const std::string &Name) {
