@@ -45,6 +45,7 @@ public:
     bool operator==(const Iterator &Iter) const;
 
   private:
+    friend std::ostream &operator<<(std::ostream &Stream, const Tree &T);
     Node *Ptr;
     std::vector<Node *> Vector;
   };
