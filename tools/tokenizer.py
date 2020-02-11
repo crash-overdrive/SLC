@@ -18,6 +18,26 @@ def look_matching(d, raw):
     sys.stderr.write('Error could not find any token anymore: \n' + sys.argv[2])
     sys.exit(42)
 
+def maximal_matching(d, raw):
+	candidates = []
+	for token, regex in d.items():
+		matching = re.match(regex, raw)
+		if matching is not None:
+			candidates.append((matching, token))
+	maxlen = 0
+	for matching in candidates:
+		if len(matching.group(0)) > maxlen:
+			maxlen = len(matching.group(0))
+	for matching, token in candidates:
+		if len(matching.group(0)) == maxlen:
+			if token not in REJECTS:
+				print(token + ' ' + matching.group(0))
+			return matching.group(0)
+
+	sys.stderr.write('Error could not find any token anymore: \n' + sys.argv[2])
+	sys.exit(42)
+
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -38,7 +58,8 @@ if __name__ == '__main__':
             print("BOF BOF")
             raw = ''.join(f.readlines());
             while raw:
-                string = look_matching(d, raw)
+                #string = look_matching(d, raw)
+                string = maximal_matching(d, raw)
                 raw = raw[len(string):]
             print("EOF EOF")
 
