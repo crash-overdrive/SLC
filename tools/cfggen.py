@@ -17,7 +17,7 @@ if __name__ == '__main__':
                 grammar.append(line)
                 words = [x.strip() for x in line.split(' ')]
                 for word in words:
-                    if word[0].isupper():
+                    if word.isupper():
                         upper.add(word)
                     else:
                         lower.add(word)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
             print(len(lower))
             for x in lower:
                 print(x)
-            print("start")
+            print("Start")
             print(len(grammar))
             for x in grammar:
                 print(x)

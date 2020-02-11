@@ -1,6 +1,5 @@
 BOF BOF
 PUBLIC public
-INT int
-IDENTIFIER erface
+INTERFACE interface
 IDENTIFIER Je_1_Interface_NoBody
 EOF EOF
