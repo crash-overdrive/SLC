@@ -14,8 +14,7 @@ VOID void
 IDENTIFIER foo
 LPAREN (
 RPAREN )
-THROW throw
-IDENTIFIER s
+THROWS throws
 INT int
 LBRAC {
 RBRAC }

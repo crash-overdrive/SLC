@@ -22,8 +22,7 @@ SEMI ;
 RBRAC }
 STATIC static
 VOID void
-PACKAGE package
-IDENTIFIER PrivateMethod
+IDENTIFIER packagePrivateMethod
 LPAREN (
 RPAREN )
 LBRAC {

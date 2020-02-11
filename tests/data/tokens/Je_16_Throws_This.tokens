@@ -9,8 +9,7 @@ LPAREN (
 INT int
 IDENTIFIER i
 RPAREN )
-THROW throw
-IDENTIFIER s
+THROWS throws
 IDENTIFIER CloneNotSupportedException
 LBRAC {
 RBRAC }

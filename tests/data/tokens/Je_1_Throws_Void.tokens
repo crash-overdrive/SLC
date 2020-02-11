@@ -7,8 +7,7 @@ PUBLIC public
 IDENTIFIER Je_1_Throws_Void
 LPAREN (
 RPAREN )
-THROW throw
-IDENTIFIER s
+THROWS throws
 VOID void
 LBRAC {
 RBRAC }
