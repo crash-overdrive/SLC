@@ -12,9 +12,10 @@ add_executable(joosc-test ${SOURCES})
 target_include_directories(joosc-test PRIVATE ${slc_SOURCE_DIR}/src)
 target_link_libraries(joosc-test slc)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data
+file(COPY data/grammar data/marmoset
   DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata
 )
+
 file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens)
 file(GLOB JAVA_TESTS data/marmoset/*)
 foreach(java_test ${JAVA_TESTS})
@@ -24,7 +25,7 @@ foreach(java_test ${JAVA_TESTS})
   )
   add_custom_command(
     OUTPUT ${JAVA_TOKENS_FILE}
-    COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/tokenizer.py
+    COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/tokenize.py
     ${TOKEN_FILE} ${java_test} >
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens/${JAVA_FILENAME}.tokens
     || (exit 0)
