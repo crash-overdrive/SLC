@@ -14,10 +14,9 @@ TEST_CASE("weeder detects JoosW", "[weeder]") {
   std::ifstream TokenStream;
 
   auto weedTest = [&](const std::string &Name, const Weed::Check &Check) {
-    TokenStream.open(TestDataDir + "/grammar/" + Name);
+    TokenStream.open(TestDataDir + "/tokens/" + Name);
     Client::parse(Parser, TokenStream);
-    Parse::Tree Tree = Parser.buildTree();
-    return Check(Tree);
+    return Check(Parser.buildTree());
   };
 
   SECTION("weeder rejects Abstract and Final in Class") {

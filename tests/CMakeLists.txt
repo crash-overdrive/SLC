@@ -26,10 +26,11 @@ foreach(java_test ${JAVA_TESTS})
   add_custom_command(
     OUTPUT ${JAVA_TOKENS_FILE}
     COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/tokenize.py
-    ${TOKEN_FILE} ${java_test} >
+    ${TOKENS_FILE} ${java_test} >
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens/${JAVA_FILENAME}.tokens
+    2>/dev/null
     || (exit 0)
-    DEPENDS ${TOKENSSPEC_FILE}
+    DEPENDS ${TOKENSSPEC_FILE} ${PROJECT_SOURCE_DIR}/tools/tokenize.py
   )
   list(APPEND JAVA_TOKENS_FILES "${JAVA_TOKENS_FILE}")
 endforeach(java_test)

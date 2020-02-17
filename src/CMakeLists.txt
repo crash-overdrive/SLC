@@ -36,7 +36,7 @@ add_custom_command(
   DEPENDS ${TOKENSSPEC_FILE}
   COMMENT "Converting Token Specs to parse tokens"
 )
-add_custom_target(tokens DEPENDS ${TOKEN_FILE})
+add_custom_target(tokens DEPENDS ${TOKENS_FILE})
 
 add_library(slc SHARED ${SOURCES} ${HEADER_FILES})
 add_dependencies(slc lr1 tokens)
