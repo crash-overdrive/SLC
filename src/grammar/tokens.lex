@@ -158,7 +158,7 @@ GREATER -=- >
 
 LESSER -=- <
 
-EXCLAIMATION -=- !
+EXCLAMATION -=- !
 
 #Note: Bitwise compliment
 TILDA -=- ~

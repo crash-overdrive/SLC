@@ -1,7 +1,0 @@
-BOF BOF
-PUBLIC public
-INTERFACE interface
-IDENTIFIER WrongName
-LBRAC {
-RBRAC }
-EOF EOF
