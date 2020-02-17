@@ -23,12 +23,17 @@ add_custom_command(
 )
 add_custom_target(lr1 DEPENDS ${LR1_FILE})
 
-set(TOKENSPEC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex)
-set(TOKEN_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex)
+set(TOKENSSPEC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex
+  CACHE INTERNAL ""
+)
+set(TOKENS_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex
+  CACHE INTERNAL ""
+)
 add_custom_command(
-  OUTPUT ${TOKEN_FILE}
-  COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/uglyfy.py ${TOKENSPEC_FILE} ${TOKEN_FILE}
-  DEPENDS ${TOKENSPEC_FILE}
+  OUTPUT ${TOKENS_FILE}
+  COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/uglyfy.py
+  ${TOKENSSPEC_FILE} ${TOKENS_FILE}
+  DEPENDS ${TOKENSSPEC_FILE}
   COMMENT "Converting Token Specs to parse tokens"
 )
 add_custom_target(tokens DEPENDS ${TOKEN_FILE})

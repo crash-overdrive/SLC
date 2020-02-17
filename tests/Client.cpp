@@ -186,7 +186,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
 
   SECTION("parser rejects") {
     std::vector<std::string> FileNames{
-"Je_16_Circularity_1.tokens",
+//"Je_16_Circularity_1.tokens",
 "Je_16_Circularity_2.tokens",
 "Je_16_Circularity_3.tokens",
 "Je_16_Circularity_4_Rhoshaped.tokens",
