@@ -40,26 +40,22 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   ParserStream >> Parser;
   std::ifstream TokenStream;
 
-  SECTION("parser accepts - A1") {
+  SECTION("parser accepts") {
     for (const auto &FileName : A1ValidFileNames) {
-      TokenStream.open(TestDataDir + "/tokens/" + FileName);
-      SECTION("parser accepts - " + FileName) {
-        CHECK(Client::parse(Parser, TokenStream));
-        TokenStream.close();
-        TokenStream.clear();
-        Parser.clear();
+      SECTION(FileName) {
+        TokenStream.open(TestDataDir + "/tokens/" + FileName);
+        bool status = Client::parse(Parser, TokenStream);
+        INFO("This is the parse tree: \n" << Parser.buildTree());
+        REQUIRE(status);
       }
     }
   }
 
-  SECTION("parser rejects - A1") {
+  SECTION("parser rejects") {
     for (const auto &FileName : A1ErrorFileNames) {
-      SECTION("parser rejects - " + FileName) {
+      SECTION(FileName) {
         TokenStream.open(TestDataDir + "/tokens/" + FileName);
         CHECK_FALSE(Client::parse(Parser, TokenStream));
-        TokenStream.close();
-        TokenStream.clear();
-        Parser.clear();
       }
     }
   }
