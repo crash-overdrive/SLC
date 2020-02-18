@@ -14,7 +14,7 @@ LINE_TERMINATOR -=- [\r\n]|(\r\n)
 
 WHITESPACE -=- [ \t\r\n]
 
-COMMENT -=- (\/\/[^\n]*)|\/\*[^*]*\*([^\/][^*]*\*)*\/
+COMMENT -=- (\/\/[^\n]*)|\/\*[^*]*\*+([^\*\/][^*]*\*+)*\/
 
 ABSTRACT -=- abstract
 
