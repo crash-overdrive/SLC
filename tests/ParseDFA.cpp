@@ -14,11 +14,11 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
     DFA.read({"BOF", "BOF"});
     DFA.read({"id", "3"});
     DFA.read({"-", "-"});
-    REQUIRE(!DFA.accept());
-    REQUIRE(!DFA.error());
+    REQUIRE_FALSE(DFA.accept());
+    REQUIRE_FALSE(DFA.error());
     DFA.read({"EOF", "EOF"});
     REQUIRE(DFA.error());
-    REQUIRE(!DFA.accept());
+    REQUIRE_FALSE(DFA.accept());
   }
 
   SECTION("DFA accepts basic") {
@@ -26,7 +26,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
     DFA.read({"id", "2"});
     DFA.read({"EOF", "EOF"});
     REQUIRE(DFA.accept());
-    REQUIRE(!DFA.error());
+    REQUIRE_FALSE(DFA.error());
 
     Parse::Tree T = DFA.buildTree();
     std::ostringstream OSStream;
@@ -46,7 +46,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
       DFA.read(Tok);
     }
     REQUIRE(DFA.accept());
-    REQUIRE(!DFA.error());
+    REQUIRE_FALSE(DFA.error());
   }
 
   SECTION("DFA reject complex") {
@@ -57,7 +57,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
     for (const auto &Tok : V) {
       DFA.read(Tok);
     }
-    REQUIRE(!DFA.accept());
+    REQUIRE_FALSE(DFA.accept());
     REQUIRE(DFA.error());
   }
 }

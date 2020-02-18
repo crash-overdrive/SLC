@@ -20,7 +20,7 @@ TEST_CASE("weeder detects JoosW", "[weeder]") {
   };
 
   SECTION("weeder rejects Abstract and Final in Class") {
-    REQUIRE(
-        !weedTest("Je_1_AbstractClass_Final.tokens", Weed::AbstractFinalClass));
+    REQUIRE_FALSE(
+        weedTest("Je_1_AbstractClass_Final.tokens", Weed::AbstractFinalClass));
   }
 }
