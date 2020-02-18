@@ -1,7 +1,3 @@
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-  "${CMAKE_CURRENT_SOURCE_DIR}/modules"
-)
-
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/TestConfig.hpp.in
   ${CMAKE_CURRENT_SOURCE_DIR}/TestConfig.hpp
@@ -49,7 +45,3 @@ endforeach(java_test)
 
 add_custom_target(tokens-test DEPENDS ${JAVA_TOKENS_FILES})
 add_dependencies(joosc-test tokens-test)
-
-include(CTest)
-include(ParseAndAddCatchTests)
-ParseAndAddCatchTests(joosc-test)

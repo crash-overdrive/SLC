@@ -25,9 +25,8 @@ The executable will be under the `bin` directory.
 To run tests, go to build directory, run
 
 ```sh
-$ ctest
+$ ./bin/joosc-test
 ```
-To run tests with Valgrind, add `-T memcheck` option.
 
 To submit a project to Marmoset, go to root directory, run
 
