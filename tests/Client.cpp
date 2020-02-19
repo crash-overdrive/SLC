@@ -12,7 +12,7 @@ TEST_CASE("client detects extension error JoosW", "[client-filename]") {
   REQUIRE(Client::verifyFileName("good.java"));
 }
 
-TEST_CASE("client scanner detects JoosW", "[client-scanner]") {
+TEST_CASE("client scanner detects JoosW", "[client-scanner][!hide]") {
   SECTION("scanner accept") {
     std::ostringstream OStream;
     std::ifstream JoosStream;
@@ -41,7 +41,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   std::ifstream TokenStream;
 
   SECTION("parser accepts") {
-    for (const auto &FileName : A1ValidFileNames) {
+    for (const auto &FileName : A1ValidParserTokens) {
       SECTION(FileName) {
         TokenStream.open(TestDataDir + "/tokens/" + FileName);
         bool status = Client::parse(Parser, TokenStream);
@@ -52,7 +52,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   }
 
   SECTION("parser rejects") {
-    for (const auto &FileName : A1ErrorFileNames) {
+    for (const auto &FileName : A1ErrorParserTokens) {
       SECTION(FileName) {
         TokenStream.open(TestDataDir + "/tokens/" + FileName);
         CHECK_FALSE(Client::parse(Parser, TokenStream));
@@ -61,7 +61,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   }
 }
 
-TEST_CASE("client preprocessor detects JoosW", "[client-preprocess]") {
+TEST_CASE("client preprocessor detects JoosW", "[client-preprocess][!hide]") {
   SECTION("preprocessor parser reject") {
     std::ifstream JoosStream;
     JoosStream.open(TestDataDir +

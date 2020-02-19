@@ -31,5 +31,5 @@ $ ./bin/joosc-test
 To submit a project to Marmoset, go to root directory, run
 
 ```sh
-./tools/submit.sh A1
+$ ./tools/submit.sh A1
 ```
