@@ -18,8 +18,11 @@ public:
   void addChild(std::unique_ptr<Node> child);
   std::string getName() const;
   size_t getLevel() const;
+  std::string getTag() const;
+  const Node *getSuccessor(std::initializer_list<std::string> Names) const;
+  const Node *getChild(const std::string &String) const;
   const std::vector<std::unique_ptr<Node>> &getChildren() const;
-  const Node *find(const std::string &String) const;
+  const Node *getFirstChild() const;
 
 private:
   friend class Tree;
@@ -32,7 +35,6 @@ private:
 
 class Tree {
 public:
-  using MMapIt = std::multimap<std::string, Node &>::const_iterator;
   Tree(std::unique_ptr<Node> Head);
 
   class Iterator {
@@ -50,13 +52,12 @@ public:
     std::vector<Node *> Vector;
   };
 
-  std::pair<MMapIt, MMapIt> equalRange(const std::string &String) const;
   Iterator begin() const;
   Iterator end() const;
+  const Node &getRoot() const;
 
 private:
-  std::unique_ptr<Node> Head;
-  std::multimap<std::string, Node &> TreeCache;
+  std::unique_ptr<Node> Root;
 };
 
 std::ostream &operator<<(std::ostream &Stream, const Tree &T);
