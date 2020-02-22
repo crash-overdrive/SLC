@@ -1,0 +1,13 @@
+Start:
+  TypeDeclaration: Interface: false
+    Modifier: PUBLIC
+    Modifier: FINAL
+    Identifier: J1_finalclass
+    ConstructorDeclaration: J1_finalclass
+      Modifier: PUBLIC
+    MethodDeclaration: test
+      Modifier: PUBLIC
+      Modifier: STATIC
+      ReturnStatement:
+        Expression:
+          NumberLiteral: 123
