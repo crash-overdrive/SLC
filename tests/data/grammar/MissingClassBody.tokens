@@ -1,7 +1,7 @@
 BOF BOF
 PUBLIC public
 CLASS class
-ID J1_publicclasses
+IDENTIFIER J1_publicclasses
 LBRACE {
 RBRACE }
 EOF EOF

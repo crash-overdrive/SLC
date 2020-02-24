@@ -47,17 +47,6 @@ bool Client::parse(Parse::DFA &Parser, std::istream &IStream,
   } else {
     OStream << "Error: Input does not conformed to joos.cfg\n";
     OStream << T << std::endl;
-    return false;
   }
-  return weed(T, "");
-}
-
-bool Client::weed(const Parse::Tree &Tree, const std::string &Name) {
-  (void)Name;
-  for (const auto &Check : Weed::JoosChecks) {
-    if (!Check(Tree)) {
-      return false;
-    }
-  }
-  return true;
+  return flag;
 }

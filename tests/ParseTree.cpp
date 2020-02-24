@@ -21,18 +21,6 @@ TEST_CASE("parse tree interacts", "[Parse Tree]") {
     REQUIRE(++it == Tree.end());
   }
 
-  SECTION("node is able to reference child node by name") {
-    auto it = Tree.begin();
-    Parse::Node &Node = (*it);
-    REQUIRE(Node.find("Child1")->getName() == "Child1");
-    REQUIRE(Node.find("Unknown") == nullptr);
-  }
-
-  SECTION("tree is able to reference child node by name") {
-    auto it = Tree.equalRange("Child2");
-    REQUIRE(it.first->second.getName() == "Child2");
-  }
-
   SECTION("tree is printing") {
     std::ostringstream Out;
     Out << Tree;
