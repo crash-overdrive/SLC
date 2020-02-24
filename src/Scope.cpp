@@ -17,6 +17,16 @@ Scope& Scope::operator[](const std::string& key){
 	return children[key];
 }
 
+const std::string Scope::getName(){
+	return name;
+}
+
+const std::string Scope::getFullyQualifiedName(){
+	if(!parent || parent->type == Type::GLOBAL)
+		return name;
+	return parent->getFullyQualifiedName() + "." + name;
+}
+
 Scope::~Scope(){
 
 }

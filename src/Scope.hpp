@@ -6,7 +6,7 @@
 class Scope	{
 	public:
 	enum Type {
-		VOID,
+		GLOBAL,
 		PACKAGE,
 		CLASS,
 		INTERFACE,
@@ -15,7 +15,7 @@ class Scope	{
 		METHOD,
 	};
 
-	//private:
+	private:
 
 	std::string name;
 	//can change this to inheritance, but with significantly more coupling
@@ -31,5 +31,7 @@ class Scope	{
 	bool insertChildren(const std::string& key, Type type);
 	bool contains(const std::string& key);
 	Scope& operator[](const std::string& key);
+	const std::string getName();
+	const std::string getFullyQualifiedName();
 	~Scope();
 };
