@@ -14,7 +14,7 @@ TEST_CASE("weeder detects JoosW", "[weeder]") {
   std::ifstream TokenStream;
 
   auto weedTest = [&](const std::string &Name, const Weed::Check &Check) {
-    TokenStream.open(TestDataDir + "/tokens/" + Name);
+    TokenStream.open(TestDataDir + "/tokens/a1/" + Name);
     Client::parse(Parser, TokenStream);
     return Check(Parser.buildTree());
   };
