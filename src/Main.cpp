@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
   }
   if (InputToken) {
     std::cerr << "Parsing tokens";
-    return Client::parse(Parser, IStream, std::cerr) ? 0 : 42;
+    return Parser.parse(IStream) ? 0 : 42;
   }
 
   if (OutputToken) {

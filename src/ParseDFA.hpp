@@ -16,6 +16,8 @@ public:
   bool error() const;
   bool accept() const;
   Tree buildTree();
+  bool parse(std::istream &IStream);
+  bool parse(std::istream &IStream, std::ostream &OStream);
 
 private:
   struct Production {

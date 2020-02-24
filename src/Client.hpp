@@ -8,8 +8,6 @@ namespace Client {
   bool verifyFileName(const std::string &FileName);
   bool scan(std::istream &IStream);
   bool scan(std::istream &IStream, std::ostream &OStream);
-  bool parse(Parse::DFA &Parser, std::istream &IStream);
-  bool parse(Parse::DFA &Parser, std::istream &IStream, std::ostream &OStream);
 };
 
 #endif // CLIENT_HPP

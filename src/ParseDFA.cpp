@@ -55,6 +55,18 @@ bool Parse::DFA::accept() const {
   return false;
 }
 
+bool Parse::DFA::parse(std::istream &IStream) {
+  Lex::Token Tok;
+  while (IStream >> Tok) {
+    read(Tok);
+    if (errorState) {
+      return false;
+    }
+    IStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+  return accept();
+}
+
 Parse::Tree Parse::DFA::buildTree() {
   std::unique_ptr<Node> Root = std::make_unique<Node>(StartSymbol);
   for (auto &Child : NodeStack) {
