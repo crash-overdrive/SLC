@@ -3,12 +3,12 @@
 #include "catch.hpp"
 
 TEST_CASE("hierarchical scopes", "[scope]"){
-	Scope root{"", Scope::Type::GLOBAL, nullptr};
-	root.insertChildren("foo", Scope::Type::PACKAGE);
-	Scope& foo = root["foo"];
-	foo.insertChildren("bar", Scope::Type::PACKAGE);
-	Scope& bar = foo["bar"];
-	bar.insertChildren("canary", Scope::Type::CLASS);
+	ENV::Scope root{"", ENV::Scope::Type::GLOBAL, nullptr};
+	root.insertChildren("foo", ENV::Scope::Type::PACKAGE);
+	ENV::Scope& foo = root["foo"];
+	foo.insertChildren("bar", ENV::Scope::Type::PACKAGE);
+	ENV::Scope& bar = foo["bar"];
+	bar.insertChildren("canary", ENV::Scope::Type::CLASS);
 
 	SECTION("scopes can be nested") {
 		REQUIRE(foo.getName() == "foo");
@@ -18,17 +18,17 @@ TEST_CASE("hierarchical scopes", "[scope]"){
 	}
 
 	SECTION("scopes will reject duplicates") {
-		bool success = foo.insertChildren("bar", Scope::Type::CLASS);
+		bool success = foo.insertChildren("bar", ENV::Scope::Type::CLASS);
 		REQUIRE(!success);
-		Scope& bar2 = foo["bar"];
+		ENV::Scope& bar2 = foo["bar"];
 		REQUIRE(bar2.contains("canary"));
-		success = foo.insertChildren("bar", Scope::Type::PACKAGE);
+		success = foo.insertChildren("bar", ENV::Scope::Type::PACKAGE);
 		REQUIRE(!success);
-		Scope& bar3 = foo["bar"];
+		ENV::Scope& bar3 = foo["bar"];
 		REQUIRE(bar3.contains("canary"));
-		success = root.insertChildren("foo", Scope::Type::PACKAGE);
+		success = root.insertChildren("foo", ENV::Scope::Type::PACKAGE);
 		REQUIRE(!success);
-		Scope& fook = root["foo"];
+		ENV::Scope& fook = root["foo"];
 		REQUIRE(fook.contains("bar"));
 	}
 }

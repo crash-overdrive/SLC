@@ -1,32 +1,32 @@
-#include "Scope.hpp"
+#include "ENV::Scope.hpp"
 
-Scope::Scope(){}
+ENV::Scope::Scope(){}
 
-Scope::Scope(const std::string& name, Scope::Type type, Scope* parent): name(name), type(type), parent(parent){}
+ENV::Scope::Scope(const std::string& name, ENV::Scope::Type type, ENV::Scope* parent): name(name), type(type), parent(parent){}
 
-bool Scope::insertChildren(const std::string& key, Scope::Type type){
-	std::pair<std::map<std::string, Scope>::iterator, bool> ret = children.emplace(std::make_pair(key, Scope(key, type, this)));
+bool ENV::Scope::insertChildren(const std::string& key, ENV::Scope::Type type){
+	std::pair<std::map<std::string, ENV::Scope>::iterator, bool> ret = children.emplace(std::make_pair(key, ENV::Scope(key, type, this)));
 	return ret.second;
 }
 
-bool Scope::contains(const std::string& key){
+bool ENV::Scope::contains(const std::string& key){
 	return children.count(key);
 }
 
-Scope& Scope::operator[](const std::string& key){
+ENV::Scope& ENV::Scope::operator[](const std::string& key){
 	return children[key];
 }
 
-const std::string Scope::getName(){
+const std::string ENV::Scope::getName(){
 	return name;
 }
 
-const std::string Scope::getFullyQualifiedName(){
+const std::string ENV::Scope::getFullyQualifiedName(){
 	if(!parent || parent->type == Type::GLOBAL)
 		return name;
 	return parent->getFullyQualifiedName() + "." + name;
 }
 
-Scope::~Scope(){
+ENV::Scope::~Scope(){
 
 }
