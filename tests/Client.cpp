@@ -40,7 +40,7 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
   ParserStream >> Parser;
   std::ifstream TokenStream;
 
-  SECTION("parser accepts") {
+  SECTION("parser accepts a1") {
     for (const auto &FileName : A1ValidParserTokens) {
       SECTION(FileName) {
         TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
@@ -48,6 +48,23 @@ TEST_CASE("client parser detects JoosW", "[client-parser]") {
         INFO("This is the parse tree: \n" << Parser.buildTree());
         REQUIRE(status);
       }
+    }
+  }
+
+  SECTION("parser accepts a2") {
+    SECTION("import") {
+      TokenStream.open(TestDataDir + "/tokens/a2/J1_classimportMain.tokens");
+      INFO("The file is open: " << std::boolalpha << TokenStream.is_open());
+      bool status = Client::parse(Parser, TokenStream);
+      INFO("This is the parse tree: \n" << Parser.buildTree());
+      REQUIRE(status);
+    }
+
+    SECTION("package") {
+      TokenStream.open(TestDataDir + "/tokens/a2/J1_classimportVector.tokens");
+      bool status = Client::parse(Parser, TokenStream);
+      INFO("This is the parse tree: \n" << Parser.buildTree());
+      REQUIRE(status);
     }
   }
 

@@ -8,13 +8,14 @@ add_executable(joosc-test ${SOURCES})
 target_include_directories(joosc-test PRIVATE ${slc_SOURCE_DIR}/src)
 target_link_libraries(joosc-test slc)
 
-file(COPY data/grammar data/java
+file(COPY data/grammar data/java data/tokens
   DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata
 )
 
 file(MAKE_DIRECTORY
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens/a1
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens/a2
 )
 file(GLOB_RECURSE JAVA_TESTS data/java/a1/*)
 
