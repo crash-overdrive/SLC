@@ -15,9 +15,8 @@ file(COPY data/grammar data/java
 file(MAKE_DIRECTORY
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens/a1
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata/tokens/a2
 )
-file(GLOB_RECURSE JAVA_TESTS data/java/*)
+file(GLOB_RECURSE JAVA_TESTS data/java/a1/*)
 
 list(REMOVE_ITEM JAVA_TESTS
   ${CMAKE_CURRENT_SOURCE_DIR}/data/java/a1/Je_1_Escapes_1DigitOctal_1.java
