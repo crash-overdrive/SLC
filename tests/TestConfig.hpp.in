@@ -140,7 +140,7 @@ const std::vector<std::string> A1ValidJavaFiles{
 };
 
 const std::vector<std::string> A1ErrorScanner{
-    "Je_1_Escapes_1DigitOctal_1.java"
+    "Je_1_Escapes_1DigitOctal_1.java",
     "Je_1_Escapes_1DigitOctal_2.java",
     "Je_1_Escapes_1DigitOctal_3.java",
     "Je_1_Escapes_1DigitOctal_4.java",
