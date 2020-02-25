@@ -57,6 +57,5 @@ int main(int argc, char *argv[]) {
 
   if (OutputToken) {
   } else {
-    return Client::preProcess(IStream, FileName) ? 0 : 42;
   }
 }
