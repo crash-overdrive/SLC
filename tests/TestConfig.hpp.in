@@ -140,7 +140,7 @@ const std::vector<std::string> A1ValidJavaFiles{
 };
 
 const std::vector<std::string> A1ErrorScanner{
-    "Je_1_Escapes_1DigitOctal_1.java"
+    "Je_1_Escapes_1DigitOctal_1.java",
     "Je_1_Escapes_1DigitOctal_2.java",
     "Je_1_Escapes_1DigitOctal_3.java",
     "Je_1_Escapes_1DigitOctal_4.java",
@@ -319,7 +319,7 @@ const std::vector<std::string> A1ErrorWeeder{
     "Je_1_Cast_NonstaticField.tokens",
     "Je_1_CastToArrayLvalue.tokens",
     "Je_1_Cast_ToMethodInvoke.tokens",
-    "Je_1_ClassDeclaration_WrongFileName_Dot.tokens",
+    //"Je_1_ClassDeclaration_WrongFileName_Dot.foo.tokens",
     "Je_1_ClassDeclaration_WrongFileName_Suffix.tokens",
     "Je_1_ClassDeclaration_WrongFileName.tokens",
     "Je_1_FinalField_NoInitializer.tokens",
