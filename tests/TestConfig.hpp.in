@@ -6,7 +6,7 @@
 
 const std::string TestDataDir = "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata";
 
-const std::vector<std::string> A1ValidJavaFiles{
+const std::vector<std::string> A1Accept{
     "J1_01.java",
     "J1_1_AmbiguousName_AccessResultFromMethod.java",
     "J1_1_Cast_Complement.java",

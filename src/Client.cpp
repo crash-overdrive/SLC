@@ -32,29 +32,32 @@ void Client::setStdlib(bool IncludeStdlib) {
 bool Client::process() {
   for (const auto &FileName : FileNames) {
     if (!verifyFileName(FileName)) {
-      std::cerr << FileName << " has the wrong extension" << '\n';
+      std::cerr << FileName << " has the wrong extension\n";
       return false;
     };
     if (BreakPoint == Preprocess) {
-      std::cerr << FileName << " is valid format" << '\n';
+      std::cerr << FileName << " is valid format\n";
       continue;
     }
 
     std::ifstream JavaStream;
     JavaStream.open(FileName);
     if (!JavaStream.is_open()) {
-      std::cerr << FileName << " could not be opened" << '\n';
+      std::cerr << FileName << " could not be opened\n";
       return false;
     }
 
     std::vector<Lex::Token> Tokens;
-    if (!scan(JavaStream, Tokens))
+    if (!scan(JavaStream, Tokens)) {
+      std::cerr << FileName << " is not recognized by scanner\n";
       return false;
+    }
     if (BreakPoint == Scan)
       continue;
 
     Parse::Tree Tree;
     if (!parse(Tokens, Tree)) {
+      std::cerr << FileName << " is not recognized by parser\n";
       return false;
     }
     if (BreakPoint == Parse)
@@ -72,7 +75,6 @@ bool Client::verifyFileName(const std::string &FileName) {
   return FileName.compare(Position, Ext.size(), Ext) == 0;
 }
 
-
 bool Client::scan(std::istream &Stream, std::vector<Lex::Token> &Tokens) {
   if (Scanner->scan(Stream)) {
     Tokens = Scanner->getTokens();
@@ -85,6 +87,7 @@ bool Client::parse(const std::vector<Lex::Token> &Tokens,
                    Parse::Tree &ParseTree) {
   if (Parser->parse(Tokens)) {
     ParseTree = Parser->buildTree();
+    Parser->clear();
     return true;
   }
   return false;

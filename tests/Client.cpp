@@ -4,12 +4,18 @@
 #include "catch.hpp"
 #include <fstream>
 
-TEST_CASE("client process", "[client-process]") {
-  std::ifstream ParserStream;
+TEST_CASE("client process", "[client]") {
+  Lex::Scanner Scanner;
+  std::ifstream ScannerStream;
+  ScannerStream.open(TokensLexFile);
+  ScannerStream >> Scanner;
+
   Parse::DFA Parser;
+  std::ifstream ParserStream;
   ParserStream.open(JoosLRFile);
   ParserStream >> Parser;
-  Client Client;
+
+  Client Client(Scanner, Parser);
 
   SECTION("preprocess step") {
     Client.setBreakPoint(Client::Preprocess);
@@ -26,12 +32,51 @@ TEST_CASE("client process", "[client-process]") {
       REQUIRE_FALSE(Client.process());
     }
     SECTION("reject first dot") {
-      Client.addJavaFile("Je_1_ClassDeclaration_WrongFileName_Dot.foo.java");
+      Client.addJavaFile("bar.foo.java");
       REQUIRE_FALSE(Client.process());
     }
   }
 
-  SECTION("basic multiple files") {
+  SECTION("a1") {
+    SECTION("preprocess") {
+      Client.setBreakPoint(Client::Preprocess);
+      for (const auto &FileName : A1ErrorPreprocess) {
+        SECTION(FileName) {
+          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+          REQUIRE_FALSE(Client.process());
+        }
+      }
+    }
+    SECTION("scan") {
+      Client.setBreakPoint(Client::Scan);
+      for (const auto &FileName : A1ErrorScan) {
+        SECTION(FileName) {
+          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+          REQUIRE_FALSE(Client.process());
+        }
+      }
+    }
+    SECTION("parse") {
+      Client.setBreakPoint(Client::Parse);
+      for (const auto &FileName : A1ErrorParse) {
+        SECTION(FileName) {
+          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+          REQUIRE_FALSE(Client.process());
+        }
+      }
+    }
+    SECTION("accept") {
+      Client.setBreakPoint(Client::Weed);
+      for (const auto &FileName : A1Accept) {
+        SECTION(FileName) {
+          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+          REQUIRE(Client.process());
+        }
+      }
+    }
+  }
+
+  SECTION("multiple files") {
     Client.addJavaFiles({
         TestDataDir +
             "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
