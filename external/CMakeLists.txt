@@ -1,4 +1,4 @@
-find_package(Java REQUIRED)
+find_package(Java 1.8 REQUIRED)
 include(UseJava)
 
 add_jar(jlalr
