@@ -54,8 +54,8 @@ DEC_INT_LITERAL @@@ 0|(1-9)(0-9)*
 OCT_INT_LITERAL @@@ 0(0-9)(0-9)*
 HEX_INT_LITERAL @@@ 0x((0-9)|(a-f)|(A-F))((0-9)|(a-f)|(A-F))*
 BOOLEAN_LITERAL @@@ (true)|(false)
-CHAR_LITERAL @@@ '((^'\r\n\\)|(\\\\|\\'|\\")|(\\((0-3)?(0-7)(0-7)?)))'
-STRING_LITERAL @@@ "((^"\r\n\\)|(\\\\|\\'|\\")|(\\((0-3)?(0-7)(0-7)?)))*"
+CHAR_LITERAL @@@ '((^'\r\n\\)|(\\\\|\\'|\\"|\\b|\\t|\\f|\\n|\\r)|(\\((0-3)?(0-7)(0-7)?)))'
+STRING_LITERAL @@@ "((^"\r\n\\)|(\\\\|\\'|\\"|\\b|\\t|\\f|\\n|\\r)|(\\((0-3)?(0-7)(0-7)?)))*"
 NULL_LITERAL @@@ null
 LPAREN @@@ \(
 RPAREN @@@ \)
@@ -73,7 +73,7 @@ NOT_EQUAL @@@ !=
 ASSIGN @@@ =
 GREATER @@@ >
 LESSER @@@ <
-EXCLAIMATION @@@ !
+EXCLAMATION @@@ !
 TILDA @@@ ~
 QUESTION @@@ \?
 COLON @@@ :

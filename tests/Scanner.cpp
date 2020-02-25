@@ -43,7 +43,7 @@ TEST_CASE("scanner detects Java", "[scanner-java]") {
         JavaStream.open(TestDataDir + "/java/a1/" + JavaFileName + ".java");
         INFO(JavaFileName + ".java");
 
-        REQUIRE(Scanner.scan(JavaStream));
+        CHECK(Scanner.scan(JavaStream));
         std::ostringstream ScanOstream;
         for (const auto &Token : Scanner.getTokens()) {
           ScanOstream << Token << '\n';
