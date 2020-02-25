@@ -13,7 +13,7 @@ TEST_CASE("scanner detects Java", "[scanner-java]") {
   std::ifstream JavaStream;
 
   SECTION("scanner accept") {
-    JavaStream.open(TestDataDir + "/java/J1_publicclasses.java");
+    JavaStream.open(TestDataDir + "/java/a1/J1_publicclasses.java");
     bool status = Scanner.scan(JavaStream);
     std::vector<Lex::Token> tokens = Scanner.getTokens();
     // for (auto const& token : tokens) {

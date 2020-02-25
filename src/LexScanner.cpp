@@ -13,6 +13,8 @@ std::istream &Lex::operator>>(std::istream& stream, Lex::Scanner& scanner)  {
   int shiftValue = 1;
   std::string line;
 
+  Lex::setAlphabets();
+
   while (std::getline(stream, line)) {
     int position = line.find(delimiter);
     std::string tokenType = line.substr(0, position);
@@ -82,10 +84,10 @@ bool Lex::Scanner::maximalMunch(std::deque<char> input) {
 
     if (currentState == finalDfa.trapState) {
       if (lastToken.Type == "") {
-        std::cout << "Scanning failed at position " << position << " didnt expect symbol: " << ch << std::endl;
         for (auto const& token : tokensGenerated) {
           std::cout << token << std::endl;
         }
+        std::cout << "Scanning failed at position " << position << " didnt expect symbol: " << ch << std::endl;
         return false;
       }
 
