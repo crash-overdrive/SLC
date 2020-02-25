@@ -2,11 +2,11 @@
 #define TESTCONFIG_HPP
 
 #include <string>
-#include <set>
+#include <vector>
 
 const std::string TestDataDir = "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata";
 
-const std::set<std::string> A1ValidJavaFiles{
+const std::vector<std::string> A1ValidJavaFiles{
     "J1_01.tokens",
     "J1_1_AmbiguousName_AccessResultFromMethod.tokens",
     "J1_1_Cast_Complement.tokens",
@@ -139,7 +139,7 @@ const std::set<std::string> A1ValidJavaFiles{
     "J2_staticfielddeclaration.tokens",
 };
 
-const std::set<std::string> A1ErrorScanner{
+const std::vector<std::string> A1ErrorScanner{
     "Je_1_Escapes_1DigitOctal_1.java"
     "Je_1_Escapes_1DigitOctal_2.java",
     "Je_1_Escapes_1DigitOctal_3.java",
@@ -154,7 +154,7 @@ const std::set<std::string> A1ErrorScanner{
     "Je_1_NonJoosConstructs_Unicode.java",
 };
 
-const std::set<std::string> A1ErrorParser{
+const std::vector<std::string> A1ErrorParser{
     "Je_16_Circularity_1.tokens",
     "Je_16_Circularity_2.tokens",
     "Je_16_Circularity_3.tokens",
@@ -307,7 +307,7 @@ const std::set<std::string> A1ErrorParser{
     "Je_Throws.tokens",
 };
 
-const std::set<std::string> A1ErrorWeeder{
+const std::vector<std::string> A1ErrorWeeder{
     "Je_1_AbstractClass_Final.tokens",
     "Je_1_AbstractMethod_Body.tokens",
     "Je_1_AbstractMethodCannotBeFinal.tokens",

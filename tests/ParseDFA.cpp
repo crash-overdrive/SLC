@@ -1,6 +1,6 @@
 #include "ParseDFA.hpp"
-#include "TestConfig.hpp"
 #include "Config.hpp"
+#include "TestConfig.hpp"
 #include "catch.hpp"
 #include <fstream>
 #include <sstream>
@@ -43,7 +43,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
         {"BOF", "BOF"}, {"id", "3"}, {"-", "-"}, {"(", "("},     {"id", "5"},
         {"-", "-"},     {"id", "4"}, {")", ")"}, {"EOF", "EOF"},
     };
-    for (const auto &Tok: V) {
+    for (const auto &Tok : V) {
       DFA.read(Tok);
     }
     REQUIRE(DFA.accept());
@@ -71,7 +71,9 @@ TEST_CASE("parser detects JoosW", "[parse-joos]") {
   std::ifstream TokenStream;
 
   SECTION("parser accepts a1") {
-    for (const auto &FileName : A1ValidParserTokens) {
+    std::vector<std::string> Files(A1ValidJavaFiles);
+    Files.insert(Files.end(), A1ErrorWeeder.begin(), A1ErrorWeeder.end());
+    for (const auto &FileName : Files) {
       SECTION(FileName) {
         TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
         bool status = Parser.parse(TokenStream);
@@ -99,7 +101,7 @@ TEST_CASE("parser detects JoosW", "[parse-joos]") {
   }
 
   SECTION("parser rejects") {
-    for (const auto &FileName : A1ErrorParserTokens) {
+    for (const auto &FileName : A1ErrorParser) {
       SECTION(FileName) {
         TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
         CHECK_FALSE(Parser.parse(TokenStream));

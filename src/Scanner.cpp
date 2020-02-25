@@ -8,6 +8,11 @@
 
 std::vector<int> trapState = {-1};
 
+bool Lex::Scanner::scan(std::istream &IStream) {
+  (void)IStream;
+  return true;
+}
+
 bool Lex::Dfa::transitionForward(char symbol) {
   // adding symbol to processedTransitionSymbols
   processedTransitionSymbols.push_back(symbol);
