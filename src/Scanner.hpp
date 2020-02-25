@@ -12,7 +12,7 @@ class Scanner {
 public:
   void read(const char c);
   bool error() const;
-  // vector<Token> buildTokens();
+  bool scan(std::istream &IStream);
 
 private:
   friend std::istream &operator<<(std::istream &IStream, Scanner &Scanner);

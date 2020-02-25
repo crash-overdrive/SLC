@@ -16,7 +16,7 @@ TEST_CASE("AST built from ParseTree", "[ASTBuilder][!hide]") {
 
   SECTION("J1_finalclass.tokens") {
     TokenStream.open(TestDataDir + "/tokens/J1_finalclass.tokens");
-    Client::parse(Parser, TokenStream);
+    Parser.parse(TokenStream);
     Parse::Tree T = Parser.buildTree();
 
     const Parse::Node &ParseStart =  T.getRoot();

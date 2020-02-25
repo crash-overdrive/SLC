@@ -1,4 +1,5 @@
 #include "ParseDFA.hpp"
+#include "Config.hpp"
 #include "TestConfig.hpp"
 #include "catch.hpp"
 #include <fstream>
@@ -42,7 +43,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
         {"BOF", "BOF"}, {"id", "3"}, {"-", "-"}, {"(", "("},     {"id", "5"},
         {"-", "-"},     {"id", "4"}, {")", ")"}, {"EOF", "EOF"},
     };
-    for (const auto &Tok: V) {
+    for (const auto &Tok : V) {
       DFA.read(Tok);
     }
     REQUIRE(DFA.accept());
@@ -59,5 +60,52 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
     }
     REQUIRE_FALSE(DFA.accept());
     REQUIRE(DFA.error());
+  }
+}
+
+TEST_CASE("parser detects JoosW", "[parse-joos]") {
+  Parse::DFA Parser;
+  std::ifstream ParserStream;
+  ParserStream.open(JoosLRFile);
+  ParserStream >> Parser;
+  std::ifstream TokenStream;
+
+  SECTION("parser accepts a1") {
+    std::vector<std::string> Files(A1ValidJavaFiles);
+    Files.insert(Files.end(), A1ErrorWeeder.begin(), A1ErrorWeeder.end());
+    for (const auto &FileName : Files) {
+      SECTION(FileName) {
+        TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
+        bool status = Parser.parse(TokenStream);
+        INFO("This is the parse tree: \n" << Parser.buildTree());
+        REQUIRE(status);
+      }
+    }
+  }
+
+  SECTION("parser accepts a2") {
+    SECTION("import") {
+      TokenStream.open(TestDataDir + "/tokens/a2/J1_classimportMain.tokens");
+      INFO("The file is open: " << std::boolalpha << TokenStream.is_open());
+      bool status = Parser.parse(TokenStream);
+      INFO("This is the parse tree: \n" << Parser.buildTree());
+      REQUIRE(status);
+    }
+
+    SECTION("package") {
+      TokenStream.open(TestDataDir + "/tokens/a2/J1_classimportVector.tokens");
+      bool status = Parser.parse(TokenStream);
+      INFO("This is the parse tree: \n" << Parser.buildTree());
+      REQUIRE(status);
+    }
+  }
+
+  SECTION("parser rejects") {
+    for (const auto &FileName : A1ErrorParser) {
+      SECTION(FileName) {
+        TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
+        CHECK_FALSE(Parser.parse(TokenStream));
+      }
+    }
   }
 }
