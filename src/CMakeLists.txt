@@ -23,17 +23,8 @@ add_custom_command(
 )
 add_custom_target(lr1 DEPENDS ${LR1_FILE})
 
-
-file(COPY grammar/tokens2.lex
-  DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-)
-
-set(TOKENSSPEC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex
-  CACHE INTERNAL ""
-)
-set(TOKENS_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex
-  CACHE INTERNAL ""
-)
+set(TOKENSSPEC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex)
+set(TOKENS_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex)
 add_custom_command(
   OUTPUT ${TOKENS_FILE}
   COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/uglyfy.py
