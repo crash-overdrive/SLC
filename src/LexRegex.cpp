@@ -75,7 +75,7 @@ std::vector<Lex::RegexElement> Lex::parseRegex(std::string regexPattern) {
        } else if (miscellaneousElements.find(token) != miscellaneousElements.end()) { // check if miscellaneous element is escaped
           parsedRegex.push_back(RegexElement('\\'));
        } else { // ERROR
-          assert(("Unexpected element found after \\ while parsing regex", false));
+          //assert(("Unexpected element found after \\ while parsing regex", false));
        }
     } else if (regexOperators.find(token) != regexOperators.end() ||
               brackets.find(token) != brackets.end()) { // check if token is an operator or bracket
@@ -163,7 +163,7 @@ std::vector<Lex::RegexElement> Lex::convertRegexToPostFix(std::string regexPatte
         }
         operatorStack.pop();
       } else {
-        assert(("Unexpected character has an attribute of operator in concatenatedRegexPattern", false));
+        //assert(("Unexpected character has an attribute of operator in concatenatedRegexPattern", false));
       }
     } else {
       postFixRegexPattern.push_back(Lex::RegexElement(token, false));

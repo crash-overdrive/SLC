@@ -109,7 +109,7 @@ int Lex::Dfa::getNextState(int currentState, char transitionSymbol) {
 
   if (transitions.find(currentState) == transitions.end() ||
   transitions.find(currentState)->second.find(transitionSymbol) == transitions.find(currentState)->second.end()) {
-    assert(("Dfa has no transition for character", false));
+    //assert(("Dfa has no transition for character", false));
   }
 
   return transitions[currentState][transitionSymbol];

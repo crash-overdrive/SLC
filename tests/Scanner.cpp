@@ -16,11 +16,12 @@ TEST_CASE("scanner detects Java", "[scanner-java]") {
     JavaStream.open(TestDataDir + "/java/a1/J1_publicclasses.java");
     bool status = Scanner.scan(JavaStream);
     std::vector<Lex::Token> tokens = Scanner.getTokens();
-    // for (auto const& token : tokens) {
-    //   INFO(token);
-    // }
+    INFO(tokens.size());
+    for (auto const &token : tokens) {
+      INFO("Tokens" << token.Lexeme);
+      INFO("Tokens" << token.Type);
+    }
     REQUIRE(status);
-
   }
 
   SECTION("scanner rejects") {
@@ -32,18 +33,25 @@ TEST_CASE("scanner detects Java", "[scanner-java]") {
     }
   }
 
-  SECTION("scanner correct output") {
+  SECTION("scanner output") {
     for (const auto &TokensFileName : A1ValidJavaFiles) {
       SECTION(TokensFileName) {
         std::ifstream TokensStream;
         std::string JavaFileName(TokensFileName);
         size_t pos = JavaFileName.find(".tokens");
         JavaFileName.erase(pos, JavaFileName.size());
-        JavaStream.open(TestDataDir + "/java/a1/" + JavaFileName);
+        JavaStream.open(TestDataDir + "/java/a1/" + JavaFileName + ".java");
+        INFO(JavaFileName + ".java");
+
+        REQUIRE(Scanner.scan(JavaStream));
+        std::ostringstream ScanOstream;
+        for (const auto &Token : Scanner.getTokens()) {
+          ScanOstream << Token << '\n';
+        }
+
         TokensStream.open(TestDataDir + "/tokens/a1/" + TokensFileName);
-        std::istreambuf_iterator<char> TokenIt(TokensStream);
-        std::istreambuf_iterator<char> JavaIt(JavaStream);
-        std::equal(TokenIt, {}, JavaIt, {});
+        std::string TokenStr(std::istreambuf_iterator<char>(TokensStream), {});
+        REQUIRE(ScanOstream.str() == TokenStr);
       }
     }
   }

@@ -50,7 +50,7 @@ std::istream &Lex::operator>>(std::istream& stream, Lex::Scanner& scanner)  {
 
   scanner.finalDfa = Lex::convertToDfa(finalNfa);
 
-  // finalDfa.printInfo();
+   //scanner.finalDfa.printInfo();
   return stream;
 }
 
@@ -92,7 +92,7 @@ bool Lex::Scanner::maximalMunch(std::deque<char> input) {
       }
 
       if (stripTokens.find(lastToken.Type) == stripTokens.end()) {
-        tokensGenerated.push_back(lastToken);
+        matchedTokens.push_back(lastToken);
       }
       lastToken = Lex::Token();
       currentState = finalDfa.startState;
