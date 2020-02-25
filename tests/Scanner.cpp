@@ -34,7 +34,14 @@ TEST_CASE("scanner detects Java", "[scanner-java]") {
   }
 
   SECTION("scanner output") {
-    for (const auto &TokensFileName : A1ValidJavaFiles) {
+    std::vector<std::string> FileNames;
+    FileNames.insert(FileNames.end(), A1ValidJavaFiles.begin(),
+                     A1ValidJavaFiles.end());
+    FileNames.insert(FileNames.end(), A1ErrorWeeder.begin(),
+                     A1ErrorWeeder.end());
+    FileNames.insert(FileNames.end(), A1ErrorParser.begin(),
+                     A1ErrorParser.end());
+    for (const auto &TokensFileName : FileNames) {
       SECTION(TokensFileName) {
         std::ifstream TokensStream;
         std::string JavaFileName(TokensFileName);
