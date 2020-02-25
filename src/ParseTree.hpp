@@ -35,6 +35,7 @@ private:
 
 class Tree {
 public:
+  Tree();
   Tree(std::unique_ptr<Node> Head);
 
   class Iterator {

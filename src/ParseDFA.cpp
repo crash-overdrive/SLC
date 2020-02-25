@@ -67,6 +67,16 @@ bool Parse::DFA::parse(std::istream &IStream) {
   return accept();
 }
 
+bool Parse::DFA::parse(const std::vector<Lex::Token> &Tokens) {
+  for (const auto &Token : Tokens) {
+    read(Token);
+    if (errorState) {
+      return false;
+    }
+  }
+  return accept();
+}
+
 Parse::Tree Parse::DFA::buildTree() {
   std::unique_ptr<Node> Root = std::make_unique<Node>(StartSymbol);
   for (auto &Child : NodeStack) {

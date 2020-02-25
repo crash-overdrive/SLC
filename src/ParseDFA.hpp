@@ -3,8 +3,6 @@
 
 #include "LexToken.hpp"
 #include "ParseTree.hpp"
-#include <string>
-#include <unordered_map>
 
 namespace Parse {
 
@@ -17,7 +15,7 @@ public:
   bool accept() const;
   Tree buildTree();
   bool parse(std::istream &IStream);
-  bool parse(std::istream &IStream, std::ostream &OStream);
+  bool parse(const std::vector<Lex::Token> &Tokens);
 
 private:
   struct Production {

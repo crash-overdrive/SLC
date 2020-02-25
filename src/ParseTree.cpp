@@ -45,6 +45,8 @@ const Parse::Node *Parse::Node::getFirstChild() const {
   return Children.size() > 0 ? Children[0].get() : nullptr;
 }
 
+Parse::Tree::Tree() {}
+
 Parse::Tree::Tree(std::unique_ptr<Node> Root) : Root(std::move(Root)) {
   this->Root->Level = 0;
   for (auto &Parent : *this) {
