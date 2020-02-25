@@ -87,7 +87,9 @@ bool Lex::Scanner::maximalMunch(std::deque<char> input) {
         for (auto const& token : tokensGenerated) {
           std::cout << token << std::endl;
         }
-        std::cout << "Scanning failed at position " << position << " didnt expect symbol: " << ch << std::endl;
+        std::string garbage(processedTransitionSymbols.begin(), processedTransitionSymbols.end());
+
+        std::cout << "Scanning failed at position " << position << " didnt expect symbol: " << ch << " parsed: " << garbage << std::endl;
         return false;
       }
 
