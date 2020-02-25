@@ -63,25 +63,12 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
   }
 }
 
-TEST_CASE("parser detects JoosW", "[parse-joos]") {
+TEST_CASE("parser detects JoosW", "[parse-joos][!hide]") {
   Parse::DFA Parser;
   std::ifstream ParserStream;
   ParserStream.open(JoosLRFile);
   ParserStream >> Parser;
   std::ifstream TokenStream;
-
-  SECTION("parser accepts a1") {
-    std::vector<std::string> Files(A1ValidJavaFiles);
-    Files.insert(Files.end(), A1ErrorWeeder.begin(), A1ErrorWeeder.end());
-    for (const auto &FileName : Files) {
-      SECTION(FileName) {
-        TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
-        bool status = Parser.parse(TokenStream);
-        INFO("This is the parse tree: \n" << Parser.buildTree());
-        REQUIRE(status);
-      }
-    }
-  }
 
   SECTION("parser accepts a2") {
     SECTION("import") {
@@ -97,15 +84,6 @@ TEST_CASE("parser detects JoosW", "[parse-joos]") {
       bool status = Parser.parse(TokenStream);
       INFO("This is the parse tree: \n" << Parser.buildTree());
       REQUIRE(status);
-    }
-  }
-
-  SECTION("parser rejects") {
-    for (const auto &FileName : A1ErrorParser) {
-      SECTION(FileName) {
-        TokenStream.open(TestDataDir + "/tokens/a1/" + FileName);
-        CHECK_FALSE(Parser.parse(TokenStream));
-      }
     }
   }
 }

@@ -1,3 +1,0 @@
-TOKENFILE=$(basename "$1" .java).tokens
-python tools/tokenizer.py build/lib/tokens.lex ${1} > ${TOKENFILE} || (echo "ERROR: in Tokenizing" && exit 42)
-./build/bin/joosc --input-tokens ${TOKENFILE} || (echo "ERROR in Parsing" && exit 42)
