@@ -90,5 +90,6 @@ bool Client::parse(const std::vector<Lex::Token> &Tokens,
     Parser->clear();
     return true;
   }
+  std::cerr << Parser->buildTree();
   return false;
 }

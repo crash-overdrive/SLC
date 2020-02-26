@@ -82,7 +82,6 @@ TEST_CASE("client process", "[client]") {
       for (const auto &Group: A2Valid) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
-            INFO(FileName << '\n');
             Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
           }
           REQUIRE(Client.process());
