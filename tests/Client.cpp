@@ -67,9 +67,24 @@ TEST_CASE("client process", "[client]") {
     }
     SECTION("accept") {
       Client.setBreakPoint(Client::Weed);
-      for (const auto &FileName : A1Accept) {
+      for (const auto &FileName : A1Valid) {
         SECTION(FileName) {
           Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+          REQUIRE(Client.process());
+        }
+      }
+    }
+  }
+
+  SECTION("a2") {
+    SECTION("accept") {
+      Client.setBreakPoint(Client::Weed);
+      for (const auto &Group: A2Valid) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            INFO(FileName << '\n');
+            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+          }
           REQUIRE(Client.process());
         }
       }
