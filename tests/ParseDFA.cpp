@@ -63,7 +63,7 @@ TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
   }
 }
 
-TEST_CASE("parser detects JoosW", "[parse-joos][!hide]") {
+TEST_CASE("parser detects Java", "[parse-java]") {
   Parse::DFA Parser;
   std::ifstream ParserStream;
   ParserStream.open(JoosLRFile);
