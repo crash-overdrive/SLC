@@ -72,8 +72,8 @@ bool Client::process() {
     ASTRoot->accept(Visitor);
     ASTList.emplace_back(std::move(ASTRoot));
   }
-  Env::Scope PackageScope(Env::Scope::Type::GLOBAL);
-  if (!buildEnv(ASTList, PackageScope)) {
+  Env::TypeLinkList Links;
+  if (!buildEnv(ASTList, Links)) {
     std::cerr << "Failed to build environment\n";
     return false;
   }
@@ -116,14 +116,20 @@ void Client::buildAST(const Parse::Tree &ParseTree,
   dispatch(ParseRoot, *ASTRoot);
 }
 
-bool Client::buildEnv(const std::vector<std::unique_ptr<AST::Start>> &ASTList,
-                      Env::Scope &PackageScope) {
-  Env::ScopeBuilder Builder;
-  for (const auto &ASTRoot : ASTList) {
-    Builder.setRoot(PackageScope);
-    ASTRoot->accept(Builder);
-    if (Builder.error())
-      return false;
+bool Client::buildEnv(std::vector<std::unique_ptr<AST::Start>> &ASTList,
+                      Env::TypeLinkList &Links) {
+  for (auto &ASTRoot : ASTList) {
+    Links.addAST(std::move(ASTRoot));
   }
+  Env::ScopeBuilder Builder;
+  Links.visit(Builder);
+  return !Builder.error();
+}
+
+bool Client::typeLink(Env::TypeLinkList &Links) {
+  Env::ImportVisitor Visitor;
+  Links.visit(Visitor);
+  if (Visitor.error())
+    return false;
   return true;
 }
