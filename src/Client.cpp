@@ -32,7 +32,7 @@ void Client::setStdlib(bool IncludeStdlib) {
 }
 
 bool Client::process() {
-  std::vector<AST::Node> ASTList;
+  std::vector<std::unique_ptr<AST::Start>> ASTList;
   for (const auto &FileName : FileNames) {
     if (!verifyFileName(FileName)) {
       std::cerr << FileName << " has the wrong extension\n";
@@ -66,11 +66,19 @@ bool Client::process() {
     if (BreakPoint == Parse)
       continue;
 
-    AST::Start ASTRoot;
+    std::unique_ptr<AST::Start> ASTRoot = std::make_unique<AST::Start>();
     buildAST(Tree, ASTRoot);
-    //AST::PrintVisitor PrintVisitor = AST::PrintVisitor(std::cerr);
-    //ASTRoot.accept(PrintVisitor);
+    AST::PrintVisitor Visitor = AST::PrintVisitor(std::cerr);
+    ASTRoot->accept(Visitor);
+    ASTList.emplace_back(std::move(ASTRoot));
   }
+  Env::Scope PackageScope(Env::Scope::Type::GLOBAL);
+  if (!buildEnv(ASTList, PackageScope)) {
+    std::cerr << "Failed to build environment\n";
+    return false;
+  }
+  if (BreakPoint == Environment)
+    return true;
   return true;
 }
 
@@ -102,7 +110,20 @@ bool Client::parse(const std::vector<Lex::Token> &Tokens,
   return false;
 }
 
-void Client::buildAST(const Parse::Tree &ParseTree, AST::Node &ASTRoot) {
+void Client::buildAST(const Parse::Tree &ParseTree,
+                      std::unique_ptr<AST::Start> &ASTRoot) {
   const Parse::Node &ParseRoot = ParseTree.getRoot();
-  dispatch(ParseRoot, ASTRoot);
+  dispatch(ParseRoot, *ASTRoot);
+}
+
+bool Client::buildEnv(const std::vector<std::unique_ptr<AST::Start>> &ASTList,
+                      Env::Scope &PackageScope) {
+  Env::ScopeBuilder Builder;
+  for (const auto &ASTRoot : ASTList) {
+    Builder.setRoot(PackageScope);
+    ASTRoot->accept(Builder);
+    if (Builder.error())
+      return false;
+  }
+  return true;
 }

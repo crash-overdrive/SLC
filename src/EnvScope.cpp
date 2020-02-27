@@ -1,5 +1,7 @@
 #include "EnvScope.hpp"
 
+Env::Scope::Scope(Type type) : name(), type(type), children() {}
+
 Env::Scope::Scope(const std::string &name, Type type)
     : name(name), type(type), children() {}
 
@@ -47,3 +49,41 @@ Env::Scope *Env::Scope::addType(const std::string &name, Type type) {
 const std::string &Env::Scope::getName() const { return name; }
 
 Env::Scope::Type Env::Scope::getType() const { return type; }
+
+void Env::ScopeBuilder::visit(const AST::Start &Start) {
+  for (const auto &Child : Start.getChildren()) {
+    Child->accept(*this);
+  }
+}
+
+Env::ScopeBuilder::ScopeBuilder() : errorState(false), type(Scope::GLOBAL) {}
+
+void Env::ScopeBuilder::visit(const AST::PackageDeclaration &Decl) {
+  type = Scope::PACKAGE;
+  for (const auto &Child : Decl.getChildren()) {
+    Child->accept(*this);
+    if (errorState)
+      return;
+  }
+}
+
+void Env::ScopeBuilder::visit(const AST::ClassDeclaration &Decl) {
+  if (type == Scope::GLOBAL)
+    return;
+  type = Scope::CLASS;
+  for (const auto &Child : Decl.getChildren()) {
+    Child->accept(*this);
+    if (errorState)
+      return;
+  }
+}
+
+void Env::ScopeBuilder::visit(const AST::Identifier &Identifier) {
+  Current = Current->update(Identifier.getName(), type);
+  if (!Current)
+    errorState = true;
+}
+
+void Env::ScopeBuilder::setRoot(Scope &Scope) { Current = &Scope; }
+
+bool Env::ScopeBuilder::error() const { return errorState; }

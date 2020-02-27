@@ -33,7 +33,7 @@ public:
 private:
   std::ostream &Stream;
   unsigned int Level;
-  void acceptChildren(const AST::Node &Node);
+  void acceptChildrenLevel(const AST::Node &Node);
 };
 
 } // namespace AST

@@ -10,6 +10,8 @@ namespace Env {
 class Scope {
 public:
   enum Type { GLOBAL, PACKAGE, CLASS, INTERFACE };
+
+  Scope(Type type);
   Scope(const std::string &name, Type type);
   Scope *update(const std::string &name, Type type);
   Scope *find(const std::string &name);
@@ -26,12 +28,19 @@ private:
 
 class ScopeBuilder : public AST::Visitor {
 public:
-  void setRoot(Scope &Scope) const;
+  ScopeBuilder();
+  void visit(const AST::Start &Start) override;
+  void visit(const AST::PackageDeclaration &Decl) override;
+  void visit(const AST::ClassDeclaration &Decl) override;
+  void visit(const AST::Identifier &Identifier) override;
+
+  void setRoot(Scope &Scope);
   bool error() const;
 
 private:
   Scope *Current;
   bool errorState;
+  Scope::Type type;
 };
 
 } // namespace Env

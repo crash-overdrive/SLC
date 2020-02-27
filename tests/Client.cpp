@@ -77,9 +77,20 @@ TEST_CASE("client process", "[client]") {
   }
 
   SECTION("a2") {
-    SECTION("environment error") {
+    SECTION("parse-error") {
+      Client.setBreakPoint(Client::Parse);
+      for (const auto &Group: A2ErrorParse) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+          }
+          REQUIRE_FALSE(Client.process());
+        }
+      }
+    }
+    SECTION("environment-error") {
       Client.setBreakPoint(Client::Environment);
-      for (const auto &Group: A2ErrorEnvironment) {
+      for (const auto &Group: A2ErrorParse) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
             Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);

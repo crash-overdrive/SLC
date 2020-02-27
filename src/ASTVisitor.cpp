@@ -14,44 +14,44 @@ AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
 
 void AST::PrintVisitor::visit(const Start &Start) {
   Stream << "Start:" << '\n';
-  acceptChildren(Start);
+  acceptChildrenLevel(Start);
 }
 
 void AST::PrintVisitor::visit(const PackageDeclaration &Decl) {
   Stream << "PackageDeclaration" << '\n';
-  acceptChildren(Decl);
+  acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const ClassDeclaration &Decl) {
   Stream << "ClassDeclaration" << '\n';
-  acceptChildren(Decl);
+  acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const InterfaceDeclaration &Decl) {
   Stream << "InterfaceDeclaration" << '\n';
-  acceptChildren(Decl);
+  acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const FieldDeclaration &Decl) {
   Stream << "FieldDeclaration:" << '\n';
-  acceptChildren(Decl);
+  acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const MethodDeclaration &Decl) {
   Stream << "MethodDeclaration:" << '\n';
-  acceptChildren(Decl);
+  acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const Modifier &Modifier) {
   Stream << "Modifier: " << ModifierCodeName.at(Modifier.getCode()) << '\n';
-  acceptChildren(Modifier);
+  acceptChildrenLevel(Modifier);
 }
 
 void AST::PrintVisitor::visit(const Identifier &Identifier) {
   Stream << "Identifier: " << Identifier.getName() << '\n';
 }
 
-void AST::PrintVisitor::acceptChildren(const AST::Node &Node) {
+void AST::PrintVisitor::acceptChildrenLevel(const AST::Node &Node) {
   for (const auto &Child : Node.getChildren()) {
     ++Level;
     Stream << std::string(Level * 2, ' ');
