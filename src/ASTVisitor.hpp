@@ -10,6 +10,8 @@ class Visitor {
 public:
   virtual void visit(const Start &Start);
   virtual void visit(const PackageDeclaration &Decl);
+  virtual void visit(const SingleImportDeclaration &Decl);
+  virtual void visit(const DemandImportDeclaration &Decl);
   virtual void visit(const ClassDeclaration &Decl);
   virtual void visit(const InterfaceDeclaration &Decl);
   virtual void visit(const FieldDeclaration &Decl);
@@ -23,6 +25,8 @@ public:
   PrintVisitor(std::ostream &Stream);
   void visit(const Start &Start) override;
   void visit(const PackageDeclaration &Decl) override;
+  void visit(const SingleImportDeclaration &Decl) override;
+  void visit(const DemandImportDeclaration &Decl) override;
   void visit(const ClassDeclaration &Decl) override;
   void visit(const InterfaceDeclaration &Decl) override;
   void visit(const FieldDeclaration &Decl) override;
