@@ -38,7 +38,7 @@ TEST_CASE("client process", "[client]") {
   }
 
   SECTION("a1") {
-    SECTION("preprocess") {
+    SECTION("error preprocess") {
       Client.setBreakPoint(Client::Preprocess);
       for (const auto &FileName : A1ErrorPreprocess) {
         SECTION(FileName) {
@@ -47,7 +47,7 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-    SECTION("scan") {
+    SECTION("error scan") {
       Client.setBreakPoint(Client::Scan);
       for (const auto &FileName : A1ErrorScan) {
         SECTION(FileName) {
@@ -56,7 +56,7 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-    SECTION("parse") {
+    SECTION("error parse") {
       Client.setBreakPoint(Client::Parse);
       for (const auto &FileName : A1ErrorParse) {
         SECTION(FileName) {
@@ -77,8 +77,20 @@ TEST_CASE("client process", "[client]") {
   }
 
   SECTION("a2") {
+    SECTION("environment error") {
+      Client.setBreakPoint(Client::Environment);
+      for (const auto &Group: A2ErrorEnvironment) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+          }
+          REQUIRE_FALSE(Client.process());
+        }
+      }
+    }
+
     SECTION("accept") {
-      Client.setBreakPoint(Client::Weed);
+      Client.setBreakPoint(Client::Environment);
       for (const auto &Group: A2Valid) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {

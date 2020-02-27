@@ -899,6 +899,14 @@ const std::vector<std::vector<std::string>> A2Valid{
     },
 };
 
+const std::vector<std::vector<std::string>> A2ErrorEnvironment{
+    {
+        "Je_2_DuplicateType/Bar.java",
+        "Je_2_DuplicateType/foo/Bar.java",
+        "Je_2_DuplicateType/Main.java",
+    },
+};
+
 const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_12_Fields_StaticNonStatic.java",
@@ -935,11 +943,6 @@ const std::vector<std::vector<std::string>> A2Error{
     },
     {
         "Je_2_ConstructorParameter_Overlapping.java",
-    },
-    {
-        "Je_2_DuplicateType/Bar.java",
-        "Je_2_DuplicateType/foo/Bar.java",
-        "Je_2_DuplicateType/Main.java",
     },
     {
         "Je_2_Fields_DifferentAccess.java",
