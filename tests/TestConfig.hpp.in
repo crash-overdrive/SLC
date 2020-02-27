@@ -899,6 +899,51 @@ const std::vector<std::vector<std::string>> A2Valid{
     },
 };
 
+const std::vector<std::vector<std::string>> A2ErrorParse{
+    {
+        "Je_4_ProtectedOverride_DifferentThrows/Main.java",
+        "Je_4_ProtectedOverride_DifferentThrows/Foo.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> A2ErrorEnvironment{
+    {
+        "Je_2_DuplicateType/Bar.java",
+        "Je_2_DuplicateType/foo/Bar.java",
+        "Je_2_DuplicateType/Main.java",
+    },
+    {
+        "Je_3_PackageClashWithType_Explicit/javax/swing/tree.java",
+        "Je_3_PackageClashWithType_Explicit/javax/swing/tree/TreeNode.java",
+        "Je_3_PackageClashWithType_Explicit/Main.java",
+    },
+    {
+        "Je_3_PackageNameIsClassName/foo/bar.java",
+        "Je_3_PackageNameIsClassName/foo/bar/baz.java",
+        "Je_3_PackageNameIsClassName/Main.java",
+    },
+    {
+        "Je_3_PackageNameIsClassName_External/Main.java",
+        "Je_3_PackageNameIsClassName_External/java/util/List.java",
+        "Je_3_PackageNameIsClassName_External/java/util/Collection.java",
+        "Je_3_PackageNameIsClassName_External/java/util/ArrayList/foo.java",
+        "Je_3_PackageNameIsClassName_External/java/util/ArrayList.java",
+    },
+    {
+        "Je_3_PackageNameIsClassName_ExternalPrefix/Main.java",
+        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/List.java",
+        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/Collection.java",
+        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/ArrayList/foo/"
+        "bar.java",
+        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/ArrayList.java",
+    },
+    {
+        "Je_3_PackageNameIsClassName_Prefix/foo/bar.java",
+        "Je_3_PackageNameIsClassName_Prefix/foo/bar/baz/boz.java",
+        "Je_3_PackageNameIsClassName_Prefix/Main.java",
+    },
+};
+
 const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_12_Fields_StaticNonStatic.java",
@@ -935,11 +980,6 @@ const std::vector<std::vector<std::string>> A2Error{
     },
     {
         "Je_2_ConstructorParameter_Overlapping.java",
-    },
-    {
-        "Je_2_DuplicateType/Bar.java",
-        "Je_2_DuplicateType/foo/Bar.java",
-        "Je_2_DuplicateType/Main.java",
     },
     {
         "Je_2_Fields_DifferentAccess.java",
@@ -1022,11 +1062,6 @@ const std::vector<std::vector<std::string>> A2Error{
         "Je_3_ImportOnDemand_PackagePrefixExists/java/util/Date.java",
     },
     {
-        "Je_3_PackageClashWithType_Explicit/javax/swing/tree.java",
-        "Je_3_PackageClashWithType_Explicit/javax/swing/tree/TreeNode.java",
-        "Je_3_PackageClashWithType_Explicit/Main.java",
-    },
-    {
         "Je_3_PackageClashWithType_Linked/javax/swing/tree.java",
         "Je_3_PackageClashWithType_Linked/Main.java",
     },
@@ -1040,31 +1075,6 @@ const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_3_PackageExists_AlmostPrefix_Internal/foo/bar/Baz.java",
         "Je_3_PackageExists_AlmostPrefix_Internal/Main.java",
-    },
-    {
-        "Je_3_PackageNameIsClassName/foo/bar.java",
-        "Je_3_PackageNameIsClassName/foo/bar/baz.java",
-        "Je_3_PackageNameIsClassName/Main.java",
-    },
-    {
-        "Je_3_PackageNameIsClassName_External/Main.java",
-        "Je_3_PackageNameIsClassName_External/java/util/List.java",
-        "Je_3_PackageNameIsClassName_External/java/util/Collection.java",
-        "Je_3_PackageNameIsClassName_External/java/util/ArrayList/foo.java",
-        "Je_3_PackageNameIsClassName_External/java/util/ArrayList.java",
-    },
-    {
-        "Je_3_PackageNameIsClassName_ExternalPrefix/Main.java",
-        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/List.java",
-        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/Collection.java",
-        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/ArrayList/foo/"
-        "bar.java",
-        "Je_3_PackageNameIsClassName_ExternalPrefix/java/util/ArrayList.java",
-    },
-    {
-        "Je_3_PackageNameIsClassName_Prefix/foo/bar.java",
-        "Je_3_PackageNameIsClassName_Prefix/foo/bar/baz/boz.java",
-        "Je_3_PackageNameIsClassName_Prefix/Main.java",
     },
     {
         "Je_3_Resolve_ImplicitJavaIO/Main.java",
@@ -1304,10 +1314,6 @@ const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_4_ProtectedOverride_Abstract/Main.java",
         "Je_4_ProtectedOverride_Abstract/Foo.java",
-    },
-    {
-        "Je_4_ProtectedOverride_DifferentThrows/Main.java",
-        "Je_4_ProtectedOverride_DifferentThrows/Foo.java",
     },
     {
         "Je_4_ProtectedOverride_Exception_Clone/javax/naming/Name.java",

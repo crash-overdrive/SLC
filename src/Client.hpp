@@ -2,6 +2,7 @@
 #define CLIENT_HPP
 
 #include "ASTNode.hpp"
+#include "EnvScope.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -11,7 +12,6 @@ public:
     Preprocess,
     Scan,
     Parse,
-    AST,
     Weed,
     Environment,
   };
@@ -35,8 +35,11 @@ private:
   bool verifyFileName(const std::string &FileName);
   bool scan(std::istream &Stream, std::vector<Lex::Token> &Tokens);
   bool parse(const std::vector<Lex::Token> &Tokens, Parse::Tree &ParseTree);
-  bool buildAST(const Parse::Tree &ParseTree, AST::Node &AST);
+  void buildAST(const Parse::Tree &ParseTree,
+                std::unique_ptr<AST::Start> &ASTRoot);
   bool weed(const AST::Node &AST, const std::string &TypeName);
+  bool buildEnv(const std::vector<std::unique_ptr<AST::Start>> &ASTList,
+                Env::Scope &PackageScope);
 };
 
 #endif // CLIENT_HPP

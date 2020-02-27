@@ -9,7 +9,9 @@ namespace AST {
 class Visitor {
 public:
   virtual void visit(const Start &Start);
-  virtual void visit(const TypeDeclaration &Decl);
+  virtual void visit(const PackageDeclaration &Decl);
+  virtual void visit(const ClassDeclaration &Decl);
+  virtual void visit(const InterfaceDeclaration &Decl);
   virtual void visit(const FieldDeclaration &Decl);
   virtual void visit(const MethodDeclaration &Decl);
   virtual void visit(const Modifier &Modifier);
@@ -20,7 +22,9 @@ class PrintVisitor : public Visitor {
 public:
   PrintVisitor(std::ostream &Stream);
   void visit(const Start &Start) override;
-  void visit(const TypeDeclaration &Decl) override;
+  void visit(const PackageDeclaration &Decl) override;
+  void visit(const ClassDeclaration &Decl) override;
+  void visit(const InterfaceDeclaration &Decl) override;
   void visit(const FieldDeclaration &Decl) override;
   void visit(const MethodDeclaration &Decl) override;
   void visit(const Modifier &Modifier) override;
@@ -29,7 +33,7 @@ public:
 private:
   std::ostream &Stream;
   unsigned int Level;
-  void acceptChildren(const AST::Node &Node);
+  void acceptChildrenLevel(const AST::Node &Node);
 };
 
 } // namespace AST

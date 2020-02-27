@@ -6,16 +6,20 @@
 
 namespace AST {
 
-void classDeclarationVisit(Node &ASTNode, const Parse::Node &ParseNode);
-void interfaceDeclarationVisit(Node &ASTNode, const Parse::Node &ParseNode);
-void identifierVisit(Node &ASTNode, const Parse::Node &ParseNode);
-void modifierVisit(Node &ASTNode, const Parse::Node &ParseNode);
-void dispatchChildren(Node &ASTNode, const Parse::Node &ParseNode);
-void dispatch(Node &ASTNode, const Parse::Node &ParseNode);
+void packageDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void classDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void interfaceDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void identifierVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void modifierVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode);
+void dispatch(const Parse::Node &ParseNode, Node &ASTNode);
 
-typedef void (*ParseVisitor)(Node &ASTNode, const Parse::Node &ParseNode);
+typedef void (*ParseVisitor)(const Parse::Node &ParseNode, Node &ASTNode);
 const std::unordered_map<std::string, ParseVisitor> ParseVisit {
     {"Start", dispatchChildren},
+    {"CompilationUnit", dispatchChildren},
+    {"PackageDeclaration", packageDeclarationVisit},
+    {"Name", dispatchChildren},
     {"TypeDeclaration", dispatchChildren},
     {"ClassDeclaration", classDeclarationVisit},
     {"InterfaceDeclaration", interfaceDeclarationVisit},
