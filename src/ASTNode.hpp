@@ -98,7 +98,6 @@ private:
   std::string Name;
 };
 
-
 } // namespace AST
 
 #endif // ASTNODE_HPP

@@ -1,6 +1,7 @@
 #ifndef ENVSCOPE_HPP
 #define ENVSCOPE_HPP
 
+#include "ASTVisitor.hpp"
 #include <map>
 #include <string>
 
@@ -21,6 +22,16 @@ private:
   std::string name;
   Type type;
   std::map<std::string, Scope> children;
+};
+
+class ScopeBuilder : public AST::Visitor {
+public:
+  void setRoot(Scope &Scope) const;
+  bool error() const;
+
+private:
+  Scope *Current;
+  bool errorState;
 };
 
 } // namespace Env

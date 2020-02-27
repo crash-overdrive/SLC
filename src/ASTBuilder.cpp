@@ -1,5 +1,11 @@
 #include "ASTBuilder.hpp"
 
+void AST::packageDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
+  std::unique_ptr<PackageDeclaration> Decl = std::make_unique<PackageDeclaration>();
+  dispatchChildren(ParseNode, *Decl);
+  ASTNode.addChild(std::move(Decl));
+}
+
 void AST::classDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
   std::unique_ptr<ClassDeclaration> Decl = std::make_unique<ClassDeclaration>();
   dispatchChildren(ParseNode, *Decl);

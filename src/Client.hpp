@@ -11,7 +11,6 @@ public:
     Preprocess,
     Scan,
     Parse,
-    AST,
     Weed,
     Environment,
   };
@@ -35,7 +34,7 @@ private:
   bool verifyFileName(const std::string &FileName);
   bool scan(std::istream &Stream, std::vector<Lex::Token> &Tokens);
   bool parse(const std::vector<Lex::Token> &Tokens, Parse::Tree &ParseTree);
-  bool buildAST(const Parse::Tree &ParseTree, AST::Node &AST);
+  void buildAST(const Parse::Tree &ParseTree, AST::Node &AST);
   bool weed(const AST::Node &AST, const std::string &TypeName);
 };
 

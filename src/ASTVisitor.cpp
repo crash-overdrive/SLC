@@ -2,6 +2,7 @@
 
 void AST::Visitor::visit(const Start &Start) { (void)Start; }
 void AST::Visitor::visit(const InterfaceDeclaration &Decl) { (void)Decl; }
+void AST::Visitor::visit(const PackageDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const ClassDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const FieldDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const MethodDeclaration &Decl) { (void)Decl; }
@@ -14,6 +15,11 @@ AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
 void AST::PrintVisitor::visit(const Start &Start) {
   Stream << "Start:" << '\n';
   acceptChildren(Start);
+}
+
+void AST::PrintVisitor::visit(const PackageDeclaration &Decl) {
+  Stream << "PackageDeclaration" << '\n';
+  acceptChildren(Decl);
 }
 
 void AST::PrintVisitor::visit(const ClassDeclaration &Decl) {

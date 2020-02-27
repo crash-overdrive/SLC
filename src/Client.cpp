@@ -1,4 +1,6 @@
 #include "Client.hpp"
+#include "ASTBuilder.hpp"
+#include "ASTVisitor.hpp"
 #include <fstream>
 
 Client::Client()
@@ -30,6 +32,7 @@ void Client::setStdlib(bool IncludeStdlib) {
 }
 
 bool Client::process() {
+  std::vector<AST::Node> ASTList;
   for (const auto &FileName : FileNames) {
     if (!verifyFileName(FileName)) {
       std::cerr << FileName << " has the wrong extension\n";
@@ -62,6 +65,11 @@ bool Client::process() {
     }
     if (BreakPoint == Parse)
       continue;
+
+    AST::Start ASTRoot;
+    buildAST(Tree, ASTRoot);
+    //AST::PrintVisitor PrintVisitor = AST::PrintVisitor(std::cerr);
+    //ASTRoot.accept(PrintVisitor);
   }
   return true;
 }
@@ -92,4 +100,9 @@ bool Client::parse(const std::vector<Lex::Token> &Tokens,
   }
   std::cerr << Parser->buildTree();
   return false;
+}
+
+void Client::buildAST(const Parse::Tree &ParseTree, AST::Node &ASTRoot) {
+  const Parse::Node &ParseRoot = ParseTree.getRoot();
+  dispatch(ParseRoot, ASTRoot);
 }

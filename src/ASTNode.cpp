@@ -15,6 +15,10 @@ void AST::Start::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
+void AST::PackageDeclaration::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
 void AST::ClassDeclaration::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
