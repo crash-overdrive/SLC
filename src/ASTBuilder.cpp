@@ -1,36 +1,35 @@
 #include "ASTBuilder.hpp"
 
-void AST::classDeclarationVisit(Node &ASTNode, const Parse::Node &ParseNode) {
-  std::unique_ptr<TypeDeclaration> Decl = std::make_unique<TypeDeclaration>();
-  dispatchChildren(*Decl, ParseNode);
+void AST::classDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
+  std::unique_ptr<ClassDeclaration> Decl = std::make_unique<ClassDeclaration>();
+  dispatchChildren(ParseNode, *Decl);
   ASTNode.addChild(std::move(Decl));
 }
 
-void AST::interfaceDeclarationVisit(Node &ASTNode,
-                                    const Parse::Node &ParseNode) {
-  std::unique_ptr<TypeDeclaration> Decl = std::make_unique<TypeDeclaration>(false);
-  dispatchChildren(*Decl, ParseNode);
+void AST::interfaceDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
+  std::unique_ptr<InterfaceDeclaration> Decl = std::make_unique<InterfaceDeclaration>();
+  dispatchChildren(ParseNode, *Decl);
   ASTNode.addChild(std::move(Decl));
 }
 
-void AST::identifierVisit(Node &ASTNode, const Parse::Node &ParseNode) {
+void AST::identifierVisit(const Parse::Node &ParseNode, Node &ASTNode) {
   ASTNode.addChild(std::make_unique<Identifier>(ParseNode.getTag()));
 }
 
-void AST::modifierVisit(Node &ASTNode, const Parse::Node &ParseNode) {
+void AST::modifierVisit(const Parse::Node &ParseNode, Node &ASTNode) {
   const std::string &Name = ParseNode.getFirstChild()->getName();
   ASTNode.addChild(std::make_unique<Modifier>(Name));
 }
 
-void AST::dispatchChildren(Node &ASTNode, const Parse::Node &ParseNode) {
+void AST::dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode) {
   for (const auto &Child : ParseNode.getChildren()) {
-    AST::dispatch(ASTNode, *Child);
+    AST::dispatch(*Child, ASTNode);
   }
 }
 
-void AST::dispatch(Node &ASTNode, const Parse::Node &ParseNode) {
+void AST::dispatch(const Parse::Node &ParseNode, Node &ASTNode) {
   auto it = AST::ParseVisit.find(ParseNode.getName());
   if (it != AST::ParseVisit.end()) {
-    (it->second)(ASTNode, ParseNode);
+    (it->second)(ParseNode, ASTNode);
   }
 }

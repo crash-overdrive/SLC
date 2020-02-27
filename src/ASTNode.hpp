@@ -53,15 +53,19 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
-class TypeDeclaration : public Node {
+class PackageDeclaration : public Node {
 public:
-  TypeDeclaration();
-  TypeDeclaration(bool Class);
-  bool isInterface() const;
   void accept(Visitor &Visitor) const override;
+};
 
-private:
-  bool Interface;
+class ClassDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class InterfaceDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
 };
 
 class MethodDeclaration : public Node {

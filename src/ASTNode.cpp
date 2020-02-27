@@ -15,13 +15,11 @@ void AST::Start::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
-AST::TypeDeclaration::TypeDeclaration() : Interface(false) {}
+void AST::ClassDeclaration::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
 
-AST::TypeDeclaration::TypeDeclaration(bool Class) : Interface(!Class) {}
-
-bool AST::TypeDeclaration::isInterface() const { return Interface; }
-
-void AST::TypeDeclaration::accept(Visitor &Visitor) const {
+void AST::InterfaceDeclaration::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 

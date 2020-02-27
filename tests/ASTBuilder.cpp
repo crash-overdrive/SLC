@@ -21,7 +21,7 @@ TEST_CASE("AST built from ParseTree", "[ASTBuilder][!hide]") {
 
     const Parse::Node &ParseStart =  T.getRoot();
     AST::Start ASTStart;
-    AST::dispatch(ASTStart, ParseStart);
+    AST::dispatch(ParseStart, ASTStart);
 
     std::ostringstream OStream;
     AST::PrintVisitor Visitor(OStream);

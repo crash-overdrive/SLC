@@ -1,7 +1,8 @@
 #include "ASTVisitor.hpp"
 
 void AST::Visitor::visit(const Start &Start) { (void)Start; }
-void AST::Visitor::visit(const TypeDeclaration &Decl) { (void)Decl; }
+void AST::Visitor::visit(const InterfaceDeclaration &Decl) { (void)Decl; }
+void AST::Visitor::visit(const ClassDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const FieldDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const MethodDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const Modifier &Modifier) { (void)Modifier; }
@@ -15,9 +16,13 @@ void AST::PrintVisitor::visit(const Start &Start) {
   acceptChildren(Start);
 }
 
-void AST::PrintVisitor::visit(const TypeDeclaration &Decl) {
-  Stream << "TypeDeclaration: Interface: " << std::boolalpha
-         << Decl.isInterface() << '\n';
+void AST::PrintVisitor::visit(const ClassDeclaration &Decl) {
+  Stream << "ClassDeclaration" << '\n';
+  acceptChildren(Decl);
+}
+
+void AST::PrintVisitor::visit(const InterfaceDeclaration &Decl) {
+  Stream << "InterfaceDeclaration" << '\n';
   acceptChildren(Decl);
 }
 
