@@ -15,6 +15,8 @@ public:
     Parse,
     Weed,
     Environment,
+    TypeLink,
+    Hierarchy,
   };
 
   Client();

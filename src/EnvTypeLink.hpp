@@ -41,7 +41,7 @@ public:
 
 protected:
   TypeLinkVisitor();
-  bool errorState;
+  bool ErrorState;
   Env::Scope *PackageScope;
   std::unordered_map<std::string, Scope &> *Imports;
 };
@@ -52,6 +52,7 @@ public:
   void visit(const AST::Start &Start) override;
   void visit(const AST::PackageDeclaration &Decl) override;
   void visit(const AST::ClassDeclaration &Decl) override;
+  void visit(const AST::InterfaceDeclaration &Decl) override;
   void visit(const AST::Identifier &Identifier) override;
 
 private:
@@ -61,10 +62,13 @@ private:
 class ImportVisitor : public TypeLinkVisitor {
 public:
   ImportVisitor();
-  //void visit(const AST::Start &Start) override;
-  //void visit(const AST::SingleImportDeclaration &Decl) override;
-  //void visit(const AST::DemandImportDeclaration &Decl) override;
-  //void visit(const AST::Identifier &Identifier) override;
+  void visit(const AST::Start &Start) override;
+  void visit(const AST::SingleImportDeclaration &Decl) override;
+  void visit(const AST::DemandImportDeclaration &Decl) override;
+  void visit(const AST::Identifier &Identifier) override;
+
+private:
+  Scope *Current;
 };
 
 } // namespace Env
