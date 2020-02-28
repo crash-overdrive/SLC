@@ -15,6 +15,7 @@ public:
   Scope(const std::string &name, Type type);
   Scope *update(const std::string &name, Type type);
   Scope *find(const std::string &name);
+  Scope *resolveName(const std::string &name);
   const std::string &getName() const;
   Type getType() const;
 

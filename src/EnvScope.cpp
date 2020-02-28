@@ -41,6 +41,27 @@ Env::Scope *Env::Scope::updatePackage(const std::string &name, Type type) {
   return &ChildIt.first->second;
 }
 
+Env::Scope *Env::Scope::resolveName(const std::string &name){
+	if(name == ""){
+		return this;
+	}
+	
+	size_t delim = name.find(".");
+	std::string sName = "";
+	if(delim != std::string::npos){
+		sName = name.substr(delim + 1, name.length() - delim - 1);
+	}
+	std::string cName = name.substr(0, delim);
+
+	auto it = children.find(cName);
+	if(it != children.end()){
+		return it->second.resolveName(sName);
+	}
+	return nullptr;
+}
+
+
+
 Env::Scope *Env::Scope::addType(const std::string &name, Type type) {
   auto It = children.emplace(name, Scope{name, type});
   return It.second ? &It.first->second : nullptr;
