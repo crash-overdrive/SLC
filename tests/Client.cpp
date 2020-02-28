@@ -79,7 +79,7 @@ TEST_CASE("client process", "[client]") {
   SECTION("a2") {
     SECTION("parse-error") {
       Client.setBreakPoint(Client::Parse);
-      for (const auto &Group: A2ErrorParse) {
+      for (const auto &Group : A2ErrorParse) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
             Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
@@ -89,8 +89,8 @@ TEST_CASE("client process", "[client]") {
       }
     }
     SECTION("environment-error") {
-      Client.setBreakPoint(Client::Environment);
-      for (const auto &Group: A2ErrorParse) {
+      Client.setBreakPoint(Client::TypeLink);
+      for (const auto &Group : A2ErrorTyping) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
             Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
@@ -99,10 +99,21 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+    // SECTION("typelinking-error") {
+    // Client.setBreakPoint(Client::TypeLink);
+    // for (const auto &Group : A2Error) {
+    // SECTION(Group[0]) {
+    // for (const auto &FileName : Group) {
+    // Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+    //}
+    // REQUIRE(Client.process());
+    //}
+    //}
+    //}
 
     SECTION("accept") {
-      Client.setBreakPoint(Client::Environment);
-      for (const auto &Group: A2Valid) {
+      Client.setBreakPoint(Client::Hierarchy);
+      for (const auto &Group : A2Valid) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
             Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);

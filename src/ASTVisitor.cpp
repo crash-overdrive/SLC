@@ -3,6 +3,8 @@
 void AST::Visitor::visit(const Start &Start) { (void)Start; }
 void AST::Visitor::visit(const InterfaceDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const PackageDeclaration &Decl) { (void)Decl; }
+void AST::Visitor::visit(const SingleImportDeclaration &Decl) { (void)Decl; }
+void AST::Visitor::visit(const DemandImportDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const ClassDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const FieldDeclaration &Decl) { (void)Decl; }
 void AST::Visitor::visit(const MethodDeclaration &Decl) { (void)Decl; }
@@ -13,12 +15,22 @@ AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
     : Stream(Stream), Level(0) {}
 
 void AST::PrintVisitor::visit(const Start &Start) {
-  Stream << "Start:" << '\n';
+  Stream << "Start" << '\n';
   acceptChildrenLevel(Start);
 }
 
 void AST::PrintVisitor::visit(const PackageDeclaration &Decl) {
   Stream << "PackageDeclaration" << '\n';
+  acceptChildrenLevel(Decl);
+}
+
+void AST::PrintVisitor::visit(const SingleImportDeclaration &Decl) {
+  Stream << "SingleImportDeclaration" << '\n';
+  acceptChildrenLevel(Decl);
+}
+
+void AST::PrintVisitor::visit(const DemandImportDeclaration &Decl) {
+  Stream << "DemandImportDeclaration" << '\n';
   acceptChildrenLevel(Decl);
 }
 

@@ -15,6 +15,14 @@ void AST::PackageDeclaration::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
+void AST::SingleImportDeclaration::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::DemandImportDeclaration::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
 void AST::ClassDeclaration::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }

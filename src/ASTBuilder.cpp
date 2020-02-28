@@ -1,19 +1,8 @@
 #include "ASTBuilder.hpp"
 
-void AST::packageDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
-  std::unique_ptr<PackageDeclaration> Decl = std::make_unique<PackageDeclaration>();
-  dispatchChildren(ParseNode, *Decl);
-  ASTNode.addChild(std::move(Decl));
-}
-
-void AST::classDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
-  std::unique_ptr<ClassDeclaration> Decl = std::make_unique<ClassDeclaration>();
-  dispatchChildren(ParseNode, *Decl);
-  ASTNode.addChild(std::move(Decl));
-}
-
-void AST::interfaceDeclarationVisit(const Parse::Node &ParseNode, Node &ASTNode) {
-  std::unique_ptr<InterfaceDeclaration> Decl = std::make_unique<InterfaceDeclaration>();
+template <typename T>
+void AST::inodeVisit(const Parse::Node &ParseNode, Node &ASTNode) {
+  std::unique_ptr<T> Decl = std::make_unique<T>();
   dispatchChildren(ParseNode, *Decl);
   ASTNode.addChild(std::move(Decl));
 }

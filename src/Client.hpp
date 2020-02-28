@@ -3,6 +3,7 @@
 
 #include "ASTNode.hpp"
 #include "EnvScope.hpp"
+#include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -14,6 +15,8 @@ public:
     Parse,
     Weed,
     Environment,
+    TypeLink,
+    Hierarchy,
   };
 
   Client();
@@ -38,8 +41,9 @@ private:
   void buildAST(const Parse::Tree &ParseTree,
                 std::unique_ptr<AST::Start> &ASTRoot);
   bool weed(const AST::Node &AST, const std::string &TypeName);
-  bool buildEnv(const std::vector<std::unique_ptr<AST::Start>> &ASTList,
-                Env::Scope &PackageScope);
+  bool buildEnv(std::vector<std::unique_ptr<AST::Start>> &ASTList,
+      Env::TypeLinkList &Links);
+  bool typeLink(Env::TypeLinkList &Links);
 };
 
 #endif // CLIENT_HPP

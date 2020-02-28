@@ -1,6 +1,8 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
+#include "Config.hpp"
+#include <string>
 #include <fstream>
 
 Client::Client()
@@ -32,6 +34,9 @@ void Client::setStdlib(bool IncludeStdlib) {
 }
 
 bool Client::process() {
+  if (IncludeStdlib) {
+    FileNames.insert(FileNames.end(), Stdlib2Files.begin(), Stdlib2Files.end());
+  }
   std::vector<std::unique_ptr<AST::Start>> ASTList;
   for (const auto &FileName : FileNames) {
     if (!verifyFileName(FileName)) {
@@ -72,9 +77,16 @@ bool Client::process() {
     ASTRoot->accept(Visitor);
     ASTList.emplace_back(std::move(ASTRoot));
   }
-  Env::Scope PackageScope(Env::Scope::Type::GLOBAL);
-  if (!buildEnv(ASTList, PackageScope)) {
+  Env::TypeLinkList Links;
+  if (!buildEnv(ASTList, Links)) {
     std::cerr << "Failed to build environment\n";
+    return false;
+  }
+  if (BreakPoint == Environment)
+    return true;
+
+  if (!typeLink(Links)) {
+    std::cerr << "Failed to type link\n";
     return false;
   }
   if (BreakPoint == Environment)
@@ -83,12 +95,17 @@ bool Client::process() {
 }
 
 bool Client::verifyFileName(const std::string &FileName) {
+  std::string FileNameNoPath(FileName);
+  const auto pos = FileNameNoPath.find_last_of('/');
+  if (pos != std::string::npos) {
+    FileNameNoPath = FileName.substr(pos+1);
+  }
   const std::string Ext(".java");
-  if (FileName.length() < Ext.length()) {
+  if (FileNameNoPath.length() < Ext.length()) {
     return false;
   }
-  size_t Position = FileName.find(".");
-  return FileName.compare(Position, Ext.size(), Ext) == 0;
+  size_t Position = FileNameNoPath.find(".");
+  return FileNameNoPath.compare(Position, Ext.size(), Ext) == 0;
 }
 
 bool Client::scan(std::istream &Stream, std::vector<Lex::Token> &Tokens) {
@@ -116,14 +133,18 @@ void Client::buildAST(const Parse::Tree &ParseTree,
   dispatch(ParseRoot, *ASTRoot);
 }
 
-bool Client::buildEnv(const std::vector<std::unique_ptr<AST::Start>> &ASTList,
-                      Env::Scope &PackageScope) {
-  Env::ScopeBuilder Builder;
-  for (const auto &ASTRoot : ASTList) {
-    Builder.setRoot(PackageScope);
-    ASTRoot->accept(Builder);
-    if (Builder.error())
-      return false;
+bool Client::buildEnv(std::vector<std::unique_ptr<AST::Start>> &ASTList,
+                      Env::TypeLinkList &Links) {
+  for (auto &ASTRoot : ASTList) {
+    Links.addAST(std::move(ASTRoot));
   }
-  return true;
+  Env::ScopeBuilder Builder;
+  Links.visit(Builder);
+  return !Builder.error();
+}
+
+bool Client::typeLink(Env::TypeLinkList &Links) {
+  Env::ImportVisitor Visitor;
+  Links.visit(Visitor);
+  return !Visitor.error();
 }
