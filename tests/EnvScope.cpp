@@ -27,4 +27,10 @@ TEST_CASE("hierarchical scopes", "[scope]"){
     Env::Scope *scope = root.find("foo")->find("bar")->find("canary");
     REQUIRE(scope->getType() == Env::Scope::CLASS);
   }
+
+	SECTION("scopes can perform name resolution") {
+		Env::Scope *scope = root.resolveName("foo.bar.canary");
+		REQUIRE(scope->getType() == Env::Scope::CLASS);
+		REQUIRE(scope->getName() == "canary");
+	}
 }

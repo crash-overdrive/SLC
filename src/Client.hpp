@@ -5,6 +5,7 @@
 
 #include "ASTNode.hpp"
 #include "EnvScope.hpp"
+#include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -16,6 +17,8 @@ public:
     Ast,
     Weed,
     Environment,
+    TypeLink,
+    Hierarchy,
   };
   bool outputToken = false;
   bool outputParse = false;
@@ -40,6 +43,7 @@ private:
   bool weed(const AST::Node &ast, const std::string &typeName);
   bool buildEnv(const std::vector<std::unique_ptr<AST::Start>> &astList,
                 Env::Scope &packageScope);
+  bool typeLink(Env::TypeLinkList &Links);
 };
 
 #endif // CLIENT_HPP
