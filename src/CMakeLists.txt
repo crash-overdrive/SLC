@@ -7,7 +7,7 @@ file(GLOB SOURCES *.cpp)
 
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp)
 
-find_package(PythonInterp 3 REQUIRED)
+find_package(Python3)
 
 set(CFG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/joos.cfg)
 set(LR1_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1)

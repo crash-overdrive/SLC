@@ -1,61 +1,132 @@
+#include <fstream>
+#include <set>
+#include <string>
+#include <vector>
+
 #include "Client.hpp"
 #include "Config.hpp"
-#include <fstream>
+
+void usage() {
+  std::cout << "Usage: ./joosc [options] [file-names]" << std::endl;
+  std::cout << "options:" << std::endl;
+  std::cout << "--output-tokens \t outputs scanned tokens" << std::endl;
+  std::cout << "--output-parse \t outputs parse tree" << std::endl;
+  std::cout << "--output-ast \t outputs abstract syntax tree" << std::endl;
+  std::cout << "--std-lib2 \t includes Java standard libarary from Stdlib2Files" << std::endl;
+  std::cout << "--std-lib3 \t includes Java standard libarary from Stdlib3Files" << std::endl;
+  std::cout << "--std-lib4 \t includes Java standard libarary from Stdlib4Files" << std::endl;
+  std::cout << "--std-lib5 \t includes Java standard libarary from Stdlib5Files" << std::endl;
+}
+
+bool verifyFileName(const std::string &fileName) {
+  const std::string extension(".java");
+  if (fileName.length() < extension.length()) {
+    return false;
+  }
+  size_t Position = fileName.find_last_of(".");
+  return fileName.compare(Position, extension.size(), extension) == 0;
+}
 
 int main(int argc, char *argv[]) {
+  bool outputToken = false;
+  bool outputParse = false;
+  bool outputAst = false;
+  // add more flags here for debuging
+  std::vector<std::string> files;
+  std::set<std::string> finalFiles;
+
   if (argc < 2) {
-    std::cerr << "usage: missing input file" << std::endl;
-    return 1;
+    std::cerr << "Error: missing input file" << std::endl;
+    usage();
+    return 42;
   }
-  bool OutputToken(false);
-  bool OutputParse(false);
-  bool InputToken(false);
-  std::string FileName;
+
   for (int i = 1; i < argc; ++i) {
-    std::string Arg(argv[i]);
-    if (Arg == "--input-tokens") {
-      InputToken = true;
-    } else if (Arg == "--output-tokens") {
-      OutputToken = true;
-    } else if (Arg == "--output-parse") {
-      OutputParse = true;
-    } else if (FileName.empty() && Arg[0] != '-') {
-      FileName = Arg;
+    std::string argument(argv[i]);
+
+    if (argument == "--output-tokens") {
+      outputToken = true;
+    } else if (argument == "--output-parse") {
+      outputParse = true;
+    } else if (argument == "--output-ast") {
+      outputAst = true;
+    } else if (argument == "--std-lib2") {
+      for (auto const& file : Stdlib2Files) {
+        files.push_back(file);
+      }
+    } else if (argument == "--std-lib3") {
+      for (auto const& file : Stdlib3Files) {
+        files.push_back(file);
+      }
+    } else if (argument == "--std-lib4") {
+      for (auto const& file : Stdlib4Files) {
+        files.push_back(file);
+      }
+    } else if (argument == "--std-lib5") {
+      for (auto const& file : Stdlib5Files) {
+        files.push_back(file);
+      }
+    } else if(argument[0] != '-') {
+      files.push_back(argument);
     } else {
-      std::cerr << "error: unrecognize flag: " << Arg << std::endl;
-      return 1;
+      std::cerr << "Error: Incorrect flag passed" << std::endl;
+      usage();
+      return 42;
     }
   }
-  if (OutputToken && OutputParse) {
-    std::cerr << "error: unable to dump token and parse at same time"
-              << std::endl;
-    return 1;
-  }
-  if (FileName.empty()) {
-    std::cerr << "error: missing fileName" << std::endl;
-    return 1;
-  }
-  std::ifstream IStream;
-  IStream.open(FileName);
-  if (IStream.fail()) {
-    std::cerr << "error: file " << FileName << " missing" << std::endl;
-    return 1;
+
+  if (files.size() == 0) {
+    std::cerr << "Error: no files provided to compile.." << std::endl;
+    return 42;
   }
 
-  Parse::DFA Parser;
-  std::ifstream ParserStream;
-  ParserStream.open(JoosLRFile);
-  ParserStream >> Parser;
-  if (InputToken && OutputToken) {
-    std::cout << IStream.rdbuf();
-    return 0;
-  }
-  if (InputToken) {
-    std::cerr << "Parsing tokens";
-    return Parser.parse(IStream) ? 0 : 42;
+  for (auto const& file : files) {
+    if (finalFiles.find(file) != finalFiles.end()) {
+      std::cerr << "Error: " << file << " included multiple times.." << std::endl;
+      return 42;
+    }
+    if (!verifyFileName(file)) {
+      std::cerr << "Error: " << file << " has the wrong extension.." << std::endl;
+      return 42;
+    }
+    finalFiles.insert(file);
   }
 
-  if (OutputToken) {
-  } else {
+  Lex::Scanner scanner;
+  Parse::DFA parser;
+  std::ifstream scannerStream;
+  std::ifstream parserStream;
+
+  scannerStream.open(TokensLexFile);
+  if (!scannerStream.is_open()) {
+    std::cerr << "Error initialising scanner, " << TokensLexFile << " could not be opened" << std::endl;
+    return 42;
+  }
+  parserStream.open(JoosLRFile);
+  if (!parserStream.is_open()) {
+    std::cerr << "Error initialising parser, " << JoosLRFile << " could not be opened" << std::endl;
+    return 42;
+  }
+
+  scannerStream >> scanner;
+  parserStream >> parser;
+
+  Client client(scanner, parser, finalFiles);
+  if (outputToken) {
+    client.outputToken = true;
+  }
+  if (outputParse) {
+    client.outputParse = true;
+  }
+  if (outputAst) {
+    client.outputAst = true;
+  }
+  // client.setBreakPoint(client.Environment);
+
+  bool compileResult = client.compile();
+
+  if (!compileResult) {
+    std::cerr << "Failure in compilation" << std::endl;
+    return 42;
   }
 }
