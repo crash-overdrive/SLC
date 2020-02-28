@@ -1,6 +1,8 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+#include <set>
+
 #include "ASTNode.hpp"
 #include "EnvScope.hpp"
 #include "EnvTypeLink.hpp"
@@ -10,39 +12,37 @@
 class Client {
 public:
   enum BreakPointType {
-    Preprocess,
     Scan,
     Parse,
+    Ast,
     Weed,
     Environment,
     TypeLink,
     Hierarchy,
   };
+  bool outputToken = false;
+  bool outputParse = false;
+  bool outputAst = false;
 
-  Client();
-  Client(Lex::Scanner &Scanner);
-  Client(Lex::Scanner &Scanner, Parse::DFA &Parser);
-  void addJavaFile(const std::string &FileName);
-  void addJavaFiles(std::initializer_list<std::string> List);
-  void setStdlib(bool includeStdlib);
-  void setBreakPoint(BreakPointType BP);
-  bool process();
+  Client(std::set<std::string> files);
+  Client(Lex::Scanner &scanner, std::set<std::string> files);
+  Client(Lex::Scanner &scanner, Parse::DFA &parser, std::set<std::string> files);
+  void setBreakPoint(BreakPointType breakPoint);
+  bool compile();
 
 private:
-  Lex::Scanner *Scanner;
-  Parse::DFA *Parser;
+  Lex::Scanner *scanner;
+  Parse::DFA *parser;
+  std::set<std::string> fileNames;
+  BreakPointType breakPoint;
 
-  std::vector<std::string> FileNames;
-  bool IncludeStdlib;
-  BreakPointType BreakPoint;
-  bool verifyFileName(const std::string &FileName);
-  bool scan(std::istream &Stream, std::vector<Lex::Token> &Tokens);
-  bool parse(const std::vector<Lex::Token> &Tokens, Parse::Tree &ParseTree);
-  void buildAST(const Parse::Tree &ParseTree,
-                std::unique_ptr<AST::Start> &ASTRoot);
-  bool weed(const AST::Node &AST, const std::string &TypeName);
-  bool buildEnv(std::vector<std::unique_ptr<AST::Start>> &ASTList,
-      Env::TypeLinkList &Links);
+  bool scan(std::istream &stream, std::vector<Lex::Token> &tokens);
+  bool parse(const std::vector<Lex::Token> &tokens, Parse::Tree &parseTree);
+  void buildAST(const Parse::Tree &parseTree,
+                std::unique_ptr<AST::Start> &astRoot);
+  bool weed(const AST::Node &ast, const std::string &typeName);
+  bool buildEnv(const std::vector<std::unique_ptr<AST::Start>> &astList,
+                Env::Scope &packageScope);
   bool typeLink(Env::TypeLinkList &Links);
 };
 
