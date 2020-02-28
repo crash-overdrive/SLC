@@ -17,5 +17,5 @@ namespace type{
 		virtual void preHook(const Node &node);
 		virtual void posHook(const Node &node);
 		virtual ~HierachicalVisitor();
-	}
+	};
 }
