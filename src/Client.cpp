@@ -1,14 +1,16 @@
 #include <fstream>
 
-#include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
+#include "Client.hpp"
 
 Client::Client(Lex::Scanner &scanner, std::set<std::string> files)
-  : scanner(&scanner), parser(nullptr), fileNames(files), breakPoint(Scan) {}
+    : scanner(&scanner), parser(nullptr), fileNames(files), breakPoint(Scan) {}
 
-Client::Client(Lex::Scanner &scanner, Parse::DFA &parser, std::set<std::string> files)
-  : scanner(&scanner), parser(&parser), fileNames(files), breakPoint(Environment) {}
+Client::Client(Lex::Scanner &scanner, Parse::DFA &parser,
+               std::set<std::string> files)
+    : scanner(&scanner), parser(&parser), fileNames(files),
+      breakPoint(Environment) {}
 
 void Client::setBreakPoint(BreakPointType breakPoint) {
   this->breakPoint = breakPoint;
@@ -31,7 +33,7 @@ bool Client::compile() {
       return false;
     }
     if (outputToken) {
-      for (auto const& token : tokens) {
+      for (auto const &token : tokens) {
         std::cout << token << std::endl;
       }
     }
@@ -71,9 +73,9 @@ bool Client::compile() {
   }
 
   if (breakPoint == Environment) {
-     Env::Scope packageScope(Env::Scope::Type::GLOBAL);
+    Env::TypeLinkList Links;
 
-    if (!buildEnv(astList, packageScope)) {
+    if (!buildEnv(astList, Links)) {
       std::cerr << "Failed to build environment\n";
       return false;
     }

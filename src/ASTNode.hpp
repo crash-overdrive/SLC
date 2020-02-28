@@ -63,7 +63,6 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
-
 class PackageDeclaration : public Node {
 public:
   void accept(Visitor &Visitor) const override;
