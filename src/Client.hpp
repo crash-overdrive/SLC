@@ -11,7 +11,6 @@
 class Client {
 public:
   enum BreakPointType {
-    Preprocess,
     Scan,
     Parse,
     Ast,
