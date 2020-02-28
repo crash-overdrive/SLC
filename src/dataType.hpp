@@ -1,6 +1,5 @@
 #pragma once
 
-#include "scope.hpp"
 #include <map>
 
 namespace type {
