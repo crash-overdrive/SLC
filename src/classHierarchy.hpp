@@ -3,7 +3,9 @@
 #include "Hierarchy.hpp"
 #include <map>
 
-class Env::Scope;
+namespace Env{
+	class Scope;
+}
 
 //need this for name resolutions
 //class TypeLink;
@@ -30,15 +32,16 @@ namespace type{
 		ClassHierarchyBuillder(Env::Scope *root);
 
 		//need this for resolving the fully qualified name for the present class
-		virtual void visit(const PackageDeclaration &Dec) override;
+		virtual void visit(const AST::PackageDeclaration &Dec) override;
 		//in case i cannot receive typed linking from external sources
-		virtual void visit(const SingleImportDeclaration &Dec) override;
-		virtual void visit(const DemandImportDeclaration &Dec) override;
+		virtual void visit(const AST::SingleImportDeclaration &Dec) override;
+		virtual void visit(const AST::DemandImportDeclaration &Dec) override;
 		//the actual class declaration
-		virtual void visit(const ClassDeclaration &Dec) override;
-		virtual void visit(const InterfaceDeclaration &Dec) override;
-		virtual void visit(const MethodDeclaration &Dec) override;
-		virtual void visit(const FieldDeclaration &Dec) override;
+		virtual void visit(const AST::ClassDeclaration &Dec) override;
+		virtual void visit(const AST::InterfaceDeclaration &Dec) override;
+		virtual void visit(const AST::MethodDeclaration &Dec) override;
+		virtual void visit(const AST::FieldDeclaration &Dec) override;
 		//it is unproductive to venture beyond field or method, as there are no structural reference to speak of
+		~ClassHierarchyBuilder();
 	};
 }

@@ -1,30 +1,71 @@
-#include "hierachy.hpp"
+#include "Hierarchy.hpp"
 
-void type::HierarchicalVisitor::visit(const Start &Start){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const PackageDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const SingleImportDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const DemandImportDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const ClassDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const InterfaceDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const FieldDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const MethodDeclaration &Decl){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const Modifier &Modifier){preHook();postHook();}
-
-void type::HierarchicalVisitor::visit(const Identifier &Identifier){preHook();postHook();}
-
-void type::HierarchicalVisitor::preHook(const Node &node){
+void type::HierarchicalVisitor::visit(const AST::Start &Start){
+	preHook(Start);
+	(void)Start;
+	postHook(Start);
 }
 
-void type::HierarchicalVisitor::postHook(const Node& node){
-	for (const child : node->getCHildren()){
+void type::HierarchicalVisitor::visit(const AST::PackageDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::SingleImportDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::DemandImportDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::ClassDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::InterfaceDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::FieldDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::MethodDeclaration &Decl){
+	preHook(Decl);
+	(void)Decl;
+	postHook(Decl);
+}
+
+void type::HierarchicalVisitor::visit(const AST::Modifier &Modifier){
+	preHook(Modifier);
+	(void)Modifier;
+	postHook(Modifier);
+}
+
+void type::HierarchicalVisitor::visit(const AST::Identifier &Identifier){
+	preHook(Identifier);
+	(void)Identifier;
+	postHook(Identifier);
+}
+
+void type::HierarchicalVisitor::preHook(const AST::Node &node){
+	(void)node;
+}
+
+void type::HierarchicalVisitor::postHook(const AST::Node& node){
+	for (const auto &child : node.getChildren()){
 		child->accept(*this);
 	}
 }

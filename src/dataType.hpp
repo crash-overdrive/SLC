@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <map>
 
 namespace type {
@@ -23,6 +24,6 @@ namespace type {
 	struct interfaceType{
 		std::string name;
 		std::map<std::string, std::vector<fieldType>> fields;
-	}
+	};
 
 }

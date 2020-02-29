@@ -1,21 +1,22 @@
 #pragma once
+
 #include "ASTVisitor.hpp"
 
 namespace type{
 	
-	class HierarchicalVisitor : public Visitor{
-		virtual void visit(const Start &Start);
-		virtual void visit(const PackageDeclaration &Decl);
-		virtual void visit(const SingleImportDeclaration &Decl);
-		virtual void visit(const DemandImportDeclaration &Decl);
-		virtual void visit(const ClassDeclaration &Decl);
-		virtual void visit(const InterfaceDeclaration &Decl);
-		virtual void visit(const FieldDeclaration &Decl);
-		virtual void visit(const MethodDeclaration &Decl);
-		virtual void visit(const Modifier &Modifier);
-		virtual void visit(const Identifier &Identifier);
-		virtual void preHook(const Node &node);
-		virtual void posHook(const Node &node);
-		virtual ~HierachicalVisitor();
+	class HierarchicalVisitor : public AST::Visitor{
+		virtual void visit(const AST::Start &Start);
+		virtual void visit(const AST::PackageDeclaration &Decl);
+		virtual void visit(const AST::SingleImportDeclaration &Decl);
+		virtual void visit(const AST::DemandImportDeclaration &Decl);
+		virtual void visit(const AST::ClassDeclaration &Decl);
+		virtual void visit(const AST::InterfaceDeclaration &Decl);
+		virtual void visit(const AST::FieldDeclaration &Decl);
+		virtual void visit(const AST::MethodDeclaration &Decl);
+		virtual void visit(const AST::Modifier &Modifier);
+		virtual void visit(const AST::Identifier &Identifier);
+		virtual void preHook(const AST::Node &node);
+		virtual void postHook(const AST::Node &node);
+		virtual ~HierarchicalVisitor();
 	};
 }
