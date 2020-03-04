@@ -37,44 +37,44 @@ TEST_CASE("client process", "[client]") {
     }
   }
 
-   //SECTION("a1") {
-     //SECTION("error preprocess") {
-       //Client.setBreakPoint(Client::Preprocess);
-       //for (const auto &FileName : A1ErrorPreprocess) {
-         //SECTION(FileName) {
-           //Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-           //REQUIRE_FALSE(Client.compile());
-        //}
-       //}
-     //}
-     //SECTION("error scan") {
-       //Client.setBreakPoint(Client::Scan);
-       //for (const auto &FileName : A1ErrorScan) {
-         //SECTION(FileName) {
-           //Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-           //REQUIRE_FALSE(Client.compile());
-         //}
-       //}
-     //}
-     //SECTION("error parse") {
-       //Client.setBreakPoint(Client::Parse);
-       //for (const auto &FileName : A1ErrorParse) {
-         //SECTION(FileName) {
-           //Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-           //REQUIRE_FALSE(Client.compile());
-         //}
-       //}
-     //}
-     //SECTION("accept") {
-       //Client.setBreakPoint(Client::Weed);
-       //for (const auto &FileName : A1Valid) {
-         //SECTION(FileName) {
-           //Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-           //REQUIRE(Client.compile());
-         //}
-       //}
-     //}
-   //}
+   SECTION("a1") {
+     SECTION("error preprocess") {
+       Client.setBreakPoint(Client::VerifyName);
+       for (const auto &FileName : A1ErrorPreprocess) {
+         SECTION(FileName) {
+           Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+           REQUIRE_FALSE(Client.compile());
+        }
+       }
+     }
+     SECTION("error scan") {
+       Client.setBreakPoint(Client::Scan);
+       for (const auto &FileName : A1ErrorScan) {
+         SECTION(FileName) {
+           Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+           REQUIRE_FALSE(Client.compile());
+         }
+       }
+     }
+     SECTION("error parse") {
+       Client.setBreakPoint(Client::Parse);
+       for (const auto &FileName : A1ErrorParse) {
+         SECTION(FileName) {
+           Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+           REQUIRE_FALSE(Client.compile());
+         }
+       }
+     }
+     SECTION("accept") {
+       Client.setBreakPoint(Client::Weed);
+       for (const auto &FileName : A1Valid) {
+         SECTION(FileName) {
+           Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
+           REQUIRE(Client.compile());
+         }
+       }
+     }
+   }
 
   // SECTION("a2") {
   //   SECTION("parse-error") {
