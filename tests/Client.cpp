@@ -99,10 +99,8 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-
     SECTION("accept") {
       Client.setBreakPoint(Client::Environment);
-      Client.outputAst = true;
       for (const auto &Group : A2Valid) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
@@ -112,6 +110,44 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+  }
+
+  SECTION("a3") {
+    SECTION("accept") {
+      Client.setBreakPoint(Client::Environment);
+      for (const auto &Group : A3Valid) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a3/" + FileName);
+          }
+          REQUIRE(Client.compile());
+        }
+      }
+    }
+
+    SECTION("parse-error") {
+      Client.setBreakPoint(Client::Parse);
+      for (const auto &Group : A3ErrorParse) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a3/" + FileName);
+          }
+          REQUIRE_FALSE(Client.compile());
+        }
+      }
+    }
+
+    //SECTION("reject") {
+      //Client.setBreakPoint(Client::Environment);
+      //for (const auto &Group : A3Error) {
+        //SECTION(Group[0]) {
+          //for (const auto &FileName : Group) {
+            //Client.addJavaFile(TestDataDir + "/java/a3/" + FileName);
+          //}
+          //REQUIRE(Client.compile());
+        //}
+      //}
+    //}
   }
 
   SECTION("multiple files") {
