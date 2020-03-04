@@ -15,7 +15,7 @@ class TypeLink {
 public:
   TypeLink(std::unique_ptr<AST::Node> ASTRoot);
   void link();
-  void visit(TypeLinkVisitor &Visitor);
+  void visit(TypeLinkVisitor TypeLinkVisitor);
 
 private:
   std::unique_ptr<AST::Node> Target;

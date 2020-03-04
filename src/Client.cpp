@@ -86,9 +86,7 @@ bool Client::compile() {
     }
     return true;
   }
-
-  std::cerr << "Unrecognised breakpoint set: " << breakPoint << std::endl;
-  return false;
+  return true;
 }
 
 void Client::addJavaFile(std::string &&file) { files.emplace(std::move(file)); }

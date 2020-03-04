@@ -3,7 +3,7 @@
 Env::TypeLink::TypeLink(std::unique_ptr<AST::Node> ASTRoot)
     : Target(std::move(ASTRoot)), Imports() {}
 
-void Env::TypeLink::visit(TypeLinkVisitor &TypeLinkVisitor) {
+void Env::TypeLink::visit(TypeLinkVisitor TypeLinkVisitor) {
   TypeLinkVisitor.setImports(Imports);
   Target->accept(TypeLinkVisitor);
 }
