@@ -22,15 +22,6 @@ void usage() {
             << std::endl;
 }
 
-bool verifyFileName(const std::string &fileName) {
-  const std::string extension(".java");
-  if (fileName.length() < extension.length()) {
-    return false;
-  }
-  size_t Position = fileName.find_last_of(".");
-  return fileName.compare(Position, extension.size(), extension) == 0;
-}
-
 int main(int argc, char *argv[]) {
   bool outputToken = false;
   bool outputParse = false;
@@ -90,11 +81,6 @@ int main(int argc, char *argv[]) {
                 << std::endl;
       return 42;
     }
-    if (!verifyFileName(file)) {
-      std::cerr << "Error: " << file << " has the wrong extension.."
-                << std::endl;
-      return 42;
-    }
     finalFiles.insert(file);
   }
 
@@ -119,7 +105,8 @@ int main(int argc, char *argv[]) {
   scannerStream >> scanner;
   parserStream >> parser;
 
-  Client client(scanner, parser, finalFiles);
+  Client client(&scanner, &parser);
+  client.addJavaFiles(std::move(finalFiles));
   if (outputToken) {
     client.outputToken = true;
   }
@@ -129,7 +116,6 @@ int main(int argc, char *argv[]) {
   if (outputAst) {
     client.outputAst = true;
   }
-  // client.setBreakPoint(client.Environment);
 
   bool compileResult = client.compile();
 

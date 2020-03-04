@@ -4,13 +4,8 @@
 #include "ASTVisitor.hpp"
 #include "Client.hpp"
 
-Client::Client(Lex::Scanner &scanner, std::set<std::string> files)
-    : scanner(&scanner), parser(nullptr), fileNames(files), breakPoint(Scan) {}
-
-Client::Client(Lex::Scanner &scanner, Parse::DFA &parser,
-               std::set<std::string> files)
-    : scanner(&scanner), parser(&parser), fileNames(files),
-      breakPoint(Environment) {}
+Client::Client(Lex::Scanner *scanner, Parse::DFA *parser)
+    : scanner(scanner), parser(parser) {}
 
 void Client::setBreakPoint(BreakPointType breakPoint) {
   this->breakPoint = breakPoint;
@@ -19,7 +14,15 @@ void Client::setBreakPoint(BreakPointType breakPoint) {
 bool Client::compile() {
   std::vector<std::unique_ptr<AST::Start>> astList;
 
-  for (const auto &file : fileNames) {
+  for (const auto &file : files) {
+    if (!verifyFileName(file)) {
+      std::cerr << file << " is invalid " << std::endl;
+      return false;
+    }
+    if (breakPoint == VerifyName) {
+      continue;
+    }
+
     std::ifstream javaFileStream;
     std::vector<Lex::Token> tokens;
 
@@ -55,10 +58,9 @@ bool Client::compile() {
     }
 
     std::unique_ptr<AST::Start> astRoot = std::make_unique<AST::Start>();
-    AST::PrintVisitor Visitor = AST::PrintVisitor(std::cout);
-
     buildAST(Tree, astRoot);
     if (outputAst) {
+      AST::PrintVisitor Visitor = AST::PrintVisitor(std::cout);
       astRoot->accept(Visitor);
     }
     astList.emplace_back(std::move(astRoot));
@@ -71,6 +73,9 @@ bool Client::compile() {
       continue;
     }
   }
+  if (breakPoint < Environment) {
+    return true;
+  }
 
   if (breakPoint == Environment) {
     Env::TypeLinkList Links;
@@ -81,10 +86,24 @@ bool Client::compile() {
     }
     return true;
   }
-
-  std::cerr << "Unrecognised breakpoint set: " << breakPoint << std::endl;
-  return false;
+  return true;
 }
+
+void Client::addJavaFile(std::string &&file) { files.emplace(std::move(file)); }
+
+void Client::addJavaFiles(std::set<std::string> &&files) {
+  this->files = std::move(files);
+}
+
+bool Client::verifyFileName(const std::string &fileName) {
+  const std::string extension(".java");
+  if (fileName.length() < extension.length()) {
+    return false;
+  }
+  size_t Position = fileName.find(".");
+  return fileName.compare(Position, extension.size(), extension) == 0;
+}
+
 
 bool Client::scan(std::istream &Stream, std::vector<Lex::Token> &Tokens) {
   if (scanner->scan(Stream)) {
