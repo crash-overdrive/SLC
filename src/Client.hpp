@@ -12,6 +12,7 @@
 class Client {
 public:
   enum BreakPointType {
+    VerifyName,
     Scan,
     Parse,
     Ast,
@@ -24,19 +25,19 @@ public:
   bool outputParse = false;
   bool outputAst = false;
 
-  Client(std::set<std::string> files);
-  Client(Lex::Scanner &scanner, std::set<std::string> files);
-  Client(Lex::Scanner &scanner, Parse::DFA &parser,
-         std::set<std::string> files);
+  Client(Lex::Scanner *scanner = nullptr, Parse::DFA *parser = nullptr);
   void setBreakPoint(BreakPointType breakPoint);
+  void addJavaFile(std::string &&files);
+  void addJavaFiles(std::set<std::string> &&files);
   bool compile();
 
 private:
   Lex::Scanner *scanner;
   Parse::DFA *parser;
-  std::set<std::string> fileNames;
-  BreakPointType breakPoint;
+  std::set<std::string> files{};
+  BreakPointType breakPoint{Hierarchy};
 
+  bool verifyFileName(const std::string &fileName);
   bool scan(std::istream &stream, std::vector<Lex::Token> &tokens);
   bool parse(const std::vector<Lex::Token> &tokens, Parse::Tree &parseTree);
   void buildAST(const Parse::Tree &ParseTree,
