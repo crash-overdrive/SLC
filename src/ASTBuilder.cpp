@@ -7,13 +7,23 @@ void AST::inodeVisit(const Parse::Node &ParseNode, Node &ASTNode) {
   ASTNode.addChild(std::move(Decl));
 }
 
-void AST::identifierVisit(const Parse::Node &ParseNode, Node &ASTNode) {
-  ASTNode.addChild(std::make_unique<Identifier>(ParseNode.getTag()));
+void AST::identifierVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  ASTNode.addChild(std::make_unique<AST::Identifier>(ParseNode.getTag()));
 }
 
-void AST::modifierVisit(const Parse::Node &ParseNode, Node &ASTNode) {
+void AST::modifierVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
   const std::string &Name = ParseNode.getFirstChild()->getName();
-  ASTNode.addChild(std::make_unique<Modifier>(Name));
+  ASTNode.addChild(std::make_unique<AST::Modifier>(Name));
+}
+
+void AST::primitiveTypeVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  const std::string &Name = ParseNode.getFirstChild()->getName();
+  ASTNode.addChild(std::make_unique<AST::PrimitiveType>(Name));
+}
+
+void AST::voidTypeVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  const std::string &Name = ParseNode.getTag();
+  ASTNode.addChild(std::make_unique<AST::PrimitiveType>(Name));
 }
 
 void AST::dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode) {

@@ -39,6 +39,42 @@ void AST::FieldDeclaration::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
+void AST::ConstructorDeclaration::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::Extensions::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::Name::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ArrayType::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::SimpleType::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::FormalParameterList::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::SingleVariableDeclaration::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::Super::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::Interfaces::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
 AST::Modifier::Modifier(const std::string &NameCode)
     : Code(NameModifierCode.at(NameCode)) {}
 
@@ -51,3 +87,15 @@ AST::Identifier::Identifier(const std::string &Name) : Name(Name) {}
 const std::string &AST::Identifier::getName() const { return Name; }
 
 void AST::Identifier::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::PrimitiveType::PrimitiveType(const std::string &Type) : Type(Type) {}
+
+const std::string &AST::PrimitiveType::getType() const { return Type; }
+
+void AST::PrimitiveType::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::VoidType::VoidType(const std::string &Type) : Type(Type) {}
+
+const std::string &AST::VoidType::getType() const { return Type; }
+
+void AST::VoidType::accept(Visitor &Visitor) const { Visitor.visit(*this); }

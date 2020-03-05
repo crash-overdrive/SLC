@@ -88,6 +88,51 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
+class ConstructorDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Extensions : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Name : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArrayType : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class SimpleType : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class FormalParameterList : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class SingleVariableDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Super : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Interfaces : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
 class Modifier : public Node {
 public:
   Modifier(const std::string &NameCode);
@@ -106,6 +151,26 @@ public:
 
 private:
   std::string Name;
+};
+
+class PrimitiveType : public Node {
+public:
+  PrimitiveType(const std::string &Type);
+  const std::string &getType() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Type;
+};
+
+class VoidType : public Node {
+public:
+  VoidType(const std::string &Type);
+  const std::string &getType() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Type;
 };
 
 } // namespace AST
