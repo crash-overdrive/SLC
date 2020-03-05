@@ -26,6 +26,10 @@ bool Client::compile() {
     std::ifstream javaFileStream;
     std::vector<Lex::Token> tokens;
 
+    if (outputToken || outputParse || outputAst) {
+      std::cout << file << std::endl;
+    }
+
     javaFileStream.open(file);
     if (!javaFileStream.is_open()) {
       std::cerr << "Error: " << file << " could not be opened" << std::endl;
@@ -95,13 +99,17 @@ void Client::addJavaFiles(std::set<std::string> &&files) {
   this->files = std::move(files);
 }
 
-bool Client::verifyFileName(const std::string &fileName) {
-  const std::string extension(".java");
-  if (fileName.length() < extension.length()) {
+bool Client::verifyFileName(std::string FileName) {
+  const auto pos = FileName.find_last_of('/');
+  if (pos != std::string::npos) {
+    FileName = FileName.substr(pos+1);
+  }
+  const std::string Ext(".java");
+  if (FileName.length() < Ext.length()) {
     return false;
   }
-  size_t Position = fileName.find(".");
-  return fileName.compare(Position, extension.size(), extension) == 0;
+  size_t Position = FileName.find(".");
+  return FileName.compare(Position, Ext.size(), Ext) == 0;
 }
 
 

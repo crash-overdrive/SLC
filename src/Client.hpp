@@ -37,7 +37,7 @@ private:
   std::set<std::string> files{};
   BreakPointType breakPoint{Hierarchy};
 
-  bool verifyFileName(const std::string &fileName);
+  bool verifyFileName(std::string fileName);
   bool scan(std::istream &stream, std::vector<Lex::Token> &tokens);
   bool parse(const std::vector<Lex::Token> &tokens, Parse::Tree &parseTree);
   void buildAST(const Parse::Tree &ParseTree,
