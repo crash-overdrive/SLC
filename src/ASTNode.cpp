@@ -75,6 +75,54 @@ void AST::Interfaces::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
+void AST::Block::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::IfThenStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::IfThenElseStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::WhileStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ForStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::SimpleStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ClassInstanceCreation::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::Expression::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::MethodInvocation::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ReturnStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::VariableDeclarationStatement::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::AssignmentExpression::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
 AST::Modifier::Modifier(const std::string &NameCode)
     : Code(NameModifierCode.at(NameCode)) {}
 
@@ -99,3 +147,15 @@ AST::VoidType::VoidType(const std::string &Type) : Type(Type) {}
 const std::string &AST::VoidType::getType() const { return Type; }
 
 void AST::VoidType::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::ASSIGN::ASSIGN(const std::string &Symbol) : Symbol(Symbol) {}
+
+const std::string &AST::ASSIGN::getSymbol() const { return Symbol; }
+
+void AST::ASSIGN::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::Operator::Operator(const std::string &OperatorSymbol) : OperatorSymbol(OperatorSymbol) {}
+
+const std::string &AST::Operator::getOperatorSymbol() const { return OperatorSymbol; }
+
+void AST::Operator::accept(Visitor &Visitor) const { Visitor.visit(*this); }

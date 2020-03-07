@@ -133,6 +133,66 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
+class Block : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class IfThenStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class IfThenElseStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class WhileStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ForStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class SimpleStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ClassInstanceCreation : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Expression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class MethodInvocation : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ReturnStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class VariableDeclarationStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class AssignmentExpression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
 class Modifier : public Node {
 public:
   Modifier(const std::string &NameCode);
@@ -171,6 +231,26 @@ public:
 
 private:
   std::string Type;
+};
+
+class ASSIGN : public Node {
+public:
+  ASSIGN(const std::string &Symbol);
+  const std::string &getSymbol() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Symbol;
+};
+
+class Operator : public Node {
+public:
+  Operator(const std::string &Operator);
+  const std::string &getOperatorSymbol() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string OperatorSymbol;
 };
 
 } // namespace AST

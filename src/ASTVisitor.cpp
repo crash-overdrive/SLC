@@ -21,6 +21,20 @@ void AST::Visitor::visit(const FormalParameterList &) {}
 void AST::Visitor::visit(const SingleVariableDeclaration &) {}
 void AST::Visitor::visit(const Super &) {}
 void AST::Visitor::visit(const Interfaces &) {}
+void AST::Visitor::visit(const Block &) {}
+void AST::Visitor::visit(const IfThenStatement &) {}
+void AST::Visitor::visit(const IfThenElseStatement &) {}
+void AST::Visitor::visit(const WhileStatement &) {}
+void AST::Visitor::visit(const ForStatement &) {}
+void AST::Visitor::visit(const SimpleStatement &) {}
+void AST::Visitor::visit(const ClassInstanceCreation &) {}
+void AST::Visitor::visit(const Expression &) {}
+void AST::Visitor::visit(const MethodInvocation &) {}
+void AST::Visitor::visit(const ReturnStatement &) {}
+void AST::Visitor::visit(const VariableDeclarationStatement &) {}
+void AST::Visitor::visit(const ASSIGN &) {}
+void AST::Visitor::visit(const AssignmentExpression &) {}
+void AST::Visitor::visit(const Operator &) {}
 
 AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
     : Stream(Stream), Level(0) {}
@@ -125,6 +139,74 @@ void AST::PrintVisitor::visit(const Super &Super) {
 void AST::PrintVisitor::visit(const Interfaces &Interfaces) {
   Stream << "Interfaces: " << "\n";
   acceptChildrenLevel(Interfaces);
+}
+
+void AST::PrintVisitor::visit(const Block &Block) {
+  Stream << "Block: " << "\n";
+  acceptChildrenLevel(Block);
+}
+
+void AST::PrintVisitor::visit(const IfThenStatement &IfThenStatement) {
+  Stream << "IfThenStatement: " << "\n";
+  acceptChildrenLevel(IfThenStatement);
+}
+
+void AST::PrintVisitor::visit(const IfThenElseStatement &IfThenElseStatement) {
+  Stream << "IfThenElseStatement: " << "\n";
+  acceptChildrenLevel(IfThenElseStatement);
+}
+
+void AST::PrintVisitor::visit(const WhileStatement &WhileStatement) {
+  Stream << "WhileStatement: " << "\n";
+  acceptChildrenLevel(WhileStatement);
+}
+
+void AST::PrintVisitor::visit(const ForStatement &ForStatement) {
+  Stream << "ForStatement: " << "\n";
+  acceptChildrenLevel(ForStatement);
+}
+
+void AST::PrintVisitor::visit(const SimpleStatement &SimpleStatement) {
+  Stream << "SimpleStatement: " << "\n";
+  acceptChildrenLevel(SimpleStatement);
+}
+
+void AST::PrintVisitor::visit(const ClassInstanceCreation &ClassInstanceCreation) {
+  Stream << "ClassInstanceCreation: " << "\n";
+  acceptChildrenLevel(ClassInstanceCreation);
+}
+
+void AST::PrintVisitor::visit(const Expression &Expression) {
+  Stream << "Expression: " << "\n";
+  acceptChildrenLevel(Expression);
+}
+
+void AST::PrintVisitor::visit(const MethodInvocation &MethodInvocation) {
+  Stream << "MethodInvocation: " << "\n";
+  acceptChildrenLevel(MethodInvocation);
+}
+
+void AST::PrintVisitor::visit(const ReturnStatement &ReturnStatement) {
+  Stream << "ReturnStatement: " << "\n";
+  acceptChildrenLevel(ReturnStatement);
+}
+
+void AST::PrintVisitor::visit(const VariableDeclarationStatement &VariableDeclarationStatement) {
+  Stream << "VariableDeclarationStatement: " << "\n";
+  acceptChildrenLevel(VariableDeclarationStatement);
+}
+
+void AST::PrintVisitor::visit(const AssignmentExpression &AssignmentExpression) {
+  Stream << "AssignmentExpression: " << "\n";
+  acceptChildrenLevel(AssignmentExpression);
+}
+
+void AST::PrintVisitor::visit(const Operator &Operator) {
+  Stream << "Operator: " << Operator.getOperatorSymbol() << "\n";
+}
+
+void AST::PrintVisitor::visit(const ASSIGN &ASSIGN) {
+  Stream << "ASSIGN: " << ASSIGN.getSymbol() << "\n";
 }
 
 void AST::PrintVisitor::acceptChildrenLevel(const AST::Node &Node) {

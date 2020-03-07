@@ -29,6 +29,20 @@ public:
   virtual void visit(const SingleVariableDeclaration &);
   virtual void visit(const Super &);
   virtual void visit(const Interfaces &);
+  virtual void visit(const Block &);
+  virtual void visit(const IfThenStatement &);
+  virtual void visit(const IfThenElseStatement &);
+  virtual void visit(const WhileStatement &);
+  virtual void visit(const ForStatement &);
+  virtual void visit(const SimpleStatement &);
+  virtual void visit(const ClassInstanceCreation &);
+  virtual void visit(const Expression &);
+  virtual void visit(const MethodInvocation &);
+  virtual void visit(const ReturnStatement &);
+  virtual void visit(const VariableDeclarationStatement &);
+  virtual void visit(const AssignmentExpression &);
+  virtual void visit(const ASSIGN &);
+  virtual void visit(const Operator &);
 };
 
 class PrintVisitor : public Visitor {
@@ -55,6 +69,20 @@ public:
   void visit(const SingleVariableDeclaration &SingleVariableDeclaration) override;
   void visit(const Super &Super) override;
   void visit(const Interfaces &Interfaces) override;
+  void visit(const Block &Block) override;
+  void visit(const IfThenStatement &IfThenStatement) override;
+  void visit(const IfThenElseStatement &IfThenElseStatement) override;
+  void visit(const WhileStatement &WhileStatement) override;
+  void visit(const ForStatement &ForStatement) override;
+  void visit(const SimpleStatement &SimpleStatement) override;
+  void visit(const ClassInstanceCreation &ClassInstanceCreation) override;
+  void visit(const Expression &Expression) override;
+  void visit(const MethodInvocation &MethodInvocation) override;
+  void visit(const ReturnStatement &ReturnStatement) override;
+  void visit(const VariableDeclarationStatement &VariableDeclarationStatement) override;
+  void visit(const AssignmentExpression &AssignmentExpression) override;
+  void visit(const ASSIGN &ASSIGN) override;
+  void visit(const Operator &Operator) override;
 
 private:
   std::ostream &Stream;

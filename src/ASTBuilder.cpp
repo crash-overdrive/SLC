@@ -23,7 +23,17 @@ void AST::primitiveTypeVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
 
 void AST::voidTypeVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
   const std::string &Name = ParseNode.getTag();
-  ASTNode.addChild(std::make_unique<AST::PrimitiveType>(Name));
+  ASTNode.addChild(std::make_unique<AST::VoidType>(Name));
+}
+
+void AST::assignVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  const std::string &Name = ParseNode.getTag();
+  ASTNode.addChild(std::make_unique<AST::ASSIGN>(Name));
+}
+
+void AST::operatorVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  const std::string &Name = ParseNode.getTag();
+  ASTNode.addChild(std::make_unique<AST::Operator>(Name));
 }
 
 void AST::dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode) {

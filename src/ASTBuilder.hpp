@@ -12,6 +12,8 @@ void identifierVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void modifierVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void primitiveTypeVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void voidTypeVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void assignVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void operatorVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode);
 void dispatch(const Parse::Node &ParseNode, Node &ASTNode);
 
@@ -30,11 +32,12 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"TypeImportOnDemandDeclaration", inodeVisit<DemandImportDeclaration>}, // TypeImportOnDemandDeclaration IMPORT Name DOT MULTIPLICATION SEMI
 
     {"Name", inodeVisit<Name>}, // Name -> Name DOT IDENTIFIER // TODO: fix this from having multiple names
+    // {"Name", dispatchChildren},
     {"IDENTIFIER", identifierVisit},
 
     {"InterfaceDeclaration", inodeVisit<InterfaceDeclaration>}, // InterfaceDeclaration -> ModifierList INTERFACE IDENTIFIER Extensions LBRAC InterfaceBodyDeclarationList RBRAC
 
-    {"ModifierList", dispatchChildren}, // ModifierList -> ModifierList Modifier // TODO: group these?
+    {"ModifierList", dispatchChildren}, // ModifierList -> ModifierList Modifier
     {"Modifier", modifierVisit}, // Modifier -> PUBLIC, PRIVATE, PROTECTED, STATIC, ABSTRACT, FINAL, NATIVE
 
     {"Extensions", inodeVisit<Extensions>}, // Extensions -> EXTENDS ExtensionList
@@ -52,7 +55,6 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"SimpleType", inodeVisit<SimpleType>}, // SimpleType -> Name
     {"VOID", voidTypeVisit}, // VOID
 
-    // {"FormalParameterList", inodeVisit<FormalParameterList>},
     {"FormalParameterList", dispatchChildren}, // FormalParameterList -> FormalParameterList COMMA SingleVariableDeclaration
     {"SingleVariableDeclaration", inodeVisit<SingleVariableDeclaration>}, // SingleVariableDeclaration -> Type IDENTIFIER
 
@@ -72,12 +74,38 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
 
     {"ClassMethodDeclaration", inodeVisit<MethodDeclaration>}, // ClassMethodDeclaration -> MethodHeader Block, MethodHeader SEMI
 
-    // ASSIGN
-    // Expression
-    // Block
+    {"ASSIGN", assignVisit},
+    {"Expression", inodeVisit<Expression>}, // Expression -> AssignmentExpression, OperationExpression
 
+    {"AssignmentExpression", inodeVisit<AssignmentExpression>}, // AssignmentExpression -> Name ASSIGN Expression, FieldAccess ASSIGN Expression, ArrayAccess ASSIGN Expression
 
+    {"OperationExpression", dispatchChildren}, // OperationExpression -> UnaryExpression,  OperationExpression BinaryOperator UnaryExpression, OperationExpression InstanceOperator (ArrayType | SimpleType)
+    {"UnaryExpression", dispatchChildren}, // TODO
+    {"BinaryOperator", operatorVisit},
+    {"InstanceOperator", operatorVisit},
 
+    {"Block", inodeVisit<Block>}, // Block -> LBRAC StatementList RBRAC
+    {"StatementList", dispatchChildren}, // StatementList -> StatementList Statement
+    {"Statement", dispatchChildren}, // Statement -> SimpleStatement, IfThenStatement, IfThenElseStatement, WhileStatement, ForStatement
+    // TODO: check if we need this or should we just dispatch children here?
+    // {"SimpleStatement", inodeVisit<SimpleStatement>},
+    {"SimpleStatement", dispatchChildren}, // SimpleStatement -> Block, StatementExpression, ReturnStatement, VariableDeclarationStatement
+
+    {"StatementExpression", dispatchChildren}, // StatementExpression -> ExpressionStatement SEMI
+    {"ExpressionStatement", dispatchChildren}, // ExpressionStatement -> ClassInstanceCreation, MethodInvocation, AssignmentExpression
+
+    {"ClassInstanceCreation", inodeVisit<ClassInstanceCreation>}, // ClassInstanceCreation -> NEW SimpleType LPAREN ArgumentList RPAREN
+    {"ArgumentList", dispatchChildren}, // ArgumentList -> ArgumentList COMMA Expression
+
+    {"MethodInvocation", inodeVisit<MethodInvocation>},
+
+    {"ReturnStatement", inodeVisit<ReturnStatement>},
+    {"VariableDeclarationStatement", inodeVisit<VariableDeclarationStatement>},
+
+    {"IfThenStatement", inodeVisit<IfThenStatement>},
+    {"IfThenElseStatement", inodeVisit<IfThenElseStatement>},
+    {"WhileStatement", inodeVisit<WhileStatement>},
+    {"ForStatement", inodeVisit<ForStatement>},
 
 };
 
