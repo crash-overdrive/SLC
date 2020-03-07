@@ -154,8 +154,14 @@ const std::string &AST::ASSIGN::getSymbol() const { return Symbol; }
 
 void AST::ASSIGN::accept(Visitor &Visitor) const { Visitor.visit(*this); }
 
-AST::Operator::Operator(const std::string &OperatorSymbol) : OperatorSymbol(OperatorSymbol) {}
+AST::BinaryOperator::BinaryOperator(const std::string &BinaryOperatorSymbol) : BinaryOperatorSymbol(BinaryOperatorSymbol) {}
 
-const std::string &AST::Operator::getOperatorSymbol() const { return OperatorSymbol; }
+const std::string &AST::BinaryOperator::getBinaryOperatorSymbol() const { return BinaryOperatorSymbol; }
 
-void AST::Operator::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+void AST::BinaryOperator::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::UnaryOperator::UnaryOperator(const std::string &UnaryOperatorSymbol) : UnaryOperatorSymbol(UnaryOperatorSymbol) {}
+
+const std::string &AST::UnaryOperator::getUnaryOperatorSymbol() const { return UnaryOperatorSymbol; }
+
+void AST::UnaryOperator::accept(Visitor &Visitor) const { Visitor.visit(*this); }

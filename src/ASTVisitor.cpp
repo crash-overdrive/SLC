@@ -34,7 +34,8 @@ void AST::Visitor::visit(const ReturnStatement &) {}
 void AST::Visitor::visit(const VariableDeclarationStatement &) {}
 void AST::Visitor::visit(const ASSIGN &) {}
 void AST::Visitor::visit(const AssignmentExpression &) {}
-void AST::Visitor::visit(const Operator &) {}
+void AST::Visitor::visit(const BinaryOperator &) {}
+void AST::Visitor::visit(const UnaryOperator &) {}
 
 AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
     : Stream(Stream), Level(0) {}
@@ -201,8 +202,12 @@ void AST::PrintVisitor::visit(const AssignmentExpression &AssignmentExpression) 
   acceptChildrenLevel(AssignmentExpression);
 }
 
-void AST::PrintVisitor::visit(const Operator &Operator) {
-  Stream << "Operator: " << Operator.getOperatorSymbol() << "\n";
+void AST::PrintVisitor::visit(const BinaryOperator &BinaryOperator) {
+  Stream << "BinaryOperator: " << BinaryOperator.getBinaryOperatorSymbol() << "\n";
+}
+
+void AST::PrintVisitor::visit(const UnaryOperator &UnaryOperator) {
+  Stream << "UnaryOperator: " << UnaryOperator.getUnaryOperatorSymbol() << "\n";
 }
 
 void AST::PrintVisitor::visit(const ASSIGN &ASSIGN) {

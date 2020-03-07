@@ -13,7 +13,8 @@ void modifierVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void primitiveTypeVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void voidTypeVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void assignVisit(const Parse::Node &ParseNode, Node &ASTNode);
-void operatorVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void binaryOperatorVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void unaryOperatorVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode);
 void dispatch(const Parse::Node &ParseNode, Node &ASTNode);
 
@@ -80,9 +81,15 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"AssignmentExpression", inodeVisit<AssignmentExpression>}, // AssignmentExpression -> Name ASSIGN Expression, FieldAccess ASSIGN Expression, ArrayAccess ASSIGN Expression
 
     {"OperationExpression", inodeVisit<OperationExpression>}, // OperationExpression -> UnaryExpression,  OperationExpression BinaryOperator UnaryExpression, OperationExpression InstanceOperator (ArrayType | SimpleType)
-    {"UnaryExpression", dispatchChildren}, // TODO
-    {"BinaryOperator", operatorVisit},
-    {"InstanceOperator", operatorVisit},
+    {"BinaryOperator", binaryOperatorVisit}, // BinaryOperator -> +, -, /, *, %, ==, <=, >=, <, >, !=, ||, &&, &, |, ~
+    {"InstanceOperator", binaryOperatorVisit}, // InstanceOperator -> INSTANCEOF
+
+    {"UnaryExpression", dispatchChildren}, // UnaryExpression -> SUBTRACTION UnaryExpression, UnaryExpressionNotMinus
+    {"SUBTRACTION", unaryOperatorVisit}, // SUBTRACTION -> -
+    {"UnaryExpressionNotMinus", dispatchChildren}, // UnaryExpressionNotMinus -> EXCLAMATION UnaryExpression, CastExpression, PostfixExpression
+    {"EXCLAMATION", unaryOperatorVisit}, // EXCLAMATION -> !
+    // {"CastExpression", ...}, // TODO
+    // {"PostFixExpression", ...}, // TODO
 
     {"Block", inodeVisit<Block>}, // Block -> LBRAC StatementList RBRAC
     {"StatementList", dispatchChildren}, // StatementList -> StatementList Statement
@@ -100,7 +107,8 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"MethodInvocation", inodeVisit<MethodInvocation>},
 
     {"ReturnStatement", inodeVisit<ReturnStatement>},
-    {"VariableDeclarationStatement", inodeVisit<VariableDeclarationStatement>},
+    {"VariableDeclarationStatement", inodeVisit<VariableDeclarationStatement>}, // VariableDeclarationStatement -> VariableDeclarator SEMI
+    {"VariableDeclarator", dispatchChildren}, // VariableDeclarator -> SingleVariableDeclaration ASSIGN Expression
 
     {"IfThenStatement", inodeVisit<IfThenStatement>},
     {"IfThenElseStatement", inodeVisit<IfThenElseStatement>},

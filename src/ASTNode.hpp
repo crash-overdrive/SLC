@@ -193,6 +193,11 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
+class UnaryExpression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
 class Modifier : public Node {
 public:
   Modifier(const std::string &NameCode);
@@ -243,14 +248,24 @@ private:
   std::string Symbol;
 };
 
-class Operator : public Node {
+class BinaryOperator : public Node {
 public:
-  Operator(const std::string &Operator);
-  const std::string &getOperatorSymbol() const;
+  BinaryOperator(const std::string &BinaryOperator);
+  const std::string &getBinaryOperatorSymbol() const;
   void accept(Visitor &Visitor) const override;
 
 private:
-  std::string OperatorSymbol;
+  std::string BinaryOperatorSymbol;
+};
+
+class UnaryOperator : public Node {
+public:
+  UnaryOperator(const std::string &UnaryOperator);
+  const std::string &getUnaryOperatorSymbol() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string UnaryOperatorSymbol;
 };
 
 } // namespace AST

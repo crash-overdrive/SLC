@@ -31,9 +31,14 @@ void AST::assignVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
   ASTNode.addChild(std::make_unique<AST::ASSIGN>(Name));
 }
 
-void AST::operatorVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+void AST::binaryOperatorVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
   const std::string &Name = ParseNode.getFirstChild()->getTag();
-  ASTNode.addChild(std::make_unique<AST::Operator>(Name));
+  ASTNode.addChild(std::make_unique<AST::BinaryOperator>(Name));
+}
+
+void AST::unaryOperatorVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  const std::string &Name = ParseNode.getTag();
+  ASTNode.addChild(std::make_unique<AST::UnaryOperator>(Name));
 }
 
 void AST::dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode) {

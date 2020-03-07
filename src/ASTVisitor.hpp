@@ -42,7 +42,8 @@ public:
   virtual void visit(const VariableDeclarationStatement &);
   virtual void visit(const AssignmentExpression &);
   virtual void visit(const ASSIGN &);
-  virtual void visit(const Operator &);
+  virtual void visit(const BinaryOperator &);
+  virtual void visit(const UnaryOperator &);
 };
 
 class PrintVisitor : public Visitor {
@@ -82,7 +83,8 @@ public:
   void visit(const VariableDeclarationStatement &VariableDeclarationStatement) override;
   void visit(const AssignmentExpression &AssignmentExpression) override;
   void visit(const ASSIGN &ASSIGN) override;
-  void visit(const Operator &Operator) override;
+  void visit(const BinaryOperator &BinaryOperator) override;
+  void visit(const UnaryOperator &UnaryOperator) override;
 
 private:
   std::ostream &Stream;
