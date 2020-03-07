@@ -198,6 +198,11 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
+class ArgumentList : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
 class Modifier : public Node {
 public:
   Modifier(const std::string &NameCode);
@@ -266,6 +271,56 @@ public:
 
 private:
   std::string UnaryOperatorSymbol;
+};
+
+class DecIntLiteral : public Node {
+public:
+  DecIntLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class BooleanLiteral : public Node {
+public:
+  BooleanLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class CharacterLiteral : public Node {
+public:
+  CharacterLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class StringLiteral : public Node {
+public:
+  StringLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class NullLiteral : public Node {
+public:
+  NullLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
 };
 
 } // namespace AST

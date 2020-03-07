@@ -15,6 +15,11 @@ void voidTypeVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void assignVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void binaryOperatorVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void unaryOperatorVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void decIntLiteralVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void booleanLiteralVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void characterLiteralVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void stringLiteralVisit(const Parse::Node &ParseNode, Node &ASTNode);
+void nullLiteralVisit(const Parse::Node &ParseNode, Node &ASTNode);
 void dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode);
 void dispatch(const Parse::Node &ParseNode, Node &ASTNode);
 
@@ -88,8 +93,27 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"SUBTRACTION", unaryOperatorVisit}, // SUBTRACTION -> -
     {"UnaryExpressionNotMinus", dispatchChildren}, // UnaryExpressionNotMinus -> EXCLAMATION UnaryExpression, CastExpression, PostfixExpression
     {"EXCLAMATION", unaryOperatorVisit}, // EXCLAMATION -> !
-    // {"CastExpression", ...}, // TODO
-    // {"PostFixExpression", ...}, // TODO
+    {"CastExpression", dispatchChildren}, // CastExpression -> (Expression) UnaryExpressionNotMinus, (PrimitiveType | ArrayType) UnaryExpression
+    {"PostfixExpression", dispatchChildren}, // PostfixExpression -> Name, PrimaryExpression
+    {"PrimaryExpression", dispatchChildren}, // PrimaryExpression -> PrimaryExpressionNoMultiArray, ArrayAccess, ArrayCreation
+
+    {"PrimaryExpressionNoMultiArray", dispatchChildren}, // PrimaryExpressionNoMultiArray -> Literal, (Expression), MethodInvocation, ThisExpression, FieldAccess, ClassInstanceCreation
+    {"Literal", dispatchChildren}, // Literal -> DEC_INT_LITERAL, BOOLEAN_LITERAL, CHAR_LITERAL, STRING_LITERAL, NULL_LITERAL
+    {"DEC_INT_LITERAL", decIntLiteralVisit},
+    {"BOOLEAN_LITERAL", booleanLiteralVisit},
+    {"CHAR_LITERAL", characterLiteralVisit},
+    {"STRING_LITERAL", stringLiteralVisit},
+    {"NULL_LITERAL", nullLiteralVisit},
+
+    {"MethodInvocation", inodeVisit<MethodInvocation>}, // MethodInvocation -> PrimaryExpression DOT IDENTIFIER (ArgumentList), Name (ArgumentList)
+    {"ArgumentList", inodeVisit<ArgumentList>}, // ArgumentList -> Arguments
+    {"Arguments", dispatchChildren}, // Arguments -> Arguments COMMA Expression
+    // {"ThisExpression", inodeVisit<ThisExpression>},
+    // {"FieldAccess", inodeVisit<FieldAccess>},
+    {"ClassInstanceCreation", inodeVisit<ClassInstanceCreation>}, // ClassInstanceCreation -> NEW SimpleType LPAREN ArgumentList RPAREN
+
+    // {"ArrayAccess", ...}, // TODO
+    // {"ArrayCreation", ...}, // TODO
 
     {"Block", inodeVisit<Block>}, // Block -> LBRAC StatementList RBRAC
     {"StatementList", dispatchChildren}, // StatementList -> StatementList Statement
@@ -100,11 +124,6 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
 
     {"StatementExpression", dispatchChildren}, // StatementExpression -> ExpressionStatement SEMI
     {"ExpressionStatement", dispatchChildren}, // ExpressionStatement -> ClassInstanceCreation, MethodInvocation, AssignmentExpression
-
-    {"ClassInstanceCreation", inodeVisit<ClassInstanceCreation>}, // ClassInstanceCreation -> NEW SimpleType LPAREN ArgumentList RPAREN
-    {"ArgumentList", dispatchChildren}, // ArgumentList -> ArgumentList COMMA Expression
-
-    {"MethodInvocation", inodeVisit<MethodInvocation>},
 
     {"ReturnStatement", inodeVisit<ReturnStatement>},
     {"VariableDeclarationStatement", inodeVisit<VariableDeclarationStatement>}, // VariableDeclarationStatement -> VariableDeclarator SEMI

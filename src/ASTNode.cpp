@@ -123,6 +123,10 @@ void AST::AssignmentExpression::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
+void AST::ArgumentList::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
 AST::Modifier::Modifier(const std::string &NameCode)
     : Code(NameModifierCode.at(NameCode)) {}
 
@@ -165,3 +169,33 @@ AST::UnaryOperator::UnaryOperator(const std::string &UnaryOperatorSymbol) : Unar
 const std::string &AST::UnaryOperator::getUnaryOperatorSymbol() const { return UnaryOperatorSymbol; }
 
 void AST::UnaryOperator::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::DecIntLiteral::DecIntLiteral(const std::string &Literal) : Literal(Literal) {}
+
+const std::string &AST::DecIntLiteral::getLiteral() const { return Literal; }
+
+void AST::DecIntLiteral::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::BooleanLiteral::BooleanLiteral(const std::string &Literal) : Literal(Literal) {}
+
+const std::string &AST::BooleanLiteral::getLiteral() const { return Literal; }
+
+void AST::BooleanLiteral::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::CharacterLiteral::CharacterLiteral(const std::string &Literal) : Literal(Literal) {}
+
+const std::string &AST::CharacterLiteral::getLiteral() const { return Literal; }
+
+void AST::CharacterLiteral::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::StringLiteral::StringLiteral(const std::string &Literal) : Literal(Literal) {}
+
+const std::string &AST::StringLiteral::getLiteral() const { return Literal; }
+
+void AST::StringLiteral::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::NullLiteral::NullLiteral(const std::string &Literal) : Literal(Literal) {}
+
+const std::string &AST::NullLiteral::getLiteral() const { return Literal; }
+
+void AST::NullLiteral::accept(Visitor &Visitor) const { Visitor.visit(*this); }

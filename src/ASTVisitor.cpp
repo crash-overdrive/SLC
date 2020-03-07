@@ -36,6 +36,12 @@ void AST::Visitor::visit(const ASSIGN &) {}
 void AST::Visitor::visit(const AssignmentExpression &) {}
 void AST::Visitor::visit(const BinaryOperator &) {}
 void AST::Visitor::visit(const UnaryOperator &) {}
+void AST::Visitor::visit(const DecIntLiteral &) {}
+void AST::Visitor::visit(const CharacterLiteral &) {}
+void AST::Visitor::visit(const BooleanLiteral &) {}
+void AST::Visitor::visit(const StringLiteral &) {}
+void AST::Visitor::visit(const NullLiteral &) {}
+void AST::Visitor::visit(const ArgumentList &) {}
 
 AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
     : Stream(Stream), Level(0) {}
@@ -202,6 +208,10 @@ void AST::PrintVisitor::visit(const AssignmentExpression &AssignmentExpression) 
   acceptChildrenLevel(AssignmentExpression);
 }
 
+void AST::PrintVisitor::visit(const ASSIGN &ASSIGN) {
+  Stream << "ASSIGN: " << ASSIGN.getSymbol() << "\n";
+}
+
 void AST::PrintVisitor::visit(const BinaryOperator &BinaryOperator) {
   Stream << "BinaryOperator: " << BinaryOperator.getBinaryOperatorSymbol() << "\n";
 }
@@ -210,8 +220,29 @@ void AST::PrintVisitor::visit(const UnaryOperator &UnaryOperator) {
   Stream << "UnaryOperator: " << UnaryOperator.getUnaryOperatorSymbol() << "\n";
 }
 
-void AST::PrintVisitor::visit(const ASSIGN &ASSIGN) {
-  Stream << "ASSIGN: " << ASSIGN.getSymbol() << "\n";
+void AST::PrintVisitor::visit(const DecIntLiteral &DecIntLiteral) {
+  Stream << "DecIntLiteral: " << DecIntLiteral.getLiteral() << "\n";
+}
+
+void AST::PrintVisitor::visit(const BooleanLiteral &BooleanLiteral) {
+  Stream << "BooleanLiteral: " << BooleanLiteral.getLiteral() << "\n";
+}
+
+void AST::PrintVisitor::visit(const CharacterLiteral &CharacterLiteral) {
+  Stream << "CharacterLiteral: " << CharacterLiteral.getLiteral() << "\n";
+}
+
+void AST::PrintVisitor::visit(const StringLiteral &StringLiteral) {
+  Stream << "StringLiteral: " << StringLiteral.getLiteral() << "\n";
+}
+
+void AST::PrintVisitor::visit(const NullLiteral &NullLiteral) {
+  Stream << "NullLiteral: " << NullLiteral.getLiteral() << "\n";
+}
+
+void AST::PrintVisitor::visit(const ArgumentList &ArgumentList) {
+  Stream << "ArgumentList: " << "\n";
+  acceptChildrenLevel(ArgumentList);
 }
 
 void AST::PrintVisitor::acceptChildrenLevel(const AST::Node &Node) {

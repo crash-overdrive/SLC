@@ -44,6 +44,12 @@ public:
   virtual void visit(const ASSIGN &);
   virtual void visit(const BinaryOperator &);
   virtual void visit(const UnaryOperator &);
+  virtual void visit(const DecIntLiteral &);
+  virtual void visit(const BooleanLiteral &);
+  virtual void visit(const CharacterLiteral &);
+  virtual void visit(const StringLiteral &);
+  virtual void visit(const NullLiteral &);
+  virtual void visit(const ArgumentList &);
 };
 
 class PrintVisitor : public Visitor {
@@ -85,6 +91,12 @@ public:
   void visit(const ASSIGN &ASSIGN) override;
   void visit(const BinaryOperator &BinaryOperator) override;
   void visit(const UnaryOperator &UnaryOperator) override;
+  void visit(const DecIntLiteral &DecIntLiteral) override;
+  void visit(const BooleanLiteral &BooleanLiteral) override;
+  void visit(const CharacterLiteral &CharacterLiteral) override;
+  void visit(const StringLiteral &StringLiteral) override;
+  void visit(const NullLiteral &NullLiteral) override;
+  void visit(const ArgumentList &ArgumentList) override;
 
 private:
   std::ostream &Stream;
