@@ -25,7 +25,7 @@ public:
   virtual void visit(const ArrayType &);
   virtual void visit(const SimpleType &);
   virtual void visit(const VoidType &);
-  virtual void visit(const FormalParameterList &);
+  virtual void visit(const CastExpression &);
   virtual void visit(const SingleVariableDeclaration &);
   virtual void visit(const Super &);
   virtual void visit(const Interfaces &);
@@ -50,6 +50,10 @@ public:
   virtual void visit(const StringLiteral &);
   virtual void visit(const NullLiteral &);
   virtual void visit(const ArgumentList &);
+  virtual void visit(const FieldAccess &);
+  virtual void visit(const ArrayAccess &);
+  virtual void visit(const ArrayCreation &);
+  virtual void visit(const ThisExpression &);
 };
 
 class PrintVisitor : public Visitor {
@@ -72,7 +76,7 @@ public:
   void visit(const ArrayType &ArrayType) override;
   void visit(const SimpleType &SimpleType) override;
   void visit(const VoidType &VoidType) override;
-  void visit(const FormalParameterList &FormalParameterList) override;
+  void visit(const CastExpression &CastExpression) override;
   void visit(const SingleVariableDeclaration &SingleVariableDeclaration) override;
   void visit(const Super &Super) override;
   void visit(const Interfaces &Interfaces) override;
@@ -97,6 +101,10 @@ public:
   void visit(const StringLiteral &StringLiteral) override;
   void visit(const NullLiteral &NullLiteral) override;
   void visit(const ArgumentList &ArgumentList) override;
+  void visit(const FieldAccess &FieldAccess) override;
+  void visit(const ArrayAccess &ArrayAccess) override;
+  void visit(const ArrayCreation &ArrayCreation) override;
+  void visit(const ThisExpression &ThisExpression) override;
 
 private:
   std::ostream &Stream;

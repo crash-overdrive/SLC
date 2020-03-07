@@ -59,7 +59,7 @@ void AST::SimpleType::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
-void AST::FormalParameterList::accept(Visitor &Visitor) const {
+void AST::CastExpression::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
@@ -124,6 +124,18 @@ void AST::AssignmentExpression::accept(Visitor &Visitor) const {
 }
 
 void AST::ArgumentList::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::FieldAccess::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ArrayAccess::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ArrayCreation::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
@@ -199,3 +211,9 @@ AST::NullLiteral::NullLiteral(const std::string &Literal) : Literal(Literal) {}
 const std::string &AST::NullLiteral::getLiteral() const { return Literal; }
 
 void AST::NullLiteral::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+AST::ThisExpression::ThisExpression(const std::string &Expression) : Expression(Expression) {}
+
+const std::string &AST::ThisExpression::getExpression() const { return Expression; }
+
+void AST::ThisExpression::accept(Visitor &Visitor) const { Visitor.visit(*this); }

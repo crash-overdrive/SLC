@@ -17,7 +17,7 @@ void AST::Visitor::visit(const PrimitiveType &) {}
 void AST::Visitor::visit(const SimpleType &) {}
 void AST::Visitor::visit(const ArrayType &) {}
 void AST::Visitor::visit(const VoidType &) {}
-void AST::Visitor::visit(const FormalParameterList &) {}
+void AST::Visitor::visit(const CastExpression &) {}
 void AST::Visitor::visit(const SingleVariableDeclaration &) {}
 void AST::Visitor::visit(const Super &) {}
 void AST::Visitor::visit(const Interfaces &) {}
@@ -42,6 +42,10 @@ void AST::Visitor::visit(const BooleanLiteral &) {}
 void AST::Visitor::visit(const StringLiteral &) {}
 void AST::Visitor::visit(const NullLiteral &) {}
 void AST::Visitor::visit(const ArgumentList &) {}
+void AST::Visitor::visit(const FieldAccess &) {}
+void AST::Visitor::visit(const ArrayAccess &) {}
+void AST::Visitor::visit(const ArrayCreation &) {}
+void AST::Visitor::visit(const ThisExpression &) {}
 
 AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
     : Stream(Stream), Level(0) {}
@@ -128,9 +132,9 @@ void AST::PrintVisitor::visit(const VoidType &VoidType) {
   Stream << "VoidType: " << VoidType.getType()  << "\n";
 }
 
-void AST::PrintVisitor::visit(const FormalParameterList &FormalParameterList) {
-  Stream << "FormalParameterList: "  << "\n";
-  acceptChildrenLevel(FormalParameterList);
+void AST::PrintVisitor::visit(const CastExpression &CastExpression) {
+  Stream << "CastExpression: "  << "\n";
+  acceptChildrenLevel(CastExpression);
 }
 
 void AST::PrintVisitor::visit(const SingleVariableDeclaration &SingleVariableDeclaration) {
@@ -243,6 +247,25 @@ void AST::PrintVisitor::visit(const NullLiteral &NullLiteral) {
 void AST::PrintVisitor::visit(const ArgumentList &ArgumentList) {
   Stream << "ArgumentList: " << "\n";
   acceptChildrenLevel(ArgumentList);
+}
+
+void AST::PrintVisitor::visit(const FieldAccess &FieldAccess) {
+  Stream << "FieldAccess: " << "\n";
+  acceptChildrenLevel(FieldAccess);
+}
+
+void AST::PrintVisitor::visit(const ArrayAccess &ArrayAccess) {
+  Stream << "ArrayAccess: " << "\n";
+  acceptChildrenLevel(ArrayAccess);
+}
+
+void AST::PrintVisitor::visit(const ArrayCreation &ArrayCreation) {
+  Stream << "ArrayCreation: " << "\n";
+  acceptChildrenLevel(ArrayCreation);
+}
+
+void AST::PrintVisitor::visit(const ThisExpression &ThisExpression) {
+  Stream << "ThisExpression: " << ThisExpression.getExpression() << "\n";
 }
 
 void AST::PrintVisitor::acceptChildrenLevel(const AST::Node &Node) {

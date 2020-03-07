@@ -66,6 +66,11 @@ void AST::nullLiteralVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
   ASTNode.addChild(std::make_unique<AST::NullLiteral>(Name));
 }
 
+void AST::thisExpressionVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
+  const std::string &Name = ParseNode.getTag();
+  ASTNode.addChild(std::make_unique<AST::ThisExpression>(Name));
+}
+
 void AST::dispatchChildren(const Parse::Node &ParseNode, Node &ASTNode) {
   for (const auto &Child : ParseNode.getChildren()) {
     AST::dispatch(*Child, ASTNode);

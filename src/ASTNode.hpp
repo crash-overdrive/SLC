@@ -113,7 +113,7 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
-class FormalParameterList : public Node {
+class CastExpression : public Node {
 public:
   void accept(Visitor &Visitor) const override;
 };
@@ -199,6 +199,21 @@ public:
 };
 
 class ArgumentList : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class FieldAccess : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArrayAccess : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArrayCreation : public Node {
 public:
   void accept(Visitor &Visitor) const override;
 };
@@ -321,6 +336,17 @@ public:
 
 private:
   std::string Literal;
+};
+
+
+class ThisExpression : public Node {
+public:
+  ThisExpression(const std::string &Expression);
+  const std::string &getExpression() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Expression;
 };
 
 } // namespace AST
