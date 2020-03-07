@@ -28,7 +28,7 @@ void AST::Visitor::visit(const WhileStatement &) {}
 void AST::Visitor::visit(const ForStatement &) {}
 void AST::Visitor::visit(const SimpleStatement &) {}
 void AST::Visitor::visit(const ClassInstanceCreation &) {}
-void AST::Visitor::visit(const Expression &) {}
+void AST::Visitor::visit(const OperationExpression &) {}
 void AST::Visitor::visit(const MethodInvocation &) {}
 void AST::Visitor::visit(const ReturnStatement &) {}
 void AST::Visitor::visit(const VariableDeclarationStatement &) {}
@@ -176,9 +176,9 @@ void AST::PrintVisitor::visit(const ClassInstanceCreation &ClassInstanceCreation
   acceptChildrenLevel(ClassInstanceCreation);
 }
 
-void AST::PrintVisitor::visit(const Expression &Expression) {
-  Stream << "Expression: " << "\n";
-  acceptChildrenLevel(Expression);
+void AST::PrintVisitor::visit(const OperationExpression &OperationExpression) {
+  Stream << "OperationExpression: " << "\n";
+  acceptChildrenLevel(OperationExpression);
 }
 
 void AST::PrintVisitor::visit(const MethodInvocation &MethodInvocation) {

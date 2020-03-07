@@ -168,7 +168,7 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
-class Expression : public Node {
+class OperationExpression : public Node {
 public:
   void accept(Visitor &Visitor) const override;
 };

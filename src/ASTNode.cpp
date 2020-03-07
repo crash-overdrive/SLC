@@ -103,7 +103,7 @@ void AST::ClassInstanceCreation::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
-void AST::Expression::accept(Visitor &Visitor) const {
+void AST::OperationExpression::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 

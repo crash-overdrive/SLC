@@ -75,11 +75,11 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"ClassMethodDeclaration", inodeVisit<MethodDeclaration>}, // ClassMethodDeclaration -> MethodHeader Block, MethodHeader SEMI
 
     {"ASSIGN", assignVisit},
-    {"Expression", inodeVisit<Expression>}, // Expression -> AssignmentExpression, OperationExpression
+    {"Expression", dispatchChildren}, // Expression -> AssignmentExpression, OperationExpression
 
     {"AssignmentExpression", inodeVisit<AssignmentExpression>}, // AssignmentExpression -> Name ASSIGN Expression, FieldAccess ASSIGN Expression, ArrayAccess ASSIGN Expression
 
-    {"OperationExpression", dispatchChildren}, // OperationExpression -> UnaryExpression,  OperationExpression BinaryOperator UnaryExpression, OperationExpression InstanceOperator (ArrayType | SimpleType)
+    {"OperationExpression", inodeVisit<OperationExpression>}, // OperationExpression -> UnaryExpression,  OperationExpression BinaryOperator UnaryExpression, OperationExpression InstanceOperator (ArrayType | SimpleType)
     {"UnaryExpression", dispatchChildren}, // TODO
     {"BinaryOperator", operatorVisit},
     {"InstanceOperator", operatorVisit},

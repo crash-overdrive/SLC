@@ -36,7 +36,7 @@ public:
   virtual void visit(const ForStatement &);
   virtual void visit(const SimpleStatement &);
   virtual void visit(const ClassInstanceCreation &);
-  virtual void visit(const Expression &);
+  virtual void visit(const OperationExpression &);
   virtual void visit(const MethodInvocation &);
   virtual void visit(const ReturnStatement &);
   virtual void visit(const VariableDeclarationStatement &);
@@ -76,7 +76,7 @@ public:
   void visit(const ForStatement &ForStatement) override;
   void visit(const SimpleStatement &SimpleStatement) override;
   void visit(const ClassInstanceCreation &ClassInstanceCreation) override;
-  void visit(const Expression &Expression) override;
+  void visit(const OperationExpression &OperationExpression) override;
   void visit(const MethodInvocation &MethodInvocation) override;
   void visit(const ReturnStatement &ReturnStatement) override;
   void visit(const VariableDeclarationStatement &VariableDeclarationStatement) override;
