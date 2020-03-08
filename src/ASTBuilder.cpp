@@ -1,7 +1,7 @@
 #include "ASTBuilder.hpp"
 
 template <typename T>
-void AST::inodeVisit(const Parse::Node &ParseNode, Node &ASTNode) {
+void AST::inodeVisit(const Parse::Node &ParseNode, AST::Node &ASTNode) {
   std::unique_ptr<T> Decl = std::make_unique<T>();
   dispatchChildren(ParseNode, *Decl);
   ASTNode.addChild(std::move(Decl));

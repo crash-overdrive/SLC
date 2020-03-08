@@ -8,15 +8,22 @@
 #include <sstream>
 
 TEST_CASE("AST built from ParseTree", "[ASTBuilder][!hide]") {
+  Lex::Scanner Scanner;
+  std::ifstream ScannerStream;
+  ScannerStream.open(TokensLexFile);
+  ScannerStream >> Scanner;
+
   Parse::DFA Parser;
   std::ifstream ParserStream;
   ParserStream.open(JoosLRFile);
   ParserStream >> Parser;
-  std::ifstream TokenStream;
 
-  SECTION("J1_finalclass.tokens") {
-    TokenStream.open(TestDataDir + "/tokens/J1_finalclass.tokens");
-    Parser.parse(TokenStream);
+
+  SECTION("J1_forMethodUpdate") {
+    std::ifstream FileStream;
+    FileStream.open(TestDataDir + "/java/a1/J1_forMethodUpdate.java");
+    Scanner.scan(FileStream);
+    Parser.parse(Scanner.getTokens());
     Parse::Tree T = Parser.buildTree();
 
     const Parse::Node &ParseStart =  T.getRoot();
@@ -28,7 +35,7 @@ TEST_CASE("AST built from ParseTree", "[ASTBuilder][!hide]") {
     ASTStart.accept(Visitor);
 
     std::ifstream ASTStream;
-    ASTStream.open(TestDataDir + "/ast/J1_finalclass.ast");
+    ASTStream.open(TestDataDir + "/ast/J1_forMethodUpdate.ast");
     std::string ASTString(std::istreambuf_iterator<char>(ASTStream), {});
     REQUIRE(OStream.str() == ASTString);
   }

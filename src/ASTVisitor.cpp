@@ -84,22 +84,22 @@ void AST::PrintVisitor::visit(const InterfaceDeclaration &Decl) {
 }
 
 void AST::PrintVisitor::visit(const FieldDeclaration &Decl) {
-  Stream << "FieldDeclaration:" << '\n';
+  Stream << "FieldDeclaration" << '\n';
   acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const ConstructorDeclaration &Decl) {
-  Stream << "ConstructorDeclaration:" << '\n';
+  Stream << "ConstructorDeclaration" << '\n';
   acceptChildrenLevel(Decl);
 }
 
 void AST::PrintVisitor::visit(const Extensions &Extensions) {
-  Stream << "Extensions:" << '\n';
+  Stream << "Extensions" << '\n';
   acceptChildrenLevel(Extensions);
 }
 
 void AST::PrintVisitor::visit(const Name &Name) {
-  Stream << "Name:" << '\n';
+  Stream << "Name" << '\n';
   acceptChildrenLevel(Name);
 }
 
@@ -108,7 +108,7 @@ void AST::PrintVisitor::visit(const Identifier &Identifier) {
 }
 
 void AST::PrintVisitor::visit(const MethodDeclaration &Decl) {
-  Stream << "MethodDeclaration:" << '\n';
+  Stream << "MethodDeclaration" << '\n';
   acceptChildrenLevel(Decl);
 }
 
@@ -122,12 +122,12 @@ void AST::PrintVisitor::visit(const PrimitiveType &PrimitiveType) {
 }
 
 void AST::PrintVisitor::visit(const SimpleType &SimpleType) {
-  Stream << "SimpleType: " << "\n";
+  Stream << "SimpleType" << "\n";
   acceptChildrenLevel(SimpleType);
 }
 
 void AST::PrintVisitor::visit(const ArrayType &ArrayType) {
-  Stream << "ArrayType: " << "\n";
+  Stream << "ArrayType" << "\n";
   acceptChildrenLevel(ArrayType);
 }
 
@@ -136,87 +136,87 @@ void AST::PrintVisitor::visit(const VoidType &VoidType) {
 }
 
 void AST::PrintVisitor::visit(const Expression &Expression) {
-  Stream << "Expression: "  << "\n";
+  Stream << "Expression"  << "\n";
   acceptChildrenLevel(Expression);
 }
 
 void AST::PrintVisitor::visit(const CastExpression &CastExpression) {
-  Stream << "CastExpression: "  << "\n";
+  Stream << "CastExpression"  << "\n";
   acceptChildrenLevel(CastExpression);
 }
 
 void AST::PrintVisitor::visit(const SingleVariableDeclaration &SingleVariableDeclaration) {
-  Stream << "SingleVariableDeclaration: " << "\n";
+  Stream << "SingleVariableDeclaration" << "\n";
   acceptChildrenLevel(SingleVariableDeclaration);
 }
 
 void AST::PrintVisitor::visit(const Super &Super) {
-  Stream << "Super: " << "\n";
+  Stream << "Super" << "\n";
   acceptChildrenLevel(Super);
 }
 
 void AST::PrintVisitor::visit(const Interfaces &Interfaces) {
-  Stream << "Interfaces: " << "\n";
+  Stream << "Interfaces" << "\n";
   acceptChildrenLevel(Interfaces);
 }
 
 void AST::PrintVisitor::visit(const Block &Block) {
-  Stream << "Block: " << "\n";
+  Stream << "Block" << "\n";
   acceptChildrenLevel(Block);
 }
 
 void AST::PrintVisitor::visit(const IfThenStatement &IfThenStatement) {
-  Stream << "IfThenStatement: " << "\n";
+  Stream << "IfThenStatement" << "\n";
   acceptChildrenLevel(IfThenStatement);
 }
 
 void AST::PrintVisitor::visit(const IfThenElseStatement &IfThenElseStatement) {
-  Stream << "IfThenElseStatement: " << "\n";
+  Stream << "IfThenElseStatement" << "\n";
   acceptChildrenLevel(IfThenElseStatement);
 }
 
 void AST::PrintVisitor::visit(const WhileStatement &WhileStatement) {
-  Stream << "WhileStatement: " << "\n";
+  Stream << "WhileStatement" << "\n";
   acceptChildrenLevel(WhileStatement);
 }
 
 void AST::PrintVisitor::visit(const ForStatement &ForStatement) {
-  Stream << "ForStatement: " << "\n";
+  Stream << "ForStatement" << "\n";
   acceptChildrenLevel(ForStatement);
 }
 
 void AST::PrintVisitor::visit(const SimpleStatement &SimpleStatement) {
-  Stream << "SimpleStatement: " << "\n";
+  Stream << "SimpleStatement" << "\n";
   acceptChildrenLevel(SimpleStatement);
 }
 
 void AST::PrintVisitor::visit(const ClassInstanceCreation &ClassInstanceCreation) {
-  Stream << "ClassInstanceCreation: " << "\n";
+  Stream << "ClassInstanceCreation" << "\n";
   acceptChildrenLevel(ClassInstanceCreation);
 }
 
 void AST::PrintVisitor::visit(const OperationExpression &OperationExpression) {
-  Stream << "OperationExpression: " << "\n";
+  Stream << "OperationExpression" << "\n";
   acceptChildrenLevel(OperationExpression);
 }
 
 void AST::PrintVisitor::visit(const MethodInvocation &MethodInvocation) {
-  Stream << "MethodInvocation: " << "\n";
+  Stream << "MethodInvocation" << "\n";
   acceptChildrenLevel(MethodInvocation);
 }
 
 void AST::PrintVisitor::visit(const ReturnStatement &ReturnStatement) {
-  Stream << "ReturnStatement: " << "\n";
+  Stream << "ReturnStatement" << "\n";
   acceptChildrenLevel(ReturnStatement);
 }
 
 void AST::PrintVisitor::visit(const VariableDeclaration &VariableDeclaration) {
-  Stream << "VariableDeclaration: " << "\n";
+  Stream << "VariableDeclaration" << "\n";
   acceptChildrenLevel(VariableDeclaration);
 }
 
 void AST::PrintVisitor::visit(const AssignmentExpression &AssignmentExpression) {
-  Stream << "AssignmentExpression: " << "\n";
+  Stream << "AssignmentExpression" << "\n";
   acceptChildrenLevel(AssignmentExpression);
 }
 
@@ -253,22 +253,22 @@ void AST::PrintVisitor::visit(const NullLiteral &NullLiteral) {
 }
 
 void AST::PrintVisitor::visit(const ArgumentList &ArgumentList) {
-  Stream << "ArgumentList: " << "\n";
+  Stream << "ArgumentList" << "\n";
   acceptChildrenLevel(ArgumentList);
 }
 
 void AST::PrintVisitor::visit(const FieldAccess &FieldAccess) {
-  Stream << "FieldAccess: " << "\n";
+  Stream << "FieldAccess" << "\n";
   acceptChildrenLevel(FieldAccess);
 }
 
 void AST::PrintVisitor::visit(const ArrayAccess &ArrayAccess) {
-  Stream << "ArrayAccess: " << "\n";
+  Stream << "ArrayAccess" << "\n";
   acceptChildrenLevel(ArrayAccess);
 }
 
 void AST::PrintVisitor::visit(const ArrayCreation &ArrayCreation) {
-  Stream << "ArrayCreation: " << "\n";
+  Stream << "ArrayCreation" << "\n";
   acceptChildrenLevel(ArrayCreation);
 }
 
@@ -277,12 +277,12 @@ void AST::PrintVisitor::visit(const ThisExpression &ThisExpression) {
 }
 
 void AST::PrintVisitor::visit(const ForInit &ForInit) {
-  Stream << "ForInit: " << "\n";
+  Stream << "ForInit" << "\n";
   acceptChildrenLevel(ForInit);
 }
 
 void AST::PrintVisitor::visit(const ForUpdate &ForUpdate) {
-  Stream << "ForUpdate: " << "\n";
+  Stream << "ForUpdate" << "\n";
   acceptChildrenLevel(ForUpdate);
 }
 
