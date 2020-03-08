@@ -1,0 +1,114 @@
+/* Client */
+
+struct Environment {
+  FileHeader Header;
+  std::shared_ptr<PackageNode> PackageRoot;
+  TypeLink TypeLink;
+  MethodLink MethodLink;
+};
+
+std::vector<FileHeader>
+FileHeaderBuild(std::vector<ASTNode> &&Nodes) {
+  std::vector<FileHeader> Header;
+  std::copy(Nodes.cbegin(), Nodes.cend(), back_inserter(Signatures), [](AstNode Node) {
+    FileHeader Header;
+    Header.Node = std::move(Node);
+    Visitor = FileHeadVisitor(Header.Methods, Header.Field);
+    Node.accept(Visitor);
+    return Header;
+  }
+ return Signatures;
+}
+
+shared_ptr<PackageTree> packageBuild(const std::vector<FileHeader> &Headers) {}
+
+std::TypeLink typeLinkeBuild(PackageTree &&Tree) {}
+
+/* Client */
+
+/* FileHeader File */
+
+class FileHeadVisitor : public Visitor {};
+
+struct FileHeader {
+  unique_ptr<ASTNode> Node;
+  std::set<JoosMethod> Methods;
+  std::set<JoosField> Fields;
+  const JoosField &findField(const std::string &FieldName,
+                             const std::set<std::string> &ArgType) const;
+  const JoosMethod &findMethod(const std::string &MethodName,
+                               const std::set<std::string> &ArgType) const;
+};
+
+struct JoosField {
+  std::set<ModifierCode> Modifiers;
+  std::string Type;
+  std::string FieldName;
+
+  ASTNode *Node;
+  bool operator==(const JoosField &Field);
+};
+
+struct JoosMethod {
+  std::set<ModifierCode> Modifiers;
+  std::string ReturnType;
+  std::string MethodName;
+  std::vector<std::string> ArgType;
+
+  ASTNode *Node;
+  LocalVariableTable Root;
+  bool operator==(const JoosMethod &Method);
+};
+
+/* FileHeader File */
+
+/* LocalVariableTable */
+
+// Implemented
+class LocalVariableTable {
+public:
+  LocalVariableTable(LocalVariableTable *Parent = nullptr);
+  LocalVariableTable *pop() const;
+  LocalVariableTable *push();
+  bool add(const std::string &Name);
+  FileHeader *findType(const std::string &Name);
+};
+
+
+/* Symbol Table */
+
+/* TypeLink */
+
+class TypeLinkVisitor : public Visitor {}
+
+class TypeLink {
+public:
+  TypeLink(Package Tree);
+  FileHeader *find(const std::vector<std::string> &Name);
+  // find({"java", "util", "List"});
+  // find({"Integer"});
+
+private:
+  std::unordered_map<std::string, FileHeader &> SingleTypeImport;
+  std::unordered_map<std::string, PackageNode &> OnDemandImport;
+}
+
+
+/* TypeLink */
+
+
+/* LocalLinker */
+
+class LocalLinker {
+  LocalLinker(TypeLink);
+  JoosMethod *findMethod(std::vector<const std::string & Name>,
+                         std::vector<std::string> ArgType);
+  JoosMethod *findStaticMethod(std::vector<const std::string & Name>,
+                               std::vector<std::string> ArgType);
+  JoosMethod *findField(std::vector<const std::string & Name>,
+                        std::vector<std::string> ArgType);
+  JoosMethod *findStaticField(std::vector<const std::string & Name>,
+                              std::vector<std::string> ArgType);
+};
+
+/* LocalLinker */
