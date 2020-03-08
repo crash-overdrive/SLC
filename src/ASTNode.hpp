@@ -88,6 +88,151 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
+class ConstructorDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Extensions : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Name : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArrayType : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class SimpleType : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Expression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class CastExpression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class SingleVariableDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Super : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Interfaces : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class Block : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class IfThenStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class IfThenElseStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class WhileStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ForStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class SimpleStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ClassInstanceCreation : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class OperationExpression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class MethodInvocation : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ReturnStatement : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class VariableDeclaration : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class AssignmentExpression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class UnaryExpression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArgumentList : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class FieldAccess : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArrayAccess : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ArrayCreation : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ForInit : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ForUpdate : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
 class Modifier : public Node {
 public:
   Modifier(const std::string &NameCode);
@@ -106,6 +251,117 @@ public:
 
 private:
   std::string Name;
+};
+
+class PrimitiveType : public Node {
+public:
+  PrimitiveType(const std::string &Type);
+  const std::string &getType() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Type;
+};
+
+class VoidType : public Node {
+public:
+  VoidType(const std::string &Type);
+  const std::string &getType() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Type;
+};
+
+class ASSIGN : public Node {
+public:
+  ASSIGN(const std::string &Symbol);
+  const std::string &getSymbol() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Symbol;
+};
+
+class BinaryOperator : public Node {
+public:
+  BinaryOperator(const std::string &BinaryOperator);
+  const std::string &getBinaryOperatorSymbol() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string BinaryOperatorSymbol;
+};
+
+class UnaryOperator : public Node {
+public:
+  UnaryOperator(const std::string &UnaryOperator);
+  const std::string &getUnaryOperatorSymbol() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string UnaryOperatorSymbol;
+};
+
+class DecIntLiteral : public Node {
+public:
+  DecIntLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class BooleanLiteral : public Node {
+public:
+  BooleanLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class CharacterLiteral : public Node {
+public:
+  CharacterLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class StringLiteral : public Node {
+public:
+  StringLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+class NullLiteral : public Node {
+public:
+  NullLiteral(const std::string &Literal);
+  const std::string &getLiteral() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Literal;
+};
+
+
+class ThisExpression : public Node {
+public:
+  ThisExpression(const std::string &Expression);
+  const std::string &getExpression() const;
+  void accept(Visitor &Visitor) const override;
+
+private:
+  std::string Expression;
 };
 
 } // namespace AST
