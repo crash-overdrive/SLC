@@ -113,6 +113,11 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
+class Expression : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
 class CastExpression : public Node {
 public:
   void accept(Visitor &Visitor) const override;
@@ -183,7 +188,7 @@ public:
   void accept(Visitor &Visitor) const override;
 };
 
-class VariableDeclarationStatement : public Node {
+class VariableDeclaration : public Node {
 public:
   void accept(Visitor &Visitor) const override;
 };
@@ -214,6 +219,16 @@ public:
 };
 
 class ArrayCreation : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ForInit : public Node {
+public:
+  void accept(Visitor &Visitor) const override;
+};
+
+class ForUpdate : public Node {
 public:
   void accept(Visitor &Visitor) const override;
 };

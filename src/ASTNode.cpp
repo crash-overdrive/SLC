@@ -59,6 +59,10 @@ void AST::SimpleType::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
+void AST::Expression::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
 void AST::CastExpression::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
@@ -115,7 +119,7 @@ void AST::ReturnStatement::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
-void AST::VariableDeclarationStatement::accept(Visitor &Visitor) const {
+void AST::VariableDeclaration::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 
@@ -136,6 +140,14 @@ void AST::ArrayAccess::accept(Visitor &Visitor) const {
 }
 
 void AST::ArrayCreation::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ForInit::accept(Visitor &Visitor) const {
+  Visitor.visit(*this);
+}
+
+void AST::ForUpdate::accept(Visitor &Visitor) const {
   Visitor.visit(*this);
 }
 

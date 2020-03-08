@@ -17,6 +17,7 @@ void AST::Visitor::visit(const PrimitiveType &) {}
 void AST::Visitor::visit(const SimpleType &) {}
 void AST::Visitor::visit(const ArrayType &) {}
 void AST::Visitor::visit(const VoidType &) {}
+void AST::Visitor::visit(const Expression &) {}
 void AST::Visitor::visit(const CastExpression &) {}
 void AST::Visitor::visit(const SingleVariableDeclaration &) {}
 void AST::Visitor::visit(const Super &) {}
@@ -31,7 +32,7 @@ void AST::Visitor::visit(const ClassInstanceCreation &) {}
 void AST::Visitor::visit(const OperationExpression &) {}
 void AST::Visitor::visit(const MethodInvocation &) {}
 void AST::Visitor::visit(const ReturnStatement &) {}
-void AST::Visitor::visit(const VariableDeclarationStatement &) {}
+void AST::Visitor::visit(const VariableDeclaration &) {}
 void AST::Visitor::visit(const ASSIGN &) {}
 void AST::Visitor::visit(const AssignmentExpression &) {}
 void AST::Visitor::visit(const BinaryOperator &) {}
@@ -46,6 +47,8 @@ void AST::Visitor::visit(const FieldAccess &) {}
 void AST::Visitor::visit(const ArrayAccess &) {}
 void AST::Visitor::visit(const ArrayCreation &) {}
 void AST::Visitor::visit(const ThisExpression &) {}
+void AST::Visitor::visit(const ForInit &) {}
+void AST::Visitor::visit(const ForUpdate &) {}
 
 AST::PrintVisitor::PrintVisitor(std::ostream &Stream)
     : Stream(Stream), Level(0) {}
@@ -132,6 +135,11 @@ void AST::PrintVisitor::visit(const VoidType &VoidType) {
   Stream << "VoidType: " << VoidType.getType()  << "\n";
 }
 
+void AST::PrintVisitor::visit(const Expression &Expression) {
+  Stream << "Expression: "  << "\n";
+  acceptChildrenLevel(Expression);
+}
+
 void AST::PrintVisitor::visit(const CastExpression &CastExpression) {
   Stream << "CastExpression: "  << "\n";
   acceptChildrenLevel(CastExpression);
@@ -202,9 +210,9 @@ void AST::PrintVisitor::visit(const ReturnStatement &ReturnStatement) {
   acceptChildrenLevel(ReturnStatement);
 }
 
-void AST::PrintVisitor::visit(const VariableDeclarationStatement &VariableDeclarationStatement) {
-  Stream << "VariableDeclarationStatement: " << "\n";
-  acceptChildrenLevel(VariableDeclarationStatement);
+void AST::PrintVisitor::visit(const VariableDeclaration &VariableDeclaration) {
+  Stream << "VariableDeclaration: " << "\n";
+  acceptChildrenLevel(VariableDeclaration);
 }
 
 void AST::PrintVisitor::visit(const AssignmentExpression &AssignmentExpression) {
@@ -266,6 +274,16 @@ void AST::PrintVisitor::visit(const ArrayCreation &ArrayCreation) {
 
 void AST::PrintVisitor::visit(const ThisExpression &ThisExpression) {
   Stream << "ThisExpression: " << ThisExpression.getExpression() << "\n";
+}
+
+void AST::PrintVisitor::visit(const ForInit &ForInit) {
+  Stream << "ForInit: " << "\n";
+  acceptChildrenLevel(ForInit);
+}
+
+void AST::PrintVisitor::visit(const ForUpdate &ForUpdate) {
+  Stream << "ForUpdate: " << "\n";
+  acceptChildrenLevel(ForUpdate);
 }
 
 void AST::PrintVisitor::acceptChildrenLevel(const AST::Node &Node) {

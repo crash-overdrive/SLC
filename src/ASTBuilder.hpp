@@ -38,8 +38,7 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"SingleTypeImportDeclaration", inodeVisit<SingleImportDeclaration>}, // SingleTypeImportDeclaration IMPORT Name SEMI
     {"TypeImportOnDemandDeclaration", inodeVisit<DemandImportDeclaration>}, // TypeImportOnDemandDeclaration IMPORT Name DOT MULTIPLICATION SEMI
 
-    {"Name", inodeVisit<Name>}, // Name -> Name DOT IDENTIFIER // TODO: fix this from having multiple names
-    // {"Name", dispatchChildren},
+    {"Name", inodeVisit<Name>}, // Name -> Name DOT IDENTIFIER
     {"IDENTIFIER", identifierVisit},
 
     {"InterfaceDeclaration", inodeVisit<InterfaceDeclaration>}, // InterfaceDeclaration -> ModifierList INTERFACE IDENTIFIER Extensions LBRAC InterfaceBodyDeclarationList RBRAC
@@ -82,7 +81,7 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"ClassMethodDeclaration", inodeVisit<MethodDeclaration>}, // ClassMethodDeclaration -> MethodHeader Block, MethodHeader SEMI
 
     {"ASSIGN", assignVisit}, // ASSIGN -> =
-    {"Expression", dispatchChildren}, // Expression -> AssignmentExpression, OperationExpression
+    {"Expression", inodeVisit<Expression>}, // Expression -> AssignmentExpression, OperationExpression
 
     {"AssignmentExpression", inodeVisit<AssignmentExpression>}, // AssignmentExpression -> Name ASSIGN Expression, FieldAccess ASSIGN Expression, ArrayAccess ASSIGN Expression
 
@@ -108,7 +107,7 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
 
     {"MethodInvocation", inodeVisit<MethodInvocation>}, // MethodInvocation -> PrimaryExpression DOT IDENTIFIER (ArgumentList), Name (ArgumentList)
     {"ArgumentList", inodeVisit<ArgumentList>}, // ArgumentList -> Arguments
-    {"Arguments", dispatchChildren}, // Arguments -> Arguments COMMA Expression
+    {"Arguments", dispatchChildren}, // Arguments -> Arguments COMMA Expression, Expression
 
     {"ThisExpression", thisExpressionVisit}, // ThisExpression -> THIS
     {"FieldAccess", inodeVisit<FieldAccess>}, // FieldAccess -> PrimaryExpression DOT IDENTIFIER
@@ -120,21 +119,27 @@ const std::unordered_map<std::string, ParseVisitor> ParseVisit{
     {"Block", inodeVisit<Block>}, // Block -> LBRAC StatementList RBRAC
     {"StatementList", dispatchChildren}, // StatementList -> StatementList Statement
     {"Statement", dispatchChildren}, // Statement -> SimpleStatement, IfThenStatement, IfThenElseStatement, WhileStatement, ForStatement
-    // TODO: check if we need this or should we just dispatch children here?
     // {"SimpleStatement", inodeVisit<SimpleStatement>},
     {"SimpleStatement", dispatchChildren}, // SimpleStatement -> Block, StatementExpression, ReturnStatement, VariableDeclarationStatement
 
     {"StatementExpression", dispatchChildren}, // StatementExpression -> ExpressionStatement SEMI
     {"ExpressionStatement", dispatchChildren}, // ExpressionStatement -> ClassInstanceCreation, MethodInvocation, AssignmentExpression
 
-    {"ReturnStatement", inodeVisit<ReturnStatement>},
-    {"VariableDeclarationStatement", inodeVisit<VariableDeclarationStatement>}, // VariableDeclarationStatement -> VariableDeclarator SEMI
-    {"VariableDeclarator", dispatchChildren}, // VariableDeclarator -> SingleVariableDeclaration ASSIGN Expression
+    {"ReturnStatement", inodeVisit<ReturnStatement>}, // ReturnStatement -> RETURN Expression SEMI, RETURN SEMI
+    {"VariableDeclarationStatement", dispatchChildren}, // VariableDeclarationStatement -> VariableDeclarator SEMI
+    {"VariableDeclarator", inodeVisit<VariableDeclaration>}, // VariableDeclarator -> SingleVariableDeclaration ASSIGN Expression
 
-    {"IfThenStatement", inodeVisit<IfThenStatement>},
-    {"IfThenElseStatement", inodeVisit<IfThenElseStatement>},
-    {"WhileStatement", inodeVisit<WhileStatement>},
-    {"ForStatement", inodeVisit<ForStatement>},
+    {"IfThenStatement", inodeVisit<IfThenStatement>}, // IfThenStatement -> IF LPAREN Expression RPAREN Statement
+    {"IfThenElseStatement", inodeVisit<IfThenElseStatement>}, // IfThenElseStatement -> IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
+    {"WhileStatement", inodeVisit<WhileStatement>}, // WhileStatement -> WHILE LPAREN Expression RPAREN Statement
+    {"ForStatement", inodeVisit<ForStatement>}, // ForStatement -> FOR LPAREN ForInit SEMI Expression SEMI ForUpdate RPAREN Statement
+    {"ForInit", inodeVisit<ForInit>}, // ForInit -> ExpressionStatement, VariableDeclarator
+    {"ForUpdate", inodeVisit<ForUpdate>}, // ForUpdate -> ExpressionStatement
+
+    {"StatementNoShortIf", dispatchChildren}, // StatementNoShortIf -> SimpleStatement, IfThenElseStatementNoShortIf, WhileStatementNoShortIf, ForStatementNoShortIf
+    {"IfThenElseStatementNoShortIf", inodeVisit<IfThenElseStatement>}, // IfThenElseStatementNoShortIf -> IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
+    {"WhileStatementNoShortIf", inodeVisit<WhileStatement>}, // WhileStatementNoShortIf WHILE LPAREN Expression RPAREN StatementNoShortIf
+    {"ForStatementNoShortIf", inodeVisit<ForStatement>}, // ForStatementNoShortIf -> FOR LPAREN ForInit SEMI Expression SEMI ForUpdate RPAREN StatementNoShortIf
 
 };
 

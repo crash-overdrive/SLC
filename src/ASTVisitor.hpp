@@ -25,6 +25,7 @@ public:
   virtual void visit(const ArrayType &);
   virtual void visit(const SimpleType &);
   virtual void visit(const VoidType &);
+  virtual void visit(const Expression &);
   virtual void visit(const CastExpression &);
   virtual void visit(const SingleVariableDeclaration &);
   virtual void visit(const Super &);
@@ -39,7 +40,7 @@ public:
   virtual void visit(const OperationExpression &);
   virtual void visit(const MethodInvocation &);
   virtual void visit(const ReturnStatement &);
-  virtual void visit(const VariableDeclarationStatement &);
+  virtual void visit(const VariableDeclaration &);
   virtual void visit(const AssignmentExpression &);
   virtual void visit(const ASSIGN &);
   virtual void visit(const BinaryOperator &);
@@ -54,6 +55,8 @@ public:
   virtual void visit(const ArrayAccess &);
   virtual void visit(const ArrayCreation &);
   virtual void visit(const ThisExpression &);
+  virtual void visit(const ForInit &);
+  virtual void visit(const ForUpdate &);
 };
 
 class PrintVisitor : public Visitor {
@@ -76,6 +79,7 @@ public:
   void visit(const ArrayType &ArrayType) override;
   void visit(const SimpleType &SimpleType) override;
   void visit(const VoidType &VoidType) override;
+  void visit(const Expression &Expression) override;
   void visit(const CastExpression &CastExpression) override;
   void visit(const SingleVariableDeclaration &SingleVariableDeclaration) override;
   void visit(const Super &Super) override;
@@ -90,7 +94,7 @@ public:
   void visit(const OperationExpression &OperationExpression) override;
   void visit(const MethodInvocation &MethodInvocation) override;
   void visit(const ReturnStatement &ReturnStatement) override;
-  void visit(const VariableDeclarationStatement &VariableDeclarationStatement) override;
+  void visit(const VariableDeclaration &VariableDeclaration) override;
   void visit(const AssignmentExpression &AssignmentExpression) override;
   void visit(const ASSIGN &ASSIGN) override;
   void visit(const BinaryOperator &BinaryOperator) override;
@@ -105,6 +109,8 @@ public:
   void visit(const ArrayAccess &ArrayAccess) override;
   void visit(const ArrayCreation &ArrayCreation) override;
   void visit(const ThisExpression &ThisExpression) override;
+  void visit(const ForInit &ForInit) override;
+  void visit(const ForUpdate &ForUpdate) override;
 
 private:
   std::ostream &Stream;
