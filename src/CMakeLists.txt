@@ -14,7 +14,7 @@ set(LR1_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1)
 get_target_property(JLALR_JAR jlalr JAR_FILE)
 add_custom_command(
   OUTPUT ${LR1_FILE}
-  COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/cfggen.py
+  COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/cfggen.py
   ${CFG_FILE} |
   ${Java_JAVA_EXECUTABLE} -jar ${JLALR_JAR} > ${LR1_FILE}
   DEPENDS ${CFG_FILE}
@@ -26,7 +26,7 @@ set(TOKENSSPEC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex)
 set(TOKENS_FILE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex)
 add_custom_command(
   OUTPUT ${TOKENS_FILE}
-  COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/uglyfy.py
+  COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/uglyfy.py
   ${TOKENSSPEC_FILE} ${TOKENS_FILE}
   DEPENDS ${TOKENSSPEC_FILE}
   COMMENT "Converting Token Specs to parse tokens")
