@@ -2,7 +2,7 @@
 
 #include "EnvFileHeader.hpp"
 
-TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader][!hide]") {
+TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   Env::FileHeader fileHeader;
   REQUIRE(fileHeader.addField(Env::JoosField({AST::ModifierCode::Private,
       AST::ModifierCode::Final, AST::ModifierCode::Static}, "String", "str")));

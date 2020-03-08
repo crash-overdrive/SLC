@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 
-TEST_CASE("AST built from ParseTree", "[ASTBuilder][!hide]") {
+TEST_CASE("AST built from ParseTree", "[ASTBuilder]") {
   Lex::Scanner Scanner;
   std::ifstream ScannerStream;
   ScannerStream.open(TokensLexFile);
