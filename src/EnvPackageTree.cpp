@@ -49,6 +49,7 @@ void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
 }
 
 void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
+
 void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
 
 std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
