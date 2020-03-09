@@ -112,7 +112,7 @@ inline void AST::Visitor::dispatchChildren(const Node &Parent) {
   }
 }
 
- AST::LogVisitor::LogVisitor() {}
+AST::LogVisitor::LogVisitor() {}
 
 AST::LogVisitor::LogVisitor(std::ostream &Stream) : Stream(Stream) {}
 
@@ -150,16 +150,16 @@ void AST::LogVisitor::visit(const Extensions &) { Stream << "Extensions"; }
 
 void AST::LogVisitor::visit(const Name &) { Stream << "Name"; }
 
-void AST::LogVisitor::visit(const Identifier &Identifier) {
-  Stream << "Identifier: " << Identifier.getName();
-}
-
 void AST::LogVisitor::visit(const MethodDeclaration &) {
   Stream << "MethodDeclaration";
 }
 
 void AST::LogVisitor::visit(const Modifier &Modifier) {
   Stream << "Modifier: " << ModifierCodeName.at(Modifier.getCode());
+}
+
+void AST::LogVisitor::visit(const Identifier &Identifier) {
+  Stream << "Identifier: " << Identifier.getName();
 }
 
 void AST::LogVisitor::visit(const PrimitiveType &PrimitiveType) {
