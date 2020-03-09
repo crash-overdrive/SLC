@@ -6,7 +6,7 @@
 
 namespace AST {
 
-class NameVisitor : public TrackVisitor {
+class NameVisitor : public Visitor {
 public:
   void visit(const Name &name) override;
   void visit(const Identifier &Identifier) override;
@@ -16,18 +16,12 @@ private:
   std::vector<std::string> Name{};
 };
 
-class PropertiesVisitor : public AST::Visitor {
+class PropertiesVisitor : public Visitor {
 public:
-  void visit(const AST::FieldDeclaration &Decl) override;
-  void visit(const AST::MethodDeclaration &Decl) override;
-  void visit(const AST::ConstructorDeclaration &Decl) override;
-  void visit(const AST::ClassDeclaration &Decl) override;
-  void visit(const AST::InterfaceDeclaration &Decl) override;
-
-  void visit(const AST::Modifier &Modifer) override;
-  void visit(const AST::SimpleType &SimpleType) override;
-  void visit(const AST::PrimitiveType &SimpleType) override;
-  void visit(const AST::Identifier &Identifier) override;
+  void visit(const Modifier &Modifer) override;
+  void visit(const SimpleType &SimpleType) override;
+  void visit(const PrimitiveType &SimpleType) override;
+  void visit(const Identifier &Identifier) override;
   std::set<ModifierCode> getModifiers();
   std::string getType();
   std::string getName();

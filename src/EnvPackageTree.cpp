@@ -44,7 +44,7 @@ PackageNode *PackageNode::addType(Type type, const std::string &name) {
 
 void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
   AST::NameVisitor Visitor;
-  Decl.accept(Visitor);
+  Visitor.dispatchChildren(Decl);
   packagePath = Visitor.getName();
 }
 

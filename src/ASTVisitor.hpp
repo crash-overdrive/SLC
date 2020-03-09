@@ -59,10 +59,10 @@ public:
   virtual void visit(const ThisExpression &Node);
   virtual void visit(const ForInit &Node);
   virtual void visit(const ForUpdate &Node);
+  virtual void dispatchChildren(const Node &Parent);
 
 protected:
   virtual void postVisit(const Node &Parent);
-  virtual void dispatchChildren(const Node &Parent);
 };
 
 class PrintVisitor : public Visitor {
@@ -136,7 +136,6 @@ private:
   unsigned int Level = 0;
   std::ofstream NullStream{};
   std::reference_wrapper<std::ostream> StreamRef = NullStream;
-
 };
 
 } // namespace AST

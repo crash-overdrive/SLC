@@ -61,13 +61,13 @@ void Visitor::visit(const ThisExpression &Node) { postVisit(Node); }
 void Visitor::visit(const ForInit &Node) { postVisit(Node); }
 void Visitor::visit(const ForUpdate &Node) { postVisit(Node); }
 
-void Visitor::postVisit(const Node &) {}
-
 void Visitor::dispatchChildren(const Node &Parent) {
   for (const auto &Child : Parent.getChildren()) {
     Child->accept(*this);
   }
 }
+
+void Visitor::postVisit(const Node &) {}
 
 PrintVisitor::PrintVisitor(std::ostream &Stream) : Stream(Stream) {}
 

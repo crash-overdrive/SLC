@@ -45,7 +45,6 @@ TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {
     std::unique_ptr<AST::Start> Root = Client.buildAST(JavaStream);
     Env::PackageTreeVisitor Visitor;
     Root->accept(Visitor);
-    Visitor.setLog(std::cerr);
     REQUIRE(Visitor.getPackagePath() ==
             std::vector<std::string>{"javax", "swing", "tree"});
   }
