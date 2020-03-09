@@ -1,21 +1,10 @@
-#include "Client.hpp"
-#include "Config.hpp"
+#include "TestUtil.hpp"
 #include "TestConfig.hpp"
 #include "catch.hpp"
 #include <fstream>
 
 TEST_CASE("client process", "[client]") {
-  Lex::Scanner Scanner;
-  std::ifstream ScannerStream;
-  ScannerStream.open(TokensLexFile);
-  ScannerStream >> Scanner;
-
-  Parse::DFA Parser;
-  std::ifstream ParserStream;
-  ParserStream.open(JoosLRFile);
-  ParserStream >> Parser;
-
-  Client Client(&Scanner, &Parser);
+  Client Client = createClient();
 
   SECTION("preprocess step") {
     Client.setBreakPoint(Client::VerifyName);

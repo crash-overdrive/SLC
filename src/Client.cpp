@@ -1,12 +1,13 @@
+#include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
-#include "Client.hpp"
 
 #include <fstream>
 #include <optional>
 
-Client::Client(Lex::Scanner *scanner, Parse::DFA *parser)
-    : scanner(scanner), parser(parser) {}
+Client::Client(std::unique_ptr<Lex::Scanner> scanner,
+               std::unique_ptr<Parse::DFA> parser)
+    : scanner(std::move(scanner)), parser(std::move(parser)) {}
 
 void Client::setBreakPoint(BreakPointType breakPoint) {
   this->breakPoint = breakPoint;
@@ -103,7 +104,7 @@ void Client::addJavaFiles(std::set<std::string> &&files) {
 bool Client::verifyFileName(std::string FileName) {
   const auto pos = FileName.find_last_of('/');
   if (pos != std::string::npos) {
-    FileName = FileName.substr(pos+1);
+    FileName = FileName.substr(pos + 1);
   }
   const std::string Ext(".java");
   if (FileName.length() < Ext.length()) {
@@ -112,7 +113,6 @@ bool Client::verifyFileName(std::string FileName) {
   size_t Position = FileName.find(".");
   return FileName.compare(Position, Ext.size(), Ext) == 0;
 }
-
 
 std::optional<std::vector<Lex::Token>> Client::scan(std::istream &Stream) {
   if (scanner->scan(Stream)) {
