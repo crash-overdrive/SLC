@@ -1,5 +1,5 @@
-#ifndef ENVSCOPE_HPP
-#define ENVSCOPE_HPP
+#ifndef ENVPACKAGETREE_HPP
+#define ENVPACKAGETREE_HPP
 
 #include "ASTVisitor.hpp"
 #include <map>

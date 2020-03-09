@@ -1,5 +1,5 @@
-#ifndef NFA_HPP
-#define NFA_HPP
+#ifndef LEXNFA_HPP
+#define LEXNFA_HPP
 
 #include <set>
 #include <unordered_map>

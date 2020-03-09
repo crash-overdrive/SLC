@@ -1,5 +1,5 @@
-#ifndef REGEX_HPP
-#define REGEX_HPP
+#ifndef LEXREGEX_HPP
+#define LEXREGEX_HPP
 
 #include <unordered_set>
 #include <vector>
