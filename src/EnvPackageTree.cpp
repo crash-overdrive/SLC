@@ -1,3 +1,4 @@
+#include "ASTVisitorUtil.hpp"
 #include "EnvPackageTree.hpp"
 
 namespace Env {
@@ -41,16 +42,17 @@ PackageNode *PackageNode::addType(Type type, const std::string &name) {
   return It.second ? &It.first->second : nullptr;
 }
 
-void PackageTreeVisitor::visit(const AST::PackageDeclaration &) {}
-
-void PackageTreeVisitor::visit(const AST::Name &) {}
-
-void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {
-  type = PackageNode::CLASS;
+void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
+  AST::NameVisitor Visitor;
+  Decl.accept(Visitor);
+  packagePath = Visitor.getName();
 }
 
-void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {
-  type = PackageNode::INTERFACE;
+void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
+void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
+
+std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
+  return packagePath;
 }
 
 } // namespace Env
