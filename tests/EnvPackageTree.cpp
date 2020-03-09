@@ -1,7 +1,6 @@
 #include "EnvPackageTree.hpp"
-#include "Client.hpp"
-#include "Config.hpp"
 #include "TestConfig.hpp"
+#include "TestUtil.hpp"
 #include "catch.hpp"
 
 TEST_CASE("Package Node", "[PackageNode]") {
@@ -26,7 +25,8 @@ TEST_CASE("Package Node", "[PackageNode]") {
 }
 
 TEST_CASE("Package Tree", "[PackageTreeLookup][!hide]") {
-  Env::FileHeader CanaryHeader({}, Env::TypeDescriptor(Env::Type::Class, "canary"));
+  Env::FileHeader CanaryHeader({},
+                               Env::TypeDescriptor(Env::Type::Class, "canary"));
   Env::FileHeader BarHeader({}, Env::TypeDescriptor(Env::Type::Class, "bar"));
   Env::PackageTree Tree;
   REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
@@ -36,17 +36,7 @@ TEST_CASE("Package Tree", "[PackageTreeLookup][!hide]") {
 }
 
 TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {
-  Lex::Scanner Scanner;
-  std::ifstream ScannerStream;
-  ScannerStream.open(TokensLexFile);
-  ScannerStream >> Scanner;
-
-  Parse::DFA Parser;
-  std::ifstream ParserStream;
-  ParserStream.open(JoosLRFile);
-  ParserStream >> Parser;
-
-  Client Client(&Scanner, &Parser);
+  Client Client = createClient();
   SECTION("Recognize Name") {
     std::ifstream JavaStream;
     JavaStream.open(TestDataDir +

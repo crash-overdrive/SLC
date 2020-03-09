@@ -25,7 +25,8 @@ public:
   bool outputAst = false;
   bool outputFileHeader = false;
 
-  Client(Lex::Scanner *scanner = nullptr, Parse::DFA *parser = nullptr);
+  Client(std::unique_ptr<Lex::Scanner> scanner = nullptr,
+         std::unique_ptr<Parse::DFA> parser = nullptr);
   void setBreakPoint(BreakPointType breakPoint);
   void addJavaFile(std::string &&files);
   void addJavaFiles(std::set<std::string> &&files);
@@ -39,8 +40,8 @@ public:
   bool weed(const AST::Node &ast, const std::string &typeName);
 
 private:
-  Lex::Scanner *scanner;
-  Parse::DFA *parser;
+  std::unique_ptr<Lex::Scanner> scanner;
+  std::unique_ptr<Parse::DFA> parser;
   std::set<std::string> files{};
   BreakPointType breakPoint{Hierarchy};
 };

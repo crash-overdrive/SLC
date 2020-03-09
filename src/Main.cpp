@@ -88,8 +88,9 @@ int main(int argc, char *argv[]) {
     finalFiles.insert(file);
   }
 
-  Lex::Scanner scanner;
-  Parse::DFA parser;
+  std::unique_ptr<Lex::Scanner> scanner = std::make_unique<Lex::Scanner>();
+  std::unique_ptr<Parse::DFA> parser = std::make_unique<Parse::DFA>();
+
   std::ifstream scannerStream;
   std::ifstream parserStream;
 
@@ -106,10 +107,10 @@ int main(int argc, char *argv[]) {
     return 42;
   }
 
-  scannerStream >> scanner;
-  parserStream >> parser;
+  scannerStream >> *scanner;
+  parserStream >> *parser;
 
-  Client client(&scanner, &parser);
+  Client client(std::move(scanner), std::move(parser));
   client.addJavaFiles(std::move(finalFiles));
   client.outputToken = outputToken;
   client.outputParse = outputParse;
