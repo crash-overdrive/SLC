@@ -10,28 +10,33 @@ namespace Env {
 
 class PackageNode {
 public:
-  enum Type { GLOBAL, PACKAGE, CLASS, INTERFACE };
+  enum Type { Global, Package, JoosType };
 
-  PackageNode(Type type, const std::string &name = "");
-  PackageNode *update(Type type, const std::string &name);
+  PackageNode(Type type, const std::string &name = "", FileHeader *header
+              = nullptr);
+  PackageNode *update(Type type, const std::string &name,
+                      FileHeader *Header = nullptr);
   PackageNode *find(const std::string &name);
 
 private:
+  friend class PackageTree;
   PackageNode *updatePackage(Type type, const std::string &name);
-  PackageNode *addType(Type type, const std::string &name);
+  PackageNode *addType(Type type, const std::string &name,
+                       FileHeader *header = nullptr);
   Type type;
   std::string name;
+  FileHeader *header;
   std::map<std::string, PackageNode> children{};
 };
 
 class PackageTree {
 public:
-  FileHeader *lookUp(const std::vector<std::string> &Name);
-  bool update(PackageNode::Type type, const std::vector<std::string> &Name,
-              FileHeader &Header);
+  FileHeader *lookUp(const std::vector<std::string> &PackagePath);
+  bool update(const std::vector<std::string> &PackagePath, FileHeader &Header);
 
 private:
-  std::unique_ptr<PackageNode> Root{};
+  std::unique_ptr<PackageNode> Root =
+      std::make_unique<PackageNode>(PackageNode::Global);
 };
 
 class PackageTreeVisitor : public AST::TrackVisitor {

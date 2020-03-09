@@ -47,6 +47,8 @@ public:
                              const std::string &Name) const;
   const JoosMethod *findMethod(const std::string &Name,
                                const std::vector<std::string> &ArgType) const;
+  const std::string &getName() const;
+  const std::set<AST::ModifierCode> &getModifiers() const;
 
 private:
   const std::string Name;
