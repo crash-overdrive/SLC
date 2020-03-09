@@ -1,5 +1,5 @@
-#ifndef DFA_HPP
-#define DFA_HPP
+#ifndef LEXDFA_HPP
+#define LEXDFA_HPP
 
 #include <set>
 #include <string>

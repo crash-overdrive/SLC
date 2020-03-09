@@ -1,3 +1,6 @@
+#ifndef ENVFILEHEADER_HPP
+#define ENVFILEHEADER_HPP
+
 #include <set>
 
 #include "ASTNode.hpp"
@@ -68,3 +71,5 @@ private:
 };
 
 }; // namespace Env
+
+#endif

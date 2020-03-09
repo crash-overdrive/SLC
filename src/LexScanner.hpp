@@ -1,5 +1,5 @@
-#ifndef SCANNER_HPP
-#define SCANNER_HPP
+#ifndef LEXSCANNER_HPP
+#define LEXSCANNER_HPP
 
 #include <deque>
 #include <set>

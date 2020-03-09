@@ -1,3 +1,6 @@
+#ifndef LOCALVARIABLESCOPE_HPP
+#define LOCALVARIABLESCOPE_HPP
+
 #include <memory>
 #include <unordered_set>
 #include <vector>
@@ -19,3 +22,5 @@ private:
 };
 
 }; // namespace Env
+
+#endif
