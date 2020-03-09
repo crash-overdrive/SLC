@@ -23,12 +23,13 @@ bool Client::compile() {
       continue;
     }
 
-    std::ifstream javaFileStream;
-    std::vector<Lex::Token> tokens;
-
     if (outputToken || outputParse || outputAst) {
       std::cout << file << std::endl;
     }
+
+    std::ifstream javaFileStream;
+    std::vector<Lex::Token> tokens;
+
 
     javaFileStream.open(file);
     if (!javaFileStream.is_open()) {
@@ -75,6 +76,12 @@ bool Client::compile() {
 
     // TODO: implement weeder logic here
     if (breakPoint == Weed) {
+      continue;
+    }
+
+    // TODO: form FileHeader here
+    // add to list of map of
+    if (breakPoint == FileHeader) {
       continue;
     }
   }

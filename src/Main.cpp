@@ -9,9 +9,10 @@
 void usage() {
   std::cout << "Usage: ./joosc [options] [file-names]" << std::endl;
   std::cout << "options:" << std::endl;
-  std::cout << "--output-tokens \t outputs scanned tokens" << std::endl;
-  std::cout << "--output-parse \t outputs parse tree" << std::endl;
-  std::cout << "--output-ast \t outputs abstract syntax tree" << std::endl;
+  std::cout << "--output-tokens \t outputs scanned tokens for each class" << std::endl;
+  std::cout << "--output-parse \t outputs parse tree for each class" << std::endl;
+  std::cout << "--output-ast \t outputs abstract syntax tree for each class" << std::endl;
+  std::cout << "--output-fileheader \t outputs file header for each class" << std::endl;
   std::cout << "--std-lib2 \t includes Java standard libarary from Stdlib2Files"
             << std::endl;
   std::cout << "--std-lib3 \t includes Java standard libarary from Stdlib3Files"
@@ -26,6 +27,7 @@ int main(int argc, char *argv[]) {
   bool outputToken = false;
   bool outputParse = false;
   bool outputAst = false;
+  bool outputFileHeader = false;
   // add more flags here for debuging
   std::vector<std::string> files;
   std::set<std::string> finalFiles;
@@ -45,6 +47,8 @@ int main(int argc, char *argv[]) {
       outputParse = true;
     } else if (argument == "--output-ast") {
       outputAst = true;
+    } else if(argument == "--output-fileheader") {
+      outputFileHeader = true;
     } else if (argument == "--std-lib2") {
       for (auto const &file : Stdlib2Files) {
         files.push_back(file);
@@ -107,15 +111,10 @@ int main(int argc, char *argv[]) {
 
   Client client(&scanner, &parser);
   client.addJavaFiles(std::move(finalFiles));
-  if (outputToken) {
-    client.outputToken = true;
-  }
-  if (outputParse) {
-    client.outputParse = true;
-  }
-  if (outputAst) {
-    client.outputAst = true;
-  }
+  client.outputToken = outputToken;
+  client.outputParse = outputParse;
+  client.outputAst = outputAst;
+  client.outputFileHeader = outputFileHeader;
 
   bool compileResult = client.compile();
 

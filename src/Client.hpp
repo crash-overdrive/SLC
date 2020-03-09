@@ -16,6 +16,7 @@ public:
     Parse,
     Ast,
     Weed,
+    FileHeader,
     Environment,
     TypeLink,
     Hierarchy,
@@ -23,6 +24,7 @@ public:
   bool outputToken = false;
   bool outputParse = false;
   bool outputAst = false;
+  bool outputFileHeader = false;
 
   Client(Lex::Scanner *scanner = nullptr, Parse::DFA *parser = nullptr);
   void setBreakPoint(BreakPointType breakPoint);

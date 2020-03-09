@@ -3,7 +3,7 @@
 #include "EnvFileHeader.hpp"
 
 TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
-  Env::FileHeader fileHeader;
+  Env::FileHeader fileHeader = Env::FileHeader("ClassName", {AST::ModifierCode::Public, AST::ModifierCode::Native, AST::ModifierCode::Abstract}, Env::Type::Interface);
   REQUIRE(fileHeader.addField(Env::JoosField({AST::ModifierCode::Private,
       AST::ModifierCode::Final, AST::ModifierCode::Static}, "String", "str")));
   REQUIRE(fileHeader.addField(Env::JoosField({AST::ModifierCode::Public,

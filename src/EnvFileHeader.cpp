@@ -14,6 +14,9 @@ bool Env::JoosMethod::operator==(const Env::JoosMethod &Method) {
   return Modifiers == Method.Modifiers && ReturnType == Method.ReturnType && Name == Method.Name && ArgType == Method.ArgType;
 }
 
+Env::FileHeader::FileHeader(std::string Name, std::set<AST::ModifierCode> Modifiers, Env::Type type) :
+  Name(Name), Modifiers(Modifiers), type(type) {};
+
 bool Env::FileHeader::addField(Env::JoosField &&joosField) {
   for (auto const& Field : Fields) {
     if (Field.Name == joosField.Name && Field.Type == joosField.Type) {
