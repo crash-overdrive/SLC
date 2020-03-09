@@ -31,7 +31,8 @@ TEST_CASE("AST built from ParseTree", "[ASTBuilder]") {
     AST::dispatch(ParseStart, ASTStart);
 
     std::ostringstream OStream;
-    AST::PrintVisitor Visitor(OStream);
+    AST::Visitor Visitor;
+    Visitor.setLog(OStream);
     ASTStart.accept(Visitor);
 
     std::ifstream ASTStream;

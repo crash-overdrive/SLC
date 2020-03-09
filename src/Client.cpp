@@ -64,7 +64,8 @@ bool Client::compile() {
     std::unique_ptr<AST::Start> astRoot = std::make_unique<AST::Start>();
     buildAST(Tree, astRoot);
     if (outputAst) {
-      AST::PrintVisitor Visitor = AST::PrintVisitor(std::cout);
+      AST::Visitor Visitor = AST::Visitor();
+      Visitor.setLog(std::cerr);
       astRoot->accept(Visitor);
     }
     astList.emplace_back(std::move(astRoot));
@@ -82,12 +83,6 @@ bool Client::compile() {
   }
 
   if (breakPoint == Environment) {
-    Env::TypeLinkList Links;
-
-    if (!buildEnv(astList, Links)) {
-      std::cerr << "Failed to build environment\n";
-      return false;
-    }
     return true;
   }
   return true;
@@ -136,20 +131,4 @@ void Client::buildAST(const Parse::Tree &ParseTree,
                       std::unique_ptr<AST::Start> &ASTRoot) {
   const Parse::Node &ParseRoot = ParseTree.getRoot();
   dispatch(ParseRoot, *ASTRoot);
-}
-
-bool Client::buildEnv(std::vector<std::unique_ptr<AST::Start>> &ASTList,
-                      Env::TypeLinkList &Links) {
-  for (auto &ASTRoot : ASTList) {
-    Links.addAST(std::move(ASTRoot));
-  }
-  Env::ScopeBuilder Builder;
-  Links.visit(Builder);
-  return !Builder.error();
-}
-
-bool Client::typeLink(Env::TypeLinkList &Links) {
-  Env::ImportVisitor Visitor;
-  Links.visit(Visitor);
-  return !Visitor.error();
 }

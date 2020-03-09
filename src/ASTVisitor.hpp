@@ -2,12 +2,16 @@
 #define ASTVISITOR_HPP
 
 #include "ASTNode.hpp"
+#include <fstream>
 #include <iostream>
 
 namespace AST {
 
+class LogVisitor;
+
 class Visitor {
 public:
+  virtual ~Visitor() = default;
   virtual void visit(const Start &Node);
   virtual void visit(const PackageDeclaration &Node);
   virtual void visit(const SingleImportDeclaration &Node);
@@ -57,19 +61,22 @@ public:
   virtual void visit(const ThisExpression &Node);
   virtual void visit(const ForInit &Node);
   virtual void visit(const ForUpdate &Node);
+  void setLog(std::ostream &Stream);
 
 protected:
   void setError();
   bool error();
   void dispatchChildren(const Node &Parent);
+  std::unique_ptr<LogVisitor> LogVisitorPtr;
 
 private:
   bool ErrorState = false;
 };
 
-class PrintVisitor : public Visitor {
+class LogVisitor : public Visitor {
 public:
-  PrintVisitor(std::ostream &Stream);
+  LogVisitor();
+  LogVisitor(std::ostream &Stream);
   void visit(const Start &Start) override;
   void visit(const PackageDeclaration &Decl) override;
   void visit(const SingleImportDeclaration &Decl) override;
@@ -89,7 +96,8 @@ public:
   void visit(const VoidType &VoidType) override;
   void visit(const Expression &Expression) override;
   void visit(const CastExpression &CastExpression) override;
-  void visit(const SingleVariableDeclaration &SingleVariableDeclaration) override;
+  void
+  visit(const SingleVariableDeclaration &SingleVariableDeclaration) override;
   void visit(const Super &Super) override;
   void visit(const Interfaces &Interfaces) override;
   void visit(const Block &Block) override;
@@ -120,10 +128,14 @@ public:
   void visit(const ForInit &ForInit) override;
   void visit(const ForUpdate &ForUpdate) override;
 
+  void preVisit();
+  void postVisit();
+  void log(const std::string &Message);
+
 private:
-  std::ostream &Stream;
-  unsigned int Level;
-  void acceptChildrenLevel(const AST::Node &Node);
+  std::ofstream NullStream{};
+  std::ostream &Stream = NullStream;
+  unsigned int Level = 0;
 };
 
 } // namespace AST
