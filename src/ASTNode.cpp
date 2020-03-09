@@ -1,5 +1,5 @@
-#include <ASTNode.hpp>
-#include <ASTVisitor.hpp>
+#include "ASTNode.hpp"
+#include "ASTVisitor.hpp"
 
 void AST::Node::addChild(std::unique_ptr<Node> Child) {
   Children.emplace_back(std::move(Child));
@@ -229,3 +229,9 @@ AST::ThisExpression::ThisExpression(const std::string &Expression) : Expression(
 const std::string &AST::ThisExpression::getExpression() const { return Expression; }
 
 void AST::ThisExpression::accept(Visitor &Visitor) const { Visitor.visit(*this); }
+
+std::ostream &AST::operator<<(std::ostream &Stream, const Node &Node) {
+  PrintVisitor Visitor(Stream);
+  Node.accept(Visitor);
+  return Stream;
+}

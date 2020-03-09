@@ -20,11 +20,27 @@ FileHeaderBuild(std::vector<ASTNode> &&Nodes) {
  return Signatures;
 }
 
-shared_ptr<PackageTree> packageBuild(const std::vector<FileHeader> &Headers) {}
+std::optional<PackageTree> packageBuild(const std::vector<FileHeader> &Headers) {
+  PackageTree Tree;
+  for Header in Headers:
+    PackageTreeVisitor
+    Header.node.accept(PackageTreeVisitor);
+    vector = Visitor.getName()
+    type = Visitor.getType()
+    Tree.insert(vector, Header, type);
+}
 
 std::TypeLink typeLinkeBuild(PackageTree &&Tree) {}
 
 /* Client */
+
+/* Package Tree */
+
+
+FileHeader *lookUp(std::vector &FullyName);
+FileHeader *insert(std::vector &FullyName, FileHeader, INTERFACE type);
+
+
 
 /* FileHeader File */
 
@@ -87,6 +103,7 @@ public:
   FileHeader *find(const std::vector<std::string> &Name);
   // find({"java", "util", "List"});
   // find({"Integer"});
+  //imports
 
 private:
   std::unordered_map<std::string, FileHeader &> SingleTypeImport;
