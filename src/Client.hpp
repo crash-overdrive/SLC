@@ -4,7 +4,6 @@
 #include <set>
 
 #include "ASTNode.hpp"
-#include "EnvScope.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 

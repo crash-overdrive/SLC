@@ -41,27 +41,16 @@ PackageNode *PackageNode::addType(Type type, const std::string &name) {
   return It.second ? &It.first->second : nullptr;
 }
 
-void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
-  type = PackageNode::PACKAGE;
-  dispatchChildren(Decl);
-}
+void PackageTreeVisitor::visit(const AST::PackageDeclaration &) {}
 
-void PackageTreeVisitor::visit(const AST::ClassDeclaration &Decl) {
-  if (type == PackageNode::GLOBAL)
-    return;
+void PackageTreeVisitor::visit(const AST::Name &) {}
+
+void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {
   type = PackageNode::CLASS;
-  dispatchChildren(Decl);
 }
 
-void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &Decl) {
-  if (type == PackageNode::GLOBAL)
-    return;
+void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {
   type = PackageNode::INTERFACE;
-  dispatchChildren(Decl);
-}
-
-void PackageTreeVisitor::visit(const AST::Identifier &Identifier) {
-  (void)Identifier;
 }
 
 } // namespace Env

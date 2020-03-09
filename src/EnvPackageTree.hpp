@@ -34,7 +34,7 @@ private:
 };
 
 
-class PackageTreeVisitor : public AST::Visitor {
+class PackageTreeVisitor : public AST::TrackVisitor {
 public:
   void visit(const AST::PackageDeclaration &Decl) override;
   void visit(const AST::ClassDeclaration &Decl) override;
@@ -43,6 +43,7 @@ public:
 
 private:
   PackageNode::Type type;
+  std::vector<std::string> fullyQualifiedName;
 };
 
 } // namespace Env

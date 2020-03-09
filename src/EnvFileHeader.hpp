@@ -27,7 +27,6 @@ struct JoosMethod {
 
 struct FileHeader {
 public:
-  // std::unique_ptr<AST::Node> Node;
   bool addField(Env::JoosField &&joosField);
   bool addMethod(Env::JoosMethod &&joosMethod);
   const JoosField *findField(const std::string &Type, const std::string &Name) const;

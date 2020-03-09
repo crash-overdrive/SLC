@@ -364,6 +364,8 @@ private:
   std::string Expression;
 };
 
+std::ostream &operator<<(std::ostream &Stream, const Node &Node);
+
 } // namespace AST
 
 #endif // ASTNODE_HPP
