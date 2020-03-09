@@ -1,0 +1,135 @@
+Start
+  ClassDeclaration
+    Modifier: PUBLIC
+    Identifier: J1_forMethodUpdate
+    ConstructorDeclaration
+      Modifier: PUBLIC
+      Identifier: J1_forMethodUpdate
+      Block
+    FieldDeclaration
+      Modifier: PUBLIC
+      PrimitiveType: INT
+      Identifier: i
+    MethodDeclaration
+      Modifier: PUBLIC
+      PrimitiveType: INT
+      Identifier: foo
+      Block
+        VariableDeclaration
+          SingleVariableDeclaration
+            PrimitiveType: INT
+            Identifier: j
+          ASSIGN: =
+          Expression
+            OperationExpression
+              DecIntLiteral: 1
+        ForStatement
+          ForInit
+            AssignmentExpression
+              Name
+                Identifier: i
+              ASSIGN: =
+              Expression
+                OperationExpression
+                  DecIntLiteral: 1
+          Expression
+            OperationExpression
+              OperationExpression
+                Name
+                  Identifier: i
+              BinaryOperator: <
+              DecIntLiteral: 6
+          ForUpdate
+            MethodInvocation
+              Name
+                Identifier: bar
+          Block
+            AssignmentExpression
+              Name
+                Identifier: j
+              ASSIGN: =
+              Expression
+                OperationExpression
+                  OperationExpression
+                    Name
+                      Identifier: j
+                  BinaryOperator: *
+                  Name
+                    Identifier: i
+        ReturnStatement
+          Expression
+            OperationExpression
+              OperationExpression
+                Name
+                  Identifier: j
+              BinaryOperator: +
+              DecIntLiteral: 3
+    MethodDeclaration
+      Modifier: PUBLIC
+      VoidType: void
+      Identifier: bar
+      Block
+        AssignmentExpression
+          Name
+            Identifier: i
+          ASSIGN: =
+          Expression
+            OperationExpression
+              OperationExpression
+                Name
+                  Identifier: i
+              BinaryOperator: +
+              DecIntLiteral: 1
+    MethodDeclaration
+      Modifier: PUBLIC
+      Modifier: STATIC
+      PrimitiveType: INT
+      Identifier: test
+      Block
+        VariableDeclaration
+          SingleVariableDeclaration
+            SimpleType
+              Name
+                Identifier: J1_forMethodUpdate
+            Identifier: j
+          ASSIGN: =
+          Expression
+            OperationExpression
+              ClassInstanceCreation
+                SimpleType
+                  Name
+                    Identifier: J1_forMethodUpdate
+        ReturnStatement
+          Expression
+            OperationExpression
+              MethodInvocation
+                Name
+                  Name
+                    Identifier: j
+                  Identifier: foo
+    MethodDeclaration
+      Modifier: PUBLIC
+      Modifier: STATIC
+      VoidType: void
+      Identifier: main
+      SingleVariableDeclaration
+        ArrayType
+          Name
+            Identifier: String
+        Identifier: args
+      Block
+        MethodInvocation
+          Name
+            Name
+              Name
+                Identifier: System
+              Identifier: out
+            Identifier: println
+          ArgumentList
+            Expression
+              OperationExpression
+                MethodInvocation
+                  Name
+                    Name
+                      Identifier: J1_forMethodUpdate
+                    Identifier: test
