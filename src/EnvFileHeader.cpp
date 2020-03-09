@@ -1,55 +1,69 @@
 #include "EnvFileHeader.hpp"
 
-Env::JoosField::JoosField(std::set<AST::ModifierCode> Modifiers, std::string Type, std::string Name) :
-  Modifiers(Modifiers), Type(Type), Name(Name) {};
+Env::VariableDescriptor::VariableDescriptor(VariableType variableType, std::string dataType) :
+  variableType(variableType), dataType(dataType) {};
 
-bool Env::JoosField::operator==(const Env::JoosField &Field) {
-  return Modifiers == Field.Modifiers && Type == Field.Type && Name == Field.Name;
+bool Env::VariableDescriptor::operator==(const VariableDescriptor &variableDescriptor) const{
+  return variableType == variableDescriptor.variableType && dataType == variableDescriptor.dataType;
 }
 
-Env::JoosMethod::JoosMethod(std::set<AST::ModifierCode> Modifiers, std::string ReturnType, std::string Name, std::vector<std::string> ArgType) :
-  Modifiers(Modifiers), ReturnType(ReturnType), Name(Name), ArgType(ArgType) {};
+Env::TypeDescriptor::TypeDescriptor(Type type, std::string identifier) :
+  type(type), identifier(identifier) {};
 
-bool Env::JoosMethod::operator==(const Env::JoosMethod &Method) {
-  return Modifiers == Method.Modifiers && ReturnType == Method.ReturnType && Name == Method.Name && ArgType == Method.ArgType;
+bool Env::TypeDescriptor::operator==(const TypeDescriptor &typeDescriptor) const{
+  return type == typeDescriptor.type && identifier == typeDescriptor.identifier;
 }
 
-Env::FileHeader::FileHeader(std::string Name, std::set<AST::ModifierCode> Modifiers, Env::Type type) :
-  Name(Name), Modifiers(Modifiers), type(type) {};
+Env::JoosField::JoosField(std::set<AST::ModifierCode> modifiers, VariableDescriptor variableDescriptor, std::string identifier) :
+  modifiers(modifiers), variableDescriptor(variableDescriptor), identifier(identifier) {};
 
-bool Env::FileHeader::addField(Env::JoosField &&joosField) {
-  for (auto const& Field : Fields) {
-    if (Field.Name == joosField.Name && Field.Type == joosField.Type) {
+bool Env::JoosField::operator==(const JoosField &joosField) const{
+  return identifier == joosField.identifier && variableDescriptor.dataType == joosField.variableDescriptor.dataType;
+}
+
+Env::JoosMethod::JoosMethod(std::set<AST::ModifierCode> modifiers, VariableDescriptor returnType, std::string identifier, std::vector<VariableDescriptor> args) :
+  modifiers(modifiers), returnType(returnType), identifier(identifier), args(args) {};
+
+bool Env::JoosMethod::operator==(const JoosMethod &joosMethod) const{
+  return identifier == joosMethod.identifier && args == joosMethod.args;
+}
+
+Env::FileHeader::FileHeader(std::set<AST::ModifierCode> classModifiers, TypeDescriptor typeDescriptor) :
+  typeDescriptor(typeDescriptor), classModifiers(classModifiers) {};
+
+bool Env::FileHeader::addField(Env::JoosField joosField) {
+  for (auto const& field : fields) {
+    if (field == joosField) {
       return false;
     }
   }
-  Fields.emplace_back(std::move(joosField));
+  fields.emplace_back(std::move(joosField));
   return true;
 }
 
-bool Env::FileHeader::addMethod(Env::JoosMethod &&joosMethod) {
-  for (auto const& Method : Methods) {
-    if (Method.Name == joosMethod.Name && Method.ArgType == joosMethod.ArgType) {
+bool Env::FileHeader::addMethod(Env::JoosMethod joosMethod) {
+  for (auto const& method : methods) {
+    if (method == joosMethod) {
       return false;
     }
   }
-  Methods.emplace_back(std::move(joosMethod));
+  methods.emplace_back(std::move(joosMethod));
   return true;
 }
 
-const Env::JoosField *Env::FileHeader::findField(const std::string &Type, const std::string &Name) const {
-  for (auto const& Field : Fields) {
-    if (Field.Name == Name && Field.Type == Type) {
-      return &Field;
+const Env::JoosField *Env::FileHeader::findField(const Env::VariableDescriptor &variableDescriptor, const std::string &identifier) const {
+  for (auto const& field : fields) {
+    if (field.identifier == identifier && field.variableDescriptor == variableDescriptor) {
+      return &field;
     }
   }
   return nullptr;
 }
 
-const Env::JoosMethod *Env::FileHeader::findMethod(const std::string &Name, const std::vector<std::string> &ArgType) const{
-  for (auto const& Method : Methods) {
-    if (Method.Name == Name && Method.ArgType == ArgType) {
-      return &Method;
+const Env::JoosMethod *Env::FileHeader::findMethod(const std::string &identifier, const std::vector<VariableDescriptor> &args) const{
+  for (auto const& method : methods) {
+    if (method.identifier == identifier && method.args == args) {
+      return &method;
     }
   }
   return nullptr;
