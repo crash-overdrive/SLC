@@ -4,25 +4,35 @@
 #include "TestConfig.hpp"
 #include "catch.hpp"
 
-TEST_CASE("hierarchical nodes", "[PackageNode]") {
-  Env::PackageNode root{Env::PackageNode::Type::GLOBAL, ""};
-  Env::PackageNode *foo = root.update(Env::PackageNode::Type::PACKAGE, "foo");
-  Env::PackageNode *bar = foo->update(Env::PackageNode::Type::PACKAGE, "bar");
-  bar->update(Env::PackageNode::Type::CLASS, "canary");
+TEST_CASE("Package Node", "[PackageNode]") {
+  Env::PackageNode root{Env::PackageNode::Type::Global};
+  Env::PackageNode *foo = root.update(Env::PackageNode::Type::Package, "foo");
+  Env::PackageNode *bar = foo->update(Env::PackageNode::Type::Package, "bar");
+  bar->update(Env::PackageNode::Type::JoosType, "canary");
 
   SECTION("Node will reject duplicates") {
     Env::PackageNode *node;
-    node = foo->update(Env::PackageNode::Type::CLASS, "bar");
+    node = foo->update(Env::PackageNode::Type::JoosType, "bar");
     REQUIRE(node == nullptr);
-    node = foo->update(Env::PackageNode::Type::PACKAGE, "bar");
+    node = foo->update(Env::PackageNode::Type::Package, "bar");
     REQUIRE(node != nullptr);
-    node = bar->update(Env::PackageNode::Type::PACKAGE, "canary");
+    node = bar->update(Env::PackageNode::Type::Package, "canary");
     REQUIRE(node == nullptr);
-    node = bar->update(Env::PackageNode::Type::CLASS, "canary");
+    node = bar->update(Env::PackageNode::Type::JoosType, "canary");
     REQUIRE(node == nullptr);
-    node = bar->update(Env::PackageNode::Type::INTERFACE, "canary");
+    node = bar->update(Env::PackageNode::Type::JoosType, "canary");
     REQUIRE(node == nullptr);
   }
+}
+
+TEST_CASE("Package Tree", "[PackageTreeLookup][!hide]") {
+  Env::FileHeader CanaryHeader("canary", {}, Env::Type::Class);
+  Env::FileHeader BarHeader("bar", {}, Env::Type::Class);
+  Env::PackageTree Tree;
+  REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
+  REQUIRE_FALSE(Tree.update({"foo"}, BarHeader));
+  REQUIRE(Tree.lookUp({"foo", "bar", "canary"}) == &CanaryHeader);
+  REQUIRE(Tree.lookUp({"foo"}) == nullptr);
 }
 
 TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {

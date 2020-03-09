@@ -3,21 +3,22 @@
 
 namespace Env {
 
-PackageNode::PackageNode(Type type, const std::string &name)
-    : type(type), name(name) {}
+PackageNode::PackageNode(Type type, const std::string &name, FileHeader *header)
+    : type(type), name(name), header(header) {}
 
-PackageNode *PackageNode::update(Type type, const std::string &name) {
-  if (this->type != GLOBAL && this->type != PACKAGE)
+PackageNode *PackageNode::update(Type type, const std::string &name,
+                             FileHeader *header)
+                                 {
+  if (this->type != Global && this->type != Package)
     return nullptr;
   switch (type) {
-  case PACKAGE:
+  case Package:
     return updatePackage(type, name);
     break;
-  case CLASS:
-  case INTERFACE:
-    return addType(type, name);
+  case JoosType:
+    return addType(type, name, header);
     break;
-  case GLOBAL:
+  case Global:
     break;
   }
   return nullptr;
@@ -31,14 +32,15 @@ PackageNode *PackageNode::find(const std::string &name) {
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   auto It = children.find(name);
   if (It != children.end()) {
-    return (It->second.type == PACKAGE) ? &It->second : nullptr;
+    return (It->second.type == Package) ? &It->second : nullptr;
   }
   auto ChildIt = children.emplace(name, PackageNode{type, name});
   return &ChildIt.first->second;
 }
 
-PackageNode *PackageNode::addType(Type type, const std::string &name) {
-  auto It = children.emplace(name, PackageNode{type, name});
+PackageNode *PackageNode::addType(Type type, const std::string &name,
+                                  FileHeader *header) {
+  auto It = children.emplace(name, PackageNode{type, name, header});
   return It.second ? &It.first->second : nullptr;
 }
 
@@ -54,6 +56,29 @@ void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
 
 std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
   return packagePath;
+}
+
+FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
+  PackageNode *Node = Root.get();
+  for (const auto &Component : PackagePath) {
+    Node = Node->find(Component);
+    if (!Node) {
+      return nullptr;
+    }
+  }
+  return Node->header;
+}
+
+bool PackageTree::update(const std::vector<std::string> &PackagePath, FileHeader &Header) {
+  PackageNode *Node = Root.get();
+  for (const auto &Component : PackagePath) {
+    Node = Node->update(PackageNode::Package, Component);
+    if (!Node) {
+      return false;
+    }
+  }
+  Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
+  return Node != nullptr;
 }
 
 } // namespace Env
