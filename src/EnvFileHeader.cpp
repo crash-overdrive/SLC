@@ -68,3 +68,10 @@ const Env::JoosMethod *Env::FileHeader::findMethod(const std::string &identifier
   }
   return nullptr;
 }
+
+const std::string &Env::FileHeader::getName() const {
+  return typeDescriptor.identifier;
+}
+const std::set<AST::ModifierCode> &Env::FileHeader::getModifiers() const {
+  return classModifiers;
+}

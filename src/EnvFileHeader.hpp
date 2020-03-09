@@ -71,6 +71,8 @@ public:
                              const std::string &identifier) const;
   const JoosMethod *findMethod(const std::string &identifier,
                                const std::vector<VariableDescriptor> &args) const;
+  const std::set<AST::ModifierCode> &getModifiers() const;
+  const std::string &getName() const;
 private:
   std::vector<JoosMethod> methods;
   std::vector<JoosField> fields;
