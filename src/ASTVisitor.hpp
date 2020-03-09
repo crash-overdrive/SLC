@@ -2,12 +2,14 @@
 #define ASTVISITOR_HPP
 
 #include "ASTNode.hpp"
+#include <fstream>
 #include <iostream>
 
 namespace AST {
 
 class Visitor {
 public:
+  virtual ~Visitor() = default;
   virtual void visit(const Start &Node);
   virtual void visit(const PackageDeclaration &Node);
   virtual void visit(const SingleImportDeclaration &Node);
@@ -59,51 +61,47 @@ public:
   virtual void visit(const ForUpdate &Node);
 
 protected:
-  void setError();
-  bool error();
-  void dispatchChildren(const Node &Parent);
-
-private:
-  bool ErrorState = false;
+  virtual void dispatchChildren(const Node &Parent);
 };
 
 class PrintVisitor : public Visitor {
 public:
+  PrintVisitor();
   PrintVisitor(std::ostream &Stream);
-  void visit(const Start &Start) override;
-  void visit(const PackageDeclaration &Decl) override;
-  void visit(const SingleImportDeclaration &Decl) override;
-  void visit(const DemandImportDeclaration &Decl) override;
-  void visit(const ClassDeclaration &Decl) override;
-  void visit(const InterfaceDeclaration &Decl) override;
-  void visit(const FieldDeclaration &Decl) override;
-  void visit(const ConstructorDeclaration &Decl) override;
-  void visit(const Extensions &Extensions) override;
-  void visit(const Name &Name) override;
-  void visit(const MethodDeclaration &Decl) override;
-  void visit(const Modifier &Modifier) override;
+  void visit(const Start &) override;
+  void visit(const PackageDeclaration &) override;
+  void visit(const SingleImportDeclaration &) override;
+  void visit(const DemandImportDeclaration &) override;
+  void visit(const ClassDeclaration &) override;
+  void visit(const InterfaceDeclaration &) override;
+  void visit(const FieldDeclaration &) override;
+  void visit(const ConstructorDeclaration &) override;
+  void visit(const Extensions &) override;
+  void visit(const Name &) override;
+  void visit(const MethodDeclaration &) override;
+  void visit(const Modifier &) override;
   void visit(const Identifier &Identifier) override;
   void visit(const PrimitiveType &PrimitiveType) override;
-  void visit(const ArrayType &ArrayType) override;
   void visit(const SimpleType &SimpleType) override;
+  void visit(const ArrayType &) override;
   void visit(const VoidType &VoidType) override;
-  void visit(const Expression &Expression) override;
-  void visit(const CastExpression &CastExpression) override;
-  void visit(const SingleVariableDeclaration &SingleVariableDeclaration) override;
-  void visit(const Super &Super) override;
-  void visit(const Interfaces &Interfaces) override;
-  void visit(const Block &Block) override;
-  void visit(const IfThenStatement &IfThenStatement) override;
-  void visit(const IfThenElseStatement &IfThenElseStatement) override;
-  void visit(const WhileStatement &WhileStatement) override;
-  void visit(const ForStatement &ForStatement) override;
-  void visit(const SimpleStatement &SimpleStatement) override;
-  void visit(const ClassInstanceCreation &ClassInstanceCreation) override;
-  void visit(const OperationExpression &OperationExpression) override;
-  void visit(const MethodInvocation &MethodInvocation) override;
-  void visit(const ReturnStatement &ReturnStatement) override;
-  void visit(const VariableDeclaration &VariableDeclaration) override;
-  void visit(const AssignmentExpression &AssignmentExpression) override;
+  void visit(const Expression &) override;
+  void visit(const CastExpression &) override;
+  void visit(const SingleVariableDeclaration &) override;
+  void visit(const Super &) override;
+  void visit(const Interfaces &) override;
+  void visit(const Block &) override;
+  void visit(const IfThenStatement &) override;
+  void visit(const IfThenElseStatement &) override;
+  void visit(const WhileStatement &) override;
+  void visit(const ForStatement &) override;
+  void visit(const SimpleStatement &) override;
+  void visit(const ClassInstanceCreation &) override;
+  void visit(const OperationExpression &) override;
+  void visit(const MethodInvocation &) override;
+  void visit(const ReturnStatement &) override;
+  void visit(const VariableDeclaration &) override;
+  void visit(const AssignmentExpression &) override;
   void visit(const ASSIGN &ASSIGN) override;
   void visit(const BinaryOperator &BinaryOperator) override;
   void visit(const UnaryOperator &UnaryOperator) override;
@@ -112,18 +110,37 @@ public:
   void visit(const CharacterLiteral &CharacterLiteral) override;
   void visit(const StringLiteral &StringLiteral) override;
   void visit(const NullLiteral &NullLiteral) override;
-  void visit(const ArgumentList &ArgumentList) override;
-  void visit(const FieldAccess &FieldAccess) override;
-  void visit(const ArrayAccess &ArrayAccess) override;
-  void visit(const ArrayCreation &ArrayCreation) override;
+  void visit(const ArgumentList &) override;
+  void visit(const FieldAccess &) override;
+  void visit(const ArrayAccess &) override;
+  void visit(const ArrayCreation &) override;
   void visit(const ThisExpression &ThisExpression) override;
-  void visit(const ForInit &ForInit) override;
-  void visit(const ForUpdate &ForUpdate) override;
+  void visit(const ForInit &) override;
+  void visit(const ForUpdate &) override;
+
+  void preVisit();
+  void postVisit();
+  void print(const std::string &Message);
 
 private:
-  std::ostream &Stream;
-  unsigned int Level;
-  void acceptChildrenLevel(const AST::Node &Node);
+  std::ofstream NullStream{};
+  std::ostream &Stream = NullStream;
+  unsigned int Level = 0;
+};
+
+class TrackVisitor : public Visitor {
+public:
+  void setLog(std::ostream &Stream);
+
+protected:
+  void setError();
+  bool error();
+  void dispatchChildren(const Node &Parent) override;
+  std::unique_ptr<PrintVisitor> PrintVisitorPtr =
+      std::make_unique<PrintVisitor>();
+
+private:
+  bool ErrorState = false;
 };
 
 } // namespace AST

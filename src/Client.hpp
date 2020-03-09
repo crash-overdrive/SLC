@@ -5,7 +5,6 @@
 
 #include "ASTNode.hpp"
 #include "EnvScope.hpp"
-#include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -43,9 +42,6 @@ private:
   void buildAST(const Parse::Tree &ParseTree,
                 std::unique_ptr<AST::Start> &ASTRoot);
   bool weed(const AST::Node &ast, const std::string &typeName);
-  bool buildEnv(std::vector<std::unique_ptr<AST::Start>> &ASTList,
-                Env::TypeLinkList &Links);
-  bool typeLink(Env::TypeLinkList &Links);
 };
 
 #endif // CLIENT_HPP
