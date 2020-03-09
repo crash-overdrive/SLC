@@ -33,17 +33,16 @@ private:
   std::unique_ptr<PackageNode> Root;
 };
 
-
 class PackageTreeVisitor : public AST::TrackVisitor {
 public:
   void visit(const AST::PackageDeclaration &Decl) override;
+  // Avoid unecessary traversal
   void visit(const AST::ClassDeclaration &Decl) override;
   void visit(const AST::InterfaceDeclaration &Decl) override;
-  void visit(const AST::Name &Name) override;
+  std::vector<std::string> getPackagePath() const;
 
 private:
-  PackageNode::Type type;
-  std::vector<std::string> fullyQualifiedName;
+  std::vector<std::string> packagePath;
 };
 
 } // namespace Env
