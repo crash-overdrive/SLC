@@ -1,6 +1,7 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+#include <optional>
 #include <set>
 
 #include "ASTNode.hpp"

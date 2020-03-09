@@ -53,10 +53,6 @@ void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
 
 void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
 
-std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
-  return packagePath;
-}
-
 FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
   PackageNode *Node = Root.get();
   for (const auto &Component : PackagePath) {
@@ -82,6 +78,10 @@ bool PackageTree::update(const std::vector<std::string> &PackagePath,
   }
   Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
   return Node != nullptr;
+}
+
+std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
+  return std::move(packagePath);
 }
 
 } // namespace Env
