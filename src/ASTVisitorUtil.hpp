@@ -6,7 +6,7 @@
 
 namespace AST {
 
-class NameVisitor : public Visitor {
+class NameVisitor : public TrackVisitor {
 public:
   void visit(const Name &name) override;
   void visit(const Identifier &Identifier) override;
