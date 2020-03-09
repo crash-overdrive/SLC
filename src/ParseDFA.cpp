@@ -82,7 +82,7 @@ Parse::Tree Parse::DFA::buildTree() {
   for (auto &Child : NodeStack) {
     Root->addChild(std::move(Child));
   }
-  NodeStack.clear();
+  clear();
   return Tree(std::move(Root));
 }
 

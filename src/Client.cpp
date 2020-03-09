@@ -1,8 +1,9 @@
-#include <fstream>
-
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
 #include "Client.hpp"
+
+#include <fstream>
+#include <optional>
 
 Client::Client(Lex::Scanner *scanner, Parse::DFA *parser)
     : scanner(scanner), parser(parser) {}
@@ -28,20 +29,20 @@ bool Client::compile() {
     }
 
     std::ifstream javaFileStream;
-    std::vector<Lex::Token> tokens;
-
 
     javaFileStream.open(file);
     if (!javaFileStream.is_open()) {
       std::cerr << "Error: " << file << " could not be opened" << std::endl;
       return false;
     }
-    if (!scan(javaFileStream, tokens)) {
+
+    auto tokens = scan(javaFileStream);
+    if (!tokens) {
       std::cerr << file << " is not recognized by scanner" << std::endl;
       return false;
     }
     if (outputToken) {
-      for (auto const &token : tokens) {
+      for (auto const &token : *tokens) {
         std::cout << token << std::endl;
       }
     }
@@ -49,21 +50,19 @@ bool Client::compile() {
       continue;
     }
 
-    Parse::Tree Tree;
-
-    if (!parse(tokens, Tree)) {
+    auto Tree = parse(*tokens);
+    if (!Tree) {
       std::cerr << file << " is not recognized by parser\n";
       return false;
     }
     if (outputParse) {
-      std::cout << Tree << std::endl;
+      std::cout << *Tree << std::endl;
     }
     if (breakPoint == Parse) {
       continue;
     }
 
-    std::unique_ptr<AST::Start> astRoot = std::make_unique<AST::Start>();
-    buildAST(Tree, astRoot);
+    std::unique_ptr<AST::Start> astRoot = buildAST(*Tree);
     if (outputAst) {
       AST::TrackVisitor Visitor;
       Visitor.setLog(std::cerr);
@@ -115,27 +114,28 @@ bool Client::verifyFileName(std::string FileName) {
 }
 
 
-bool Client::scan(std::istream &Stream, std::vector<Lex::Token> &Tokens) {
+std::optional<std::vector<Lex::Token>> Client::scan(std::istream &Stream) {
   if (scanner->scan(Stream)) {
-    Tokens = scanner->getTokens();
-    return true;
+    return scanner->getTokens();
   }
-  return false;
+  return std::nullopt;
 }
 
-bool Client::parse(const std::vector<Lex::Token> &Tokens,
-                   Parse::Tree &ParseTree) {
+std::optional<Parse::Tree>
+Client::parse(const std::vector<Lex::Token> &Tokens) {
   if (parser->parse(Tokens)) {
-    ParseTree = parser->buildTree();
-    parser->clear();
-    return true;
+    return parser->buildTree();
   }
-  std::cerr << parser->buildTree();
-  return false;
+  return std::nullopt;
 }
 
-void Client::buildAST(const Parse::Tree &ParseTree,
-                      std::unique_ptr<AST::Start> &ASTRoot) {
+std::unique_ptr<AST::Start> Client::buildAST(const Parse::Tree &ParseTree) {
+  std::unique_ptr<AST::Start> Root = std::make_unique<AST::Start>();
   const Parse::Node &ParseRoot = ParseTree.getRoot();
-  dispatch(ParseRoot, *ASTRoot);
+  dispatch(ParseRoot, *Root);
+  return Root;
+}
+
+std::unique_ptr<AST::Start> Client::buildAST(std::istream &stream) {
+  return buildAST(*parse(*scan(stream)));
 }

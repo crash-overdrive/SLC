@@ -59,14 +59,14 @@ public:
   virtual void visit(const ThisExpression &Node);
   virtual void visit(const ForInit &Node);
   virtual void visit(const ForUpdate &Node);
+  virtual void dispatchChildren(const Node &Parent);
 
 protected:
-  virtual void dispatchChildren(const Node &Parent);
+  virtual void postVisit(const Node &Parent);
 };
 
 class PrintVisitor : public Visitor {
 public:
-  PrintVisitor();
   PrintVisitor(std::ostream &Stream);
   void visit(const Start &) override;
   void visit(const PackageDeclaration &) override;
@@ -118,14 +118,8 @@ public:
   void visit(const ForInit &) override;
   void visit(const ForUpdate &) override;
 
-  void preVisit();
-  void postVisit();
-  void print(const std::string &Message);
-
 private:
-  std::ofstream NullStream{};
-  std::ostream &Stream = NullStream;
-  unsigned int Level = 0;
+  std::ostream &Stream;
 };
 
 class TrackVisitor : public Visitor {
@@ -135,12 +129,13 @@ public:
 protected:
   void setError();
   bool error();
-  void dispatchChildren(const Node &Parent) override;
-  std::unique_ptr<PrintVisitor> PrintVisitorPtr =
-      std::make_unique<PrintVisitor>();
+  void postVisit(const Node &Parent) override;
 
 private:
   bool ErrorState = false;
+  unsigned int Level = 0;
+  std::ofstream NullStream{};
+  std::reference_wrapper<std::ostream> StreamRef = NullStream;
 };
 
 } // namespace AST

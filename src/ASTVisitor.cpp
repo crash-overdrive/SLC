@@ -1,299 +1,264 @@
 #include "ASTVisitor.hpp"
 
-void AST::Visitor::visit(const Start &Node) { dispatchChildren(Node); }
+namespace AST {
 
-void AST::Visitor::visit(const InterfaceDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const PackageDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const SingleImportDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const DemandImportDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const ClassDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const FieldDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const ConstructorDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const MethodDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const Modifier &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const Identifier &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const Extensions &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const Name &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const PrimitiveType &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const SimpleType &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ArrayType &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const VoidType &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const Expression &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const CastExpression &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const SingleVariableDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const Super &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const Interfaces &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const Block &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const IfThenStatement &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const IfThenElseStatement &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const WhileStatement &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ForStatement &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const SimpleStatement &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const ClassInstanceCreation &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const OperationExpression &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const MethodInvocation &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const ReturnStatement &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const VariableDeclaration &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const ASSIGN &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const AssignmentExpression &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const BinaryOperator &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const UnaryOperator &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const DecIntLiteral &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const CharacterLiteral &Node) {
-  dispatchChildren(Node);
-}
-void AST::Visitor::visit(const BooleanLiteral &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const StringLiteral &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const NullLiteral &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ArgumentList &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const FieldAccess &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ArrayAccess &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ArrayCreation &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ThisExpression &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ForInit &Node) { dispatchChildren(Node); }
-void AST::Visitor::visit(const ForUpdate &Node) { dispatchChildren(Node); }
+void Visitor::visit(const Start &Node) { postVisit(Node); }
 
-inline void AST::Visitor::dispatchChildren(const Node &Parent) {
+void Visitor::visit(const InterfaceDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const PackageDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const SingleImportDeclaration &Node) {
+  postVisit(Node);
+}
+void Visitor::visit(const DemandImportDeclaration &Node) {
+  postVisit(Node);
+}
+void Visitor::visit(const ClassDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const FieldDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const ConstructorDeclaration &Node) {
+  postVisit(Node);
+}
+void Visitor::visit(const MethodDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const Modifier &Node) { postVisit(Node); }
+void Visitor::visit(const Identifier &Node) { postVisit(Node); }
+void Visitor::visit(const Extensions &Node) { postVisit(Node); }
+void Visitor::visit(const Name &Node) { postVisit(Node); }
+void Visitor::visit(const PrimitiveType &Node) { postVisit(Node); }
+void Visitor::visit(const SimpleType &Node) { postVisit(Node); }
+void Visitor::visit(const ArrayType &Node) { postVisit(Node); }
+void Visitor::visit(const VoidType &Node) { postVisit(Node); }
+void Visitor::visit(const Expression &Node) { postVisit(Node); }
+void Visitor::visit(const CastExpression &Node) { postVisit(Node); }
+void Visitor::visit(const SingleVariableDeclaration &Node) {
+  postVisit(Node);
+}
+void Visitor::visit(const Super &Node) { postVisit(Node); }
+void Visitor::visit(const Interfaces &Node) { postVisit(Node); }
+void Visitor::visit(const Block &Node) { postVisit(Node); }
+void Visitor::visit(const IfThenStatement &Node) { postVisit(Node); }
+void Visitor::visit(const IfThenElseStatement &Node) { postVisit(Node); }
+void Visitor::visit(const WhileStatement &Node) { postVisit(Node); }
+void Visitor::visit(const ForStatement &Node) { postVisit(Node); }
+void Visitor::visit(const SimpleStatement &Node) { postVisit(Node); }
+void Visitor::visit(const ClassInstanceCreation &Node) { postVisit(Node); }
+void Visitor::visit(const OperationExpression &Node) { postVisit(Node); }
+void Visitor::visit(const MethodInvocation &Node) { postVisit(Node); }
+void Visitor::visit(const ReturnStatement &Node) { postVisit(Node); }
+void Visitor::visit(const VariableDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const ASSIGN &Node) { postVisit(Node); }
+void Visitor::visit(const AssignmentExpression &Node) { postVisit(Node); }
+void Visitor::visit(const BinaryOperator &Node) { postVisit(Node); }
+void Visitor::visit(const UnaryOperator &Node) { postVisit(Node); }
+void Visitor::visit(const DecIntLiteral &Node) { postVisit(Node); }
+void Visitor::visit(const CharacterLiteral &Node) { postVisit(Node); }
+void Visitor::visit(const BooleanLiteral &Node) { postVisit(Node); }
+void Visitor::visit(const StringLiteral &Node) { postVisit(Node); }
+void Visitor::visit(const NullLiteral &Node) { postVisit(Node); }
+void Visitor::visit(const ArgumentList &Node) { postVisit(Node); }
+void Visitor::visit(const FieldAccess &Node) { postVisit(Node); }
+void Visitor::visit(const ArrayAccess &Node) { postVisit(Node); }
+void Visitor::visit(const ArrayCreation &Node) { postVisit(Node); }
+void Visitor::visit(const ThisExpression &Node) { postVisit(Node); }
+void Visitor::visit(const ForInit &Node) { postVisit(Node); }
+void Visitor::visit(const ForUpdate &Node) { postVisit(Node); }
+
+void Visitor::dispatchChildren(const Node &Parent) {
   for (const auto &Child : Parent.getChildren()) {
     Child->accept(*this);
   }
 }
 
-AST::PrintVisitor::PrintVisitor() {}
+void Visitor::postVisit(const Node &) {}
 
-AST::PrintVisitor::PrintVisitor(std::ostream &Stream) : Stream(Stream) {}
+PrintVisitor::PrintVisitor(std::ostream &Stream) : Stream(Stream) {}
 
-void AST::PrintVisitor::visit(const Start &) { Stream << "Start"; }
+void PrintVisitor::visit(const Start &) { Stream << "Start"; }
 
-void AST::PrintVisitor::visit(const PackageDeclaration &) {
+void PrintVisitor::visit(const PackageDeclaration &) {
   Stream << "PackageDeclaration";
 }
 
-void AST::PrintVisitor::visit(const SingleImportDeclaration &) {
+void PrintVisitor::visit(const SingleImportDeclaration &) {
   Stream << "SingleImportDeclaration";
 }
 
-void AST::PrintVisitor::visit(const DemandImportDeclaration &) {
+void PrintVisitor::visit(const DemandImportDeclaration &) {
   Stream << "DemandImportDeclaration";
 }
 
-void AST::PrintVisitor::visit(const ClassDeclaration &) {
+void PrintVisitor::visit(const ClassDeclaration &) {
   Stream << "ClassDeclaration";
 }
 
-void AST::PrintVisitor::visit(const InterfaceDeclaration &) {
+void PrintVisitor::visit(const InterfaceDeclaration &) {
   Stream << "InterfaceDeclaration";
 }
 
-void AST::PrintVisitor::visit(const FieldDeclaration &) {
+void PrintVisitor::visit(const FieldDeclaration &) {
   Stream << "FieldDeclaration";
 }
 
-void AST::PrintVisitor::visit(const ConstructorDeclaration &) {
+void PrintVisitor::visit(const ConstructorDeclaration &) {
   Stream << "ConstructorDeclaration";
 }
 
-void AST::PrintVisitor::visit(const Extensions &) { Stream << "Extensions"; }
+void PrintVisitor::visit(const Extensions &) { Stream << "Extensions"; }
 
-void AST::PrintVisitor::visit(const Name &) { Stream << "Name"; }
+void PrintVisitor::visit(const Name &) { Stream << "Name"; }
 
-void AST::PrintVisitor::visit(const MethodDeclaration &) {
+void PrintVisitor::visit(const MethodDeclaration &) {
   Stream << "MethodDeclaration";
 }
 
-void AST::PrintVisitor::visit(const Modifier &Modifier) {
+void PrintVisitor::visit(const Modifier &Modifier) {
   Stream << "Modifier: " << ModifierCodeName.at(Modifier.getCode());
 }
 
-void AST::PrintVisitor::visit(const Identifier &Identifier) {
+void PrintVisitor::visit(const Identifier &Identifier) {
   Stream << "Identifier: " << Identifier.getName();
 }
 
-void AST::PrintVisitor::visit(const PrimitiveType &PrimitiveType) {
+void PrintVisitor::visit(const PrimitiveType &PrimitiveType) {
   Stream << "PrimitiveType: " << PrimitiveType.getType();
 }
 
-void AST::PrintVisitor::visit(const SimpleType &) { Stream << "SimpleType"; }
+void PrintVisitor::visit(const SimpleType &) { Stream << "SimpleType"; }
 
-void AST::PrintVisitor::visit(const ArrayType &) { Stream << "ArrayType"; }
+void PrintVisitor::visit(const ArrayType &) { Stream << "ArrayType"; }
 
-void AST::PrintVisitor::visit(const VoidType &VoidType) {
+void PrintVisitor::visit(const VoidType &VoidType) {
   Stream << "VoidType: " << VoidType.getType();
 }
 
-void AST::PrintVisitor::visit(const Expression &) { Stream << "Expression"; }
+void PrintVisitor::visit(const Expression &) { Stream << "Expression"; }
 
-void AST::PrintVisitor::visit(const CastExpression &) {
+void PrintVisitor::visit(const CastExpression &) {
   Stream << "CastExpression";
 }
 
-void AST::PrintVisitor::visit(const SingleVariableDeclaration &) {
+void PrintVisitor::visit(const SingleVariableDeclaration &) {
   Stream << "SingleVariableDeclaration";
 }
 
-void AST::PrintVisitor::visit(const Super &) { Stream << "Super"; }
+void PrintVisitor::visit(const Super &) { Stream << "Super"; }
 
-void AST::PrintVisitor::visit(const Interfaces &) { Stream << "Interfaces"; }
+void PrintVisitor::visit(const Interfaces &) { Stream << "Interfaces"; }
 
-void AST::PrintVisitor::visit(const Block &) { Stream << "Block"; }
+void PrintVisitor::visit(const Block &) { Stream << "Block"; }
 
-void AST::PrintVisitor::visit(const IfThenStatement &) {
+void PrintVisitor::visit(const IfThenStatement &) {
   Stream << "IfThenStatement";
 }
 
-void AST::PrintVisitor::visit(const IfThenElseStatement &) {
+void PrintVisitor::visit(const IfThenElseStatement &) {
   Stream << "IfThenElseStatement";
 }
 
-void AST::PrintVisitor::visit(const WhileStatement &) {
+void PrintVisitor::visit(const WhileStatement &) {
   Stream << "WhileStatement";
 }
 
-void AST::PrintVisitor::visit(const ForStatement &) {
+void PrintVisitor::visit(const ForStatement &) {
   Stream << "ForStatement";
 }
 
-void AST::PrintVisitor::visit(const SimpleStatement &) {
+void PrintVisitor::visit(const SimpleStatement &) {
   Stream << "SimpleStatement";
 }
 
-void AST::PrintVisitor::visit(const ClassInstanceCreation &) {
+void PrintVisitor::visit(const ClassInstanceCreation &) {
   Stream << "ClassInstanceCreation";
 }
 
-void AST::PrintVisitor::visit(const OperationExpression &) {
+void PrintVisitor::visit(const OperationExpression &) {
   Stream << "OperationExpression";
 }
 
-void AST::PrintVisitor::visit(const MethodInvocation &) {
+void PrintVisitor::visit(const MethodInvocation &) {
   Stream << "MethodInvocation";
 }
 
-void AST::PrintVisitor::visit(const ReturnStatement &) {
+void PrintVisitor::visit(const ReturnStatement &) {
   Stream << "ReturnStatement";
 }
 
-void AST::PrintVisitor::visit(const VariableDeclaration &) {
+void PrintVisitor::visit(const VariableDeclaration &) {
   Stream << "VariableDeclaration";
 }
 
-void AST::PrintVisitor::visit(const AssignmentExpression &) {
+void PrintVisitor::visit(const AssignmentExpression &) {
   Stream << "AssignmentExpression";
 }
 
-void AST::PrintVisitor::visit(const ASSIGN &ASSIGN) {
+void PrintVisitor::visit(const ASSIGN &ASSIGN) {
   Stream << "ASSIGN: " << ASSIGN.getSymbol();
 }
 
-void AST::PrintVisitor::visit(const BinaryOperator &BinaryOperator) {
+void PrintVisitor::visit(const BinaryOperator &BinaryOperator) {
   Stream << "BinaryOperator: " << BinaryOperator.getBinaryOperatorSymbol();
 }
 
-void AST::PrintVisitor::visit(const UnaryOperator &UnaryOperator) {
+void PrintVisitor::visit(const UnaryOperator &UnaryOperator) {
   Stream << "UnaryOperator: " << UnaryOperator.getUnaryOperatorSymbol();
 }
 
-void AST::PrintVisitor::visit(const DecIntLiteral &DecIntLiteral) {
+void PrintVisitor::visit(const DecIntLiteral &DecIntLiteral) {
   Stream << "DecIntLiteral: " << DecIntLiteral.getLiteral();
 }
 
-void AST::PrintVisitor::visit(const BooleanLiteral &BooleanLiteral) {
+void PrintVisitor::visit(const BooleanLiteral &BooleanLiteral) {
   Stream << "BooleanLiteral: " << BooleanLiteral.getLiteral();
 }
 
-void AST::PrintVisitor::visit(const CharacterLiteral &CharacterLiteral) {
+void PrintVisitor::visit(const CharacterLiteral &CharacterLiteral) {
   Stream << "CharacterLiteral: " << CharacterLiteral.getLiteral();
 }
 
-void AST::PrintVisitor::visit(const StringLiteral &StringLiteral) {
+void PrintVisitor::visit(const StringLiteral &StringLiteral) {
   Stream << "StringLiteral: " << StringLiteral.getLiteral();
 }
 
-void AST::PrintVisitor::visit(const NullLiteral &NullLiteral) {
+void PrintVisitor::visit(const NullLiteral &NullLiteral) {
   Stream << "NullLiteral: " << NullLiteral.getLiteral();
 }
 
-void AST::PrintVisitor::visit(const ArgumentList &) {
+void PrintVisitor::visit(const ArgumentList &) {
   Stream << "ArgumentList";
 }
 
-void AST::PrintVisitor::visit(const FieldAccess &) { Stream << "FieldAccess"; }
+void PrintVisitor::visit(const FieldAccess &) { Stream << "FieldAccess"; }
 
-void AST::PrintVisitor::visit(const ArrayAccess &) { Stream << "ArrayAccess"; }
+void PrintVisitor::visit(const ArrayAccess &) { Stream << "ArrayAccess"; }
 
-void AST::PrintVisitor::visit(const ArrayCreation &) {
+void PrintVisitor::visit(const ArrayCreation &) {
   Stream << "ArrayCreation";
 }
 
-void AST::PrintVisitor::visit(const ThisExpression &ThisExpression) {
+void PrintVisitor::visit(const ThisExpression &ThisExpression) {
   Stream << "ThisExpression: " << ThisExpression.getExpression();
 }
 
-void AST::PrintVisitor::visit(const ForInit &) { Stream << "ForInit"; }
+void PrintVisitor::visit(const ForInit &) { Stream << "ForInit"; }
 
-void AST::PrintVisitor::visit(const ForUpdate &) { Stream << "ForUpdate"; }
+void PrintVisitor::visit(const ForUpdate &) { Stream << "ForUpdate"; }
 
-void AST::PrintVisitor::preVisit() {
-  ++Level;
-  Stream << std::string(Level * 2, ' ');
+void TrackVisitor::setLog(std::ostream &Stream) {
+  this->StreamRef = Stream;
 }
 
-void AST::PrintVisitor::postVisit() { --Level; }
+void TrackVisitor::setError() { ErrorState = true; }
 
-void AST::PrintVisitor::print(const std::string &Message) { Stream << Message; }
+bool TrackVisitor::error() { return ErrorState; }
 
-void AST::TrackVisitor::setLog(std::ostream &Stream) {
-  PrintVisitorPtr = std::make_unique<PrintVisitor>(Stream);
-}
-
-void AST::TrackVisitor::setError() { ErrorState = true; }
-
-bool AST::TrackVisitor::error() { return ErrorState; }
-
-inline void AST::TrackVisitor::dispatchChildren(const Node &Parent) {
-  Parent.accept(*PrintVisitorPtr);
-  PrintVisitorPtr->print("\n");
+inline void TrackVisitor::postVisit(const Node &Parent) {
+  StreamRef.get() << Parent << '\n';
   for (const auto &Child : Parent.getChildren()) {
-    PrintVisitorPtr->preVisit();
+    Level++;
+    StreamRef.get() << std::string(Level * 2, ' ');
     Child->accept(*this);
-    PrintVisitorPtr->postVisit();
+    Level--;
     if (ErrorState)
       return;
   }
 }
+
+} // namespace AST
