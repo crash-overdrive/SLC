@@ -64,7 +64,7 @@ bool Client::compile() {
     std::unique_ptr<AST::Start> astRoot = std::make_unique<AST::Start>();
     buildAST(Tree, astRoot);
     if (outputAst) {
-      AST::Visitor Visitor = AST::Visitor();
+      AST::TrackVisitor Visitor;
       Visitor.setLog(std::cerr);
       astRoot->accept(Visitor);
     }

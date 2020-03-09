@@ -7,8 +7,6 @@
 
 namespace AST {
 
-class LogVisitor;
-
 class Visitor {
 public:
   virtual ~Visitor() = default;
@@ -61,22 +59,15 @@ public:
   virtual void visit(const ThisExpression &Node);
   virtual void visit(const ForInit &Node);
   virtual void visit(const ForUpdate &Node);
-  void setLog(std::ostream &Stream);
 
 protected:
-  void setError();
-  bool error();
-  void dispatchChildren(const Node &Parent);
-  std::unique_ptr<LogVisitor> LogVisitorPtr;
-
-private:
-  bool ErrorState = false;
+  virtual void dispatchChildren(const Node &Parent);
 };
 
-class LogVisitor : public Visitor {
+class PrintVisitor : public Visitor {
 public:
-  LogVisitor();
-  LogVisitor(std::ostream &Stream);
+  PrintVisitor();
+  PrintVisitor(std::ostream &Stream);
   void visit(const Start &) override;
   void visit(const PackageDeclaration &) override;
   void visit(const SingleImportDeclaration &) override;
@@ -129,12 +120,27 @@ public:
 
   void preVisit();
   void postVisit();
-  void log(const std::string &Message);
+  void print(const std::string &Message);
 
 private:
   std::ofstream NullStream{};
   std::ostream &Stream = NullStream;
   unsigned int Level = 0;
+};
+
+class TrackVisitor : public Visitor {
+public:
+  void setLog(std::ostream &Stream);
+
+protected:
+  void setError();
+  bool error();
+  void dispatchChildren(const Node &Parent) override;
+  std::unique_ptr<PrintVisitor> PrintVisitorPtr =
+      std::make_unique<PrintVisitor>();
+
+private:
+  bool ErrorState = false;
 };
 
 } // namespace AST

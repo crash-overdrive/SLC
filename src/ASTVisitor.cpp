@@ -89,204 +89,211 @@ void AST::Visitor::visit(const ThisExpression &Node) { dispatchChildren(Node); }
 void AST::Visitor::visit(const ForInit &Node) { dispatchChildren(Node); }
 void AST::Visitor::visit(const ForUpdate &Node) { dispatchChildren(Node); }
 
-void AST::Visitor::setLog(std::ostream &Stream) {
-  LogVisitorPtr = std::make_unique<LogVisitor>(Stream);
-}
-
-void AST::Visitor::setError() { ErrorState = true; }
-
-bool AST::Visitor::error() { return ErrorState; }
-
 inline void AST::Visitor::dispatchChildren(const Node &Parent) {
-  if (!LogVisitorPtr) {
-    LogVisitorPtr = std::make_unique<LogVisitor>();
-  }
-  Parent.accept(*LogVisitorPtr);
-  LogVisitorPtr->log("\n");
   for (const auto &Child : Parent.getChildren()) {
-    LogVisitorPtr->preVisit();
     Child->accept(*this);
-    LogVisitorPtr->postVisit();
-    if (ErrorState)
-      return;
   }
 }
 
-AST::LogVisitor::LogVisitor() {}
+AST::PrintVisitor::PrintVisitor() {}
 
-AST::LogVisitor::LogVisitor(std::ostream &Stream) : Stream(Stream) {}
+AST::PrintVisitor::PrintVisitor(std::ostream &Stream) : Stream(Stream) {}
 
-void AST::LogVisitor::visit(const Start &) { Stream << "Start"; }
+void AST::PrintVisitor::visit(const Start &) { Stream << "Start"; }
 
-void AST::LogVisitor::visit(const PackageDeclaration &) {
+void AST::PrintVisitor::visit(const PackageDeclaration &) {
   Stream << "PackageDeclaration";
 }
 
-void AST::LogVisitor::visit(const SingleImportDeclaration &) {
+void AST::PrintVisitor::visit(const SingleImportDeclaration &) {
   Stream << "SingleImportDeclaration";
 }
 
-void AST::LogVisitor::visit(const DemandImportDeclaration &) {
+void AST::PrintVisitor::visit(const DemandImportDeclaration &) {
   Stream << "DemandImportDeclaration";
 }
 
-void AST::LogVisitor::visit(const ClassDeclaration &) {
+void AST::PrintVisitor::visit(const ClassDeclaration &) {
   Stream << "ClassDeclaration";
 }
 
-void AST::LogVisitor::visit(const InterfaceDeclaration &) {
+void AST::PrintVisitor::visit(const InterfaceDeclaration &) {
   Stream << "InterfaceDeclaration";
 }
 
-void AST::LogVisitor::visit(const FieldDeclaration &) {
+void AST::PrintVisitor::visit(const FieldDeclaration &) {
   Stream << "FieldDeclaration";
 }
 
-void AST::LogVisitor::visit(const ConstructorDeclaration &) {
+void AST::PrintVisitor::visit(const ConstructorDeclaration &) {
   Stream << "ConstructorDeclaration";
 }
 
-void AST::LogVisitor::visit(const Extensions &) { Stream << "Extensions"; }
+void AST::PrintVisitor::visit(const Extensions &) { Stream << "Extensions"; }
 
-void AST::LogVisitor::visit(const Name &) { Stream << "Name"; }
+void AST::PrintVisitor::visit(const Name &) { Stream << "Name"; }
 
-void AST::LogVisitor::visit(const MethodDeclaration &) {
+void AST::PrintVisitor::visit(const MethodDeclaration &) {
   Stream << "MethodDeclaration";
 }
 
-void AST::LogVisitor::visit(const Modifier &Modifier) {
+void AST::PrintVisitor::visit(const Modifier &Modifier) {
   Stream << "Modifier: " << ModifierCodeName.at(Modifier.getCode());
 }
 
-void AST::LogVisitor::visit(const Identifier &Identifier) {
+void AST::PrintVisitor::visit(const Identifier &Identifier) {
   Stream << "Identifier: " << Identifier.getName();
 }
 
-void AST::LogVisitor::visit(const PrimitiveType &PrimitiveType) {
+void AST::PrintVisitor::visit(const PrimitiveType &PrimitiveType) {
   Stream << "PrimitiveType: " << PrimitiveType.getType();
 }
 
-void AST::LogVisitor::visit(const SimpleType &) { Stream << "SimpleType"; }
+void AST::PrintVisitor::visit(const SimpleType &) { Stream << "SimpleType"; }
 
-void AST::LogVisitor::visit(const ArrayType &) { Stream << "ArrayType"; }
+void AST::PrintVisitor::visit(const ArrayType &) { Stream << "ArrayType"; }
 
-void AST::LogVisitor::visit(const VoidType &VoidType) {
+void AST::PrintVisitor::visit(const VoidType &VoidType) {
   Stream << "VoidType: " << VoidType.getType();
 }
 
-void AST::LogVisitor::visit(const Expression &) { Stream << "Expression"; }
+void AST::PrintVisitor::visit(const Expression &) { Stream << "Expression"; }
 
-void AST::LogVisitor::visit(const CastExpression &) {
+void AST::PrintVisitor::visit(const CastExpression &) {
   Stream << "CastExpression";
 }
 
-void AST::LogVisitor::visit(const SingleVariableDeclaration &) {
+void AST::PrintVisitor::visit(const SingleVariableDeclaration &) {
   Stream << "SingleVariableDeclaration";
 }
 
-void AST::LogVisitor::visit(const Super &) { Stream << "Super"; }
+void AST::PrintVisitor::visit(const Super &) { Stream << "Super"; }
 
-void AST::LogVisitor::visit(const Interfaces &) { Stream << "Interfaces"; }
+void AST::PrintVisitor::visit(const Interfaces &) { Stream << "Interfaces"; }
 
-void AST::LogVisitor::visit(const Block &) { Stream << "Block"; }
+void AST::PrintVisitor::visit(const Block &) { Stream << "Block"; }
 
-void AST::LogVisitor::visit(const IfThenStatement &) {
+void AST::PrintVisitor::visit(const IfThenStatement &) {
   Stream << "IfThenStatement";
 }
 
-void AST::LogVisitor::visit(const IfThenElseStatement &) {
+void AST::PrintVisitor::visit(const IfThenElseStatement &) {
   Stream << "IfThenElseStatement";
 }
 
-void AST::LogVisitor::visit(const WhileStatement &) {
+void AST::PrintVisitor::visit(const WhileStatement &) {
   Stream << "WhileStatement";
 }
 
-void AST::LogVisitor::visit(const ForStatement &) { Stream << "ForStatement"; }
+void AST::PrintVisitor::visit(const ForStatement &) {
+  Stream << "ForStatement";
+}
 
-void AST::LogVisitor::visit(const SimpleStatement &) {
+void AST::PrintVisitor::visit(const SimpleStatement &) {
   Stream << "SimpleStatement";
 }
 
-void AST::LogVisitor::visit(const ClassInstanceCreation &) {
+void AST::PrintVisitor::visit(const ClassInstanceCreation &) {
   Stream << "ClassInstanceCreation";
 }
 
-void AST::LogVisitor::visit(const OperationExpression &) {
+void AST::PrintVisitor::visit(const OperationExpression &) {
   Stream << "OperationExpression";
 }
 
-void AST::LogVisitor::visit(const MethodInvocation &) {
+void AST::PrintVisitor::visit(const MethodInvocation &) {
   Stream << "MethodInvocation";
 }
 
-void AST::LogVisitor::visit(const ReturnStatement &) {
+void AST::PrintVisitor::visit(const ReturnStatement &) {
   Stream << "ReturnStatement";
 }
 
-void AST::LogVisitor::visit(const VariableDeclaration &) {
+void AST::PrintVisitor::visit(const VariableDeclaration &) {
   Stream << "VariableDeclaration";
 }
 
-void AST::LogVisitor::visit(const AssignmentExpression &) {
+void AST::PrintVisitor::visit(const AssignmentExpression &) {
   Stream << "AssignmentExpression";
 }
 
-void AST::LogVisitor::visit(const ASSIGN &ASSIGN) {
+void AST::PrintVisitor::visit(const ASSIGN &ASSIGN) {
   Stream << "ASSIGN: " << ASSIGN.getSymbol();
 }
 
-void AST::LogVisitor::visit(const BinaryOperator &BinaryOperator) {
+void AST::PrintVisitor::visit(const BinaryOperator &BinaryOperator) {
   Stream << "BinaryOperator: " << BinaryOperator.getBinaryOperatorSymbol();
 }
 
-void AST::LogVisitor::visit(const UnaryOperator &UnaryOperator) {
+void AST::PrintVisitor::visit(const UnaryOperator &UnaryOperator) {
   Stream << "UnaryOperator: " << UnaryOperator.getUnaryOperatorSymbol();
 }
 
-void AST::LogVisitor::visit(const DecIntLiteral &DecIntLiteral) {
+void AST::PrintVisitor::visit(const DecIntLiteral &DecIntLiteral) {
   Stream << "DecIntLiteral: " << DecIntLiteral.getLiteral();
 }
 
-void AST::LogVisitor::visit(const BooleanLiteral &BooleanLiteral) {
+void AST::PrintVisitor::visit(const BooleanLiteral &BooleanLiteral) {
   Stream << "BooleanLiteral: " << BooleanLiteral.getLiteral();
 }
 
-void AST::LogVisitor::visit(const CharacterLiteral &CharacterLiteral) {
+void AST::PrintVisitor::visit(const CharacterLiteral &CharacterLiteral) {
   Stream << "CharacterLiteral: " << CharacterLiteral.getLiteral();
 }
 
-void AST::LogVisitor::visit(const StringLiteral &StringLiteral) {
+void AST::PrintVisitor::visit(const StringLiteral &StringLiteral) {
   Stream << "StringLiteral: " << StringLiteral.getLiteral();
 }
 
-void AST::LogVisitor::visit(const NullLiteral &NullLiteral) {
+void AST::PrintVisitor::visit(const NullLiteral &NullLiteral) {
   Stream << "NullLiteral: " << NullLiteral.getLiteral();
 }
 
-void AST::LogVisitor::visit(const ArgumentList &) { Stream << "ArgumentList"; }
+void AST::PrintVisitor::visit(const ArgumentList &) {
+  Stream << "ArgumentList";
+}
 
-void AST::LogVisitor::visit(const FieldAccess &) { Stream << "FieldAccess"; }
+void AST::PrintVisitor::visit(const FieldAccess &) { Stream << "FieldAccess"; }
 
-void AST::LogVisitor::visit(const ArrayAccess &) { Stream << "ArrayAccess"; }
+void AST::PrintVisitor::visit(const ArrayAccess &) { Stream << "ArrayAccess"; }
 
-void AST::LogVisitor::visit(const ArrayCreation &) {
+void AST::PrintVisitor::visit(const ArrayCreation &) {
   Stream << "ArrayCreation";
 }
 
-void AST::LogVisitor::visit(const ThisExpression &ThisExpression) {
+void AST::PrintVisitor::visit(const ThisExpression &ThisExpression) {
   Stream << "ThisExpression: " << ThisExpression.getExpression();
 }
 
-void AST::LogVisitor::visit(const ForInit &) { Stream << "ForInit"; }
+void AST::PrintVisitor::visit(const ForInit &) { Stream << "ForInit"; }
 
-void AST::LogVisitor::visit(const ForUpdate &) { Stream << "ForUpdate"; }
+void AST::PrintVisitor::visit(const ForUpdate &) { Stream << "ForUpdate"; }
 
-void AST::LogVisitor::preVisit() {
+void AST::PrintVisitor::preVisit() {
   ++Level;
   Stream << std::string(Level * 2, ' ');
 }
 
-void AST::LogVisitor::postVisit() { --Level; }
+void AST::PrintVisitor::postVisit() { --Level; }
 
-void AST::LogVisitor::log(const std::string &Message) { Stream << Message; }
+void AST::PrintVisitor::print(const std::string &Message) { Stream << Message; }
+
+void AST::TrackVisitor::setLog(std::ostream &Stream) {
+  PrintVisitorPtr = std::make_unique<PrintVisitor>(Stream);
+}
+
+void AST::TrackVisitor::setError() { ErrorState = true; }
+
+bool AST::TrackVisitor::error() { return ErrorState; }
+
+inline void AST::TrackVisitor::dispatchChildren(const Node &Parent) {
+  Parent.accept(*PrintVisitorPtr);
+  PrintVisitorPtr->print("\n");
+  for (const auto &Child : Parent.getChildren()) {
+    PrintVisitorPtr->preVisit();
+    Child->accept(*this);
+    PrintVisitorPtr->postVisit();
+    if (ErrorState)
+      return;
+  }
+}
