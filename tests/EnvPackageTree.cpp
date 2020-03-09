@@ -4,7 +4,7 @@
 #include "TestConfig.hpp"
 #include "catch.hpp"
 
-TEST_CASE("hierarchical nodes", "[PackageNode]") {
+TEST_CASE("Package Node", "[PackageNode]") {
   Env::PackageNode root{Env::PackageNode::Type::GLOBAL, ""};
   Env::PackageNode *foo = root.update(Env::PackageNode::Type::PACKAGE, "foo");
   Env::PackageNode *bar = foo->update(Env::PackageNode::Type::PACKAGE, "bar");
@@ -24,6 +24,15 @@ TEST_CASE("hierarchical nodes", "[PackageNode]") {
     REQUIRE(node == nullptr);
   }
 }
+
+//TEST_CASE("Package Tree", "[PackageTreeLookup][!hide]") {
+  //FileHeader Header;
+  //Env::PackageTree Tree;
+  //REQUIRE(Tree.update(Env::PackageNode::Type::CLASS, {"foo", "bar", "canary"}));
+  //REQUIRE(Tree.update(Env::PackageNode::Type::CLASS, {"foo", "bar", "canary"}));
+  //REQUIRE(Tree.lookUp({"foo", "bar"}) == nullptr);
+  //REQUIRE(*Tree.lookUp({"foo", "bar", "canary"}) =);
+//}
 
 TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {
   Lex::Scanner Scanner;

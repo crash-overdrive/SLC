@@ -2,6 +2,7 @@
 #define ENVPACKAGETREE_HPP
 
 #include "ASTVisitor.hpp"
+#include "EnvFileHeader.hpp"
 #include <map>
 #include <string>
 
@@ -25,12 +26,12 @@ private:
 
 class PackageTree {
 public:
-  PackageTree(std::unique_ptr<PackageNode>);
-  bool lookUp(const std::vector<std::string> &Name);
-  bool update(PackageNode::Type type, const std::vector<std::string> &Name);
+  FileHeader *lookUp(const std::vector<std::string> &Name);
+  bool update(PackageNode::Type type, const std::vector<std::string> &Name,
+              FileHeader &Header);
 
 private:
-  std::unique_ptr<PackageNode> Root;
+  std::unique_ptr<PackageNode> Root{};
 };
 
 class PackageTreeVisitor : public AST::TrackVisitor {
