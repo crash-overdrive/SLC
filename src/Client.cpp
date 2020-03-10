@@ -25,7 +25,7 @@ bool Client::compile() {
       continue;
     }
 
-    if (outputToken || outputParse || outputAst) {
+    if (outputToken || outputParse || outputAst || outputFileHeader) {
       std::cout << file << std::endl;
     }
 
@@ -81,7 +81,7 @@ bool Client::compile() {
 
     auto fileHeader = buildFileHeader(std::move(astRoot));
     if (!fileHeader) {
-      std::cerr << file << " File header creation failed" << "\n";
+      std::cerr << "File header creation failed" << "\n";
       return false;
     }
     if (outputFileHeader) {
@@ -155,16 +155,22 @@ std::optional<Env::FileHeader> Client::buildFileHeader(std::unique_ptr<AST::Star
   fileHeader = Env::FileHeader(typeVisitor.getModifiers(), typeVisitor.getTypeDescriptor());
   for (auto const & field : typeBodyVisitor.getJoosFields()) {
     if(!fileHeader->addField(field)) {
+      std::cerr << "Duplicate Field found in file" << "\n";
+      std::cerr << field;
       return std::nullopt;
     };
   }
   for (auto const & method : typeBodyVisitor.getJoosMethods()) {
     if(!fileHeader->addMethod(method)) {
+      std::cerr << "Duplicate Method found in file" << "\n";
+      std::cerr << method;
       return std::nullopt;
     };
   }
   for (auto const & constructor : typeBodyVisitor.getJoosConstructors()) {
     if(!fileHeader->addConstructor(constructor)) {
+      std::cerr << "Duplicate Constructor found in file" << "\n";
+      std::cerr << constructor;
       return std::nullopt;
     };
   }
