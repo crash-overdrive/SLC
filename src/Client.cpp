@@ -14,7 +14,7 @@ void Client::setBreakPoint(BreakPointType breakPoint) {
 }
 
 bool Client::compile() {
-  std::vector<std::unique_ptr<AST::Start>> astList;
+  std::vector<Env::FileHeader> fileHeaderList;
 
   for (const auto &file : files) {
     if (!verifyFileName(file)) {
@@ -69,7 +69,6 @@ bool Client::compile() {
       Visitor.setLog(std::cerr);
       astRoot->accept(Visitor);
     }
-    astList.emplace_back(std::move(astRoot));
     if (breakPoint == Ast) {
       continue;
     }
@@ -80,7 +79,7 @@ bool Client::compile() {
       continue;
     }
 
-    auto fileHeader = buildFileHeader(astRoot);
+    auto fileHeader = buildFileHeader(std::move(astRoot));
     if (!fileHeader) {
       std::cerr << file << " File header creation failed" << "\n";
       return false;
@@ -146,7 +145,7 @@ std::unique_ptr<AST::Start> Client::buildAST(const std::string &FileName) {
     return buildAST(*parse(*scan(JavaStream)));
 }
 
-std::optional<Env::FileHeader> Client::buildFileHeader(std::unique_ptr<AST::Start> &node) {
+std::optional<Env::FileHeader> Client::buildFileHeader(std::unique_ptr<AST::Start> node) {
   std::optional<Env::FileHeader> fileHeader;
   Env::JoosTypeVisitor typeVisitor;
   Env::JoosTypeBodyVisitor typeBodyVisitor;
