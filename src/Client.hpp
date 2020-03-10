@@ -6,6 +6,7 @@
 #include "ASTNode.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
+#include "EnvFileHeader.hpp"
 
 class Client {
 public:
@@ -38,6 +39,7 @@ public:
   std::unique_ptr<AST::Start> buildAST(const Parse::Tree &ParseTree);
   std::unique_ptr<AST::Start> buildAST(const std::string &FileName);
   bool weed(const AST::Node &ast, const std::string &typeName);
+  std::optional<Env::FileHeader> buildFileHeader(std::unique_ptr<AST::Start> node);
 
 private:
   std::unique_ptr<Lex::Scanner> scanner;
