@@ -21,8 +21,9 @@ private:
   std::unordered_map<std::string, PackageNode &> OnDemandImport;
 };
 
-class TypeLinkVisitor : public AST::TrackVisitor {
+class TypeLinkVisitor : public AST::Visitor {
 public:
+  void visit(const AST::Start &Start) override;
   void visit(const AST::SingleImportDeclaration &Decl) override;
   void visit(const AST::DemandImportDeclaration &Decl) override;
   void visit(const AST::InterfaceDeclaration &) override;

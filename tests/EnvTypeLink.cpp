@@ -3,13 +3,12 @@
 #include "TestUtil.hpp"
 #include "catch.hpp"
 
-TEST_CASE("EnvTypeLink Visitor", "[TypeLinkVisitor]") {
+TEST_CASE("EnvTypeLink Visitor", "[EnvTypeLinkVisitor]") {
   Client Client = createClient();
 
   SECTION("Single Import and Demand") {
-    std::ifstream JavaStream;
-    JavaStream.open(TestDataDir + "/java/a2/J1_importNameLookup1/Main.java");
-    std::unique_ptr<AST::Start> Root = Client.buildAST(JavaStream);
+    std::unique_ptr<AST::Start> Root = Client.buildAST(
+        TestDataDir + "/java/a2/J1_importNameLookup1/Main.java");
     Env::TypeLinkVisitor Visitor;
     Root->accept(Visitor);
     REQUIRE(*Visitor.getSingleImports().begin() ==
@@ -19,11 +18,9 @@ TEST_CASE("EnvTypeLink Visitor", "[TypeLinkVisitor]") {
   }
 
   SECTION("Single Import and Demand") {
-    std::ifstream JavaStream;
-    JavaStream.open(
+    std::unique_ptr<AST::Start> Root = Client.buildAST(
         TestDataDir +
         "/java/a2/J1_3_SingleTypeImport_MultipleFromSamePackage/Main.java");
-    std::unique_ptr<AST::Start> Root = Client.buildAST(JavaStream);
     Env::TypeLinkVisitor Visitor;
     Root->accept(Visitor);
     REQUIRE(Visitor.getSingleImports().at(0) ==

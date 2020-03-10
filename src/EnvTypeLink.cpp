@@ -3,6 +3,10 @@
 
 namespace Env {
 
+void TypeLinkVisitor::visit(const AST::Start &Start) {
+  dispatchChildren(Start);
+}
+
 void TypeLinkVisitor::visit(const AST::SingleImportDeclaration &Decl) {
   AST::NameVisitor Visitor;
   Visitor.dispatchChildren(Decl);
