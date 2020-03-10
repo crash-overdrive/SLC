@@ -21,13 +21,13 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
        Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
        Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}}, nullptr}));
 
-  SECTION("JoosField different identifier add successfull") {
+  SECTION("JoosField different identifier add successful") {
     REQUIRE(fileHeader.addField(Env::JoosField{
       {AST::ModifierCode::Private, AST::ModifierCode::Final, AST::ModifierCode::Static},
       Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}}, "str2", nullptr}));
   }
 
-  SECTION("JoosField different type add successfull") {
+  SECTION("JoosField different type add successful") {
     REQUIRE(fileHeader.addField(Env::JoosField{
       {AST::ModifierCode::Private, AST::ModifierCode::Final, AST::ModifierCode::Static},
       Env::VariableDescriptor{Env::VariableType::SimpleType, {"Java", "Util", "Array"}}, "str", nullptr}));

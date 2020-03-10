@@ -1,11 +1,7 @@
-#include "ASTVisitorUtil.hpp"
 #include "EnvFileHeader.hpp"
+#include "ASTVisitorUtil.hpp"
 
 namespace Env {
-
-// VariableDescriptor::VariableDescriptor(VariableType variableType,
-//                                        std::string dataType)
-//     : variableType(variableType), dataType(dataType){};
 
 bool VariableDescriptor::
 operator==(const VariableDescriptor &variableDescriptor) const {
@@ -17,35 +13,18 @@ bool TypeDescriptor::operator==(const TypeDescriptor &typeDescriptor) const {
   return type == typeDescriptor.type && identifier == typeDescriptor.identifier;
 }
 
-// JoosField::JoosField(std::set<AST::ModifierCode> modifiers,
-//                      VariableDescriptor variableDescriptor,
-//                      std::string identifier)
-//     : modifiers(modifiers), variableDescriptor(variableDescriptor),
-//       identifier(identifier){};
-
 bool JoosField::operator==(const JoosField &joosField) const {
   return identifier == joosField.identifier &&
          variableDescriptor.dataType == joosField.variableDescriptor.dataType;
 }
 
-// JoosMethod::JoosMethod(std::set<AST::ModifierCode> modifiers,
-//                        VariableDescriptor returnType, std::string identifier,
-//                        std::vector<VariableDescriptor> args)
-//     : modifiers(modifiers), returnType(returnType), identifier(identifier),
-//       args(args){};
-
 bool JoosMethod::operator==(const JoosMethod &joosMethod) const {
   return identifier == joosMethod.identifier && args == joosMethod.args;
 }
 
-// JoosConstructor::JoosConstructor(std::set<AST::ModifierCode> modifiers,
-//                        std::string identifier,
-//                        std::vector<VariableDescriptor> args)
-//     : modifiers(modifiers), identifier(identifier),
-//       args(args){};
-
 bool JoosConstructor::operator==(const JoosConstructor &joosConstructor) const {
-  return identifier == joosConstructor.identifier && args == joosConstructor.args;
+  return identifier == joosConstructor.identifier &&
+         args == joosConstructor.args;
 }
 
 FileHeader::FileHeader(std::set<AST::ModifierCode> classModifiers,
@@ -107,7 +86,7 @@ FileHeader::findMethod(const std::string &identifier,
 
 const JoosConstructor *
 FileHeader::findConstructor(const std::string &identifier,
-                       const std::vector<VariableDescriptor> &args) const {
+                            const std::vector<VariableDescriptor> &args) const {
   for (auto const &constructor : constructors) {
     if (constructor.identifier == identifier && constructor.args == args) {
       return &constructor;
@@ -140,17 +119,13 @@ void JoosTypeVisitor::visit(const AST::InterfaceDeclaration &decl) {
   visitProperties(decl);
 }
 
-TypeDescriptor JoosTypeVisitor::getTypeDescriptor() {
-  return typeDescriptor;
-}
+TypeDescriptor JoosTypeVisitor::getTypeDescriptor() { return typeDescriptor; }
 
 std::set<AST::ModifierCode> JoosTypeVisitor::getModifiers() {
   return std::move(classModifiers);
 }
 
-const AST::Node *JoosTypeVisitor::getASTNode() {
-  return Node;
-}
+const AST::Node *JoosTypeVisitor::getASTNode() { return Node; }
 
 void JoosTypeVisitor::visitProperties(const AST::Node &node) {
   AST::PropertiesVisitor propertiesVisitor;
@@ -175,9 +150,8 @@ void JoosTypeBodyVisitor::visit(const AST::FieldDeclaration &field) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(field);
   fields.push_back(Env::JoosField{propertiesVisitor.getModifiers(),
-                      propertiesVisitor.getVariableDescriptor(),
-                      propertiesVisitor.getIdentifier(),
-                      &field});
+                                  propertiesVisitor.getVariableDescriptor(),
+                                  propertiesVisitor.getIdentifier(), &field});
 }
 
 void JoosTypeBodyVisitor::visit(const AST::MethodDeclaration &decl) {
@@ -186,11 +160,10 @@ void JoosTypeBodyVisitor::visit(const AST::MethodDeclaration &decl) {
 
   propertiesVisitor.dispatchChildren(decl);
   argumentsVisitor.dispatchChildren(decl);
-  methods.push_back(Env::JoosMethod{propertiesVisitor.getModifiers(),
-                      propertiesVisitor.getVariableDescriptor(),
-                      propertiesVisitor.getIdentifier(),
-                      argumentsVisitor.getArgs(),
-                      &decl});
+  methods.push_back({propertiesVisitor.getModifiers(),
+                     propertiesVisitor.getVariableDescriptor(),
+                     propertiesVisitor.getIdentifier(),
+                     argumentsVisitor.getArgs(), &decl});
 }
 
 void JoosTypeBodyVisitor::visit(const AST::ConstructorDeclaration &decl) {
@@ -199,10 +172,9 @@ void JoosTypeBodyVisitor::visit(const AST::ConstructorDeclaration &decl) {
 
   propertiesVisitor.dispatchChildren(decl);
   argumentsVisitor.dispatchChildren(decl);
-  constructors.push_back(Env::JoosConstructor{propertiesVisitor.getModifiers(),
-                      propertiesVisitor.getIdentifier(),
-                      argumentsVisitor.getArgs(),
-                      &decl});
+  constructors.push_back({propertiesVisitor.getModifiers(),
+                          propertiesVisitor.getIdentifier(),
+                          argumentsVisitor.getArgs(), &decl});
 }
 
 std::vector<JoosField> JoosTypeBodyVisitor::getJoosFields() {
@@ -217,26 +189,32 @@ std::vector<JoosConstructor> JoosTypeBodyVisitor::getJoosConstructors() {
   return std::move(constructors);
 }
 
-std::ostream &operator<<(std::ostream &stream, const VariableDescriptor &variableDescriptor) {
-  stream << "VARIABLE DESCRIPTOR: " << "{";
-  stream << "VariableType: " << Env::VariableTypeName.at(variableDescriptor.variableType) << "; ";
+std::ostream &operator<<(std::ostream &stream,
+                         const VariableDescriptor &variableDescriptor) {
+  stream << "VARIABLE DESCRIPTOR: "
+         << "{";
+  stream << "VariableType: "
+         << Env::VariableTypeName.at(variableDescriptor.variableType) << "; ";
   stream << "DataType: ";
-  for(auto const &dataType : variableDescriptor.dataType) {
+  for (auto const &dataType : variableDescriptor.dataType) {
     stream << dataType << " ";
   }
   stream << "}\n";
   return stream;
 }
 
-std::ostream &operator<<(std::ostream &stream, const TypeDescriptor &typeDescriptor) {
-  stream << "TYPE DESCRIPTOR: " << "{";
+std::ostream &operator<<(std::ostream &stream,
+                         const TypeDescriptor &typeDescriptor) {
+  stream << "TYPE DESCRIPTOR: "
+         << "{";
   stream << "Type: " << Env::TypeName.at(typeDescriptor.type) << "; ";
   stream << "Identifier: " << typeDescriptor.identifier << "}\n";
   return stream;
 }
 
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField) {
-  stream << "JOOSFIELD" << "\n";
+  stream << "JOOSFIELD"
+         << "\n";
   stream << "Modifiers: {";
   for (auto const &modifier : joosField.modifiers) {
     stream << AST::ModifierCodeName.at(modifier) << " ";
@@ -248,7 +226,8 @@ std::ostream &operator<<(std::ostream &stream, const JoosField &joosField) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod) {
-  stream << "JOOSMETHOD" << "\n";
+  stream << "JOOSMETHOD"
+         << "\n";
   stream << "Modifiers: {";
   for (auto const &modifier : joosMethod.modifiers) {
     stream << AST::ModifierCodeName.at(modifier) << " ";
@@ -263,8 +242,10 @@ std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod) {
   return stream << "\n";
 }
 
-std::ostream &operator<<(std::ostream &stream, const JoosConstructor &joosConstructor) {
-  stream << "JOOSCONSTRUCTOR" << "\n";
+std::ostream &operator<<(std::ostream &stream,
+                         const JoosConstructor &joosConstructor) {
+  stream << "JOOSCONSTRUCTOR"
+         << "\n";
   stream << "Modifiers: {";
   for (auto const &modifier : joosConstructor.modifiers) {
     stream << AST::ModifierCodeName.at(modifier) << " ";
