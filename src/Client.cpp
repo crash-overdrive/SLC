@@ -73,21 +73,22 @@ bool Client::compile() {
       continue;
     }
 
-    // TODO: implement weeder logic here
-    // Weeder logic
-    if (breakPoint == Weed) {
-      continue;
-    }
-
     auto fileHeader = buildFileHeader(std::move(astRoot));
     if (!fileHeader) {
-      std::cerr << "File header creation failed" << "\n";
+      std::cerr << "File header creation failed"
+                << "\n";
       return false;
     }
     if (outputFileHeader) {
       std::cout << *fileHeader;
     }
     if (breakPoint == FileHeader) {
+      continue;
+    }
+
+    // TODO: implement weeder logic here
+    // Weeder logic
+    if (breakPoint == Weed) {
       continue;
     }
   }
@@ -140,36 +141,41 @@ std::unique_ptr<AST::Start> Client::buildAST(const Parse::Tree &ParseTree) {
 }
 
 std::unique_ptr<AST::Start> Client::buildAST(const std::string &FileName) {
-    std::ifstream JavaStream;
-    JavaStream.open(FileName);
-    return buildAST(*parse(*scan(JavaStream)));
+  std::ifstream JavaStream;
+  JavaStream.open(FileName);
+  return buildAST(*parse(*scan(JavaStream)));
 }
 
-std::optional<Env::FileHeader> Client::buildFileHeader(std::unique_ptr<AST::Start> node) {
+std::optional<Env::FileHeader>
+Client::buildFileHeader(std::unique_ptr<AST::Start> node) {
   std::optional<Env::FileHeader> fileHeader;
   Env::JoosTypeVisitor typeVisitor;
   Env::JoosTypeBodyVisitor typeBodyVisitor;
 
   node->accept(typeVisitor);
   node->accept(typeBodyVisitor);
-  fileHeader = Env::FileHeader(typeVisitor.getModifiers(), typeVisitor.getTypeDescriptor());
-  for (auto const & field : typeBodyVisitor.getJoosFields()) {
-    if(!fileHeader->addField(field)) {
-      std::cerr << "Duplicate Field found in file" << "\n";
+  fileHeader = Env::FileHeader(typeVisitor.getModifiers(),
+                               typeVisitor.getTypeDescriptor());
+  for (auto const &field : typeBodyVisitor.getJoosFields()) {
+    if (!fileHeader->addField(field)) {
+      std::cerr << "Duplicate Field found in file"
+                << "\n";
       std::cerr << field;
       return std::nullopt;
     };
   }
-  for (auto const & method : typeBodyVisitor.getJoosMethods()) {
-    if(!fileHeader->addMethod(method)) {
-      std::cerr << "Duplicate Method found in file" << "\n";
+  for (auto const &method : typeBodyVisitor.getJoosMethods()) {
+    if (!fileHeader->addMethod(method)) {
+      std::cerr << "Duplicate Method found in file"
+                << "\n";
       std::cerr << method;
       return std::nullopt;
     };
   }
-  for (auto const & constructor : typeBodyVisitor.getJoosConstructors()) {
-    if(!fileHeader->addConstructor(constructor)) {
-      std::cerr << "Duplicate Constructor found in file" << "\n";
+  for (auto const &constructor : typeBodyVisitor.getJoosConstructors()) {
+    if (!fileHeader->addConstructor(constructor)) {
+      std::cerr << "Duplicate Constructor found in file"
+                << "\n";
       std::cerr << constructor;
       return std::nullopt;
     };

@@ -1,5 +1,5 @@
-#include "TestUtil.hpp"
 #include "TestConfig.hpp"
+#include "TestUtil.hpp"
 #include "catch.hpp"
 #include <fstream>
 
@@ -77,8 +77,8 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-    SECTION("environment-error") {
-      Client.setBreakPoint(Client::Environment);
+    SECTION("fileheader-error") {
+      Client.setBreakPoint(Client::FileHeader);
       for (const auto &Group : A2ErrorParse) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
@@ -88,6 +88,17 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+    // SECTION("reject") {
+    // Client.setBreakPoint(Client::Environment);
+    // for (const auto &Group : A2Error) {
+    // SECTION(Group[0]) {
+    // for (const auto &FileName : Group) {
+    // Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+    //}
+    // REQUIRE(Client.compile());
+    //}
+    //}
+    //}
     SECTION("accept") {
       Client.setBreakPoint(Client::Environment);
       for (const auto &Group : A2Valid) {
@@ -125,18 +136,6 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-
-    //SECTION("reject") {
-      //Client.setBreakPoint(Client::Environment);
-      //for (const auto &Group : A3Error) {
-        //SECTION(Group[0]) {
-          //for (const auto &FileName : Group) {
-            //Client.addJavaFile(TestDataDir + "/java/a3/" + FileName);
-          //}
-          //REQUIRE(Client.compile());
-        //}
-      //}
-    //}
   }
 
   SECTION("multiple files") {
