@@ -21,41 +21,28 @@ private:
 class PropertiesVisitor : public Visitor {
 public:
   void visit(const Modifier &modifer) override;
-  void visit(const SimpleType &simpleType) override;
   void visit(const PrimitiveType &primitiveType) override;
+  void visit(const VoidType &voidType) override;
+  void visit(const SimpleType &simpleType) override;
+  void visit(const ArrayType &arrayType) override;
   void visit(const Identifier &identifier) override;
-  std::set<ModifierCode> getModifiers();
-  std::string getName();
+  std::set<ModifierCode> getModifiers(); // gets all the modifiers
+  std::string getIdentifier();
+  Env::VariableDescriptor getVariableDescriptor(); // gets VariableDescriptor for Primitive, Array and Simple Type
 
 private:
   std::set<ModifierCode> modifiers;
-  std::string name;
+  Env::VariableDescriptor variableDescriptor;
+  std::string identifier;
 };
 
-class TypeVisitor : public PropertiesVisitor {
+class ArgumentsVisitor : public Visitor {
 public:
-  Env::TypeDescriptor getTypeDescriptor();
-
-private:
-  Env::TypeDescriptor typeDescriptor;
-};
-
-class MethodVisitor : public PropertiesVisitor {
-public:
-  Env::VariableDescriptor getReturnType();
+  void visit(const SingleVariableDeclaration &decl) override;
   std::vector<Env::VariableDescriptor> getArgs();
 
 private:
-  Env::VariableDescriptor returnType;
   std::vector<Env::VariableDescriptor> args;
-};
-
-class FieldVisitor : public PropertiesVisitor {
-public:
-  Env::VariableDescriptor getVariableDescriptor();
-
-private:
-  Env::VariableDescriptor variableDescriptor;
 };
 
 } // namespace AST
