@@ -988,10 +988,43 @@ const std::vector<std::vector<std::string>> A2ErrorTyping{
     },
 };
 
-const std::vector<std::vector<std::string>> A2Error{
+const std::vector<std::vector<std::string>> A2ErrorFileHeader{
     {
         "Je_12_Fields_StaticNonStatic.java",
     },
+    {
+        "Je_14_Interface_DuplicateMethodDeclare.java",
+    },
+    {
+        "Je_2_Fields_DifferentAccess.java",
+    },
+    {
+        "Je_2_Fields_MultipleFields.java",
+    },
+    {
+        "Je_4_DuplicateConstructor_Args.java",
+    },
+    {
+        "Je_4_DuplicateConstructor_ArrayArgs.java",
+    },
+    {
+        "Je_4_DuplicateConstructor_NoArgs.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_Args.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_NoArgs.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_DifferentReturnTypes.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_ArrayArgs.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Interface.java",
@@ -999,9 +1032,6 @@ const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_14_Interface_DeclaresToString_ThrowsConflict/Main.java",
         "Je_14_Interface_DeclaresToString_ThrowsConflict/Interface.java",
-    },
-    {
-        "Je_14_Interface_DuplicateMethodDeclare.java",
     },
     {
         "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Main.java",
@@ -1022,13 +1052,7 @@ const std::vector<std::vector<std::string>> A2Error{
         "Je_2_ConstructorParameter_Overlapping.java",
     },
     {
-        "Je_2_Fields_DifferentAccess.java",
-    },
-    {
         "Je_2_Fields_DifferentTypes.java",
-    },
-    {
-        "Je_2_Fields_MultipleFields.java",
     },
     {
         "Je_2_Locals_Overlapping_DeeplyNested.java",
@@ -1202,27 +1226,6 @@ const std::vector<std::vector<std::string>> A2Error{
         "Je_4_ClassExtendsCyclicClass/B.java",
         "Je_4_ClassExtendsCyclicClass/Main.java",
         "Je_4_ClassExtendsCyclicClass/A.java",
-    },
-    {
-        "Je_4_DuplicateConstructor_Args.java",
-    },
-    {
-        "Je_4_DuplicateConstructor_ArrayArgs.java",
-    },
-    {
-        "Je_4_DuplicateConstructor_NoArgs.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_Args.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_ArrayArgs.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_DifferentReturnTypes.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_NoArgs.java",
     },
     {
         "Je_4_ExtendFinal.java",
