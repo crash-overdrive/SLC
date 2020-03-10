@@ -36,13 +36,13 @@ public:
   std::optional<std::vector<Lex::Token>> scan(std::istream &stream);
   std::optional<Parse::Tree> parse(const std::vector<Lex::Token> &tokens);
   std::unique_ptr<AST::Start> buildAST(const Parse::Tree &ParseTree);
-  std::unique_ptr<AST::Start> buildAST(std::istream &stream);
+  std::unique_ptr<AST::Start> buildAST(const std::string &FileName);
   bool weed(const AST::Node &ast, const std::string &typeName);
 
 private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
-  std::set<std::string> files{};
+  std::set<std::string> files;
   BreakPointType breakPoint{Hierarchy};
 };
 

@@ -7,8 +7,7 @@ PackageNode::PackageNode(Type type, const std::string &name, FileHeader *header)
     : type(type), name(name), header(header) {}
 
 PackageNode *PackageNode::update(Type type, const std::string &name,
-                             FileHeader *header)
-                                 {
+                                 FileHeader *header) {
   if (this->type != Global && this->type != Package)
     return nullptr;
   switch (type) {
@@ -69,7 +68,8 @@ FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
   return Node->header;
 }
 
-bool PackageTree::update(const std::vector<std::string> &PackagePath, FileHeader &Header) {
+bool PackageTree::update(const std::vector<std::string> &PackagePath,
+                         FileHeader &Header) {
   PackageNode *Node = Root.get();
   for (const auto &Component : PackagePath) {
     Node = Node->update(PackageNode::Package, Component);

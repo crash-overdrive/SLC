@@ -35,6 +35,7 @@ private:
 class TypeVisitor : public PropertiesVisitor {
 public:
   Env::TypeDescriptor getTypeDescriptor();
+
 private:
   Env::TypeDescriptor typeDescriptor;
 };
@@ -43,6 +44,7 @@ class MethodVisitor : public PropertiesVisitor {
 public:
   Env::VariableDescriptor getReturnType();
   std::vector<Env::VariableDescriptor> getArgs();
+
 private:
   Env::VariableDescriptor returnType;
   std::vector<Env::VariableDescriptor> args;
@@ -51,6 +53,7 @@ private:
 class FieldVisitor : public PropertiesVisitor {
 public:
   Env::VariableDescriptor getVariableDescriptor();
+
 private:
   Env::VariableDescriptor variableDescriptor;
 };

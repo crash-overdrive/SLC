@@ -27,10 +27,9 @@ struct VariableDescriptor {
 };
 
 struct TypeDescriptor {
-  const Type type;
-  const std::string identifier;
+  Type type;
+  std::string identifier;
 
-  TypeDescriptor(Type type, std::string identifier);
   bool operator==(const TypeDescriptor &typeDescriptor) const;
 };
 
@@ -65,24 +64,40 @@ public:
   // std::unique_ptr<AST::Node> Node;
 
   FileHeader(std::set<AST::ModifierCode> classModifiers, TypeDescriptor typeDescriptor);
-  bool addField(Env::JoosField joosField);
-  bool addMethod(Env::JoosMethod joosMethod);
+  bool addField(JoosField joosField);
+  bool addMethod(JoosMethod joosMethod);
   const JoosField *findField(const VariableDescriptor &variableDescriptor,
                              const std::string &identifier) const;
   const JoosMethod *findMethod(const std::string &identifier,
                                const std::vector<VariableDescriptor> &args) const;
   const std::set<AST::ModifierCode> &getModifiers() const;
   const std::string &getName() const;
+
 private:
   std::vector<JoosMethod> methods;
   std::vector<JoosField> fields;
 };
 
+class JoosTypeVisitor : public AST::TrackVisitor {
+public:
+  void visit(const AST::ClassDeclaration &decl) override;
+  void visit(const AST::InterfaceDeclaration &decl) override;
+  TypeDescriptor getTypeDescriptor();
+  std::set<AST::ModifierCode> getModifers();
+  const AST::Node *getASTNode();
 
-class FileHeaderVisitor : public AST::TrackVisitor {
+private:
+  void visitProperties(const AST::Node &node);
+  TypeDescriptor typeDescriptor;
+  std::set<AST::ModifierCode> classModifiers;
+  const AST::Node *Node;
+};
+
+class JoosTypeBodyVisitor : public AST::Visitor {
 public:
   std::vector<JoosField> getJoosFields();
   std::vector<JoosMethod> getJoosMethods();
+  void visit(const AST::Block &block) override;
   void visit(const AST::FieldDeclaration &field) override;
   void visit(const AST::MethodDeclaration &decl) override;
   void visit(const AST::ConstructorDeclaration &decl) override;

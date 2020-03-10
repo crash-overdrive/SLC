@@ -4,9 +4,11 @@
 #include <string>
 #include <vector>
 
-const std::string JoosLRFile = "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1";
-const std::string TokensLexFile =
-    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex";
+const std::string JoosLRFile{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1"};
+
+const std::string TokensLexFile{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex"};
+
+const std::string Stdlib{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib"};
 
 const std::vector<std::string> Stdlib2Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/2.0/java/io/OutputStream.java",
