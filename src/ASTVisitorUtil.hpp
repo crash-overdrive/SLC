@@ -12,6 +12,7 @@ class NameVisitor : public Visitor {
 public:
   void visit(const Name &name) override;
   void visit(const Identifier &identifier) override;
+  void visit(const PrimitiveType &primitiveType) override;
   std::vector<std::string> getName();
 
 private:

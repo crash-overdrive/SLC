@@ -10,6 +10,10 @@ void NameVisitor::visit(const Identifier &identifier) {
   name.emplace_back(identifier.getName());
 }
 
+void NameVisitor::visit(const PrimitiveType &primitiveType) {
+  name.emplace_back(primitiveType.getType());
+}
+
 std::vector<std::string> NameVisitor::getName() {
   return std::move(name);
 }

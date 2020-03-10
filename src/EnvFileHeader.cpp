@@ -242,7 +242,7 @@ std::ostream &operator<<(std::ostream &stream, const JoosField &joosField) {
     stream << AST::ModifierCodeName.at(modifier) << " ";
   }
   stream << "}\n";
-  stream << joosField.variableDescriptor << "\n";
+  stream << joosField.variableDescriptor;
   stream << "Identifier: " << joosField.identifier << "\n";
   return stream << "\n";
 }
