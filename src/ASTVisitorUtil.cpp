@@ -11,15 +11,31 @@ void NameVisitor::visit(const Identifier &identifier) {
 }
 
 std::vector<std::string> NameVisitor::getName() {
-  return name;
+  return std::move(name);
+}
+
+void PropertiesVisitor::visit(const Modifier &modifier) {
+  modifiers.emplace(modifier.getCode());
+}
+
+void PropertiesVisitor::visit(const SimpleType &simpleType) {
+  (void)simpleType;
+}
+
+void PropertiesVisitor::visit(const PrimitiveType &primitiveType) {
+  (void)primitiveType;
+}
+
+void PropertiesVisitor::visit(const Identifier &identifier) {
+  name = identifier.getName();
 }
 
 std::set<ModifierCode> PropertiesVisitor::getModifiers() {
-  return modifiers;
+  return std::move(modifiers);
 }
 
 std::string PropertiesVisitor::getName() {
-  return name;
+  return std::move(name);
 }
 
 } // namespace AST

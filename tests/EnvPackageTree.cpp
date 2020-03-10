@@ -26,8 +26,8 @@ TEST_CASE("Package Node", "[PackageNode]") {
 
 TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
   Env::FileHeader CanaryHeader({},
-                               Env::TypeDescriptor(Env::Type::Class, "canary"));
-  Env::FileHeader BarHeader({}, Env::TypeDescriptor(Env::Type::Class, "bar"));
+                               Env::TypeDescriptor{Env::Type::Class, "canary"});
+  Env::FileHeader BarHeader({}, Env::TypeDescriptor{Env::Type::Class, "bar"});
   Env::PackageTree Tree;
   REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
   REQUIRE_FALSE(Tree.update({"foo"}, BarHeader));
