@@ -13,14 +13,19 @@ enum class VariableType {
   ArrayType,
 };
 
-const std::unordered_map<VariableType, std::string> VariableTypeName{
-    {VariableType::SimpleType, "SimpleType"},
-    {VariableType::ArrayType, "ArrayType"},
-};
-
 enum class Type {
   Class,
   Interface,
+};
+
+const std::unordered_map<VariableType, std::string> VariableTypeName {
+  {VariableType::SimpleType, "SimpleType"},
+  {VariableType::ArrayType, "ArrayType"},
+};
+
+const std::unordered_map<Type, std::string> TypeName {
+  {Type::Class, "Class"},
+  {Type::Interface, "Interface"},
 };
 
 struct VariableDescriptor {
@@ -30,7 +35,7 @@ struct VariableDescriptor {
   // VariableDescriptor(VariableType variableType, std::string dataType);
   bool operator==(const VariableDescriptor &variableDescriptor) const;
 };
-// std::ostream &operator<<(std::ostream &stream, const VariableDescriptor &variableDescriptor);
+std::ostream &operator<<(std::ostream &stream, const VariableDescriptor &variableDescriptor);
 
 struct TypeDescriptor {
   Type type;
@@ -38,7 +43,7 @@ struct TypeDescriptor {
 
   bool operator==(const TypeDescriptor &typeDescriptor) const;
 };
-// std::ostream &operator<<(std::ostream &stream, const TypeDescriptor &typeDescriptor);
+std::ostream &operator<<(std::ostream &stream, const TypeDescriptor &typeDescriptor);
 
 struct JoosField {
   std::set<AST::ModifierCode> modifiers;
@@ -77,7 +82,7 @@ struct JoosConstructor {
   //            std::string identifier, std::vector<VariableDescriptor> args);
   bool operator==(const JoosConstructor &joosConstructor) const;
 };
-// std::ostream &operator<<(std::ostream &stream, const JoosConstructor &joosConstructor);
+std::ostream &operator<<(std::ostream &stream, const JoosConstructor &joosConstructor);
 
 struct FileHeader {
 public:
@@ -102,9 +107,9 @@ private:
   std::vector<JoosField> fields;
   std::vector<JoosMethod> methods;
   std::vector<JoosConstructor> constructors;
-  // friend std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
+  friend std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
 };
-// std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
+std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
 
 class JoosTypeVisitor : public AST::Visitor {
 public:
@@ -112,7 +117,7 @@ public:
   void visit(const AST::ClassDeclaration &decl) override;
   void visit(const AST::InterfaceDeclaration &decl) override;
   TypeDescriptor getTypeDescriptor();
-  std::set<AST::ModifierCode> getModifers();
+  std::set<AST::ModifierCode> getModifiers();
   const AST::Node *getASTNode();
 
 private:

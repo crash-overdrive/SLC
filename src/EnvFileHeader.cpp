@@ -144,7 +144,7 @@ TypeDescriptor JoosTypeVisitor::getTypeDescriptor() {
   return typeDescriptor;
 }
 
-std::set<AST::ModifierCode> JoosTypeVisitor::getModifers() {
+std::set<AST::ModifierCode> JoosTypeVisitor::getModifiers() {
   return std::move(classModifiers);
 }
 
@@ -217,42 +217,84 @@ std::vector<JoosConstructor> JoosTypeBodyVisitor::getJoosConstructors() {
   return std::move(constructors);
 }
 
+std::ostream &operator<<(std::ostream &stream, const VariableDescriptor &variableDescriptor) {
+  stream << "VARIABLE DESCRIPTOR" << "\n";
+  stream << "VariableType: " << Env::VariableTypeName.at(variableDescriptor.variableType) << "\n";
+  stream << "DataType: ";
+  for(auto const &dataType : variableDescriptor.dataType) {
+    stream << dataType << ", ";
+  }
+  stream << "\n";
+  return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream, const TypeDescriptor &typeDescriptor) {
+  stream << "TYPE DESCRIPTOR" << "\n";
+  stream << "Type: " << Env::TypeName.at(typeDescriptor.type) << "\n";
+  stream << "Identifier: " << typeDescriptor.identifier << "\n";
+  return stream;
+}
+
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField) {
-  stream << "JoosField: " << "\n";
+  stream << "JOOSFIELD" << "\n";
   stream << "Modifiers: ";
   for (auto const &modifier : joosField.modifiers) {
     stream << AST::ModifierCodeName.at(modifier) << ", ";
   }
-  stream << "\n" << "VariableType: " << Env::VariableTypeName.at(joosField.variableDescriptor.variableType) << "\n";
-  stream << "DataType: ";
-  for (auto const &dataType : joosField.variableDescriptor.dataType) {
-    stream << dataType << ", ";
-  }
-  stream << "\n" << "Identifier: " << joosField.identifier << "\n";
+  stream << "\n";
+  stream << joosField.variableDescriptor << "\n";
+  stream << "Identifier: " << joosField.identifier << "\n";
   return stream;
 }
 
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod) {
-  stream << "JoosMethod" << "\n";
+  stream << "JOOSMETHOD" << "\n";
   stream << "Modifiers: ";
   for (auto const &modifier : joosMethod.modifiers) {
     stream << AST::ModifierCodeName.at(modifier) << ", ";
   }
-  stream << "\n" << "Return VariableType: " << Env::VariableTypeName.at(joosMethod.returnType.variableType) << "\n";
-  stream << "Return DataType: ";
-  for (auto const &dataType : joosMethod.returnType.dataType) {
-    stream << dataType << ", ";
-  }
-  stream << "\n" << "Identifier: " << joosMethod.identifier << "\n";
-  stream << "Arguments: ";
+  stream << "\n";
+  stream << "ReturnType: ";
+  stream << joosMethod.returnType;
+  stream << "Identifier: " << joosMethod.identifier << "\n";
+  stream << "Arguments" << "\n";
   for (auto const &arg : joosMethod.args) {
-    stream << "\n" << "Argument VariableType: " << Env::VariableTypeName.at(arg.variableType) << "\n";
-    stream << "Argument DataType: ";
-    for (auto const &dataType : arg.dataType) {
-      stream << dataType << ", ";
-    }
+    stream << "Argument: " << arg;
+  }
+  return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream, const JoosConstructor &joosConstructor) {
+  stream << "JOOSCONSTRUCTOR" << "\n";
+  stream << "Modifiers: ";
+  for (auto const &modifier : joosConstructor.modifiers) {
+    stream << AST::ModifierCodeName.at(modifier) << ", ";
   }
   stream << "\n";
+  stream << "Identifier: " << joosConstructor.identifier << "\n";
+  stream << "Arguments" << "\n";
+  for (auto const &arg : joosConstructor.args) {
+    stream << "Argument: " << arg;
+  }
+  return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader) {
+  stream << "Modifiers: ";
+  for (auto const &modifier : fileHeader.classModifiers) {
+    stream << AST::ModifierCodeName.at(modifier) << ", ";
+  }
+  stream << "\n";
+  stream << fileHeader.typeDescriptor;
+  for (auto const &field : fileHeader.fields) {
+    stream << field;
+  }
+  for (auto const &method : fileHeader.methods) {
+    stream << method;
+  }
+  for (auto const &constructor : fileHeader.constructors) {
+    stream << constructor;
+  }
   return stream;
 }
 
