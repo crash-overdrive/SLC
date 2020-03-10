@@ -136,6 +136,8 @@ std::unique_ptr<AST::Start> Client::buildAST(const Parse::Tree &ParseTree) {
   return Root;
 }
 
-std::unique_ptr<AST::Start> Client::buildAST(std::istream &stream) {
-  return buildAST(*parse(*scan(stream)));
+std::unique_ptr<AST::Start> Client::buildAST(const std::string &FileName) {
+    std::ifstream JavaStream;
+    JavaStream.open(FileName);
+    return buildAST(*parse(*scan(JavaStream)));
 }

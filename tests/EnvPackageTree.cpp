@@ -24,7 +24,7 @@ TEST_CASE("Package Node", "[PackageNode]") {
   }
 }
 
-TEST_CASE("Package Tree", "[PackageTreeLookup][!hide]") {
+TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
   Env::FileHeader CanaryHeader({},
                                Env::TypeDescriptor(Env::Type::Class, "canary"));
   Env::FileHeader BarHeader({}, Env::TypeDescriptor(Env::Type::Class, "bar"));
@@ -37,15 +37,11 @@ TEST_CASE("Package Tree", "[PackageTreeLookup][!hide]") {
 
 TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {
   Client Client = createClient();
-  SECTION("Recognize Name") {
-    std::ifstream JavaStream;
-    JavaStream.open(TestDataDir +
-                    "/java/a2/J1_3_PackageClashWithType_Linked_Mutated/javax/"
+  std::unique_ptr<AST::Start> Root = Client.buildAST(
+      TestDataDir + "/java/a2/J1_3_PackageClashWithType_Linked_Mutated/javax/"
                     "swing/tree/TreeNode.java");
-    std::unique_ptr<AST::Start> Root = Client.buildAST(JavaStream);
-    Env::PackageTreeVisitor Visitor;
-    Root->accept(Visitor);
-    REQUIRE(Visitor.getPackagePath() ==
-            std::vector<std::string>{"javax", "swing", "tree"});
-  }
+  Env::PackageTreeVisitor Visitor;
+  Root->accept(Visitor);
+  REQUIRE(Visitor.getPackagePath() ==
+          std::vector<std::string>{"javax", "swing", "tree"});
 }
