@@ -14,8 +14,7 @@ bool TypeDescriptor::operator==(const TypeDescriptor &typeDescriptor) const {
 }
 
 bool JoosField::operator==(const JoosField &joosField) const {
-  return identifier == joosField.identifier &&
-         variableDescriptor.dataType == joosField.variableDescriptor.dataType;
+  return identifier == joosField.identifier;
 }
 
 bool JoosMethod::operator==(const JoosMethod &joosMethod) const {

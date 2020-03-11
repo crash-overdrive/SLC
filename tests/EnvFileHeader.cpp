@@ -28,9 +28,12 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   }
 
   SECTION("JoosField different type add successful") {
-    REQUIRE(fileHeader.addField(Env::JoosField{
+    REQUIRE(!fileHeader.addField(Env::JoosField{
       {AST::ModifierCode::Private, AST::ModifierCode::Final, AST::ModifierCode::Static},
       Env::VariableDescriptor{Env::VariableType::SimpleType, {"Java", "Util", "Array"}}, "str", nullptr}));
+    REQUIRE(!fileHeader.addField(Env::JoosField{
+      {AST::ModifierCode::Private, AST::ModifierCode::Final, AST::ModifierCode::Static},
+      Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}, "str", nullptr}));
   }
 
   SECTION("JoosField duplicate add un-successfull") {
