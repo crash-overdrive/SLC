@@ -25,14 +25,23 @@ TEST_CASE("Package Node", "[PackageNode]") {
 }
 
 TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
-  Env::FileHeader CanaryHeader({},
-                               Env::TypeDescriptor{Env::Type::Class, "canary"});
-  Env::FileHeader BarHeader({}, Env::TypeDescriptor{Env::Type::Class, "bar"});
   Env::PackageTree Tree;
-  REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
-  REQUIRE_FALSE(Tree.update({"foo"}, BarHeader));
-  REQUIRE(Tree.lookUp({"foo", "bar", "canary"}) == &CanaryHeader);
-  REQUIRE(Tree.lookUp({"foo"}) == nullptr);
+
+  SECTION("Basic lookup") {
+    Env::FileHeader CanaryHeader({}, {Env::Type::Class, "canary"});
+    Env::FileHeader BarHeader({}, {Env::Type::Class, "bar"});
+    REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
+    REQUIRE_FALSE(Tree.update({"foo"}, BarHeader));
+    REQUIRE(Tree.lookUp({"foo", "bar", "canary"}) == &CanaryHeader);
+    REQUIRE(Tree.lookUp({"foo"}) == nullptr);
+  }
+
+  SECTION("Single File") {
+    Env::FileHeader AHeader({}, {Env::Type::Class, "A"});
+    Env::FileHeader MainHeader({}, {Env::Type::Class, "Main"});
+    REQUIRE(Tree.update({"Main", "B"}, AHeader));
+    REQUIRE(Tree.update({}, MainHeader));
+  }
 }
 
 TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {

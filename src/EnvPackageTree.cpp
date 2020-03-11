@@ -70,6 +70,9 @@ FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
 
 bool PackageTree::update(const std::vector<std::string> &PackagePath,
                          FileHeader &Header) {
+  // No Package
+  if (PackagePath.size() == 0)
+    return true;
   PackageNode *Node = Root.get();
   for (const auto &Component : PackagePath) {
     Node = Node->update(PackageNode::Package, Component);

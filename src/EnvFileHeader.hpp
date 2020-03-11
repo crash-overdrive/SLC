@@ -77,10 +77,10 @@ struct FileHeader {
 public:
   TypeDescriptor typeDescriptor;
   std::set<AST::ModifierCode> classModifiers;
-  std::unique_ptr<AST::Node> Node;
 
   FileHeader(std::set<AST::ModifierCode> classModifiers,
-             TypeDescriptor typeDescriptor);
+             TypeDescriptor typeDescriptor,
+             std::unique_ptr<AST::Node> Node = nullptr);
   bool addField(JoosField joosField);
   bool addMethod(JoosMethod joosMethod);
   bool addConstructor(JoosConstructor joosConstructor);
@@ -94,8 +94,10 @@ public:
                   const std::vector<VariableDescriptor> &args) const;
   const std::set<AST::ModifierCode> &getModifiers() const;
   const std::string &getName() const;
+  const AST::Node *getASTNode() const;
 
 private:
+  std::unique_ptr<AST::Node> node;
   std::vector<JoosField> fields;
   std::vector<JoosMethod> methods;
   std::vector<JoosConstructor> constructors;

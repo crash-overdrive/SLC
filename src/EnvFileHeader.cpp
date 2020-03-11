@@ -27,8 +27,10 @@ bool JoosConstructor::operator==(const JoosConstructor &joosConstructor) const {
 }
 
 FileHeader::FileHeader(std::set<AST::ModifierCode> classModifiers,
-                       TypeDescriptor typeDescriptor)
-    : typeDescriptor(typeDescriptor), classModifiers(classModifiers){};
+                       TypeDescriptor typeDescriptor,
+                       std::unique_ptr<AST::Node> node)
+    : typeDescriptor(typeDescriptor), classModifiers(classModifiers),
+      node(std::move(node)){};
 
 bool FileHeader::addField(JoosField joosField) {
   for (auto const &field : fields) {
@@ -97,6 +99,8 @@ FileHeader::findConstructor(const std::string &identifier,
 const std::string &FileHeader::getName() const {
   return typeDescriptor.identifier;
 }
+
+const AST::Node *FileHeader::getASTNode() const { return node.get(); }
 
 const std::set<AST::ModifierCode> &FileHeader::getModifiers() const {
   return classModifiers;
@@ -263,7 +267,7 @@ std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader) {
     stream << AST::ModifierCodeName.at(modifier) << " ";
   }
   stream << "}\n\n";
-  stream << fileHeader.typeDescriptor << "\n";
+  stream << fileHeader.typeDescriptor << '\n';
   for (auto const &field : fileHeader.fields) {
     stream << field;
   }
@@ -273,7 +277,7 @@ std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader) {
   for (auto const &constructor : fileHeader.constructors) {
     stream << constructor;
   }
-  return stream << "\n";
+  return stream << '\n';
 }
 
 } // namespace Env
