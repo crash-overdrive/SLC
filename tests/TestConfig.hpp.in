@@ -906,6 +906,45 @@ const std::vector<std::vector<std::string>> A2ErrorParse{
     },
 };
 
+const std::vector<std::vector<std::string>> A2ErrorFileHeader{
+    {
+        "Je_12_Fields_StaticNonStatic.java",
+    },
+    {
+        "Je_14_Interface_DuplicateMethodDeclare.java",
+    },
+    {
+        "Je_2_Fields_DifferentAccess.java",
+    },
+    {
+        "Je_2_Fields_MultipleFields.java",
+    },
+    {
+        "Je_4_DuplicateConstructor_Args.java",
+    },
+    {
+        "Je_4_DuplicateConstructor_ArrayArgs.java",
+    },
+    {
+        "Je_4_DuplicateConstructor_NoArgs.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_Args.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_NoArgs.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_DifferentReturnTypes.java",
+    },
+    {
+        "Je_4_DuplicateMethodDeclare_ArrayArgs.java",
+    },
+    {
+        "Je_2_Fields_DifferentTypes.java",
+    },
+};
+
 const std::vector<std::vector<std::string>> A2ErrorEnvironment{
     {
         "Je_2_DuplicateType/Bar.java",
@@ -987,43 +1026,6 @@ const std::vector<std::vector<std::string>> A2ErrorTyping{
         "Je_3_PackageClashWithType_Linked/Main.java",
     },
 };
-
-const std::vector<std::vector<std::string>> A2ErrorFileHeader{
-    {
-        "Je_12_Fields_StaticNonStatic.java",
-    },
-    {
-        "Je_14_Interface_DuplicateMethodDeclare.java",
-    },
-    {
-        "Je_2_Fields_DifferentAccess.java",
-    },
-    {
-        "Je_2_Fields_MultipleFields.java",
-    },
-    {
-        "Je_4_DuplicateConstructor_Args.java",
-    },
-    {
-        "Je_4_DuplicateConstructor_ArrayArgs.java",
-    },
-    {
-        "Je_4_DuplicateConstructor_NoArgs.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_Args.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_NoArgs.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_DifferentReturnTypes.java",
-    },
-    {
-        "Je_4_DuplicateMethodDeclare_ArrayArgs.java",
-    },
-};
-
 const std::vector<std::vector<std::string>> A2Error{
     {
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
@@ -1050,9 +1052,6 @@ const std::vector<std::vector<std::string>> A2Error{
     },
     {
         "Je_2_ConstructorParameter_Overlapping.java",
-    },
-    {
-        "Je_2_Fields_DifferentTypes.java",
     },
     {
         "Je_2_Locals_Overlapping_DeeplyNested.java",
