@@ -85,6 +85,7 @@ bool Client::compile() {
     if (breakPoint == FileHeader) {
       continue;
     }
+    fileHeaderList.emplace_back(std::move(*fileHeader));
 
     // TODO: implement weeder logic here
     // Weeder logic
@@ -92,8 +93,16 @@ bool Client::compile() {
       continue;
     }
   }
+  if (breakPoint < Weed) {
+    return true;
+  }
 
-  if (breakPoint == Environment) {
+  auto Tree = buildPackageTree(fileHeaderList);
+  if (!Tree) {
+    std::cerr << "Error building package tree\n";
+    return false;
+  }
+  if (breakPoint == PackageTree) {
     return true;
   }
   return true;
@@ -154,31 +163,42 @@ Client::buildFileHeader(std::unique_ptr<AST::Start> node) {
 
   node->accept(typeVisitor);
   node->accept(typeBodyVisitor);
-  fileHeader = Env::FileHeader(typeVisitor.getModifiers(),
-                               typeVisitor.getTypeDescriptor());
+  fileHeader =
+      Env::FileHeader(typeVisitor.getModifiers(),
+                      typeVisitor.getTypeDescriptor(), std::move(node));
   for (auto const &field : typeBodyVisitor.getJoosFields()) {
     if (!fileHeader->addField(field)) {
-      std::cerr << "Duplicate Field found in file"
-                << "\n";
+      std::cerr << "Duplicate Field found in file\n";
       std::cerr << field;
       return std::nullopt;
     };
   }
   for (auto const &method : typeBodyVisitor.getJoosMethods()) {
     if (!fileHeader->addMethod(method)) {
-      std::cerr << "Duplicate Method found in file"
-                << "\n";
+      std::cerr << "Duplicate Method found in file\n";
       std::cerr << method;
       return std::nullopt;
     };
   }
   for (auto const &constructor : typeBodyVisitor.getJoosConstructors()) {
     if (!fileHeader->addConstructor(constructor)) {
-      std::cerr << "Duplicate Constructor found in file"
-                << "\n";
+      std::cerr << "Duplicate Constructor found in file\n";
       std::cerr << constructor;
       return std::nullopt;
     };
   }
   return fileHeader;
+}
+
+std::optional<Env::PackageTree>
+Client::buildPackageTree(std::vector<Env::FileHeader> &Headers) {
+  Env::PackageTree Tree;
+  for (auto &&Header : Headers) {
+    Env::PackageTreeVisitor Visitor;
+    Header.getASTNode()->accept(Visitor);
+    if (!Tree.update(Visitor.getPackagePath(), Header)) {
+      return std::nullopt;
+    };
+  }
+  return Tree;
 }

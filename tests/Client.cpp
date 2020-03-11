@@ -36,6 +36,7 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+
     SECTION("error scan") {
       Client.setBreakPoint(Client::Scan);
       for (const auto &FileName : A1ErrorScan) {
@@ -45,6 +46,7 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+
     SECTION("error parse") {
       Client.setBreakPoint(Client::Parse);
       for (const auto &FileName : A1ErrorParse) {
@@ -54,8 +56,8 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+
     SECTION("accept") {
-      Client.setBreakPoint(Client::Weed);
       for (const auto &FileName : A1Valid) {
         SECTION(FileName) {
           Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
@@ -77,6 +79,7 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+
     SECTION("fileheader-error") {
       Client.setBreakPoint(Client::FileHeader);
       for (const auto &Group : A2ErrorParse) {
@@ -88,19 +91,31 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-    // SECTION("reject") {
-    // Client.setBreakPoint(Client::Environment);
-    // for (const auto &Group : A2Error) {
-    // SECTION(Group[0]) {
-    // for (const auto &FileName : Group) {
-    // Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-    //}
-    // REQUIRE(Client.compile());
-    //}
-    //}
-    //}
+
+    SECTION("package-error") {
+      Client.setBreakPoint(Client::PackageTree);
+      for (const auto &Group : A2ErrorPackage) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+          }
+          REQUIRE_FALSE(Client.compile());
+        }
+      }
+    }
+
+    SECTION("reject") {
+      for (const auto &Group : A2Error) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+          }
+          REQUIRE(Client.compile());
+        }
+      }
+    }
+
     SECTION("accept") {
-      Client.setBreakPoint(Client::Environment);
       for (const auto &Group : A2Valid) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {
@@ -114,7 +129,6 @@ TEST_CASE("client process", "[client]") {
 
   SECTION("a3") {
     SECTION("accept") {
-      Client.setBreakPoint(Client::Environment);
       for (const auto &Group : A3Valid) {
         SECTION(Group[0]) {
           for (const auto &FileName : Group) {

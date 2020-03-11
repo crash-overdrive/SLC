@@ -5,6 +5,7 @@
 
 #include "ASTNode.hpp"
 #include "EnvFileHeader.hpp"
+#include "EnvPackageTree.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -17,7 +18,7 @@ public:
     Ast,
     FileHeader,
     Weed,
-    Environment,
+    PackageTree,
     TypeLink,
     Hierarchy,
   };
@@ -41,6 +42,8 @@ public:
   std::optional<Env::FileHeader>
   buildFileHeader(std::unique_ptr<AST::Start> node);
   bool weed(const AST::Node &ast, const std::string &typeName);
+  std::optional<Env::PackageTree>
+  buildPackageTree(std::vector<Env::FileHeader> &Headers);
 
 private:
   std::unique_ptr<Lex::Scanner> scanner;

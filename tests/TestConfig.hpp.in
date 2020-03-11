@@ -945,7 +945,7 @@ const std::vector<std::vector<std::string>> A2ErrorFileHeader{
     },
 };
 
-const std::vector<std::vector<std::string>> A2ErrorEnvironment{
+const std::vector<std::vector<std::string>> A2ErrorPackage{
     {
         "Je_2_DuplicateType/Bar.java",
         "Je_2_DuplicateType/foo/Bar.java",

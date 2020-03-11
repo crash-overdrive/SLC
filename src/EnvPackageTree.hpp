@@ -12,8 +12,8 @@ class PackageNode {
 public:
   enum Type { Global, Package, JoosType };
 
-  PackageNode(Type type, const std::string &name = "", FileHeader *header
-              = nullptr);
+  PackageNode(Type type, const std::string &name = "",
+              FileHeader *header = nullptr);
   PackageNode *update(Type type, const std::string &name,
                       FileHeader *Header = nullptr);
   PackageNode *find(const std::string &name);
@@ -32,7 +32,8 @@ private:
 class PackageTree {
 public:
   FileHeader *lookUp(const std::vector<std::string> &PackagePath);
-  bool update(const std::vector<std::string> &PackagePath, FileHeader &Header);
+  bool update(const std::vector<std::string> &PackagePath,
+              FileHeader &Header);
 
 private:
   std::unique_ptr<PackageNode> Root =
