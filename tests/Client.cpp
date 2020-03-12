@@ -151,6 +151,20 @@ TEST_CASE("client process", "[client]") {
     }
   }
 
+  SECTION("a4") {
+    SECTION("accept") {
+      for (const auto &Group : A4Valid) {
+        SECTION(Group[0]) {
+          for (const auto &FileName : Group) {
+            Client.addJavaFile(TestDataDir + "/java/a4/" + FileName);
+          }
+          REQUIRE(Client.compile());
+        }
+      }
+    }
+  }
+
+
   SECTION("multiple files") {
     Client.addJavaFiles({
         TestDataDir +
