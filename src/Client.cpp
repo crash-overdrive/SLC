@@ -193,6 +193,7 @@ Client::buildFileHeader(std::unique_ptr<AST::Start> node) {
 std::optional<Env::PackageTree>
 Client::buildPackageTree(std::vector<Env::FileHeader> &Headers) {
   std::optional<Env::PackageTree> Tree;
+  Tree = Env::PackageTree{};
   for (auto &&Header : Headers) {
     Env::PackageTreeVisitor Visitor;
     Header.getASTNode()->accept(Visitor);
