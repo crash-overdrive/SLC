@@ -96,14 +96,22 @@ FileHeader::findConstructor(const std::string &identifier,
   return nullptr;
 }
 
+const std::set<AST::ModifierCode> &FileHeader::getModifiers() const {
+  return classModifiers;
+}
+
 const std::string &FileHeader::getName() const {
   return typeDescriptor.identifier;
 }
 
 const AST::Node *FileHeader::getASTNode() const { return node.get(); }
 
-const std::set<AST::ModifierCode> &FileHeader::getModifiers() const {
-  return classModifiers;
+void FileHeader::setPackage(std::vector<std::string> package) {
+  this->package = std::move(package);
+}
+
+const std::vector<std::string> &FileHeader::getPackage() const {
+  return package;
 }
 
 void JoosTypeVisitor::visit(const AST::Start &start) {
