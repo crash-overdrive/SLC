@@ -4,21 +4,22 @@
 #include "ASTVisitor.hpp"
 #include "EnvFileHeader.hpp"
 #include "EnvPackageTree.hpp"
+#include <unordered_set>
 
 namespace Env {
 
 class TypeLink {
 public:
   TypeLink(FileHeader &Header, PackageTree &Tree);
-  FileHeader *find(const std::vector<std::string> &Name);
   bool addSingleImport(const std::vector<std::string> &Name);
-  bool addDemandImport(const std::vector<std::string> &Name);
+  void addDemandImport(const std::vector<std::string> &Name);
+  FileHeader *find(const std::vector<std::string> &Name) const;
 
 private:
   FileHeader &Header;
   PackageTree &Tree;
-  std::unordered_map<std::string, FileHeader &> SingleTypeImport;
-  std::unordered_map<std::string, PackageNode &> OnDemandImport;
+  std::unordered_map<std::string, FileHeader *> SingleImports;
+  std::unordered_set<PackageNode *> OnDemandImports;
 };
 
 class TypeLinkVisitor : public AST::Visitor {

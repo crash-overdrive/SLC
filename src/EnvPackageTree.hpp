@@ -31,7 +31,8 @@ private:
 
 class PackageTree {
 public:
-  FileHeader *lookUp(const std::vector<std::string> &PackagePath);
+  FileHeader *findHeader(const std::vector<std::string> &Path) const;
+  PackageNode *findNode(const std::vector<std::string> &Path) const;
   bool update(const std::vector<std::string> &PackagePath,
               FileHeader &Header);
 

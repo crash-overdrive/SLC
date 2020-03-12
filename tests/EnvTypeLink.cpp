@@ -4,18 +4,28 @@
 #include "TestUtil.hpp"
 #include "catch.hpp"
 
-TEST_CASE("EnvTypeLink", "[EnvTypeLink") {
+TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
   Env::FileHeader mainHeader({}, {Env::Type::Class, "Main"});
-  Env::FileHeader listHeader({}, {Env::Type::Class, "List"});
+  Env::FileHeader listHeader({}, {Env::Type::Class, "List"},
+                             std::make_unique<AST::Start>());
   Env::PackageTree tree;
 
   SECTION("Simple Lookup") {
     tree.update({"foo", "bar"}, listHeader);
     Env::TypeLink typeLink(mainHeader, tree);
     REQUIRE(typeLink.find({"foo", "bar", "List"}) == &listHeader);
-    REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
     REQUIRE(typeLink.addSingleImport({"foo", "bar", "List"}));
     REQUIRE(typeLink.find({"List"}) == &listHeader);
+  }
+
+  SECTION("Import") {
+    Env::TypeLink typeLink(mainHeader, tree);
+    REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
+  }
+
+  SECTION("Missing entries") {
+    Env::TypeLink typeLink(mainHeader, tree);
+    REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
   }
 
   SECTION("Self Lookup") {
@@ -35,6 +45,9 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink") {
 
   SECTION("Single import clash") {
     tree.update({"foo", "canary"}, listHeader);
+    Env::FileHeader list2Header({}, {Env::Type::Class, "List"},
+                                std::make_unique<AST::Start>());
+    tree.update({"foo", "bar"}, list2Header);
     Env::TypeLink typeLink(mainHeader, tree);
     typeLink.addSingleImport({"foo", "bar", "List"});
     REQUIRE_FALSE(typeLink.addSingleImport({"foo", "canary", "List"}));
@@ -51,7 +64,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink") {
   SECTION("On-demand clash") {
     tree.update({"foo", "canary"}, listHeader);
     Env::TypeLink typeLink(mainHeader, tree);
-    REQUIRE(typeLink.addDemandImport({"foo"}));
+    typeLink.addDemandImport({"foo"});
     REQUIRE_FALSE(typeLink.find({"List"}) == nullptr);
   }
 }

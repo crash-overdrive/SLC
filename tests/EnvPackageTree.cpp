@@ -32,8 +32,8 @@ TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
     Env::FileHeader BarHeader({}, {Env::Type::Class, "bar"});
     REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
     REQUIRE_FALSE(Tree.update({"foo"}, BarHeader));
-    REQUIRE(Tree.lookUp({"foo", "bar", "canary"}) == &CanaryHeader);
-    REQUIRE(Tree.lookUp({"foo"}) == nullptr);
+    REQUIRE(Tree.findHeader({"foo", "bar", "canary"}) == &CanaryHeader);
+    REQUIRE(Tree.findHeader({"foo"}) == nullptr);
   }
 
   SECTION("Single File") {

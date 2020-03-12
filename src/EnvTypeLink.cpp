@@ -3,6 +3,47 @@
 
 namespace Env {
 
+TypeLink::TypeLink(FileHeader &Header, PackageTree &Tree)
+    : Header(Header), Tree(Tree) {}
+
+bool TypeLink::addSingleImport(const std::vector<std::string> &Name) {
+  FileHeader *ImportHeader = Tree.findHeader(Name);
+  if (ImportHeader == nullptr || ImportHeader->getName() == Header.getName()) {
+    return false;
+  }
+  auto it = SingleImports.find(ImportHeader->getName());
+  if (it != SingleImports.end()) {
+    return (it->second->getASTNode() == ImportHeader->getASTNode());
+  }
+  SingleImports.emplace(ImportHeader->getName(), ImportHeader);
+  return true;
+}
+
+void TypeLink::addDemandImport(const std::vector<std::string> &Name) {
+  PackageNode *Node = Tree.findNode(Name);
+  if (Node != nullptr) {
+    OnDemandImports.emplace(Node);
+  }
+}
+
+FileHeader *TypeLink::find(const std::vector<std::string> &Name) const {
+  if (Name.size() == 0) {
+    return nullptr;
+  }
+  if (Name.size() > 1) {
+    return Tree.findHeader(Name);
+  }
+  const std::string &SimpleName = Name.at(0);
+  if (Header.getName() == SimpleName) {
+    return &Header;
+  }
+  auto it = SingleImports.find(SimpleName);
+  if (it != SingleImports.end()) {
+    return it->second;
+  }
+  return nullptr;
+}
+
 void TypeLinkVisitor::visit(const AST::Start &Start) {
   dispatchChildren(Start);
 }

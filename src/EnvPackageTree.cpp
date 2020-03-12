@@ -43,25 +43,20 @@ PackageNode *PackageNode::addType(Type type, const std::string &name,
   return It.second ? &It.first->second : nullptr;
 }
 
-void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
-  AST::NameVisitor Visitor;
-  Visitor.dispatchChildren(Decl);
-  packagePath = Visitor.getName();
+FileHeader *PackageTree::findHeader(const std::vector<std::string> &Path) const {
+  PackageNode *Node = findNode(Path);
+  return (Node != nullptr) ? Node->header : nullptr;
 }
 
-void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
-
-void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
-
-FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
+PackageNode *PackageTree::findNode(const std::vector<std::string> &Path) const {
   PackageNode *Node = Root.get();
-  for (const auto &Component : PackagePath) {
+  for (const auto &Component : Path) {
     Node = Node->find(Component);
     if (!Node) {
       return nullptr;
     }
   }
-  return Node->header;
+  return Node;
 }
 
 bool PackageTree::update(const std::vector<std::string> &PackagePath,
@@ -80,8 +75,19 @@ bool PackageTree::update(const std::vector<std::string> &PackagePath,
   return Node != nullptr;
 }
 
+void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
+  AST::NameVisitor Visitor;
+  Visitor.dispatchChildren(Decl);
+  packagePath = Visitor.getName();
+}
+
+void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
+
+void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
+
 std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
   return std::move(packagePath);
 }
+
 
 } // namespace Env
