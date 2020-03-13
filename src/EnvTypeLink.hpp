@@ -20,6 +20,8 @@ private:
   PackageTree &Tree;
   std::unordered_map<std::string, FileHeader *> SingleImports;
   std::unordered_set<PackageNode *> OnDemandImports;
+  FileHeader *findSamePackage(const std::string &Name) const;
+  FileHeader *findDemand(const std::string &Name) const;
 };
 
 class TypeLinkVisitor : public AST::Visitor {

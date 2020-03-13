@@ -3,7 +3,7 @@
 
 namespace Env {
 
-TypeLink::TypeLink(FileHeader &Header, PackageTree &Tree)
+TypeLink::TypeLink(FileHeader &Header, class PackageTree &Tree)
     : Header(Header), Tree(Tree) {}
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &Name) {
@@ -30,6 +30,7 @@ FileHeader *TypeLink::find(const std::vector<std::string> &Name) const {
   if (Name.size() == 0) {
     return nullptr;
   }
+  // Name is fully qualified-name
   if (Name.size() > 1) {
     return Tree.findHeader(Name);
   }
@@ -37,9 +38,35 @@ FileHeader *TypeLink::find(const std::vector<std::string> &Name) const {
   if (Header.getName() == SimpleName) {
     return &Header;
   }
-  auto it = SingleImports.find(SimpleName);
-  if (it != SingleImports.end()) {
-    return it->second;
+  auto SingleImportsIt = SingleImports.find(SimpleName);
+  if (SingleImportsIt != SingleImports.end()) {
+    return SingleImportsIt->second;
+  }
+  FileHeader *SamePackageHeader = findSamePackage(SimpleName);
+  if (SamePackageHeader != nullptr) {
+    return SamePackageHeader;
+  }
+  FileHeader *DemandHeader = findDemand(SimpleName);
+  if (DemandHeader != nullptr) {
+    return DemandHeader;
+  }
+  return nullptr;
+}
+
+FileHeader *TypeLink::findSamePackage(const std::string &Name) const {
+  PackageNode *Node = Tree.findNode(Header.getPackage());
+  if (Node != nullptr) {
+    return Node->findHeader(Name);
+  }
+  return nullptr;
+}
+
+FileHeader *TypeLink::findDemand(const std::string &Name) const {
+  for (const auto &OnDemandImport : OnDemandImports) {
+    FileHeader *Header = OnDemandImport->findHeader(Name);
+    if (Header != nullptr) {
+      return Header;
+    }
   }
   return nullptr;
 }

@@ -10,7 +10,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
                              std::make_unique<AST::Start>());
   Env::PackageTree tree;
 
-  SECTION("Simple Lookup") {
+  SECTION("Single Type Lookup") {
     tree.update({"foo", "bar"}, listHeader);
     Env::TypeLink typeLink(mainHeader, tree);
     REQUIRE(typeLink.find({"foo", "bar", "List"}) == &listHeader);
@@ -18,9 +18,16 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"List"}) == &listHeader);
   }
 
-  SECTION("Import") {
+  SECTION("No existing Import") {
     Env::TypeLink typeLink(mainHeader, tree);
     REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
+  }
+
+  SECTION("OnDemand Lookup") {
+    tree.update({"foo", "bar"}, listHeader);
+    Env::TypeLink typeLink(mainHeader, tree);
+    typeLink.addDemandImport({"foo", "bar"});
+    REQUIRE(typeLink.find({"List"}) == &listHeader);
   }
 
   SECTION("Missing entries") {
@@ -59,13 +66,6 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     tree.update({"foo", "canary"}, arrayHeader);
     Env::TypeLink typeLink(listHeader, tree);
     REQUIRE(typeLink.find({"Array"}));
-  }
-
-  SECTION("On-demand clash") {
-    tree.update({"foo", "canary"}, listHeader);
-    Env::TypeLink typeLink(mainHeader, tree);
-    typeLink.addDemandImport({"foo"});
-    REQUIRE_FALSE(typeLink.find({"List"}) == nullptr);
   }
 }
 

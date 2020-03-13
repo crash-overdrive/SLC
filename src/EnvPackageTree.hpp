@@ -17,6 +17,7 @@ public:
   PackageNode *update(Type type, const std::string &name,
                       FileHeader *Header = nullptr);
   PackageNode *find(const std::string &name);
+  FileHeader *findHeader(const std::string &name);
 
 private:
   friend class PackageTree;

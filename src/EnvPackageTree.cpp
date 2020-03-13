@@ -28,6 +28,21 @@ PackageNode *PackageNode::find(const std::string &name) {
   return (it != children.end()) ? &it->second : nullptr;
 }
 
+/**
+ * Find header under a package
+ */
+FileHeader *PackageNode::findHeader(const std::string &name) {
+  if (type == PackageNode::Global) {
+    return nullptr;
+  }
+  PackageNode *node = find(name);
+  if (node == nullptr) {
+    return nullptr;
+  }
+  return node->header;
+}
+
+
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   auto It = children.find(name);
   if (It != children.end()) {
