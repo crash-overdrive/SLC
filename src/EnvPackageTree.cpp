@@ -28,19 +28,72 @@ PackageNode *PackageNode::find(const std::string &name) {
   return (it != children.end()) ? &it->second : nullptr;
 }
 
+/**
+ * Find header under a package
+ */
+FileHeader *PackageNode::findHeader(const std::string &name) {
+  if (type == PackageNode::Global) {
+    return nullptr;
+  }
+  PackageNode *node = find(name);
+  if (node == nullptr) {
+    return nullptr;
+  }
+  return node->header;
+}
+
+
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   auto It = children.find(name);
   if (It != children.end()) {
     return (It->second.type == Package) ? &It->second : nullptr;
   }
-  auto ChildIt = children.emplace(name, PackageNode{type, name});
-  return &ChildIt.first->second;
+  auto [ChildIt, Flag] = children.emplace(name, PackageNode{type, name});
+  return &ChildIt->second;
 }
 
 PackageNode *PackageNode::addType(Type type, const std::string &name,
                                   FileHeader *header) {
-  auto It = children.emplace(name, PackageNode{type, name, header});
-  return It.second ? &It.first->second : nullptr;
+  auto [It, Flag] = children.emplace(name, PackageNode{type, name, header});
+  return Flag ? &It->second : nullptr;
+}
+
+FileHeader *
+PackageTree::findHeader(const std::vector<std::string> &Path) const {
+  PackageNode *Node = findNode(Path);
+  return (Node != nullptr) ? Node->header : nullptr;
+}
+
+PackageNode *PackageTree::findNode(const std::vector<std::string> &Path) const {
+  PackageNode *Node = Root.get();
+  for (const auto &Component : Path) {
+    Node = Node->find(Component);
+    if (!Node) {
+      return nullptr;
+    }
+  }
+  return Node;
+}
+
+bool PackageTree::update(const std::vector<std::string> &PackagePath,
+                         FileHeader &Header) {
+  // No Package
+  if (PackagePath.size() == 0) {
+    return true;
+  }
+  PackageNode *Node = Root.get();
+  for (const auto &Component : PackagePath) {
+    Node = Node->update(PackageNode::Package, Component);
+    if (!Node) {
+      return false;
+    }
+  }
+  Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
+  if (Node == nullptr) {
+    return false;
+  }
+  Header.setPackage(PackagePath);
+  return true;
 }
 
 void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
@@ -54,34 +107,7 @@ void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
 void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
 
 std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
-  return packagePath;
-}
-
-FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
-  PackageNode *Node = Root.get();
-  for (const auto &Component : PackagePath) {
-    Node = Node->find(Component);
-    if (!Node) {
-      return nullptr;
-    }
-  }
-  return Node->header;
-}
-
-bool PackageTree::update(const std::vector<std::string> &PackagePath,
-                         FileHeader &Header) {
-  // No Package
-  if (PackagePath.size() == 0)
-    return true;
-  PackageNode *Node = Root.get();
-  for (const auto &Component : PackagePath) {
-    Node = Node->update(PackageNode::Package, Component);
-    if (!Node) {
-      return false;
-    }
-  }
-  Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
-  return Node != nullptr;
+  return std::move(packagePath);
 }
 
 } // namespace Env

@@ -17,6 +17,7 @@ public:
   PackageNode *update(Type type, const std::string &name,
                       FileHeader *Header = nullptr);
   PackageNode *find(const std::string &name);
+  FileHeader *findHeader(const std::string &name);
 
 private:
   friend class PackageTree;
@@ -31,7 +32,8 @@ private:
 
 class PackageTree {
 public:
-  FileHeader *lookUp(const std::vector<std::string> &PackagePath);
+  FileHeader *findHeader(const std::vector<std::string> &Path) const;
+  PackageNode *findNode(const std::vector<std::string> &Path) const;
   bool update(const std::vector<std::string> &PackagePath,
               FileHeader &Header);
 

@@ -95,14 +95,17 @@ public:
   const std::set<AST::ModifierCode> &getModifiers() const;
   const std::string &getName() const;
   const AST::Node *getASTNode() const;
+  void setPackage(std::vector<std::string> package);
+  const std::vector<std::string> &getPackage() const;
 
 private:
-  std::unique_ptr<AST::Node> node;
-  std::vector<JoosField> fields;
-  std::vector<JoosMethod> methods;
-  std::vector<JoosConstructor> constructors;
   friend std::ostream &operator<<(std::ostream &stream,
                                   const FileHeader &fileHeader);
+  std::unique_ptr<AST::Node> node;
+  std::vector<std::string> package;
+  std::vector<JoosMethod> methods;
+  std::vector<JoosField> fields;
+  std::vector<JoosConstructor> constructors;
 };
 std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
 

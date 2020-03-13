@@ -75,8 +75,7 @@ bool Client::compile() {
 
     auto fileHeader = buildFileHeader(std::move(astRoot));
     if (!fileHeader) {
-      std::cerr << "File header creation failed"
-                << "\n";
+      std::cerr << "File header creation failed\n";
       return false;
     }
     if (outputFileHeader) {

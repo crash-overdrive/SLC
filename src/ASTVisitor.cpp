@@ -6,17 +6,11 @@ void Visitor::visit(const Start &Node) { postVisit(Node); }
 
 void Visitor::visit(const InterfaceDeclaration &Node) { postVisit(Node); }
 void Visitor::visit(const PackageDeclaration &Node) { postVisit(Node); }
-void Visitor::visit(const SingleImportDeclaration &Node) {
-  postVisit(Node);
-}
-void Visitor::visit(const DemandImportDeclaration &Node) {
-  postVisit(Node);
-}
+void Visitor::visit(const SingleImportDeclaration &Node) { postVisit(Node); }
+void Visitor::visit(const DemandImportDeclaration &Node) { postVisit(Node); }
 void Visitor::visit(const ClassDeclaration &Node) { postVisit(Node); }
 void Visitor::visit(const FieldDeclaration &Node) { postVisit(Node); }
-void Visitor::visit(const ConstructorDeclaration &Node) {
-  postVisit(Node);
-}
+void Visitor::visit(const ConstructorDeclaration &Node) { postVisit(Node); }
 void Visitor::visit(const MethodDeclaration &Node) { postVisit(Node); }
 void Visitor::visit(const Modifier &Node) { postVisit(Node); }
 void Visitor::visit(const Identifier &Node) { postVisit(Node); }
@@ -28,9 +22,7 @@ void Visitor::visit(const ArrayType &Node) { postVisit(Node); }
 void Visitor::visit(const VoidType &Node) { postVisit(Node); }
 void Visitor::visit(const Expression &Node) { postVisit(Node); }
 void Visitor::visit(const CastExpression &Node) { postVisit(Node); }
-void Visitor::visit(const SingleVariableDeclaration &Node) {
-  postVisit(Node);
-}
+void Visitor::visit(const SingleVariableDeclaration &Node) { postVisit(Node); }
 void Visitor::visit(const Super &Node) { postVisit(Node); }
 void Visitor::visit(const Interfaces &Node) { postVisit(Node); }
 void Visitor::visit(const Block &Node) { postVisit(Node); }
@@ -131,9 +123,7 @@ void PrintVisitor::visit(const VoidType &VoidType) {
 
 void PrintVisitor::visit(const Expression &) { Stream << "Expression"; }
 
-void PrintVisitor::visit(const CastExpression &) {
-  Stream << "CastExpression";
-}
+void PrintVisitor::visit(const CastExpression &) { Stream << "CastExpression"; }
 
 void PrintVisitor::visit(const SingleVariableDeclaration &) {
   Stream << "SingleVariableDeclaration";
@@ -153,13 +143,9 @@ void PrintVisitor::visit(const IfThenElseStatement &) {
   Stream << "IfThenElseStatement";
 }
 
-void PrintVisitor::visit(const WhileStatement &) {
-  Stream << "WhileStatement";
-}
+void PrintVisitor::visit(const WhileStatement &) { Stream << "WhileStatement"; }
 
-void PrintVisitor::visit(const ForStatement &) {
-  Stream << "ForStatement";
-}
+void PrintVisitor::visit(const ForStatement &) { Stream << "ForStatement"; }
 
 void PrintVisitor::visit(const SimpleStatement &) {
   Stream << "SimpleStatement";
@@ -221,17 +207,13 @@ void PrintVisitor::visit(const NullLiteral &NullLiteral) {
   Stream << "NullLiteral: " << NullLiteral.getLiteral();
 }
 
-void PrintVisitor::visit(const ArgumentList &) {
-  Stream << "ArgumentList";
-}
+void PrintVisitor::visit(const ArgumentList &) { Stream << "ArgumentList"; }
 
 void PrintVisitor::visit(const FieldAccess &) { Stream << "FieldAccess"; }
 
 void PrintVisitor::visit(const ArrayAccess &) { Stream << "ArrayAccess"; }
 
-void PrintVisitor::visit(const ArrayCreation &) {
-  Stream << "ArrayCreation";
-}
+void PrintVisitor::visit(const ArrayCreation &) { Stream << "ArrayCreation"; }
 
 void PrintVisitor::visit(const ThisExpression &ThisExpression) {
   Stream << "ThisExpression: " << ThisExpression.getExpression();
@@ -241,9 +223,7 @@ void PrintVisitor::visit(const ForInit &) { Stream << "ForInit"; }
 
 void PrintVisitor::visit(const ForUpdate &) { Stream << "ForUpdate"; }
 
-void TrackVisitor::setLog(std::ostream &Stream) {
-  this->StreamRef = Stream;
-}
+void TrackVisitor::setLog(std::ostream &Stream) { this->StreamRef = Stream; }
 
 void TrackVisitor::setError() { ErrorState = true; }
 
