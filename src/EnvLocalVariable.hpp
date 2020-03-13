@@ -1,24 +1,30 @@
 #ifndef LOCALVARIABLESCOPE_HPP
 #define LOCALVARIABLESCOPE_HPP
 
-#include <memory>
-#include <unordered_set>
-#include <vector>
+#include <map>
+#include <stack>
+
+#include "EnvFileHeader.hpp"
 
 namespace Env {
 
-class LocalVariableScope {
+class Environment {
 public:
-  LocalVariableScope(LocalVariableScope *Parent = nullptr);
-  LocalVariableScope *pop() const;
-  LocalVariableScope *push();
-  bool lookUp(const std::string &Name);
-  bool add(const std::string &Name);
+  bool findVariable(const std::string &name);
+  bool addVariable(const std::string &name, Env::VariableDescriptor variableDescriptor);
 
 private:
-  LocalVariableScope *Parent;
-  std::unordered_set<std::string> Variables{};
-  std::vector<std::unique_ptr<LocalVariableScope>> Children{};
+  std::map<std::string, Env::VariableDescriptor> variableTable;
+};
+
+class LocalVariableAnalysis {
+public:
+  bool findVariable(const std::string &name);
+  bool addVariable(const std::string &name, Env::VariableDescriptor variableDescriptor);
+  void addEnvironment();
+  void removeEnvironment();
+private:
+  std::vector <Environment> environments;
 };
 
 }; // namespace Env

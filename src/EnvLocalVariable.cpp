@@ -2,34 +2,42 @@
 
 namespace Env {
 
-LocalVariableScope::LocalVariableScope(LocalVariableScope *Parent)
-    : Parent(Parent) {}
-
-LocalVariableScope *LocalVariableScope::pop() const { return Parent; }
-
-LocalVariableScope *LocalVariableScope::push() {
-  Children.emplace_back(std::make_unique<LocalVariableScope>(this));
-  return Children.back().get();
+bool Environment::findVariable(const std::string &name) {
+  return (variableTable.find(name) != variableTable.end());
 }
 
-bool LocalVariableScope::lookUp(const std::string &Name) {
-  LocalVariableScope *Node = this;
-  while (Node) {
-    auto it = Node->Variables.find(Name);
-    if (it != Node->Variables.end()) {
+bool Environment::addVariable(const std::string &name, Env::VariableDescriptor variableDescriptor) {
+  if (findVariable(name)) {
+    return false;
+  }
+  variableTable[name] = variableDescriptor;
+  return true;
+}
+
+bool LocalVariableAnalysis::findVariable(const std::string &name) {
+  for (auto &environment : environments) {
+    if (environment.findVariable(name)) {
       return true;
     }
-    Node = Node->Parent;
   }
   return false;
 }
 
-bool LocalVariableScope::add(const std::string &Name) {
-  if (lookUp(Name)) {
+bool LocalVariableAnalysis::addVariable(const std::string &name, Env::VariableDescriptor variableDescriptor) {
+  if (findVariable(name)) {
     return false;
   }
-  Variables.emplace(Name);
+  environments.back().addVariable(name, variableDescriptor);
   return true;
+}
+
+void LocalVariableAnalysis::addEnvironment() {
+  Env::Environment environment;
+  environments.push_back(environment);
+}
+
+void LocalVariableAnalysis::removeEnvironment() {
+  environments.pop_back();
 }
 
 }; // namespace Env
