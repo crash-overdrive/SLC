@@ -8,31 +8,22 @@ TEST_CASE("client process", "[client]") {
 
   SECTION("preprocess step") {
     Client.setBreakPoint(Client::VerifyName);
-    SECTION("accept") {
-      Client.addJavaFile("good.java");
-      REQUIRE(Client.compile());
-    }
+    SECTION("accept") { REQUIRE(Client.compile({"good.java"})); }
     SECTION("accept with folder") {
-      Client.addJavaFile("folder/good.java");
-      REQUIRE(Client.compile());
+      REQUIRE(Client.compile({"folder/good.java"}));
     }
-    SECTION("reject") {
-      Client.addJavaFile("foo.txt");
-      REQUIRE_FALSE(Client.compile());
-    }
+    SECTION("reject") { REQUIRE_FALSE(Client.compile({"foo.txt"})); }
     SECTION("reject first dot") {
-      Client.addJavaFile("bar.foo.java");
-      REQUIRE_FALSE(Client.compile());
+      REQUIRE_FALSE(Client.compile({"bar.foo.java"}));
     }
   }
 
   SECTION("a1") {
-    SECTION("error preprocess") {
+    SECTION("error VerifyName") {
       Client.setBreakPoint(Client::VerifyName);
       for (const auto &FileName : A1ErrorPreprocess) {
         SECTION(FileName) {
-          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-          REQUIRE_FALSE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(1, {FileName})));
         }
       }
     }
@@ -41,8 +32,7 @@ TEST_CASE("client process", "[client]") {
       Client.setBreakPoint(Client::Scan);
       for (const auto &FileName : A1ErrorScan) {
         SECTION(FileName) {
-          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-          REQUIRE_FALSE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(1, {FileName})));
         }
       }
     }
@@ -51,8 +41,7 @@ TEST_CASE("client process", "[client]") {
       Client.setBreakPoint(Client::Parse);
       for (const auto &FileName : A1ErrorParse) {
         SECTION(FileName) {
-          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-          REQUIRE_FALSE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(1, {FileName})));
         }
       }
     }
@@ -60,8 +49,7 @@ TEST_CASE("client process", "[client]") {
     SECTION("accept") {
       for (const auto &FileName : A1Valid) {
         SECTION(FileName) {
-          Client.addJavaFile(TestDataDir + "/java/a1/" + FileName);
-          REQUIRE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(1, {FileName})));
         }
       }
     }
@@ -72,10 +60,7 @@ TEST_CASE("client process", "[client]") {
       Client.setBreakPoint(Client::Parse);
       for (const auto &Group : A2ErrorParse) {
         SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-          }
-          REQUIRE_FALSE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(2, Group)));
         }
       }
     }
@@ -84,10 +69,7 @@ TEST_CASE("client process", "[client]") {
       Client.setBreakPoint(Client::FileHeader);
       for (const auto &Group : A2ErrorFileHeader) {
         SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-          }
-          REQUIRE_FALSE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(2, Group)));
         }
       }
     }
@@ -96,89 +78,73 @@ TEST_CASE("client process", "[client]") {
       Client.setBreakPoint(Client::PackageTree);
       for (const auto &Group : A2ErrorPackage) {
         SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-          }
-          REQUIRE_FALSE(Client.compile());
+          REQUIRE_FALSE(Client.compile(createMarmosetTest(2, Group)));
         }
       }
     }
-    //SECTION("reject") {
-      //for (const auto &Group : A2Error) {
-        //SECTION(Group[0]) {
-          //for (const auto &FileName : Group) {
-            //Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-          //}
-          //REQUIRE(Client.compile());
-        //}
-      //}
+    // SECTION("reject") {
+    // for (const auto &Group : A2Error) {
+    // SECTION(Group[0]) {
+    // for (const auto &FileName : Group) {
+    // Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
+    //}
+    // REQUIRE(Client.compile());
+    //}
+    //}
     //}
 
     SECTION("accept") {
       for (const auto &Group : A2Valid) {
         SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-          }
-          REQUIRE(Client.compile());
-        }
-      }
-    }
-  }
-
-  SECTION("a3") {
-    SECTION("accept") {
-      for (const auto &Group : A3Valid) {
-        SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a3/" + FileName);
-          }
-          REQUIRE(Client.compile());
+          REQUIRE(Client.compile(createMarmosetTest(2, Group)));
         }
       }
     }
 
-    SECTION("parse-error") {
-      Client.setBreakPoint(Client::Parse);
-      for (const auto &Group : A3ErrorParse) {
-        SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a3/" + FileName);
+    SECTION("a3") {
+      SECTION("accept") {
+        for (const auto &Group : A3Valid) {
+          SECTION(Group[0]) {
+            REQUIRE(Client.compile(createMarmosetTest(3, Group)));
           }
-          REQUIRE_FALSE(Client.compile());
+        }
+      }
+
+      SECTION("parse-error") {
+        Client.setBreakPoint(Client::Parse);
+        for (const auto &Group : A3ErrorParse) {
+          SECTION(Group[0]) {
+            REQUIRE_FALSE(Client.compile(createMarmosetTest(3, Group)));
+          }
         }
       }
     }
-  }
 
-  SECTION("a4") {
-    SECTION("accept") {
-      for (const auto &Group : A4Valid) {
-        SECTION(Group[0]) {
-          for (const auto &FileName : Group) {
-            Client.addJavaFile(TestDataDir + "/java/a4/" + FileName);
+    SECTION("a4") {
+      SECTION("accept") {
+        for (const auto &Group : A4Valid) {
+          SECTION(Group[0]) {
+            REQUIRE(Client.compile(createMarmosetTest(4, Group)));
           }
-          REQUIRE(Client.compile());
         }
       }
     }
-  }
 
+    SECTION("multiple files") {
+      std::vector<std::string> files{
+          TestDataDir +
+              "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
+          TestDataDir +
+              "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
+      };
+      REQUIRE(Client.compile(files));
+    }
 
-  SECTION("multiple files") {
-    Client.addJavaFiles({
-        TestDataDir +
-            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
-        TestDataDir +
-            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
-    });
-    REQUIRE(Client.compile());
-  }
-
-  SECTION("stdlib") {
-    Client.addJavaFile(
-        TestDataDir +
-        "/java/a2/J1_3_PackageExists_AsPrefix_External/Main.java");
-    REQUIRE(Client.compile());
+    SECTION("stdlib") {
+      std::vector<std::string> files{
+          TestDataDir +
+          "/java/a2/J1_3_PackageExists_AsPrefix_External/Main.java"};
+      REQUIRE(Client.compile(files));
+    }
   }
 }
