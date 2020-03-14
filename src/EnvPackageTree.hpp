@@ -42,12 +42,10 @@ private:
       std::make_unique<PackageNode>(PackageNode::Global);
 };
 
-class PackageTreeVisitor : public AST::TrackVisitor {
+class PackageTreeVisitor : public AST::Visitor {
 public:
+  void visit(const AST::Start &Start) override;
   void visit(const AST::PackageDeclaration &Decl) override;
-  // Avoid unecessary traversal
-  void visit(const AST::ClassDeclaration &Decl) override;
-  void visit(const AST::InterfaceDeclaration &Decl) override;
   std::vector<std::string> getPackagePath() const;
 
 private:

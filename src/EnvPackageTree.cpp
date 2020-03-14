@@ -96,15 +96,15 @@ bool PackageTree::update(const std::vector<std::string> &PackagePath,
   return true;
 }
 
+void PackageTreeVisitor::visit(const AST::Start &Start) {
+  dispatchChildren(Start);
+}
+
 void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
   AST::NameVisitor Visitor;
   Visitor.dispatchChildren(Decl);
   packagePath = Visitor.getName();
 }
-
-void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
-
-void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
 
 std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
   return std::move(packagePath);
