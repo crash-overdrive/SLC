@@ -49,7 +49,7 @@ TEST_CASE("client process", "[client]") {
     SECTION("accept") {
       for (const auto &FileName : A1Valid) {
         SECTION(FileName) {
-          REQUIRE_FALSE(Client.compile(createMarmosetTest(1, {FileName})));
+          REQUIRE(Client.compile(createMarmosetTest(1, {FileName})));
         }
       }
     }

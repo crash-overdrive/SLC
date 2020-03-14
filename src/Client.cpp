@@ -17,12 +17,18 @@ void Client::addPrintPoint(BreakPointType printPoint) {
   printPoints.emplace(printPoint);
 }
 
-bool Client::compile(const std::vector<std::string> &fileNames) {
-  for (const auto &file : fileNames) {
+std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
+  setBreakPoint(BreakPointType::Ast);
+  buildFileHeader(fullName);
+  return std::move(logAstRoot);
+}
+
+bool Client::compile(const std::vector<std::string> &fullNames) {
+  for (const auto &file : fullNames) {
     buildFileHeader(file);
   }
   buildEnvironment();
-  return errorState;
+  return !errorState;
 }
 
 void Client::buildFileHeader(const std::string &file) {
@@ -33,22 +39,22 @@ void Client::buildFileHeader(const std::string &file) {
 }
 
 void Client::verifyFileName(const std::string &fullName) {
-  std::string fileName;
-  const auto pos = fullName.find_last_of('/');
+  std::string fileName{fullName};
+  const auto pos = fileName.find_last_of('/');
   if (pos != std::string::npos) {
-    fileName = fullName.substr(pos + 1);
+    fileName = fileName.substr(pos + 1);
   }
   const std::string ext(".java");
   if (fileName.length() < ext.length()) {
-    std::cerr << fullName << " is invalid\n";
+    std::cerr << fileName << " is invalid\n";
     errorState = true;
     return;
   }
   size_t Position = fileName.find(".");
   if (fileName.compare(Position, ext.size(), ext) != 0) {
-      std::cerr << fullName << " is invalid\n";
-      errorState = true;
-      return;
+    std::cerr << fileName << " is invalid\n";
+    errorState = true;
+    return;
   }
   if (printPoints.size() > 0) {
     std::cerr << fullName << '\n';
@@ -78,7 +84,7 @@ void Client::scan(std::istream &stream, const std::string &fullName) {
   std::vector<Lex::Token> tokens = scanner->getTokens();
   if (printPoints.find(Scan) != printPoints.end()) {
     std::copy(tokens.begin(), tokens.end(),
-              std::ostream_iterator<Lex::Token>(std::cout, "\n"));
+              std::ostream_iterator<Lex::Token>(std::cerr, "\n"));
   }
   if (breakPoint != Scan) {
     parse(tokens, fullName);
@@ -95,7 +101,7 @@ void Client::parse(const std::vector<Lex::Token> &tokens,
   }
   Parse::Tree tree = parser->buildTree();
   if (printPoints.find(Parse) != printPoints.end()) {
-    std::cout << tree << '\n';
+    std::cerr << tree << '\n';
   }
   if (breakPoint != Parse) {
     buildAST(tree, fullName);
@@ -113,10 +119,13 @@ void Client::buildAST(const Parse::Tree &tree, const std::string &fullName) {
   }
   if (breakPoint != Ast) {
     buildFileHeader(std::move(root), fullName);
+  } else {
+    logAstRoot = std::move(root);
   }
 }
 
-void Client::buildFileHeader(std::unique_ptr<AST::Start> node, const std::string &fullName) {
+void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
+                             const std::string &fullName) {
   Env::JoosTypeVisitor typeVisitor;
   Env::JoosTypeBodyVisitor typeBodyVisitor;
 

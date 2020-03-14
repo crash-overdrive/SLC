@@ -30,8 +30,11 @@ public:
   void setBreakPoint(BreakPointType breakPoint);
   void addPrintPoint(BreakPointType printPoint);
 
-  bool compile(const std::vector<std::string> &fileNames);
-  void buildFileHeader(const std::string &fileName);
+  // buildAST is for debugging and testing
+  std::unique_ptr<AST::Start> buildAST(const std::string &fullName);
+  bool compile(const std::vector<std::string> &fullNames);
+
+  void buildFileHeader(const std::string &fullName);
   void verifyFileName(const std::string &fullName);
   void openFile(const std::string &fullName);
   void scan(std::istream &stream, const std::string &fullName);
@@ -49,6 +52,7 @@ private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
   std::vector<Env::FileHeader> fileHeaders;
+  std::unique_ptr<AST::Start> logAstRoot;
 
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;
