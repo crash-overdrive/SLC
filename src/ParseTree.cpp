@@ -1,102 +1,102 @@
 #include "ParseTree.hpp"
 
-Parse::Node::Node(const std::string &Name) : Name(Name), Tag(), Level(0) {}
+Parse::Node::Node(const std::string &name) : name(name), tag(), level(0) {}
 
-Parse::Node::Node(const std::string &Name, const std::string &Tag)
-    : Name(Name), Tag(Tag), Level(0) {}
+Parse::Node::Node(const std::string &name, const std::string &tag)
+    : name(name), tag(tag), level(0) {}
 
-void Parse::Node::addChild(std::unique_ptr<Node> Child) {
-  Children.emplace_back(std::move(Child));
+void Parse::Node::addChild(std::unique_ptr<Node> child) {
+  children.emplace_back(std::move(child));
 }
 
-std::string Parse::Node::getName() const { return Name; }
+std::string Parse::Node::getName() const { return name; }
 
-std::string Parse::Node::getTag() const { return Tag; }
+std::string Parse::Node::getTag() const { return tag; }
 
-size_t Parse::Node::getLevel() const { return Level; }
+size_t Parse::Node::getLevel() const { return level; }
 
 const Parse::Node *
-Parse::Node::getSuccessor(std::initializer_list<std::string> Names) const {
-  const Node *Node = this;
-  for (const auto &Name : Names) {
-    Node = Node->getChild(Name);
-    if (!Node) {
+Parse::Node::getSuccessor(std::initializer_list<std::string> names) const {
+  const Node *node = this;
+  for (const auto &name : names) {
+    node = node->getChild(name);
+    if (!node) {
       return nullptr;
     }
   }
-  return Node;
+  return node;
 }
 
 const std::vector<std::unique_ptr<Parse::Node>> &
 Parse::Node::getChildren() const {
-  return Children;
+  return children;
 }
 
-const Parse::Node *Parse::Node::getChild(const std::string &String) const {
-  for (const auto &Child : Children) {
-    if (Child->Name == String) {
-      return Child.get();
+const Parse::Node *Parse::Node::getChild(const std::string &string) const {
+  for (const auto &child : children) {
+    if (child->name == string) {
+      return child.get();
     }
   }
   return nullptr;
 }
 
 const Parse::Node *Parse::Node::getFirstChild() const {
-  return Children.size() > 0 ? Children[0].get() : nullptr;
+  return children.size() > 0 ? children[0].get() : nullptr;
 }
 
 Parse::Tree::Tree() {}
 
-Parse::Tree::Tree(std::unique_ptr<Node> Root) : Root(std::move(Root)) {
-  this->Root->Level = 0;
-  for (auto &Parent : *this) {
-    std::pair<std::string, Node &> Pair(Parent.Name, Parent);
-    for (auto &Child : Parent.Children) {
-      Child->Level = Parent.Level + 1;
+Parse::Tree::Tree(std::unique_ptr<Node> root) : root(std::move(root)) {
+  this->root->level = 0;
+  for (auto &parent : *this) {
+    std::pair<std::string, Node &> pair(parent.name, parent);
+    for (auto &child : parent.children) {
+      child->level = parent.level + 1;
     }
   }
 }
 
-Parse::Tree::Iterator::Iterator(Node *Ptr) : Ptr(Ptr) {}
+Parse::Tree::Iterator::Iterator(Node *ptr) : ptr(ptr) {}
 
 Parse::Tree::Iterator &Parse::Tree::Iterator::operator++() {
-  for (auto It = Ptr->Children.rbegin(); It != Ptr->Children.rend(); ++It) {
-    Vector.emplace_back(It->get());
+  for (auto it = ptr->children.rbegin(); it != ptr->children.rend(); ++it) {
+    vector.emplace_back(it->get());
   }
-  if (Vector.empty()) {
-    Ptr = nullptr;
+  if (vector.empty()) {
+    ptr = nullptr;
   } else {
-    Ptr = Vector.back();
-    Vector.pop_back();
+    ptr = vector.back();
+    vector.pop_back();
   }
   return *this;
 }
 
-Parse::Node &Parse::Tree::Iterator::operator*() const { return *Ptr; }
+Parse::Node &Parse::Tree::Iterator::operator*() const { return *ptr; }
 
-Parse::Node *Parse::Tree::Iterator::operator->() { return Ptr; }
+Parse::Node *Parse::Tree::Iterator::operator->() { return ptr; }
 
-bool Parse::Tree::Iterator::operator!=(const Iterator &Iter) const {
-  return Ptr != Iter.Ptr;
+bool Parse::Tree::Iterator::operator!=(const Iterator &iter) const {
+  return ptr != iter.ptr;
 }
 
-bool Parse::Tree::Iterator::operator==(const Iterator &Iter) const {
-  return Ptr == Iter.Ptr;
+bool Parse::Tree::Iterator::operator==(const Iterator &iter) const {
+  return ptr == iter.ptr;
 }
 
 Parse::Tree::Iterator Parse::Tree::begin() const {
-  return Parse::Tree::Iterator(Root.get());
+  return Parse::Tree::Iterator(root.get());
 }
 
 Parse::Tree::Iterator Parse::Tree::end() const {
   return Parse::Tree::Iterator(nullptr);
 }
 
-const Parse::Node &Parse::Tree::getRoot() const { return *Root; }
+const Parse::Node &Parse::Tree::getRoot() const { return *root; }
 
-std::ostream &Parse::operator<<(std::ostream &Stream, const Parse::Tree &T) {
-  for (const auto &Node : T) {
-    Stream << std::string(Node.getLevel(), ' ') << Node.getName() << '\n';
+std::ostream &Parse::operator<<(std::ostream &stream, const Parse::Tree &t) {
+  for (const auto &node : t) {
+    stream << std::string(node.getLevel(), ' ') << node.getName() << '\n';
   }
-  return Stream;
+  return stream;
 }

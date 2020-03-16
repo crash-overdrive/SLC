@@ -8,38 +8,38 @@
 
 namespace Lex {
 
-	extern std::set<int> trapState;
-  extern std::set<char> alphabets;
-  constexpr char EPSILON = -1;
+extern std::set<int> trapState;
+extern std::set<char> alphabets;
+constexpr char EPSILON = -1;
 
-  void setAlphabets();
+void setAlphabets();
 
-	struct AcceptingStateInfo {
-    std::string tokenKind;
-    int tokenPriority;
+struct AcceptingStateInfo {
+  std::string tokenKind;
+  int tokenPriority;
 
-    AcceptingStateInfo();
-    AcceptingStateInfo(std::string tokenKind, int tokenPriority);
-    // bool operator==(const AcceptingStateInfo& acceptingState) const;
-  };
+  AcceptingStateInfo();
+  AcceptingStateInfo(std::string tokenKind, int tokenPriority);
+  // bool operator==(const AcceptingStateInfo& acceptingState) const;
+};
 
-	struct Dfa {
-    int startState;
-    int trapState;
-    std::unordered_set<int> states;
-	  std::unordered_map<int, std::unordered_map<char, int>> transitions;
-	  std::unordered_map<int, AcceptingStateInfo> acceptingStates;
+struct Dfa {
+  int startState;
+  int trapState;
+  std::unordered_set<int> states;
+  std::unordered_map<int, std::unordered_map<char, int>> transitions;
+  std::unordered_map<int, AcceptingStateInfo> acceptingStates;
 
-    void setStartState(int state);
-    void setTrapState(int state);
-    void initialiseStates(int numberOfStates);
-    void addTransition(int currentState, char transitionSymbol, int nextState);
-    void addAcceptingState(int state, AcceptingStateInfo newAcceptingState);
-    void printInfo();
+  void setStartState(int state);
+  void setTrapState(int state);
+  void initialiseStates(int numberOfStates);
+  void addTransition(int currentState, char transitionSymbol, int nextState);
+  void addAcceptingState(int state, AcceptingStateInfo newAcceptingState);
+  void printInfo();
 
-    int getNextState(int currentState, char transitionSymbol);
-    AcceptingStateInfo getAcceptingState(int currentState);
-	};
-}
+  int getNextState(int currentState, char transitionSymbol);
+  AcceptingStateInfo getAcceptingState(int currentState);
+};
+} // namespace Lex
 
 #endif

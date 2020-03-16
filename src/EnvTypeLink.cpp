@@ -3,88 +3,89 @@
 
 namespace Env {
 
-TypeLink::TypeLink(FileHeader &Header, class PackageTree &Tree)
-    : Header(Header), Tree(Tree) {}
+TypeLink::TypeLink(Hierarchy &hierarchy, PackageTree &tree)
+    : hierarchy(hierarchy), tree(tree) {}
 
-bool TypeLink::addSingleImport(const std::vector<std::string> &Name) {
-  FileHeader *ImportHeader = Tree.findHeader(Name);
-  if (ImportHeader == nullptr || ImportHeader->getName() == Header.getName()) {
+bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
+  Hierarchy *importHierarchy = tree.findHierarchy(name);
+  if (importHierarchy == nullptr ||
+      importHierarchy->getIdentifier() == hierarchy.getIdentifier()) {
     return false;
   }
-  auto it = SingleImports.find(ImportHeader->getName());
-  if (it != SingleImports.end()) {
-    return (it->second->getASTNode() == ImportHeader->getASTNode());
+  auto it = singleImports.find(importHierarchy->getIdentifier());
+  if (it != singleImports.end()) {
+    return (it->second->getASTNode() == importHierarchy->getASTNode());
   }
-  SingleImports.emplace(ImportHeader->getName(), ImportHeader);
+  singleImports.emplace(importHierarchy->getIdentifier(), importHierarchy);
   return true;
 }
 
-void TypeLink::addDemandImport(const std::vector<std::string> &Name) {
-  PackageNode *Node = Tree.findNode(Name);
-  if (Node != nullptr) {
-    OnDemandImports.emplace(Node);
+void TypeLink::addDemandImport(const std::vector<std::string> &name) {
+  PackageNode *node = tree.findNode(name);
+  if (node != nullptr) {
+    onDemandImports.emplace(node);
   }
 }
 
-FileHeader *TypeLink::find(const std::vector<std::string> &Name) const {
-  if (Name.size() == 0) {
+Hierarchy *TypeLink::find(const std::vector<std::string> &name) const {
+  if (name.size() == 0) {
     return nullptr;
   }
   // Name is fully qualified-name
-  if (Name.size() > 1) {
-    return Tree.findHeader(Name);
+  if (name.size() > 1) {
+    return tree.findHierarchy(name);
   }
-  const std::string &SimpleName = Name.at(0);
-  if (Header.getName() == SimpleName) {
-    return &Header;
+  const std::string &simpleName = name.at(0);
+  if (hierarchy.getIdentifier() == simpleName) {
+    return &hierarchy;
   }
-  auto SingleImportsIt = SingleImports.find(SimpleName);
-  if (SingleImportsIt != SingleImports.end()) {
-    return SingleImportsIt->second;
+  auto singleImportsIt = singleImports.find(simpleName);
+  if (singleImportsIt != singleImports.end()) {
+    return singleImportsIt->second;
   }
-  FileHeader *SamePackageHeader = findSamePackage(SimpleName);
-  if (SamePackageHeader != nullptr) {
-    return SamePackageHeader;
+  Hierarchy *samePackageHierarchy = findSamePackage(simpleName);
+  if (samePackageHierarchy != nullptr) {
+    return samePackageHierarchy;
   }
-  FileHeader *DemandHeader = findDemand(SimpleName);
-  if (DemandHeader != nullptr) {
-    return DemandHeader;
+  Hierarchy *demandHierarchy = findDemand(simpleName);
+  if (demandHierarchy != nullptr) {
+    return demandHierarchy;
   }
   return nullptr;
 }
 
-FileHeader *TypeLink::findSamePackage(const std::string &Name) const {
-  PackageNode *Node = Tree.findNode(Header.getPackage());
+Hierarchy *TypeLink::findSamePackage(const std::string &name) const {
+  PackageNode *Node = tree.findNode(hierarchy.getPackage());
   if (Node != nullptr) {
-    return Node->findHeader(Name);
+    return Node->findHierarchy(name);
   }
   return nullptr;
 }
 
-FileHeader *TypeLink::findDemand(const std::string &Name) const {
-  for (const auto &OnDemandImport : OnDemandImports) {
-    FileHeader *Header = OnDemandImport->findHeader(Name);
-    if (Header != nullptr) {
-      return Header;
+Hierarchy *TypeLink::findDemand(const std::string &name) const {
+  for (const auto &onDemandImport : onDemandImports) {
+    Hierarchy *hierarchy = onDemandImport->findHierarchy(name);
+    if (hierarchy != nullptr) {
+      return hierarchy;
     }
   }
   return nullptr;
 }
 
-void TypeLinkVisitor::visit(const AST::Start &Start) {
-  dispatchChildren(Start);
+void TypeLinkVisitor::visit(const AST::Start &start) {
+  dispatchChildren(start);
 }
 
-void TypeLinkVisitor::visit(const AST::SingleImportDeclaration &Decl) {
-  AST::NameVisitor Visitor;
-  Visitor.dispatchChildren(Decl);
-  SingleImports.emplace_back(Visitor.getName());
+void TypeLinkVisitor::visit(const AST::SingleImportDeclaration &decl) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(decl);
+  singleImports.emplace_back(visitor.getName());
 };
 
-void TypeLinkVisitor::visit(const AST::DemandImportDeclaration &Decl) {
-  AST::NameVisitor Visitor;
-  Visitor.dispatchChildren(Decl);
-  DemandImports.emplace_back(Visitor.getName());
+void TypeLinkVisitor::visit(const AST::DemandImportDeclaration &decl) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(decl);
+  demandImports.emplace_back(visitor.getName());
 };
 
 void TypeLinkVisitor::visit(const AST::InterfaceDeclaration &){};
@@ -93,12 +94,12 @@ void TypeLinkVisitor::visit(const AST::ClassDeclaration &){};
 
 std::vector<std::vector<std::string>>
 TypeLinkVisitor::getSingleImports() const {
-  return std::move(SingleImports);
+  return std::move(singleImports);
 }
 
 std::vector<std::vector<std::string>>
 TypeLinkVisitor::getDemandImports() const {
-  return std::move(DemandImports);
+  return std::move(demandImports);
 }
 
 } // namespace Env

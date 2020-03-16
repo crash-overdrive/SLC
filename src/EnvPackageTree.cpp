@@ -3,11 +3,11 @@
 
 namespace Env {
 
-PackageNode::PackageNode(Type type, const std::string &name, FileHeader *header)
-    : type(type), name(name), header(header) {}
+PackageNode::PackageNode(Type type, const std::string &name, Hierarchy *hierarchy)
+    : type(type), name(name), hierarchy(hierarchy) {}
 
 PackageNode *PackageNode::update(Type type, const std::string &name,
-                                 FileHeader *header) {
+                                 Hierarchy *header) {
   if (this->type != Global && this->type != Package)
     return nullptr;
   switch (type) {
@@ -31,7 +31,7 @@ PackageNode *PackageNode::find(const std::string &name) {
 /**
  * Find header under a package
  */
-FileHeader *PackageNode::findHeader(const std::string &name) {
+Hierarchy *PackageNode::findHierarchy(const std::string &name) {
   if (type == PackageNode::Global) {
     return nullptr;
   }
@@ -39,72 +39,73 @@ FileHeader *PackageNode::findHeader(const std::string &name) {
   if (node == nullptr) {
     return nullptr;
   }
-  return node->header;
+  return node->hierarchy;
 }
 
 
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
-  auto It = children.find(name);
-  if (It != children.end()) {
-    return (It->second.type == Package) ? &It->second : nullptr;
+  auto it = children.find(name);
+  if (it != children.end()) {
+    return (it->second.type == Package) ? &it->second : nullptr;
   }
   auto [ChildIt, Flag] = children.emplace(name, PackageNode{type, name});
   return &ChildIt->second;
 }
 
 PackageNode *PackageNode::addType(Type type, const std::string &name,
-                                  FileHeader *header) {
+                                  Hierarchy *header) {
   auto [It, Flag] = children.emplace(name, PackageNode{type, name, header});
   return Flag ? &It->second : nullptr;
 }
 
-FileHeader *
-PackageTree::findHeader(const std::vector<std::string> &Path) const {
-  PackageNode *Node = findNode(Path);
-  return (Node != nullptr) ? Node->header : nullptr;
+Hierarchy *
+PackageTree::findHierarchy(const std::vector<std::string> &path) const {
+  PackageNode *node = findNode(path);
+  return (node != nullptr) ? node->hierarchy : nullptr;
 }
 
-PackageNode *PackageTree::findNode(const std::vector<std::string> &Path) const {
-  PackageNode *Node = Root.get();
-  for (const auto &Component : Path) {
-    Node = Node->find(Component);
-    if (!Node) {
+PackageNode *PackageTree::findNode(const std::vector<std::string> &path) const {
+  PackageNode *node = root.get();
+  for (const auto &component : path) {
+    node = node->find(component);
+    if (!node) {
       return nullptr;
     }
   }
-  return Node;
+  return node;
 }
 
-bool PackageTree::update(const std::vector<std::string> &PackagePath,
-                         FileHeader &Header) {
+bool PackageTree::update(std::vector<std::string> &&packagePath,
+                         Hierarchy &hierarchy) {
   // No Package
-  if (PackagePath.size() == 0) {
+  if (packagePath.size() == 0) {
     return true;
   }
-  PackageNode *Node = Root.get();
-  for (const auto &Component : PackagePath) {
-    Node = Node->update(PackageNode::Package, Component);
-    if (!Node) {
+  PackageNode *node = root.get();
+  for (const auto &component : packagePath) {
+    node = node->update(PackageNode::Package, component);
+    if (!node) {
       return false;
     }
   }
-  Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
-  if (Node == nullptr) {
+  std::string identifier = hierarchy.getIdentifier();
+  node = node->update(PackageNode::JoosType, identifier, &hierarchy);
+  if (node == nullptr) {
     return false;
   }
-  Header.setPackage(PackagePath);
+  hierarchy.setPackage(std::move(packagePath));
   return true;
 }
 
-void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
-  AST::NameVisitor Visitor;
-  Visitor.dispatchChildren(Decl);
-  packagePath = Visitor.getName();
+void PackageTreeVisitor::visit(const AST::Start &start) {
+  dispatchChildren(start);
 }
 
-void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
-
-void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
+void PackageTreeVisitor::visit(const AST::PackageDeclaration &decl) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(decl);
+  packagePath = visitor.getName();
+}
 
 std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
   return std::move(packagePath);

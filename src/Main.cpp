@@ -25,10 +25,10 @@ std::unordered_map<std::string, Client::BreakPointType> outputMap{
 };
 
 std::unordered_map<std::string, std::vector<std::string>> stdlibMap{
-    {"--std-lib2", Stdlib2Files},
-    {"--std-lib3", Stdlib3Files},
-    {"--std-lib4", Stdlib4Files},
-    {"--std-lib5", Stdlib5Files},
+    {"--std-lib2", stdlib2Files},
+    {"--std-lib3", stdlib3Files},
+    {"--std-lib4", stdlib4Files},
+    {"--std-lib5", stdlib5Files},
 };
 
 void usage() {
@@ -46,15 +46,15 @@ int main(int argc, char *argv[]) {
   std::ifstream scannerStream;
   std::ifstream parserStream;
 
-  scannerStream.open(TokensLexFile);
+  scannerStream.open(tokensLexFile);
   if (!scannerStream.is_open()) {
-    std::cerr << "Error initialising scanner, " << TokensLexFile
+    std::cerr << "Error initialising scanner, " << tokensLexFile
               << " could not be opened" << std::endl;
     return 42;
   }
-  parserStream.open(JoosLRFile);
+  parserStream.open(joosLRFile);
   if (!parserStream.is_open()) {
-    std::cerr << "Error initialising parser, " << JoosLRFile
+    std::cerr << "Error initialising parser, " << joosLRFile
               << " could not be opened" << std::endl;
     return 42;
   }

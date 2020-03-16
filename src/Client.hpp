@@ -39,20 +39,21 @@ public:
   void openFile(const std::string &fullName);
   void scan(std::istream &stream, const std::string &fullName);
   void parse(const std::vector<Lex::Token> &tokens, const std::string &fulName);
-  void buildAST(const Parse::Tree &ParseTree, const std::string &fullName);
-  void buildFileHeader(std::unique_ptr<AST::Start> Root,
+  void buildAST(const Parse::Tree &parseTree, const std::string &fullName);
+  void buildFileHeader(std::unique_ptr<AST::Start> root,
                        const std::string &fulName);
   void weed(Env::FileHeader fileHeader, const std::string &fullName);
 
   void buildEnvironment();
   void buildPackageTree();
-  void buildTypeLink(const Env::PackageTree &Tree);
+  void buildTypeLink(const Env::PackageTree &tree);
 
 private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
-  std::vector<Env::FileHeader> fileHeaders;
+
   std::unique_ptr<AST::Start> logAstRoot;
+  std::vector<Env::Hierarchy> hierarchies;
 
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;

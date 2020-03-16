@@ -3,73 +3,73 @@
 #include <sstream>
 
 Parse::DFA::DFA()
-    : Productions(), States(), FinalProductions(), StateStack(), NodeStack(),
-      errorState(false), Current(&States[0]) {}
+    : productions(), states(), finalProductions(), stateStack(), nodeStack(),
+      errorState(false), current(&states[0]) {}
 
-void Parse::DFA::read(const Lex::Token &Tok) {
+void Parse::DFA::read(const Lex::Token &tok) {
   if (errorState) {
     return;
   }
-  auto ReducesIt = Current->Reduces.find(Tok.Type);
-  while (ReducesIt != Current->Reduces.end()) {
-    const Production &Production = ReducesIt->second;
-    reduce(Production);
-    shift(Current->Shifts.at(Production.LHS));
-    ReducesIt = Current->Reduces.find(Tok.Type);
+  auto reducesIt = current->reduces.find(tok.type);
+  while (reducesIt != current->reduces.end()) {
+    const Production &production = reducesIt->second;
+    reduce(production);
+    shift(current->shifts.at(production.lhs));
+    reducesIt = current->reduces.find(tok.type);
   }
-  auto ShiftsIt = Current->Shifts.find(Tok.Type);
-  if (ShiftsIt != Current->Shifts.end()) {
-    shift(ShiftsIt->second);
-    NodeStack.emplace_back(std::make_unique<Node>(Tok.Type, Tok.Lexeme));
+  auto shiftsIt = current->shifts.find(tok.type);
+  if (shiftsIt != current->shifts.end()) {
+    shift(shiftsIt->second);
+    nodeStack.emplace_back(std::make_unique<Node>(tok.type, tok.lexeme));
     return;
   }
   errorState = true;
 }
 
 void Parse::DFA::clear() {
-  StateStack.clear();
-  NodeStack.clear();
+  stateStack.clear();
+  nodeStack.clear();
   errorState = false;
-  Current = &States[0];
+  current = &states[0];
 }
 
 bool Parse::DFA::error() const { return errorState; }
 
 bool Parse::DFA::accept() const {
-  for (const auto &Production : FinalProductions) {
-    const std::vector<std::string> &RHS = Production->RHS;
-    if (RHS.size() != NodeStack.size()) {
+  for (const auto &production : finalProductions) {
+    const std::vector<std::string> &rhs = production->rhs;
+    if (rhs.size() != nodeStack.size()) {
       continue;
     }
-    auto RHSIt = RHS.begin();
-    auto NodeIt = NodeStack.begin();
-    for (; RHSIt != RHS.end(); ++RHSIt, ++NodeIt) {
-      if (*RHSIt != (*NodeIt)->getName()) {
+    auto rhsIt = rhs.begin();
+    auto nodeIt = nodeStack.begin();
+    for (; rhsIt != rhs.end(); ++rhsIt, ++nodeIt) {
+      if (*rhsIt != (*nodeIt)->getName()) {
         break;
       }
     }
-    if (RHSIt == RHS.end()) {
+    if (rhsIt == rhs.end()) {
       return true;
     };
   }
   return false;
 }
 
-bool Parse::DFA::parse(std::istream &IStream) {
-  Lex::Token Tok;
-  while (IStream >> Tok) {
-    read(Tok);
+bool Parse::DFA::parse(std::istream &iStream) {
+  Lex::Token tok;
+  while (iStream >> tok) {
+    read(tok);
     if (errorState) {
       return false;
     }
-    IStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    iStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
   return accept();
 }
 
-bool Parse::DFA::parse(const std::vector<Lex::Token> &Tokens) {
-  for (const auto &Token : Tokens) {
-    read(Token);
+bool Parse::DFA::parse(const std::vector<Lex::Token> &tokens) {
+  for (const auto &token : tokens) {
+    read(token);
     if (errorState) {
       return false;
     }
@@ -78,78 +78,78 @@ bool Parse::DFA::parse(const std::vector<Lex::Token> &Tokens) {
 }
 
 Parse::Tree Parse::DFA::buildTree() {
-  std::unique_ptr<Node> Root = std::make_unique<Node>(StartSymbol);
-  for (auto &Child : NodeStack) {
-    Root->addChild(std::move(Child));
+  std::unique_ptr<Node> root = std::make_unique<Node>(startSymbol);
+  for (auto &child : nodeStack) {
+    root->addChild(std::move(child));
   }
   clear();
-  return Tree(std::move(Root));
+  return Tree(std::move(root));
 }
 
-void Parse::DFA::shift(const State &State) {
-  StateStack.emplace_back(&State);
-  Current = &State;
+void Parse::DFA::shift(const State &state) {
+  stateStack.emplace_back(&state);
+  current = &state;
 }
 
-void Parse::DFA::reduce(const Production &Production) {
-  size_t Size = Production.RHS.size();
-  std::unique_ptr<Node> Parent = std::make_unique<Node>(Production.LHS);
-  for (auto It = NodeStack.end() - Size; It != NodeStack.end(); ++It) {
-    Parent->addChild(std::move(*It));
+void Parse::DFA::reduce(const Production &production) {
+  size_t size = production.rhs.size();
+  std::unique_ptr<Node> parent = std::make_unique<Node>(production.lhs);
+  for (auto it = nodeStack.end() - size; it != nodeStack.end(); ++it) {
+    parent->addChild(std::move(*it));
   }
-  for (size_t i = 0; i < Size; ++i) {
-    StateStack.pop_back();
-    NodeStack.pop_back();
+  for (size_t i = 0; i < size; ++i) {
+    stateStack.pop_back();
+    nodeStack.pop_back();
   }
-  NodeStack.emplace_back(std::move(Parent));
-  Current = StateStack.back();
+  nodeStack.emplace_back(std::move(parent));
+  current = stateStack.back();
 }
 
-std::istream &Parse::operator>>(std::istream &Stream, DFA &DFA) {
-  unsigned int NumLines;
-  Stream >> NumLines;
-  for (unsigned int i = 0; i < NumLines + 1; i++) {
-    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+std::istream &Parse::operator>>(std::istream &stream, DFA &dfa) {
+  unsigned int numLines;
+  stream >> numLines;
+  for (unsigned int i = 0; i < numLines + 1; i++) {
+    stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
-  Stream >> NumLines;
-  for (unsigned int i = 0; i < NumLines + 1; i++) {
-    Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  stream >> numLines;
+  for (unsigned int i = 0; i < numLines + 1; i++) {
+    stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
-  Stream >> DFA.StartSymbol >> NumLines;
-  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  for (unsigned int i = 0; i < NumLines; i++) {
-    std::string Line;
-    std::string Symbol;
-    std::getline(Stream, Line);
-    std::istringstream Iss(Line);
-    Iss >> Symbol;
-    DFA.Productions[i].LHS = Symbol;
-    if (Symbol == DFA.StartSymbol) {
-      DFA.FinalProductions.emplace_back(&DFA.Productions[i]);
+  stream >> dfa.startSymbol >> numLines;
+  stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  for (unsigned int i = 0; i < numLines; i++) {
+    std::string line;
+    std::string symbol;
+    std::getline(stream, line);
+    std::istringstream iss(line);
+    iss >> symbol;
+    dfa.productions[i].lhs = symbol;
+    if (symbol == dfa.startSymbol) {
+      dfa.finalProductions.emplace_back(&dfa.productions[i]);
     }
-    while (Iss >> Symbol) {
-      DFA.Productions[i].RHS.emplace_back(Symbol);
+    while (iss >> symbol) {
+      dfa.productions[i].rhs.emplace_back(symbol);
     }
   }
-  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  Stream >> NumLines;
-  Stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  for (unsigned int i = 0; i < NumLines; i++) {
-    std::string Line;
-    std::getline(Stream, Line);
-    std::istringstream Iss(Line);
+  stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  stream >> numLines;
+  stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  for (unsigned int i = 0; i < numLines; i++) {
+    std::string line;
+    std::getline(stream, line);
+    std::istringstream iss(line);
 
-    unsigned int StateNum;
-    std::string LookAhead;
-    std::string ActionName;
-    unsigned int LastNum;
-    Iss >> StateNum >> LookAhead >> ActionName >> LastNum;
-    DFA::State &State = DFA.States[StateNum];
-    if (ActionName == "reduce") {
-      State.Reduces.emplace(LookAhead, DFA.Productions[LastNum]);
-    } else if (ActionName == "shift") {
-      State.Shifts.emplace(LookAhead, DFA.States[LastNum]);
+    unsigned int stateNum;
+    std::string lookAhead;
+    std::string actionName;
+    unsigned int lastNum;
+    iss >> stateNum >> lookAhead >> actionName >> lastNum;
+    DFA::State &state = dfa.states[stateNum];
+    if (actionName == "reduce") {
+      state.reduces.emplace(lookAhead, dfa.productions[lastNum]);
+    } else if (actionName == "shift") {
+      state.shifts.emplace(lookAhead, dfa.states[lastNum]);
     }
   }
-  return Stream;
+  return stream;
 }

@@ -6,25 +6,25 @@
 #include <sstream>
 
 TEST_CASE("scanner detects Java", "[scanner-java]") {
-  Lex::Scanner Scanner;
-  std::ifstream ScannerStream;
-  ScannerStream.open(TokensLexFile);
-  ScannerStream >> Scanner;
-  std::ifstream JavaStream;
+  Lex::Scanner scanner;
+  std::ifstream scannerStream;
+  scannerStream.open(tokensLexFile);
+  scannerStream >> scanner;
+  std::ifstream javaStream;
 
   SECTION("scanner output") {
-    JavaStream.open(TestDataDir + "/java/a1/J1_publicclasses.java");
-    CHECK(Scanner.scan(JavaStream));
-    std::vector<Lex::Token> Tokens = Scanner.getTokens();
-    std::ostringstream ScanOstream;
-    for (const auto &Token : Scanner.getTokens()) {
-      ScanOstream << Token << '\n';
+    javaStream.open(testDataDir + "/java/a1/J1_publicclasses.java");
+    CHECK(scanner.scan(javaStream));
+    std::vector<Lex::Token> tokens = scanner.getTokens();
+    std::ostringstream scanOstream;
+    for (const auto &token : scanner.getTokens()) {
+      scanOstream << token << '\n';
     }
 
-    std::ifstream TokensStream;
-    TokensStream.open(TestDataDir + "/tokens/a1/J1_publicclasses.tokens");
-    std::string TokenStr(std::istreambuf_iterator<char>{TokensStream}, {});
-    REQUIRE(ScanOstream.str() == TokenStr);
+    std::ifstream tokensStream;
+    tokensStream.open(testDataDir + "/tokens/a1/J1_publicclasses.tokens");
+    std::string tokenStr(std::istreambuf_iterator<char>{tokensStream}, {});
+    REQUIRE(scanOstream.str() == tokenStr);
   }
 }
 

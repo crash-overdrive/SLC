@@ -34,9 +34,7 @@
 build/*
 *Config.hpp
 
-# Vim
-.vimrc
-.ycm_extra_conf.py
+compile_commands.json
 
 # Python
 __pycache__

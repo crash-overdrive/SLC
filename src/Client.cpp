@@ -50,8 +50,8 @@ void Client::verifyFileName(const std::string &fullName) {
     errorState = true;
     return;
   }
-  size_t Position = fileName.find(".");
-  if (fileName.compare(Position, ext.size(), ext) != 0) {
+  size_t position = fileName.find(".");
+  if (fileName.compare(position, ext.size(), ext) != 0) {
     std::cerr << fileName << " is invalid\n";
     errorState = true;
     return;
@@ -169,7 +169,7 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
 void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
-    fileHeaders.emplace_back(std::move(fileHeader));
+    hierarchies.emplace_back(std::move(fileHeader));
   }
 }
 
@@ -182,10 +182,10 @@ void Client::buildEnvironment() {
 
 void Client::buildPackageTree() {
   Env::PackageTree tree;
-  for (auto &&fileHeader : fileHeaders) {
-    Env::PackageTreeVisitor Visitor;
-    fileHeader.getASTNode()->accept(Visitor);
-    if (!tree.update(Visitor.getPackagePath(), fileHeader)) {
+  for (auto &&hierarchy : hierarchies) {
+    Env::PackageTreeVisitor visitor;
+    hierarchy.getASTNode()->accept(visitor);
+    if (!tree.update(visitor.getPackagePath(), hierarchy)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;

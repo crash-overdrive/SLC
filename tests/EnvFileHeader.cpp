@@ -223,10 +223,10 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
 TEST_CASE("Visitor to create FileHeader", "[FileHeaderVisitor]") {
   Client client = createClient();
   std::unique_ptr<AST::Start> root =
-      client.buildAST(Stdlib + "/2.0/java/lang/Integer.java");
-  Env::JoosTypeVisitor Visitor;
+      client.buildAST(stdlib + "/2.0/java/lang/Integer.java");
+  Env::JoosTypeVisitor visitor;
   Env::JoosTypeBodyVisitor typeBodyVisitor;
-  root->accept(Visitor);
+  root->accept(visitor);
   root->accept(typeBodyVisitor);
 
   std::set<AST::ModifierCode> modifiers{
@@ -265,8 +265,8 @@ TEST_CASE("Visitor to create FileHeader", "[FileHeaderVisitor]") {
                                           "toString", {},
                                           nullptr}};
 
-  REQUIRE(Visitor.getModifiers() == modifiers) ;
-  REQUIRE(Visitor.getTypeDescriptor() == descriptor) ;
+  REQUIRE(visitor.getModifiers() == modifiers) ;
+  REQUIRE(visitor.getTypeDescriptor() == descriptor) ;
   REQUIRE(typeBodyVisitor.getJoosFields() == fields);
   REQUIRE(typeBodyVisitor.getJoosConstructors() == constructors);
   REQUIRE(typeBodyVisitor.getJoosMethods() == methods);

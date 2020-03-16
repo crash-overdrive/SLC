@@ -2,33 +2,33 @@
 
 namespace Env {
 
-LocalVariableScope::LocalVariableScope(LocalVariableScope *Parent)
-    : Parent(Parent) {}
+LocalVariableScope::LocalVariableScope(LocalVariableScope *parent)
+    : parent(parent) {}
 
-LocalVariableScope *LocalVariableScope::pop() const { return Parent; }
+LocalVariableScope *LocalVariableScope::pop() const { return parent; }
 
 LocalVariableScope *LocalVariableScope::push() {
-  Children.emplace_back(std::make_unique<LocalVariableScope>(this));
-  return Children.back().get();
+  children.emplace_back(std::make_unique<LocalVariableScope>(this));
+  return children.back().get();
 }
 
-bool LocalVariableScope::lookUp(const std::string &Name) {
-  LocalVariableScope *Node = this;
-  while (Node) {
-    auto it = Node->Variables.find(Name);
-    if (it != Node->Variables.end()) {
+bool LocalVariableScope::lookUp(const std::string &name) {
+  LocalVariableScope *node = this;
+  while (node) {
+    auto it = node->variables.find(name);
+    if (it != node->variables.end()) {
       return true;
     }
-    Node = Node->Parent;
+    node = node->parent;
   }
   return false;
 }
 
-bool LocalVariableScope::add(const std::string &Name) {
-  if (lookUp(Name)) {
+bool LocalVariableScope::add(const std::string &name) {
+  if (lookUp(name)) {
     return false;
   }
-  Variables.emplace(Name);
+  variables.emplace(name);
   return true;
 }
 

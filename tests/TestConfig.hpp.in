@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-const std::string TestDataDir = "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata";
+const std::string testDataDir = "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdata";
 
-const std::vector<std::string> A1Valid{
+const std::vector<std::string> a1Valid{
     "J1_01.java",
     "J1_1_AmbiguousName_AccessResultFromMethod.java",
     "J1_1_Cast_Complement.java",
@@ -139,11 +139,11 @@ const std::vector<std::string> A1Valid{
     "J2_staticfielddeclaration.java",
 };
 
-const std::vector<std::string> A1ErrorPreprocess{
+const std::vector<std::string> a1ErrorPreprocess{
     "Je_1_ClassDeclaration_WrongFileName_Dot.foo.java",
 };
 
-const std::vector<std::string> A1ErrorScan{
+const std::vector<std::string> a1ErrorScan{
     "Je_1_Escapes_1DigitOctal_1.java",
     "Je_1_Escapes_1DigitOctal_2.java",
     "Je_1_Escapes_1DigitOctal_3.java",
@@ -309,7 +309,7 @@ const std::vector<std::string> A1ErrorParse{
     "Je_Throws.java",
 };
 
-const std::vector<std::string> A1ErrorWeed{
+const std::vector<std::string> a1ErrorWeed{
     "Je_1_AbstractClass_Final.java",
     "Je_1_AbstractMethodCannotBeFinal.java",
     "Je_1_AbstractMethod_Body.java",
@@ -341,7 +341,7 @@ const std::vector<std::string> A1ErrorWeed{
     "Je_Native.java",
 };
 
-const std::vector<std::vector<std::string>> A2Valid{
+const std::vector<std::vector<std::string>> a2Valid{
     {
         "J1_1_Cast_NamedTypeAsVariable.java",
     },
@@ -899,14 +899,14 @@ const std::vector<std::vector<std::string>> A2Valid{
     },
 };
 
-const std::vector<std::vector<std::string>> A2ErrorParse{
+const std::vector<std::vector<std::string>> a2ErrorParse{
     {
         "Je_4_ProtectedOverride_DifferentThrows/Main.java",
         "Je_4_ProtectedOverride_DifferentThrows/Foo.java",
     },
 };
 
-const std::vector<std::vector<std::string>> A2ErrorFileHeader{
+const std::vector<std::vector<std::string>> a2ErrorFileHeader{
     {
         "Je_12_Fields_StaticNonStatic.java",
     },
@@ -945,7 +945,7 @@ const std::vector<std::vector<std::string>> A2ErrorFileHeader{
     },
 };
 
-const std::vector<std::vector<std::string>> A2ErrorPackage{
+const std::vector<std::vector<std::string>> a2ErrorPackage{
     {
         "Je_2_DuplicateType/Bar.java",
         "Je_2_DuplicateType/foo/Bar.java",
@@ -983,7 +983,7 @@ const std::vector<std::vector<std::string>> A2ErrorPackage{
     },
 };
 
-const std::vector<std::vector<std::string>> A2ErrorTyping{
+const std::vector<std::vector<std::string>> a2ErrorTyping{
     {
         "Je_13_Interface_SingleImport_ClashWithClass/List.java",
         "Je_13_Interface_SingleImport_ClashWithClass/Main.java",
@@ -1026,7 +1026,7 @@ const std::vector<std::vector<std::string>> A2ErrorTyping{
         "Je_3_PackageClashWithType_Linked/Main.java",
     },
 };
-const std::vector<std::vector<std::string>> A2Error{
+const std::vector<std::vector<std::string>> a2Error{
     {
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Interface.java",
@@ -1384,7 +1384,7 @@ const std::vector<std::vector<std::string>> A2Error{
     },
 };
 
-const std::vector<std::vector<std::string>> A3Valid{
+const std::vector<std::vector<std::string>> a3Valid{
     {
         "J1_5_AmbiguousName_DefaultPackageNotVisible/Bar.java",
         "J1_5_AmbiguousName_DefaultPackageNotVisible/foo/Bar.java",
@@ -1990,7 +1990,7 @@ const std::vector<std::vector<std::string>> A3Valid{
     },
 };
 
-const std::vector<std::vector<std::string>> A3ErrorParse{
+const std::vector<std::vector<std::string>> a3ErrorParse{
     {
         "Je_16_IncDec_Final_ArrayLengthInc.java",
     },
@@ -2050,7 +2050,7 @@ const std::vector<std::vector<std::string>> A3ErrorParse{
     },
 };
 
-const std::vector<std::vector<std::string>> A3Error{
+const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_16_ClosestMatch_Array.java",
     },
@@ -2522,7 +2522,7 @@ const std::vector<std::vector<std::string>> A3Error{
     },
 };
 
-const std::vector<std::vector<std::string>> A4Valid{
+const std::vector<std::vector<std::string>> a4Valid{
     {
         "J1_7_Reachability_AfterIfWithWhileTrue.java",
     },
@@ -2601,7 +2601,7 @@ const std::vector<std::vector<std::string>> A4Valid{
     },
 };
 
-const std::vector<std::vector<std::string>> A4Error{
+const std::vector<std::vector<std::string>> a4Error{
     {
         "Je_7_DefiniteAssignment_2LazyOr_Assignment.java",
     },
