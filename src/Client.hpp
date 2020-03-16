@@ -51,8 +51,9 @@ public:
 private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
-  std::vector<Env::FileHeader> fileHeaders;
+
   std::unique_ptr<AST::Start> logAstRoot;
+  std::vector<Env::Hierarchy> hierarchies;
 
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;

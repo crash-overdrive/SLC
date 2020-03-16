@@ -28,19 +28,19 @@ TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
   Env::PackageTree Tree;
 
   SECTION("Basic lookup") {
-    Env::FileHeader CanaryHeader({}, {Env::Type::Class, "canary"});
-    Env::FileHeader BarHeader({}, {Env::Type::Class, "bar"});
-    REQUIRE(Tree.update({"foo", "bar"}, CanaryHeader));
-    REQUIRE_FALSE(Tree.update({"foo"}, BarHeader));
-    REQUIRE(Tree.findHeader({"foo", "bar", "canary"}) == &CanaryHeader);
-    REQUIRE(Tree.findHeader({"foo"}) == nullptr);
+    Env::Hierarchy canary(Env::FileHeader({}, {Env::Type::Class, "canary"}));
+    Env::Hierarchy bar(Env::FileHeader({}, {Env::Type::Class, "bar"}));
+    REQUIRE(Tree.update({"foo", "bar"}, canary));
+    REQUIRE_FALSE(Tree.update({"foo"}, bar));
+    REQUIRE(Tree.findHierarchy({"foo", "bar", "canary"}) == &canary);
+    REQUIRE(Tree.findHierarchy({"foo"}) == nullptr);
   }
 
   SECTION("Single File") {
-    Env::FileHeader AHeader({}, {Env::Type::Class, "A"});
-    Env::FileHeader MainHeader({}, {Env::Type::Class, "Main"});
-    REQUIRE(Tree.update({"Main", "B"}, AHeader));
-    REQUIRE(Tree.update({}, MainHeader));
+    Env::Hierarchy AHier(Env::FileHeader({}, {Env::Type::Class, "A"}));
+    Env::Hierarchy MainHier(Env::FileHeader({}, {Env::Type::Class, "Main"}));
+    REQUIRE(Tree.update({"Main", "B"}, AHier));
+    REQUIRE(Tree.update({}, MainHier));
   }
 }
 

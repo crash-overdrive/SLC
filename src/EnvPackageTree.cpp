@@ -3,11 +3,11 @@
 
 namespace Env {
 
-PackageNode::PackageNode(Type type, const std::string &name, FileHeader *header)
-    : type(type), name(name), header(header) {}
+PackageNode::PackageNode(Type type, const std::string &name, Hierarchy *hierarchy)
+    : type(type), name(name), hierarchy(hierarchy) {}
 
 PackageNode *PackageNode::update(Type type, const std::string &name,
-                                 FileHeader *header) {
+                                 Hierarchy *header) {
   if (this->type != Global && this->type != Package)
     return nullptr;
   switch (type) {
@@ -31,7 +31,7 @@ PackageNode *PackageNode::find(const std::string &name) {
 /**
  * Find header under a package
  */
-FileHeader *PackageNode::findHeader(const std::string &name) {
+Hierarchy *PackageNode::findHierarchy(const std::string &name) {
   if (type == PackageNode::Global) {
     return nullptr;
   }
@@ -39,7 +39,7 @@ FileHeader *PackageNode::findHeader(const std::string &name) {
   if (node == nullptr) {
     return nullptr;
   }
-  return node->header;
+  return node->hierarchy;
 }
 
 
@@ -53,15 +53,15 @@ PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
 }
 
 PackageNode *PackageNode::addType(Type type, const std::string &name,
-                                  FileHeader *header) {
+                                  Hierarchy *header) {
   auto [It, Flag] = children.emplace(name, PackageNode{type, name, header});
   return Flag ? &It->second : nullptr;
 }
 
-FileHeader *
-PackageTree::findHeader(const std::vector<std::string> &Path) const {
+Hierarchy *
+PackageTree::findHierarchy(const std::vector<std::string> &Path) const {
   PackageNode *Node = findNode(Path);
-  return (Node != nullptr) ? Node->header : nullptr;
+  return (Node != nullptr) ? Node->hierarchy : nullptr;
 }
 
 PackageNode *PackageTree::findNode(const std::vector<std::string> &Path) const {
@@ -75,8 +75,8 @@ PackageNode *PackageTree::findNode(const std::vector<std::string> &Path) const {
   return Node;
 }
 
-bool PackageTree::update(const std::vector<std::string> &PackagePath,
-                         FileHeader &Header) {
+bool PackageTree::update(std::vector<std::string> &&PackagePath,
+                         Hierarchy &Hierarchy) {
   // No Package
   if (PackagePath.size() == 0) {
     return true;
@@ -88,11 +88,12 @@ bool PackageTree::update(const std::vector<std::string> &PackagePath,
       return false;
     }
   }
-  Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
+  std::string Identifier = Hierarchy.getIdentifier();
+  Node = Node->update(PackageNode::JoosType, Identifier, &Hierarchy);
   if (Node == nullptr) {
     return false;
   }
-  Header.setPackage(PackagePath);
+  Hierarchy.setPackage(std::move(PackagePath));
   return true;
 }
 

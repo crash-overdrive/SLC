@@ -2,7 +2,7 @@
 #define ENVTYPELINK_HPP
 
 #include "ASTVisitor.hpp"
-#include "EnvFileHeader.hpp"
+#include "EnvHierarchy.hpp"
 #include "EnvPackageTree.hpp"
 #include <unordered_set>
 
@@ -10,33 +10,33 @@ namespace Env {
 
 class TypeLink {
 public:
-  TypeLink(FileHeader &Header, PackageTree &Tree);
-  bool addSingleImport(const std::vector<std::string> &Name);
-  void addDemandImport(const std::vector<std::string> &Name);
-  FileHeader *find(const std::vector<std::string> &Name) const;
+  TypeLink(Hierarchy &hierarchy, PackageTree &tree);
+  bool addSingleImport(const std::vector<std::string> &name);
+  void addDemandImport(const std::vector<std::string> &name);
+  Hierarchy *find(const std::vector<std::string> &name) const;
 
 private:
-  FileHeader &Header;
-  PackageTree &Tree;
-  std::unordered_map<std::string, FileHeader *> SingleImports;
-  std::unordered_set<PackageNode *> OnDemandImports;
-  FileHeader *findSamePackage(const std::string &Name) const;
-  FileHeader *findDemand(const std::string &Name) const;
+  Hierarchy &hierarchy;
+  PackageTree &tree;
+  std::unordered_map<std::string, Hierarchy *> singleImports;
+  std::unordered_set<PackageNode *> onDemandImports;
+  Hierarchy *findSamePackage(const std::string &name) const;
+  Hierarchy *findDemand(const std::string &name) const;
 };
 
 class TypeLinkVisitor : public AST::Visitor {
 public:
-  void visit(const AST::Start &Start) override;
-  void visit(const AST::SingleImportDeclaration &Decl) override;
-  void visit(const AST::DemandImportDeclaration &Decl) override;
+  void visit(const AST::Start &start) override;
+  void visit(const AST::SingleImportDeclaration &decl) override;
+  void visit(const AST::DemandImportDeclaration &decl) override;
   void visit(const AST::InterfaceDeclaration &) override;
   void visit(const AST::ClassDeclaration &) override;
   std::vector<std::vector<std::string>> getSingleImports() const;
   std::vector<std::vector<std::string>> getDemandImports() const;
 
 private:
-  std::vector<std::vector<std::string>> SingleImports;
-  std::vector<std::vector<std::string>> DemandImports;
+  std::vector<std::vector<std::string>> singleImports;
+  std::vector<std::vector<std::string>> demandImports;
 };
 
 } // namespace Env

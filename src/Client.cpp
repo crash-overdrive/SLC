@@ -169,7 +169,7 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
 void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
-    fileHeaders.emplace_back(std::move(fileHeader));
+    hierarchies.emplace_back(std::move(fileHeader));
   }
 }
 
@@ -182,10 +182,10 @@ void Client::buildEnvironment() {
 
 void Client::buildPackageTree() {
   Env::PackageTree tree;
-  for (auto &&fileHeader : fileHeaders) {
+  for (auto &&hierarchy : hierarchies) {
     Env::PackageTreeVisitor Visitor;
-    fileHeader.getASTNode()->accept(Visitor);
-    if (!tree.update(Visitor.getPackagePath(), fileHeader)) {
+    hierarchy.getASTNode()->accept(Visitor);
+    if (!tree.update(Visitor.getPackagePath(), hierarchy)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
