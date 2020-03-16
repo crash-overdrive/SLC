@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "Config.hpp"
+#include "TestConfig.hpp"
 #include <fstream>
 
 Client createClient() {
@@ -15,4 +16,15 @@ Client createClient() {
   ParserStream >> *Parser;
 
   return Client(std::move(Scanner), std::move(Parser));
+}
+
+std::vector<std::string>
+createMarmosetTest(unsigned int num,
+                   const std::vector<std::string> &fileNames) {
+  std::vector<std::string> files;
+  for (const auto &fileName : fileNames) {
+    files.emplace_back(TestDataDir + "/java/a" + std::to_string(num) + "/" +
+                       fileName);
+  }
+  return files;
 }

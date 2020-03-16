@@ -5,4 +5,7 @@
 
 Client createClient();
 
+std::vector<std::string>
+createMarmosetTest(unsigned int num, const std::vector<std::string> &fileNames);
+
 #endif // TESTUTIL_HPP
