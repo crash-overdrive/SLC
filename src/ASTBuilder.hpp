@@ -24,7 +24,7 @@ void thisExpressionVisit(const Parse::Node &parseNode, Node &astNode);
 void dispatchChildren(const Parse::Node &parseNode, Node &astNode);
 void dispatch(const Parse::Node &parseNode, Node &astNode);
 
-typedef void (*ParseVisitor)(const Parse::Node &parseNode, Node &astNode);
+using ParseVisitor = void (*)(const Parse::Node &, Node &);
 const std::unordered_map<std::string, ParseVisitor> parseVisit{
     {"Start", dispatchChildren}, // Start -> CompilationUnit
 

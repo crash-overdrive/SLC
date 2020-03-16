@@ -1,9 +1,9 @@
 #include "ParseTree.hpp"
 
-Parse::Node::Node(const std::string &name) : name(name), tag(), level(0) {}
+Parse::Node::Node(std::string name) : name(std::move(name)), tag() {}
 
-Parse::Node::Node(const std::string &name, const std::string &tag)
-    : name(name), tag(tag), level(0) {}
+Parse::Node::Node(std::string name, std::string tag)
+    : name(std::move(name)), tag(std::move(tag)) {}
 
 void Parse::Node::addChild(std::unique_ptr<Node> child) {
   children.emplace_back(std::move(child));
@@ -44,8 +44,6 @@ const Parse::Node *Parse::Node::getChild(const std::string &string) const {
 const Parse::Node *Parse::Node::getFirstChild() const {
   return children.size() > 0 ? children[0].get() : nullptr;
 }
-
-Parse::Tree::Tree() {}
 
 Parse::Tree::Tree(std::unique_ptr<Node> root) : root(std::move(root)) {
   this->root->level = 0;

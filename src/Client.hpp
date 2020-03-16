@@ -1,9 +1,6 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include <optional>
-#include <set>
-
 #include "ASTNode.hpp"
 #include "EnvFileHeader.hpp"
 #include "EnvPackageTree.hpp"
@@ -61,4 +58,3 @@ private:
 };
 
 #endif // CLIENT_HPP
-
