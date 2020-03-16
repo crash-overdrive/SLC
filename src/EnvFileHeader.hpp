@@ -75,12 +75,14 @@ std::ostream &operator<<(std::ostream &stream,
 
 struct FileHeader {
 public:
-  TypeDescriptor typeDescriptor;
-  std::set<AST::ModifierCode> classModifiers;
-
-  FileHeader(std::set<AST::ModifierCode> classModifiers,
+  FileHeader(std::set<AST::ModifierCode> modifiers,
              TypeDescriptor typeDescriptor,
              std::unique_ptr<AST::Node> Node = nullptr);
+  const AST::Node *getASTNode() const;
+  const std::set<AST::ModifierCode> &getModifiers() const;
+  const std::string &getIdentifier() const;
+  const Type &getType() const;
+
   bool addField(JoosField joosField);
   bool addMethod(JoosMethod joosMethod);
   bool addConstructor(JoosConstructor joosConstructor);
@@ -92,17 +94,14 @@ public:
   const JoosConstructor *
   findConstructor(const std::string &identifier,
                   const std::vector<VariableDescriptor> &args) const;
-  const std::set<AST::ModifierCode> &getModifiers() const;
-  const std::string &getName() const;
-  const AST::Node *getASTNode() const;
   void setPackage(std::vector<std::string> package);
-  const std::vector<std::string> &getPackage() const;
 
 private:
   friend std::ostream &operator<<(std::ostream &stream,
                                   const FileHeader &fileHeader);
   std::unique_ptr<AST::Node> node;
-  std::vector<std::string> package;
+  std::set<AST::ModifierCode> modifiers;
+  TypeDescriptor typeDescriptor;
   std::vector<JoosMethod> methods;
   std::vector<JoosField> fields;
   std::vector<JoosConstructor> constructors;
@@ -120,7 +119,7 @@ public:
 
 private:
   void visitProperties(const AST::Node &node);
-  std::set<AST::ModifierCode> classModifiers;
+  std::set<AST::ModifierCode> modifiers;
   TypeDescriptor typeDescriptor;
   const AST::Node *Node;
 };

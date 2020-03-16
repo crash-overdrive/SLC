@@ -26,11 +26,25 @@ bool JoosConstructor::operator==(const JoosConstructor &joosConstructor) const {
          args == joosConstructor.args;
 }
 
-FileHeader::FileHeader(std::set<AST::ModifierCode> classModifiers,
+FileHeader::FileHeader(std::set<AST::ModifierCode> modifiers,
                        TypeDescriptor typeDescriptor,
                        std::unique_ptr<AST::Node> node)
-    : typeDescriptor(typeDescriptor), classModifiers(classModifiers),
-      node(std::move(node)){};
+    : node(std::move(node)), modifiers(modifiers),
+      typeDescriptor(typeDescriptor){};
+
+const AST::Node *FileHeader::getASTNode() const { return node.get(); }
+
+const std::set<AST::ModifierCode> &FileHeader::getModifiers() const {
+  return modifiers;
+}
+
+const std::string &FileHeader::getIdentifier() const {
+  return typeDescriptor.identifier;
+}
+
+const Type &FileHeader::getType() const {
+  return typeDescriptor.type;
+}
 
 bool FileHeader::addField(JoosField joosField) {
   for (auto const &field : fields) {
@@ -96,23 +110,6 @@ FileHeader::findConstructor(const std::string &identifier,
   return nullptr;
 }
 
-const std::set<AST::ModifierCode> &FileHeader::getModifiers() const {
-  return classModifiers;
-}
-
-const std::string &FileHeader::getName() const {
-  return typeDescriptor.identifier;
-}
-
-const AST::Node *FileHeader::getASTNode() const { return node.get(); }
-
-void FileHeader::setPackage(std::vector<std::string> package) {
-  this->package = std::move(package);
-}
-
-const std::vector<std::string> &FileHeader::getPackage() const {
-  return package;
-}
 
 void JoosTypeVisitor::visit(const AST::Start &start) {
   dispatchChildren(start);
@@ -133,7 +130,7 @@ void JoosTypeVisitor::visit(const AST::InterfaceDeclaration &decl) {
 TypeDescriptor JoosTypeVisitor::getTypeDescriptor() { return typeDescriptor; }
 
 std::set<AST::ModifierCode> JoosTypeVisitor::getModifiers() {
-  return std::move(classModifiers);
+  return std::move(modifiers);
 }
 
 const AST::Node *JoosTypeVisitor::getASTNode() { return Node; }
@@ -142,7 +139,7 @@ void JoosTypeVisitor::visitProperties(const AST::Node &node) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(node);
   typeDescriptor.identifier = propertiesVisitor.getIdentifier();
-  classModifiers = propertiesVisitor.getModifiers();
+  modifiers = propertiesVisitor.getModifiers();
 }
 
 void JoosTypeBodyVisitor::visit(const AST::Start &start) {
@@ -271,7 +268,7 @@ std::ostream &operator<<(std::ostream &stream,
 
 std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader) {
   stream << "TYPE MODIFIERS: {";
-  for (auto const &modifier : fileHeader.classModifiers) {
+  for (auto const &modifier : fileHeader.modifiers) {
     stream << AST::ModifierCodeName.at(modifier) << " ";
   }
   stream << "}\n\n";
