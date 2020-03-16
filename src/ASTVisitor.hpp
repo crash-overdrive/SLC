@@ -10,64 +10,64 @@ namespace AST {
 class Visitor {
 public:
   virtual ~Visitor() = default;
-  virtual void visit(const Start &Node);
-  virtual void visit(const PackageDeclaration &Node);
-  virtual void visit(const SingleImportDeclaration &Node);
-  virtual void visit(const DemandImportDeclaration &Node);
-  virtual void visit(const ClassDeclaration &Node);
-  virtual void visit(const InterfaceDeclaration &Node);
-  virtual void visit(const FieldDeclaration &Node);
-  virtual void visit(const MethodDeclaration &Node);
-  virtual void visit(const ConstructorDeclaration &Node);
-  virtual void visit(const Modifier &Node);
-  virtual void visit(const Identifier &Node);
-  virtual void visit(const Extensions &Node);
-  virtual void visit(const Name &Node);
-  virtual void visit(const PrimitiveType &Node);
-  virtual void visit(const ArrayType &Node);
-  virtual void visit(const SimpleType &Node);
-  virtual void visit(const VoidType &Node);
-  virtual void visit(const Expression &Node);
-  virtual void visit(const CastExpression &Node);
-  virtual void visit(const SingleVariableDeclaration &Node);
-  virtual void visit(const Super &Node);
-  virtual void visit(const Interfaces &Node);
-  virtual void visit(const Block &Node);
-  virtual void visit(const IfThenStatement &Node);
-  virtual void visit(const IfThenElseStatement &Node);
-  virtual void visit(const WhileStatement &Node);
-  virtual void visit(const ForStatement &Node);
-  virtual void visit(const SimpleStatement &Node);
-  virtual void visit(const ClassInstanceCreation &Node);
-  virtual void visit(const OperationExpression &Node);
-  virtual void visit(const MethodInvocation &Node);
-  virtual void visit(const ReturnStatement &Node);
-  virtual void visit(const VariableDeclaration &Node);
-  virtual void visit(const AssignmentExpression &Node);
-  virtual void visit(const ASSIGN &Node);
-  virtual void visit(const BinaryOperator &Node);
-  virtual void visit(const UnaryOperator &Node);
-  virtual void visit(const DecIntLiteral &Node);
-  virtual void visit(const BooleanLiteral &Node);
-  virtual void visit(const CharacterLiteral &Node);
-  virtual void visit(const StringLiteral &Node);
-  virtual void visit(const NullLiteral &Node);
-  virtual void visit(const ArgumentList &Node);
-  virtual void visit(const FieldAccess &Node);
-  virtual void visit(const ArrayAccess &Node);
-  virtual void visit(const ArrayCreation &Node);
-  virtual void visit(const ThisExpression &Node);
-  virtual void visit(const ForInit &Node);
-  virtual void visit(const ForUpdate &Node);
-  virtual void dispatchChildren(const Node &Parent);
+  virtual void visit(const Start &node);
+  virtual void visit(const PackageDeclaration &node);
+  virtual void visit(const SingleImportDeclaration &node);
+  virtual void visit(const DemandImportDeclaration &node);
+  virtual void visit(const ClassDeclaration &node);
+  virtual void visit(const InterfaceDeclaration &node);
+  virtual void visit(const FieldDeclaration &node);
+  virtual void visit(const MethodDeclaration &node);
+  virtual void visit(const ConstructorDeclaration &node);
+  virtual void visit(const Modifier &node);
+  virtual void visit(const Identifier &node);
+  virtual void visit(const Extensions &node);
+  virtual void visit(const Name &node);
+  virtual void visit(const PrimitiveType &node);
+  virtual void visit(const ArrayType &node);
+  virtual void visit(const SimpleType &node);
+  virtual void visit(const VoidType &node);
+  virtual void visit(const Expression &node);
+  virtual void visit(const CastExpression &node);
+  virtual void visit(const SingleVariableDeclaration &node);
+  virtual void visit(const Super &node);
+  virtual void visit(const Interfaces &node);
+  virtual void visit(const Block &node);
+  virtual void visit(const IfThenStatement &node);
+  virtual void visit(const IfThenElseStatement &node);
+  virtual void visit(const WhileStatement &node);
+  virtual void visit(const ForStatement &node);
+  virtual void visit(const SimpleStatement &node);
+  virtual void visit(const ClassInstanceCreation &node);
+  virtual void visit(const OperationExpression &node);
+  virtual void visit(const MethodInvocation &node);
+  virtual void visit(const ReturnStatement &node);
+  virtual void visit(const VariableDeclaration &node);
+  virtual void visit(const AssignmentExpression &node);
+  virtual void visit(const ASSIGN &node);
+  virtual void visit(const BinaryOperator &node);
+  virtual void visit(const UnaryOperator &node);
+  virtual void visit(const DecIntLiteral &node);
+  virtual void visit(const BooleanLiteral &node);
+  virtual void visit(const CharacterLiteral &node);
+  virtual void visit(const StringLiteral &node);
+  virtual void visit(const NullLiteral &node);
+  virtual void visit(const ArgumentList &node);
+  virtual void visit(const FieldAccess &node);
+  virtual void visit(const ArrayAccess &node);
+  virtual void visit(const ArrayCreation &node);
+  virtual void visit(const ThisExpression &node);
+  virtual void visit(const ForInit &node);
+  virtual void visit(const ForUpdate &node);
+  virtual void dispatchChildren(const Node &parent);
 
 protected:
-  virtual void postVisit(const Node &Parent);
+  virtual void postVisit(const Node &parent);
 };
 
 class PrintVisitor : public Visitor {
 public:
-  PrintVisitor(std::ostream &Stream);
+  PrintVisitor(std::ostream &stream);
   void visit(const Start &) override;
   void visit(const PackageDeclaration &) override;
   void visit(const SingleImportDeclaration &) override;
@@ -80,11 +80,11 @@ public:
   void visit(const Name &) override;
   void visit(const MethodDeclaration &) override;
   void visit(const Modifier &) override;
-  void visit(const Identifier &Identifier) override;
-  void visit(const PrimitiveType &PrimitiveType) override;
-  void visit(const SimpleType &SimpleType) override;
+  void visit(const Identifier &identifier) override;
+  void visit(const PrimitiveType &primitiveType) override;
+  void visit(const SimpleType &simpleType) override;
   void visit(const ArrayType &) override;
-  void visit(const VoidType &VoidType) override;
+  void visit(const VoidType &voidType) override;
   void visit(const Expression &) override;
   void visit(const CastExpression &) override;
   void visit(const SingleVariableDeclaration &) override;
@@ -102,40 +102,40 @@ public:
   void visit(const ReturnStatement &) override;
   void visit(const VariableDeclaration &) override;
   void visit(const AssignmentExpression &) override;
-  void visit(const ASSIGN &ASSIGN) override;
-  void visit(const BinaryOperator &BinaryOperator) override;
-  void visit(const UnaryOperator &UnaryOperator) override;
-  void visit(const DecIntLiteral &DecIntLiteral) override;
-  void visit(const BooleanLiteral &BooleanLiteral) override;
-  void visit(const CharacterLiteral &CharacterLiteral) override;
-  void visit(const StringLiteral &StringLiteral) override;
-  void visit(const NullLiteral &NullLiteral) override;
+  void visit(const ASSIGN &assign) override;
+  void visit(const BinaryOperator &binaryOperator) override;
+  void visit(const UnaryOperator &unaryOperator) override;
+  void visit(const DecIntLiteral &decIntLiteral) override;
+  void visit(const BooleanLiteral &booleanLiteral) override;
+  void visit(const CharacterLiteral &characterLiteral) override;
+  void visit(const StringLiteral &stringLiteral) override;
+  void visit(const NullLiteral &nullLiteral) override;
   void visit(const ArgumentList &) override;
   void visit(const FieldAccess &) override;
   void visit(const ArrayAccess &) override;
   void visit(const ArrayCreation &) override;
-  void visit(const ThisExpression &ThisExpression) override;
+  void visit(const ThisExpression &thisExpression) override;
   void visit(const ForInit &) override;
   void visit(const ForUpdate &) override;
 
 private:
-  std::ostream &Stream;
+  std::ostream &stream;
 };
 
 class TrackVisitor : public Visitor {
 public:
-  void setLog(std::ostream &Stream);
+  void setLog(std::ostream &stream);
 
 protected:
   void setError();
   bool error();
-  void postVisit(const Node &Parent) override;
+  void postVisit(const Node &parent) override;
 
 private:
-  bool ErrorState = false;
-  unsigned int Level = 0;
-  std::ofstream NullStream{};
-  std::reference_wrapper<std::ostream> StreamRef = NullStream;
+  bool errorState = false;
+  unsigned int level = 0;
+  std::ofstream nullStream{};
+  std::reference_wrapper<std::ostream> streamRef = nullStream;
 };
 
 } // namespace AST

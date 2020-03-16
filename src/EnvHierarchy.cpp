@@ -12,13 +12,9 @@ void Hierarchy::setPackage(std::vector<std::string> &&package) {
   this->package = std::move(package);
 }
 
-const AST::Node *Hierarchy::getASTNode() const {
-  return header.getASTNode();
-}
+const AST::Node *Hierarchy::getASTNode() const { return header.getASTNode(); }
 
-const Type &Hierarchy::getType() const {
-  return header.getType();
-}
+const Type &Hierarchy::getType() const { return header.getType(); }
 
 const std::string &Hierarchy::getIdentifier() const {
   return header.getIdentifier();

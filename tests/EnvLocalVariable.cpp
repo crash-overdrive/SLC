@@ -3,36 +3,36 @@
 #include "catch.hpp"
 
 TEST_CASE("LocalVariableScope", "[local-scope]") {
-  Env::LocalVariableScope Head;
-  Env::LocalVariableScope *Node = &Head;
+  Env::LocalVariableScope head;
+  Env::LocalVariableScope *node = &head;
 
   SECTION("simple-test") {
-    REQUIRE(Node->add("x"));
-    REQUIRE(Node->lookUp("x"));
+    REQUIRE(node->add("x"));
+    REQUIRE(node->lookUp("x"));
   }
 
   SECTION("simple-test") {
-    REQUIRE_FALSE(Node->lookUp("y"));
+    REQUIRE_FALSE(node->lookUp("y"));
   }
 
   SECTION("variable-shadowing") {
-    REQUIRE(Node->add("x"));
-    Node = Node->push();
-    REQUIRE_FALSE(Node->add("x"));
+    REQUIRE(node->add("x"));
+    node = node->push();
+    REQUIRE_FALSE(node->add("x"));
   }
 
   SECTION("variable") {
-    REQUIRE(Node->add("x"));
-    Node = Node->push();
-    Node = Node->pop();
-    REQUIRE_FALSE(Node->add("x"));
+    REQUIRE(node->add("x"));
+    node = node->push();
+    node = node->pop();
+    REQUIRE_FALSE(node->add("x"));
   }
 
   SECTION("after-block") {
-    REQUIRE(Node->add("x"));
-    Node = Node->push();
-    Node = Node->pop();
-    REQUIRE(Node->lookUp("x"));
-    REQUIRE_FALSE(Node->lookUp("y"));
+    REQUIRE(node->add("x"));
+    node = node->push();
+    node = node->pop();
+    REQUIRE(node->lookUp("x"));
+    REQUIRE_FALSE(node->lookUp("y"));
   }
 }

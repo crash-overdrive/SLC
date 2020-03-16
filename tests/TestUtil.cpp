@@ -4,18 +4,17 @@
 #include <fstream>
 
 Client createClient() {
-  std::unique_ptr<Lex::Scanner> Scanner = std::make_unique<Lex::Scanner>();
-  std::ifstream ScannerStream;
-  ScannerStream.open(TokensLexFile);
-  ScannerStream >> *Scanner;
+  std::unique_ptr<Lex::Scanner> scanner = std::make_unique<Lex::Scanner>();
+  std::ifstream scannerStream;
+  scannerStream.open(tokensLexFile);
+  scannerStream >> *scanner;
 
-  std::unique_ptr<Parse::DFA> Parser = std::make_unique<Parse::DFA>();
+  std::unique_ptr<Parse::DFA> parser = std::make_unique<Parse::DFA>();
   std::ifstream parserStream;
-  std::ifstream ParserStream;
-  ParserStream.open(JoosLRFile);
-  ParserStream >> *Parser;
+  parserStream.open(joosLRFile);
+  parserStream >> *parser;
 
-  return Client(std::move(Scanner), std::move(Parser));
+  return Client(std::move(scanner), std::move(parser));
 }
 
 std::vector<std::string>
@@ -23,7 +22,7 @@ createMarmosetTest(unsigned int num,
                    const std::vector<std::string> &fileNames) {
   std::vector<std::string> files;
   for (const auto &fileName : fileNames) {
-    files.emplace_back(TestDataDir + "/java/a" + std::to_string(num) + "/" +
+    files.emplace_back(testDataDir + "/java/a" + std::to_string(num) + "/" +
                        fileName);
   }
   return files;

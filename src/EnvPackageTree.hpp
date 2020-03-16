@@ -32,20 +32,20 @@ private:
 
 class PackageTree {
 public:
-  Hierarchy *findHierarchy(const std::vector<std::string> &Path) const;
-  PackageNode *findNode(const std::vector<std::string> &Path) const;
-  bool update(std::vector<std::string> &&PackagePath,
+  Hierarchy *findHierarchy(const std::vector<std::string> &path) const;
+  PackageNode *findNode(const std::vector<std::string> &path) const;
+  bool update(std::vector<std::string> &&packagePath,
               Hierarchy &hierarchy);
 
 private:
-  std::unique_ptr<PackageNode> Root =
+  std::unique_ptr<PackageNode> root =
       std::make_unique<PackageNode>(PackageNode::Global);
 };
 
 class PackageTreeVisitor : public AST::Visitor {
 public:
-  void visit(const AST::Start &Start) override;
-  void visit(const AST::PackageDeclaration &Decl) override;
+  void visit(const AST::Start &start) override;
+  void visit(const AST::PackageDeclaration &decl) override;
   std::vector<std::string> getPackagePath() const;
 
 private:

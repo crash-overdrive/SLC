@@ -50,8 +50,8 @@ void Client::verifyFileName(const std::string &fullName) {
     errorState = true;
     return;
   }
-  size_t Position = fileName.find(".");
-  if (fileName.compare(Position, ext.size(), ext) != 0) {
+  size_t position = fileName.find(".");
+  if (fileName.compare(position, ext.size(), ext) != 0) {
     std::cerr << fileName << " is invalid\n";
     errorState = true;
     return;
@@ -183,9 +183,9 @@ void Client::buildEnvironment() {
 void Client::buildPackageTree() {
   Env::PackageTree tree;
   for (auto &&hierarchy : hierarchies) {
-    Env::PackageTreeVisitor Visitor;
-    hierarchy.getASTNode()->accept(Visitor);
-    if (!tree.update(Visitor.getPackagePath(), hierarchy)) {
+    Env::PackageTreeVisitor visitor;
+    hierarchy.getASTNode()->accept(visitor);
+    if (!tree.update(visitor.getPackagePath(), hierarchy)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;

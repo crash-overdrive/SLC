@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
-const std::string JoosLRFile{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1"};
+const std::string joosLRFile{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/joos.lr1"};
 
-const std::string TokensLexFile{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex"};
+const std::string tokensLexFile{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tokens.lex"};
 
-const std::string Stdlib{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib"};
+const std::string stdlib{"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib"};
 
-const std::vector<std::string> Stdlib2Files{
+const std::vector<std::string> stdlib2Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/2.0/java/io/OutputStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/2.0/java/io/PrintStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/2.0/java/io/Serializable.java",
@@ -28,7 +28,7 @@ const std::vector<std::string> Stdlib2Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/2.0/java/util/Arrays.java",
 };
 
-const std::vector<std::string> Stdlib3Files{
+const std::vector<std::string> stdlib3Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/3.0/java/io/OutputStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/3.0/java/io/PrintStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/3.0/java/io/Serializable.java",
@@ -46,7 +46,7 @@ const std::vector<std::string> Stdlib3Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/3.0/java/util/Arrays.java",
 };
 
-const std::vector<std::string> Stdlib4Files{
+const std::vector<std::string> stdlib4Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/4.0/java/io/OutputStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/4.0/java/io/PrintStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/4.0/java/io/Serializable.java",
@@ -64,7 +64,7 @@ const std::vector<std::string> Stdlib4Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/4.0/java/util/Arrays.java",
 };
 
-const std::vector<std::string> Stdlib5Files{
+const std::vector<std::string> stdlib5Files{
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/5.0/java/io/OutputStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/5.0/java/io/PrintStream.java",
     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/5.0/java/io/Serializable.java",

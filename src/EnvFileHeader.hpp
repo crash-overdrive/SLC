@@ -18,12 +18,12 @@ enum class Type {
   Interface,
 };
 
-const std::unordered_map<VariableType, std::string> VariableTypeName{
+const std::unordered_map<VariableType, std::string> variableTypeName{
     {VariableType::SimpleType, "SimpleType"},
     {VariableType::ArrayType, "ArrayType"},
 };
 
-const std::unordered_map<Type, std::string> TypeName{
+const std::unordered_map<Type, std::string> typeName{
     {Type::Class, "Class"},
     {Type::Interface, "Interface"},
 };
@@ -77,7 +77,7 @@ struct FileHeader {
 public:
   FileHeader(std::set<AST::ModifierCode> modifiers,
              TypeDescriptor typeDescriptor,
-             std::unique_ptr<AST::Node> Node = nullptr);
+             std::unique_ptr<AST::Node> node = nullptr);
   const AST::Node *getASTNode() const;
   const std::set<AST::ModifierCode> &getModifiers() const;
   const std::string &getIdentifier() const;
@@ -121,7 +121,7 @@ private:
   void visitProperties(const AST::Node &node);
   std::set<AST::ModifierCode> modifiers;
   TypeDescriptor typeDescriptor;
-  const AST::Node *Node;
+  const AST::Node *node;
 };
 
 class JoosTypeBodyVisitor : public AST::Visitor {

@@ -9,39 +9,39 @@ namespace Parse {
 class DFA {
 public:
   DFA();
-  void read(const Lex::Token &Tok);
+  void read(const Lex::Token &tok);
   void clear();
   bool error() const;
   bool accept() const;
   Tree buildTree();
-  bool parse(std::istream &IStream);
-  bool parse(const std::vector<Lex::Token> &Tokens);
+  bool parse(std::istream &iStream);
+  bool parse(const std::vector<Lex::Token> &tokens);
 
 private:
   struct Production {
-    std::string LHS;
-    std::vector<std::string> RHS;
+    std::string lhs;
+    std::vector<std::string> rhs;
   };
 
   struct State {
-    std::unordered_map<std::string, const State &> Shifts;
-    std::unordered_map<std::string, const Production &> Reduces;
+    std::unordered_map<std::string, const State &> shifts;
+    std::unordered_map<std::string, const Production &> reduces;
   };
 
-  friend std::istream &operator>>(std::istream &Stream, DFA &DFA);
-  std::unordered_map<unsigned int, Production> Productions;
-  std::unordered_map<unsigned int, State> States;
-  std::vector<const Production *> FinalProductions;
-  std::vector<const State *> StateStack;
-  std::vector<std::unique_ptr<Node>> NodeStack;
-  std::string StartSymbol;
+  friend std::istream &operator>>(std::istream &stream, DFA &dfa);
+  std::unordered_map<unsigned int, Production> productions;
+  std::unordered_map<unsigned int, State> states;
+  std::vector<const Production *> finalProductions;
+  std::vector<const State *> stateStack;
+  std::vector<std::unique_ptr<Node>> nodeStack;
+  std::string startSymbol;
   bool errorState;
-  const State *Current;
-  void shift(const State &State);
-  void reduce(const Production &Production);
+  const State *current;
+  void shift(const State &state);
+  void reduce(const Production &production);
 };
 
-std::istream &operator>>(std::istream &Stream, Parse::DFA &DFA);
+std::istream &operator>>(std::istream &stream, Parse::DFA &dfa);
 
 } // namespace Parse
 

@@ -52,9 +52,9 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
 
   SECTION("Single import clash") {
     tree.update({"foo", "canary"}, listHier);
-    Env::Hierarchy ListHier(Env::FileHeader({}, {Env::Type::Class, "List"},
+    Env::Hierarchy listHier(Env::FileHeader({}, {Env::Type::Class, "List"},
                                 std::make_unique<AST::Start>()));
-    tree.update({"foo", "bar"}, ListHier);
+    tree.update({"foo", "bar"}, listHier);
     Env::TypeLink typeLink(mainHier, tree);
     typeLink.addSingleImport({"foo", "bar", "List"});
     REQUIRE_FALSE(typeLink.addSingleImport({"foo", "canary", "List"}));
@@ -70,28 +70,28 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
 }
 
 TEST_CASE("EnvTypeLink Visitor", "[EnvTypeLinkVisitor]") {
-  Client Client = createClient();
+  Client client = createClient();
 
   SECTION("Single Import and Demand") {
-    std::unique_ptr<AST::Start> Root = Client.buildAST(
-        TestDataDir + "/java/a2/J1_importNameLookup1/Main.java");
-    Env::TypeLinkVisitor Visitor;
-    Root->accept(Visitor);
-    REQUIRE(*Visitor.getSingleImports().begin() ==
+    std::unique_ptr<AST::Start> root = client.buildAST(
+        testDataDir + "/java/a2/J1_importNameLookup1/Main.java");
+    Env::TypeLinkVisitor visitor;
+    root->accept(visitor);
+    REQUIRE(*visitor.getSingleImports().begin() ==
             std::vector<std::string>{"baz", "foo"});
-    REQUIRE(*Visitor.getDemandImports().begin() ==
+    REQUIRE(*visitor.getDemandImports().begin() ==
             std::vector<std::string>{"bar"});
   }
 
   SECTION("Single Import and Demand") {
-    std::unique_ptr<AST::Start> Root = Client.buildAST(
-        TestDataDir +
+    std::unique_ptr<AST::Start> root = client.buildAST(
+        testDataDir +
         "/java/a2/J1_3_SingleTypeImport_MultipleFromSamePackage/Main.java");
-    Env::TypeLinkVisitor Visitor;
-    Root->accept(Visitor);
-    REQUIRE(Visitor.getSingleImports().at(0) ==
+    Env::TypeLinkVisitor visitor;
+    root->accept(visitor);
+    REQUIRE(visitor.getSingleImports().at(0) ==
             std::vector<std::string>{"java", "util", "List"});
-    REQUIRE(Visitor.getSingleImports().at(1) ==
+    REQUIRE(visitor.getSingleImports().at(1) ==
             std::vector<std::string>{"java", "util", "LinkedList"});
   }
 }

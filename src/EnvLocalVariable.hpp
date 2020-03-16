@@ -9,16 +9,16 @@ namespace Env {
 
 class LocalVariableScope {
 public:
-  LocalVariableScope(LocalVariableScope *Parent = nullptr);
+  LocalVariableScope(LocalVariableScope *parent = nullptr);
   LocalVariableScope *pop() const;
   LocalVariableScope *push();
-  bool lookUp(const std::string &Name);
-  bool add(const std::string &Name);
+  bool lookUp(const std::string &name);
+  bool add(const std::string &name);
 
 private:
-  LocalVariableScope *Parent;
-  std::unordered_set<std::string> Variables{};
-  std::vector<std::unique_ptr<LocalVariableScope>> Children{};
+  LocalVariableScope *parent;
+  std::unordered_set<std::string> variables;
+  std::vector<std::unique_ptr<LocalVariableScope>> children;
 };
 
 }; // namespace Env

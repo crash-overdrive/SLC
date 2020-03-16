@@ -25,32 +25,32 @@ TEST_CASE("Package Node", "[PackageNode]") {
 }
 
 TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
-  Env::PackageTree Tree;
+  Env::PackageTree tree;
 
   SECTION("Basic lookup") {
     Env::Hierarchy canary(Env::FileHeader({}, {Env::Type::Class, "canary"}));
     Env::Hierarchy bar(Env::FileHeader({}, {Env::Type::Class, "bar"}));
-    REQUIRE(Tree.update({"foo", "bar"}, canary));
-    REQUIRE_FALSE(Tree.update({"foo"}, bar));
-    REQUIRE(Tree.findHierarchy({"foo", "bar", "canary"}) == &canary);
-    REQUIRE(Tree.findHierarchy({"foo"}) == nullptr);
+    REQUIRE(tree.update({"foo", "bar"}, canary));
+    REQUIRE_FALSE(tree.update({"foo"}, bar));
+    REQUIRE(tree.findHierarchy({"foo", "bar", "canary"}) == &canary);
+    REQUIRE(tree.findHierarchy({"foo"}) == nullptr);
   }
 
   SECTION("Single File") {
-    Env::Hierarchy AHier(Env::FileHeader({}, {Env::Type::Class, "A"}));
-    Env::Hierarchy MainHier(Env::FileHeader({}, {Env::Type::Class, "Main"}));
-    REQUIRE(Tree.update({"Main", "B"}, AHier));
-    REQUIRE(Tree.update({}, MainHier));
+    Env::Hierarchy aHier(Env::FileHeader({}, {Env::Type::Class, "A"}));
+    Env::Hierarchy mainHier(Env::FileHeader({}, {Env::Type::Class, "Main"}));
+    REQUIRE(tree.update({"Main", "B"}, aHier));
+    REQUIRE(tree.update({}, mainHier));
   }
 }
 
 TEST_CASE("Package Tree Visitor", "[PackageTreeVisitor]") {
-  Client Client = createClient();
-  std::unique_ptr<AST::Start> Root = Client.buildAST(
-      TestDataDir + "/java/a2/J1_3_PackageClashWithType_Linked_Mutated/javax/"
+  Client client = createClient();
+  std::unique_ptr<AST::Start> root = client.buildAST(
+      testDataDir + "/java/a2/J1_3_PackageClashWithType_Linked_Mutated/javax/"
                     "swing/tree/TreeNode.java");
-  Env::PackageTreeVisitor Visitor;
-  Root->accept(Visitor);
-  REQUIRE(Visitor.getPackagePath() ==
+  Env::PackageTreeVisitor visitor;
+  root->accept(visitor);
+  REQUIRE(visitor.getPackagePath() ==
           std::vector<std::string>{"javax", "swing", "tree"});
 }

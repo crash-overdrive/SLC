@@ -8,36 +8,35 @@
 #include <sstream>
 
 TEST_CASE("AST built from ParseTree", "[ASTBuilder]") {
-  Lex::Scanner Scanner;
-  std::ifstream ScannerStream;
-  ScannerStream.open(TokensLexFile);
-  ScannerStream >> Scanner;
+  Lex::Scanner scanner;
+  std::ifstream scannerStream;
+  scannerStream.open(tokensLexFile);
+  scannerStream >> scanner;
 
-  Parse::DFA Parser;
-  std::ifstream ParserStream;
-  ParserStream.open(JoosLRFile);
-  ParserStream >> Parser;
-
+  Parse::DFA parser;
+  std::ifstream parserStream;
+  parserStream.open(joosLRFile);
+  parserStream >> parser;
 
   SECTION("J1_forMethodUpdate") {
-    std::ifstream FileStream;
-    FileStream.open(TestDataDir + "/java/a1/J1_forMethodUpdate.java");
-    Scanner.scan(FileStream);
-    Parser.parse(Scanner.getTokens());
-    Parse::Tree T = Parser.buildTree();
+    std::ifstream fileStream;
+    fileStream.open(testDataDir + "/java/a1/J1_forMethodUpdate.java");
+    scanner.scan(fileStream);
+    parser.parse(scanner.getTokens());
+    Parse::Tree t = parser.buildTree();
 
-    const Parse::Node &ParseStart =  T.getRoot();
-    AST::Start ASTStart;
-    AST::dispatch(ParseStart, ASTStart);
+    const Parse::Node &parseStart = t.getRoot();
+    AST::Start astStart;
+    AST::dispatch(parseStart, astStart);
 
-    std::ostringstream OStream;
-    AST::TrackVisitor Visitor;
-    Visitor.setLog(OStream);
-    ASTStart.accept(Visitor);
+    std::ostringstream oStream;
+    AST::TrackVisitor visitor;
+    visitor.setLog(oStream);
+    astStart.accept(visitor);
 
-    std::ifstream ASTStream;
-    ASTStream.open(TestDataDir + "/ast/J1_forMethodUpdate.ast");
-    std::string ASTString(std::istreambuf_iterator<char>(ASTStream), {});
-    REQUIRE(OStream.str() == ASTString);
+    std::ifstream astStream;
+    astStream.open(testDataDir + "/ast/J1_forMethodUpdate.ast");
+    std::string astString(std::istreambuf_iterator<char>(astStream), {});
+    REQUIRE(oStream.str() == astString);
   }
 }
