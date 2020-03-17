@@ -3,8 +3,8 @@
 
 namespace Env {
 
-PackageNode::PackageNode(Type type, const std::string &name, Hierarchy *hierarchy)
-    : type(type), name(name), hierarchy(hierarchy) {}
+PackageNode::PackageNode(Type type, std::string name, Hierarchy *hierarchy)
+    : type(type), name(std::move(name)), hierarchy(hierarchy) {}
 
 PackageNode *PackageNode::update(Type type, const std::string &name,
                                  Hierarchy *header) {
@@ -29,7 +29,7 @@ PackageNode *PackageNode::find(const std::string &name) {
 }
 
 /**
- * Find header under a package
+ * Find hierarchy under a package
  */
 Hierarchy *PackageNode::findHierarchy(const std::string &name) {
   if (type == PackageNode::Global) {
@@ -41,7 +41,6 @@ Hierarchy *PackageNode::findHierarchy(const std::string &name) {
   }
   return node->hierarchy;
 }
-
 
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   auto it = children.find(name);
@@ -58,21 +57,21 @@ PackageNode *PackageNode::addType(Type type, const std::string &name,
   return Flag ? &It->second : nullptr;
 }
 
-Hierarchy *
-PackageTree::findHierarchy(const std::vector<std::string> &path) const {
+Hierarchy *PackageTree::findType(const std::vector<std::string> &path) const {
   PackageNode *node = findNode(path);
-  return (node != nullptr) ? node->hierarchy : nullptr;
+  if (node == nullptr) {
+    return nullptr;
+  }
+  return (node->type == PackageNode::JoosType) ? node->hierarchy : nullptr;
 }
 
-PackageNode *PackageTree::findNode(const std::vector<std::string> &path) const {
-  PackageNode *node = root.get();
-  for (const auto &component : path) {
-    node = node->find(component);
-    if (!node) {
-      return nullptr;
-    }
+PackageNode *
+PackageTree::findPackage(const std::vector<std::string> &path) const {
+  PackageNode *node = findNode(path);
+  if (node == nullptr) {
+    return nullptr;
   }
-  return node;
+  return (node->type == PackageNode::Package) ? node : nullptr;
 }
 
 bool PackageTree::update(std::vector<std::string> &&packagePath,
@@ -95,6 +94,17 @@ bool PackageTree::update(std::vector<std::string> &&packagePath,
   }
   hierarchy.setPackage(std::move(packagePath));
   return true;
+}
+
+PackageNode *PackageTree::findNode(const std::vector<std::string> &path) const {
+  PackageNode *node = root.get();
+  for (const auto &component : path) {
+    node = node->find(component);
+    if (!node) {
+      return nullptr;
+    }
+  }
+  return node;
 }
 
 void PackageTreeVisitor::visit(const AST::Start &start) {

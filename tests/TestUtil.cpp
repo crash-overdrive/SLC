@@ -3,6 +3,11 @@
 #include "TestConfig.hpp"
 #include <fstream>
 
+const std::unordered_map<unsigned int, std::vector<std::string>> stdLibMap{
+    {1, {}},           {2, stdlib2Files}, {3, stdlib3Files},
+    {4, stdlib4Files}, {5, stdlib5Files},
+};
+
 Client createClient() {
   std::unique_ptr<Lex::Scanner> scanner = std::make_unique<Lex::Scanner>();
   std::ifstream scannerStream;
@@ -25,5 +30,7 @@ createMarmosetTest(unsigned int num,
     files.emplace_back(testDataDir + "/java/a" + std::to_string(num) + "/" +
                        fileName);
   }
+  auto it = stdLibMap.find(num);
+  files.insert(files.end(), it->second.begin(), it->second.end());
   return files;
 }

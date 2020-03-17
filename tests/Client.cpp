@@ -19,16 +19,16 @@ TEST_CASE("client process", "[client]") {
   }
 
   SECTION("a1") {
-    SECTION("error VerifyName") {
+    SECTION("error-verifyName") {
       client.setBreakPoint(Client::VerifyName);
-      for (const auto &fileName : a1ErrorPreprocess) {
+      for (const auto &fileName : a1ErrorVerifyName) {
         SECTION(fileName) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(1, {fileName})));
         }
       }
     }
 
-    SECTION("error scan") {
+    SECTION("error-scan") {
       client.setBreakPoint(Client::Scan);
       for (const auto &fileName : a1ErrorScan) {
         SECTION(fileName) {
@@ -37,7 +37,7 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    SECTION("error parse") {
+    SECTION("error-parse") {
       client.setBreakPoint(Client::Parse);
       for (const auto &fileName : A1ErrorParse) {
         SECTION(fileName) {
@@ -56,7 +56,7 @@ TEST_CASE("client process", "[client]") {
   }
 
   SECTION("a2") {
-    SECTION("parse-error") {
+    SECTION("error-parse") {
       client.setBreakPoint(Client::Parse);
       for (const auto &group : a2ErrorParse) {
         SECTION(group[0]) {
@@ -65,7 +65,7 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    SECTION("fileheader-error") {
+    SECTION("error-fileheader") {
       client.setBreakPoint(Client::FileHeader);
       for (const auto &group : a2ErrorFileHeader) {
         SECTION(group[0]) {
@@ -74,21 +74,31 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    SECTION("package-error") {
+    SECTION("error-packagetree") {
       client.setBreakPoint(Client::PackageTree);
-      for (const auto &group : a2ErrorPackage) {
+      for (const auto &group : a2ErrorPackageTree) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }
       }
     }
-    SECTION("reject") {
-      for (const auto &group : a2Error) {
+
+    SECTION("error-typeLink") {
+      client.setBreakPoint(Client::TypeLink);
+      for (const auto &group : a2ErrorTypeLink) {
         SECTION(group[0]) {
-          REQUIRE(client.compile(createMarmosetTest(2, group)));
+          REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }
       }
     }
+
+    // SECTION("reject") {
+    // for (const auto &group : a2Error) {
+    // SECTION(group[0]) {
+    // REQUIRE(client.compile(createMarmosetTest(2, group)));
+    //}
+    //}
+    //}
 
     SECTION("accept") {
       for (const auto &group : a2Valid) {
@@ -135,13 +145,6 @@ TEST_CASE("client process", "[client]") {
         testDataDir +
             "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
     };
-    REQUIRE(client.compile(files));
-  }
-
-  SECTION("stdlib") {
-    std::vector<std::string> files{
-        testDataDir +
-        "/java/a2/J1_3_PackageExists_AsPrefix_External/Main.java"};
     REQUIRE(client.compile(files));
   }
 }
