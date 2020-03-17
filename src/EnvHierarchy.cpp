@@ -20,4 +20,10 @@ const std::string &Hierarchy::getIdentifier() const {
   return header.getIdentifier();
 }
 
+void Hierarchy::setExtension(Hierarchy *hierarchy) { extension = hierarchy; }
+
+void Hierarchy::addInterface(Hierarchy *hierarchy) {
+  interfaces.emplace_back(hierarchy);
+}
+
 } // namespace Env
