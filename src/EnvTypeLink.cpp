@@ -8,9 +8,12 @@ TypeLink::TypeLink(Hierarchy &hierarchy, std::shared_ptr<PackageTree> tree)
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
   Hierarchy *importHierarchy = tree->findHierarchy(name);
-  if (!importHierarchy ||
-      importHierarchy->getIdentifier() == hierarchy.getIdentifier()) {
+  if (!importHierarchy) {
     return false;
+  }
+  // Self import
+  if (importHierarchy->getIdentifier() == hierarchy.getIdentifier()) {
+    return true;
   }
   auto it = singleImports.find(importHierarchy->getIdentifier());
   if (it != singleImports.end()) {

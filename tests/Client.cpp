@@ -97,51 +97,51 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+  }
 
-    SECTION("a3") {
-      SECTION("accept") {
-        for (const auto &group : a3Valid) {
-          SECTION(group[0]) {
-            REQUIRE(client.compile(createMarmosetTest(3, group)));
-          }
-        }
-      }
-
-      SECTION("parse-error") {
-        client.setBreakPoint(Client::Parse);
-        for (const auto &group : a3ErrorParse) {
-          SECTION(group[0]) {
-            REQUIRE_FALSE(client.compile(createMarmosetTest(3, group)));
-          }
+  SECTION("a3") {
+    SECTION("accept") {
+      for (const auto &group : a3Valid) {
+        SECTION(group[0]) {
+          REQUIRE(client.compile(createMarmosetTest(3, group)));
         }
       }
     }
 
-    SECTION("a4") {
-      SECTION("accept") {
-        for (const auto &group : a4Valid) {
-          SECTION(group[0]) {
-            REQUIRE(client.compile(createMarmosetTest(4, group)));
-          }
+    SECTION("parse-error") {
+      client.setBreakPoint(Client::Parse);
+      for (const auto &group : a3ErrorParse) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(3, group)));
         }
       }
     }
+  }
 
-    SECTION("multiple files") {
-      std::vector<std::string> files{
-          testDataDir +
-              "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
-          testDataDir +
-              "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
-      };
-      REQUIRE(client.compile(files));
+  SECTION("a4") {
+    SECTION("accept") {
+      for (const auto &group : a4Valid) {
+        SECTION(group[0]) {
+          REQUIRE(client.compile(createMarmosetTest(4, group)));
+        }
+      }
     }
+  }
 
-    SECTION("stdlib") {
-      std::vector<std::string> files{
-          testDataDir +
-          "/java/a2/J1_3_PackageExists_AsPrefix_External/Main.java"};
-      REQUIRE(client.compile(files));
-    }
+  SECTION("multiple files") {
+    std::vector<std::string> files{
+        testDataDir +
+            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
+        testDataDir +
+            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
+    };
+    REQUIRE(client.compile(files));
+  }
+
+  SECTION("stdlib") {
+    std::vector<std::string> files{
+        testDataDir +
+        "/java/a2/J1_3_PackageExists_AsPrefix_External/Main.java"};
+    REQUIRE(client.compile(files));
   }
 }

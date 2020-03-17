@@ -40,6 +40,12 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"List"}) == &listHier);
   }
 
+  SECTION("Self Import") {
+    tree->update({"Test"}, listHier);
+    Env::TypeLink typeLink(listHier, tree);
+    REQUIRE(typeLink.addSingleImport({"Test", "List"}));
+  }
+
   SECTION("No Single type import equal class same file") {
     Env::TypeLink typeLink(listHier, tree);
     REQUIRE_FALSE(typeLink.addSingleImport({"foo", "bar", "List"}));

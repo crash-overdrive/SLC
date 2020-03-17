@@ -206,13 +206,13 @@ void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
 
     Env::TypeLink typeLink(hierarchy, tree);
     for (const auto &singleImport : visitor.getSingleImports()) {
-      if (typeLink.addSingleImport(singleImport)) {
+      if (!typeLink.addSingleImport(singleImport)) {
         errorState = true;
         return;
       }
     }
     for (const auto &demandImport : visitor.getDemandImports()) {
-      if (typeLink.addDemandImport(demandImport)) {
+      if (!typeLink.addDemandImport(demandImport)) {
         errorState = true;
         return;
       }
