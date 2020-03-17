@@ -4,6 +4,7 @@
 #include "ASTNode.hpp"
 #include "EnvFileHeader.hpp"
 #include "EnvPackageTree.hpp"
+#include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -27,11 +28,9 @@ public:
   void setBreakPoint(BreakPointType breakPoint);
   void addPrintPoint(BreakPointType printPoint);
 
-  // buildAST is for debugging and testing
-  std::unique_ptr<AST::Start> buildAST(const std::string &fullName);
   bool compile(const std::vector<std::string> &fullNames);
 
-  void buildFileHeader(const std::string &fullName);
+  void buildHierarchy(const std::string &fullName);
   void verifyFileName(const std::string &fullName);
   void openFile(const std::string &fullName);
   void scan(std::istream &stream, const std::string &fullName);
@@ -40,18 +39,28 @@ public:
   void buildFileHeader(std::unique_ptr<AST::Start> root,
                        const std::string &fulName);
   void weed(Env::FileHeader fileHeader, const std::string &fullName);
+  void buildHierarchy(Env::FileHeader fileHeader);
 
   void buildEnvironment();
   void buildPackageTree();
-  void buildTypeLink(const Env::PackageTree &tree);
+  void buildTypeLink(std::shared_ptr<Env::PackageTree> tree);
+
+  // buildAST is for debugging and testing
+  std::unique_ptr<AST::Start> buildAST(const std::string &fullName);
 
 private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
 
-  std::unique_ptr<AST::Start> logAstRoot;
+  struct Environment {
+    Env::Hierarchy hierarchy;
+    Env::TypeLink typeLink;
+    Environment(Env::Hierarchy hierarchy, Env::TypeLink typeLink);
+  };
   std::vector<Env::Hierarchy> hierarchies;
+  std::vector<Environment> environments;
 
+  std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;
   bool errorState{false};

@@ -82,16 +82,13 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-    // SECTION("reject") {
-    // for (const auto &Group : A2Error) {
-    // SECTION(Group[0]) {
-    // for (const auto &FileName : Group) {
-    // Client.addJavaFile(TestDataDir + "/java/a2/" + FileName);
-    //}
-    // REQUIRE(Client.compile());
-    //}
-    //}
-    //}
+    SECTION("reject") {
+      for (const auto &group : a2Error) {
+        SECTION(group[0]) {
+          REQUIRE(client.compile(createMarmosetTest(2, group)));
+        }
+      }
+    }
 
     SECTION("accept") {
       for (const auto &group : a2Valid) {

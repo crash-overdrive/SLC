@@ -10,14 +10,14 @@ namespace Env {
 
 class TypeLink {
 public:
-  TypeLink(Hierarchy &hierarchy, PackageTree &tree);
+  TypeLink(Hierarchy &hierarchy, std::shared_ptr<PackageTree> tree);
   bool addSingleImport(const std::vector<std::string> &name);
-  void addDemandImport(const std::vector<std::string> &name);
+  bool addDemandImport(const std::vector<std::string> &name);
   Hierarchy *find(const std::vector<std::string> &name) const;
 
 private:
   Hierarchy &hierarchy;
-  PackageTree &tree;
+  std::shared_ptr<PackageTree> tree;
   std::unordered_map<std::string, Hierarchy *> singleImports;
   std::unordered_set<PackageNode *> onDemandImports;
   Hierarchy *findSamePackage(const std::string &name) const;
