@@ -11,7 +11,6 @@ class Visitor;
 
 enum class ModifierCode {
   Public,
-  Private,
   Protected,
   Static,
   Abstract,
@@ -20,21 +19,15 @@ enum class ModifierCode {
 };
 
 const std::unordered_map<std::string, ModifierCode> nameModifierCode{
-    {"PUBLIC", ModifierCode::Public},       {"PRIVATE", ModifierCode::Private},
-    {"PROTECTED", ModifierCode::Protected}, {"STATIC", ModifierCode::Static},
-    {"ABSTRACT", ModifierCode::Abstract},   {"FINAL", ModifierCode::Final},
-    {"NATIVE", ModifierCode::Native},
+    {"PUBLIC", ModifierCode::Public}, {"PROTECTED", ModifierCode::Protected},
+    {"STATIC", ModifierCode::Static}, {"ABSTRACT", ModifierCode::Abstract},
+    {"FINAL", ModifierCode::Final},   {"NATIVE", ModifierCode::Native},
 };
 
 const std::unordered_map<ModifierCode, std::string> modifierCodeName{
-    {ModifierCode::Public, "PUBLIC"},
-    {ModifierCode::Private, "PRIVATE"},
-    {ModifierCode::Protected, "PROTECTED"},
-    {ModifierCode::Protected, "PROTECTED"},
-    {ModifierCode::Static, "STATIC"},
-    {ModifierCode::Abstract, "ABSTRACT"},
-    {ModifierCode::Final, "FINAL"},
-    {ModifierCode::Native, "NATIVE"},
+    {ModifierCode::Public, "PUBLIC"}, {ModifierCode::Protected, "PROTECTED"},
+    {ModifierCode::Static, "STATIC"}, {ModifierCode::Abstract, "ABSTRACT"},
+    {ModifierCode::Final, "FINAL"},   {ModifierCode::Native, "NATIVE"},
 };
 
 class Node {
@@ -352,7 +345,6 @@ public:
 private:
   std::string literal;
 };
-
 
 class ThisExpression : public Node {
 public:
