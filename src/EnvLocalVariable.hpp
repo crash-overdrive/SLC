@@ -4,6 +4,7 @@
 #include <map>
 #include <stack>
 
+#include "ASTVisitor.hpp"
 #include "EnvFileHeader.hpp"
 
 namespace Env {
@@ -26,6 +27,10 @@ public:
 private:
   std::vector <Environment> environments;
 };
+
+class JoosMethodBodyVisitor : public AST::TrackVisitor {
+
+}
 
 }; // namespace Env
 

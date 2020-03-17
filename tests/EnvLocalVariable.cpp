@@ -11,17 +11,17 @@ TEST_CASE("LocalVariableAnalysis", "[local-variable]") {
   localVariableAnalysis.addEnvironment();
   REQUIRE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
 
-  SECTION("Adding variable with existing name, existing variableType in middle block fails") {
+  SECTION("Adding variable with existing name and existing variableType in middle block fails") {
     REQUIRE_FALSE(localVariableAnalysis.addVariable("outer", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
     REQUIRE_FALSE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
   }
 
-  SECTION("Adding variable with existing name, non-existing variableType in middle block fails") {
+  SECTION("Adding variable with existing name and non-existing variableType in middle block fails") {
     REQUIRE_FALSE(localVariableAnalysis.addVariable("outer", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
     REQUIRE_FALSE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
   }
 
-  SECTION("Adding variable with non-existing name, existing variableType in middle block passes") {
+  SECTION("Adding variable with non-existing name and existing variableType in middle block passes") {
     REQUIRE(localVariableAnalysis.addVariable("different", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
     REQUIRE(localVariableAnalysis.addVariable("different2", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
   }
@@ -64,5 +64,4 @@ TEST_CASE("LocalVariableAnalysis", "[local-variable]") {
     REQUIRE(localVariableAnalysis.addVariable("inner", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
     localVariableAnalysis.removeEnvironment();
   }
-
 }
