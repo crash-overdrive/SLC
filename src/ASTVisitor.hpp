@@ -61,7 +61,7 @@ public:
   virtual void visit(const ForUpdate &node);
   virtual void dispatchChildren(const Node &parent);
 
-protected:
+private:
   virtual void postVisit(const Node &parent);
 };
 
@@ -129,9 +129,9 @@ public:
 protected:
   void setError();
   bool error();
-  void postVisit(const Node &parent) override;
 
 private:
+  void postVisit(const Node &parent) override;
   bool errorState = false;
   unsigned int level = 0;
   std::ofstream nullStream{};
