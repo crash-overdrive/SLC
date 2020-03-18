@@ -173,7 +173,8 @@ void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
 }
 
 void Client::buildHierarchy(Env::FileHeader fileHeader) {
-  hierarchies.emplace_back(std::move(fileHeader));
+  auto hierarchy = std::make_unique<Env::Hierarchy>(std::move(fileHeader));
+  hierarchies.emplace_back(std::move(hierarchy));
 }
 
 void Client::buildEnvironment() {
@@ -187,8 +188,8 @@ void Client::buildPackageTree() {
   auto tree = std::make_shared<Env::PackageTree>();
   for (auto &&hierarchy : hierarchies) {
     Env::PackageTreeVisitor visitor;
-    hierarchy.getASTNode()->accept(visitor);
-    if (!tree->update(visitor.getPackagePath(), hierarchy)) {
+    hierarchy->getASTNode()->accept(visitor);
+    if (!tree->update(visitor.getPackagePath(), *hierarchy)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
@@ -202,25 +203,21 @@ void Client::buildPackageTree() {
 void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
   for (auto &&hierarchy : hierarchies) {
     Env::TypeLinkVisitor visitor;
-    hierarchy.getASTNode()->accept(visitor);
+    hierarchy->getASTNode()->accept(visitor);
 
-    Env::TypeLink typeLink(hierarchy, tree);
+    auto typeLink = std::make_unique<Env::TypeLink>(*hierarchy, tree);
     for (const auto &singleImport : visitor.getSingleImports()) {
-      if (!typeLink.addSingleImport(singleImport)) {
+      if (!typeLink->addSingleImport(singleImport)) {
         errorState = true;
         return;
       }
     }
     for (const auto &demandImport : visitor.getDemandImports()) {
-      if (!typeLink.addDemandImport(demandImport)) {
+      if (!typeLink->addDemandImport(demandImport)) {
         errorState = true;
         return;
       }
     }
-    environments.emplace_back(std::move(hierarchy), typeLink);
+    hierarchy->setTypeLink(std::move(typeLink));
   }
 }
-
-Client::Environment::Environment(Env::Hierarchy hierarchy,
-                                 Env::TypeLink typeLink)
-    : hierarchy(std::move(hierarchy)), typeLink(std::move(typeLink)) {}

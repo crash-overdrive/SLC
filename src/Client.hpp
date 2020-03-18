@@ -52,13 +52,7 @@ private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
 
-  struct Environment {
-    Env::Hierarchy hierarchy;
-    Env::TypeLink typeLink;
-    Environment(Env::Hierarchy hierarchy, Env::TypeLink typeLink);
-  };
-  std::vector<Env::Hierarchy> hierarchies;
-  std::vector<Environment> environments;
+  std::vector<std::unique_ptr<Env::Hierarchy>> hierarchies;
 
   std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};
