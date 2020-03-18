@@ -12,8 +12,7 @@ class PackageNode {
 public:
   enum Type { Global, Package, JoosType };
 
-  PackageNode(Type type, const std::string &name = "",
-              Hierarchy *hierarchy = nullptr);
+  PackageNode(Type type, std::string name = "", Hierarchy *hierarchy = nullptr);
   PackageNode *update(Type type, const std::string &name,
                       Hierarchy *hierarchy = nullptr);
   PackageNode *find(const std::string &name);
@@ -27,17 +26,17 @@ private:
   Type type;
   std::string name;
   Hierarchy *hierarchy;
-  std::map<std::string, PackageNode> children{};
+  std::map<std::string, PackageNode> children;
 };
 
 class PackageTree {
 public:
-  Hierarchy *findHierarchy(const std::vector<std::string> &path) const;
-  PackageNode *findNode(const std::vector<std::string> &path) const;
-  bool update(std::vector<std::string> &&packagePath,
-              Hierarchy &hierarchy);
+  Hierarchy *findType(const std::vector<std::string> &path) const;
+  PackageNode *findPackage(const std::vector<std::string> &path) const;
+  bool update(std::vector<std::string> &&packagePath, Hierarchy &hierarchy);
 
 private:
+  PackageNode *findNode(const std::vector<std::string> &path) const;
   std::unique_ptr<PackageNode> root =
       std::make_unique<PackageNode>(PackageNode::Global);
 };

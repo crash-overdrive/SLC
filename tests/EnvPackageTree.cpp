@@ -32,8 +32,8 @@ TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
     Env::Hierarchy bar(Env::FileHeader({}, {Env::Type::Class, "bar"}));
     REQUIRE(tree.update({"foo", "bar"}, canary));
     REQUIRE_FALSE(tree.update({"foo"}, bar));
-    REQUIRE(tree.findHierarchy({"foo", "bar", "canary"}) == &canary);
-    REQUIRE(tree.findHierarchy({"foo"}) == nullptr);
+    REQUIRE(tree.findType({"foo", "bar", "canary"}) == &canary);
+    REQUIRE(tree.findType({"foo"}) == nullptr);
   }
 
   SECTION("Single File") {

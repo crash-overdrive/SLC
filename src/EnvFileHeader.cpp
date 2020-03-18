@@ -29,8 +29,8 @@ bool JoosConstructor::operator==(const JoosConstructor &joosConstructor) const {
 FileHeader::FileHeader(std::set<AST::ModifierCode> modifiers,
                        TypeDescriptor typeDescriptor,
                        std::unique_ptr<AST::Node> node)
-    : node(std::move(node)), modifiers(modifiers),
-      typeDescriptor(typeDescriptor){};
+    : node(std::move(node)), modifiers(std::move(modifiers)),
+      typeDescriptor(std::move(typeDescriptor)){};
 
 const AST::Node *FileHeader::getASTNode() const { return node.get(); }
 

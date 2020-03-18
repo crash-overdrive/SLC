@@ -1,10 +1,11 @@
+#include "Client.hpp"
+#include "Config.hpp"
 #include <fstream>
 #include <set>
 #include <string>
 #include <vector>
 
-#include "Client.hpp"
-#include "Config.hpp"
+const int errorCode = 42;
 
 std::vector<std::array<std::string, 2>> usageArray{
     {"--output-tokens", "outputs scanned tokens for each class"},
@@ -50,13 +51,13 @@ int main(int argc, char *argv[]) {
   if (!scannerStream.is_open()) {
     std::cerr << "Error initialising scanner, " << tokensLexFile
               << " could not be opened" << std::endl;
-    return 42;
+    return errorCode;
   }
   parserStream.open(joosLRFile);
   if (!parserStream.is_open()) {
     std::cerr << "Error initialising parser, " << joosLRFile
               << " could not be opened" << std::endl;
-    return 42;
+    return errorCode;
   }
 
   scannerStream >> *scanner;
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cerr << "Error: missing input file\n";
     usage();
-    return 42;
+    return errorCode;
   }
 
   std::vector<std::string> files;
@@ -91,18 +92,18 @@ int main(int argc, char *argv[]) {
     }
     std::cerr << "Error: Incorrect flag passed" << std::endl;
     usage();
-    return 42;
+    return errorCode;
   }
 
   if (files.size() == 0) {
     std::cerr << "Error: no files provided to compile.." << std::endl;
-    return 42;
+    return errorCode;
   }
 
   bool compileResult = client.compile(files);
 
   if (!compileResult) {
     std::cerr << "Failure in compilation" << std::endl;
-    return 42;
+    return errorCode;
   }
 }

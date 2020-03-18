@@ -3,13 +3,20 @@
 
 namespace Env {
 
-TypeLink::TypeLink(Hierarchy &hierarchy, PackageTree &tree)
-    : hierarchy(hierarchy), tree(tree) {}
+TypeLink::TypeLink(Hierarchy &hierarchy, std::shared_ptr<PackageTree> tree)
+    : hierarchy(hierarchy), tree(std::move(tree)) {}
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
-  Hierarchy *importHierarchy = tree.findHierarchy(name);
-  if (importHierarchy == nullptr ||
-      importHierarchy->getIdentifier() == hierarchy.getIdentifier()) {
+  Hierarchy *importHierarchy = tree->findType(name);
+  if (!importHierarchy) {
+    return false;
+  }
+  // Self import
+  if (importHierarchy->getASTNode() == hierarchy.getASTNode()) {
+    return true;
+  }
+  // Import name clash with self
+  if (importHierarchy->getIdentifier() == hierarchy.getIdentifier()) {
     return false;
   }
   auto it = singleImports.find(importHierarchy->getIdentifier());
@@ -20,11 +27,13 @@ bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
   return true;
 }
 
-void TypeLink::addDemandImport(const std::vector<std::string> &name) {
-  PackageNode *node = tree.findNode(name);
-  if (node != nullptr) {
-    onDemandImports.emplace(node);
+bool TypeLink::addDemandImport(const std::vector<std::string> &name) {
+  PackageNode *node = tree->findPackage(name);
+  if (!node) {
+    return false;
   }
+  onDemandImports.emplace(node);
+  return true;
 }
 
 Hierarchy *TypeLink::find(const std::vector<std::string> &name) const {
@@ -33,7 +42,7 @@ Hierarchy *TypeLink::find(const std::vector<std::string> &name) const {
   }
   // Name is fully qualified-name
   if (name.size() > 1) {
-    return tree.findHierarchy(name);
+    return tree->findType(name);
   }
   const std::string &simpleName = name.at(0);
   if (hierarchy.getIdentifier() == simpleName) {
@@ -55,9 +64,9 @@ Hierarchy *TypeLink::find(const std::vector<std::string> &name) const {
 }
 
 Hierarchy *TypeLink::findSamePackage(const std::string &name) const {
-  PackageNode *Node = tree.findNode(hierarchy.getPackage());
-  if (Node != nullptr) {
-    return Node->findHierarchy(name);
+  PackageNode *node = tree->findPackage(hierarchy.getPackage());
+  if (node != nullptr) {
+    return node->findHierarchy(name);
   }
   return nullptr;
 }

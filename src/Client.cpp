@@ -1,7 +1,6 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
-
 #include <fstream>
 #include <iterator>
 
@@ -19,19 +18,19 @@ void Client::addPrintPoint(BreakPointType printPoint) {
 
 std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
   setBreakPoint(BreakPointType::Ast);
-  buildFileHeader(fullName);
+  buildHierarchy(fullName);
   return std::move(logAstRoot);
 }
 
 bool Client::compile(const std::vector<std::string> &fullNames) {
   for (const auto &file : fullNames) {
-    buildFileHeader(file);
+    buildHierarchy(file);
   }
   buildEnvironment();
   return !errorState;
 }
 
-void Client::buildFileHeader(const std::string &file) {
+void Client::buildHierarchy(const std::string &file) {
   if (errorState) {
     return;
   }
@@ -109,7 +108,7 @@ void Client::parse(const std::vector<Lex::Token> &tokens,
 }
 
 void Client::buildAST(const Parse::Tree &tree, const std::string &fullName) {
-  std::unique_ptr<AST::Start> root = std::make_unique<AST::Start>();
+  auto root = std::make_unique<AST::Start>();
   const Parse::Node &parseRoot = tree.getRoot();
   AST::dispatch(parseRoot, *root);
   if (printPoints.find(Ast) != printPoints.end()) {
@@ -169,8 +168,12 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
 void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
-    hierarchies.emplace_back(std::move(fileHeader));
+    buildHierarchy(std::move(fileHeader));
   }
+}
+
+void Client::buildHierarchy(Env::FileHeader fileHeader) {
+  hierarchies.emplace_back(std::move(fileHeader));
 }
 
 void Client::buildEnvironment() {
@@ -181,14 +184,43 @@ void Client::buildEnvironment() {
 }
 
 void Client::buildPackageTree() {
-  Env::PackageTree tree;
+  auto tree = std::make_shared<Env::PackageTree>();
   for (auto &&hierarchy : hierarchies) {
     Env::PackageTreeVisitor visitor;
     hierarchy.getASTNode()->accept(visitor);
-    if (!tree.update(visitor.getPackagePath(), hierarchy)) {
+    if (!tree->update(visitor.getPackagePath(), hierarchy)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
     };
   }
+  if (breakPoint != PackageTree) {
+    buildTypeLink(std::move(tree));
+  }
 }
+
+void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
+  for (auto &&hierarchy : hierarchies) {
+    Env::TypeLinkVisitor visitor;
+    hierarchy.getASTNode()->accept(visitor);
+
+    Env::TypeLink typeLink(hierarchy, tree);
+    for (const auto &singleImport : visitor.getSingleImports()) {
+      if (!typeLink.addSingleImport(singleImport)) {
+        errorState = true;
+        return;
+      }
+    }
+    for (const auto &demandImport : visitor.getDemandImports()) {
+      if (!typeLink.addDemandImport(demandImport)) {
+        errorState = true;
+        return;
+      }
+    }
+    environments.emplace_back(std::move(hierarchy), typeLink);
+  }
+}
+
+Client::Environment::Environment(Env::Hierarchy hierarchy,
+                                 Env::TypeLink typeLink)
+    : hierarchy(std::move(hierarchy)), typeLink(std::move(typeLink)) {}

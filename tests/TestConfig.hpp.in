@@ -139,7 +139,7 @@ const std::vector<std::string> a1Valid{
     "J2_staticfielddeclaration.java",
 };
 
-const std::vector<std::string> a1ErrorPreprocess{
+const std::vector<std::string> a1ErrorVerifyName{
     "Je_1_ClassDeclaration_WrongFileName_Dot.foo.java",
 };
 
@@ -945,7 +945,7 @@ const std::vector<std::vector<std::string>> a2ErrorFileHeader{
     },
 };
 
-const std::vector<std::vector<std::string>> a2ErrorPackage{
+const std::vector<std::vector<std::string>> a2ErrorPackageTree{
     {
         "Je_2_DuplicateType/Bar.java",
         "Je_2_DuplicateType/foo/Bar.java",
@@ -983,7 +983,7 @@ const std::vector<std::vector<std::string>> a2ErrorPackage{
     },
 };
 
-const std::vector<std::vector<std::string>> a2ErrorTyping{
+const std::vector<std::vector<std::string>> a2ErrorTypeLink{
     {
         "Je_13_Interface_SingleImport_ClashWithClass/List.java",
         "Je_13_Interface_SingleImport_ClashWithClass/Main.java",
@@ -1025,7 +1025,49 @@ const std::vector<std::vector<std::string>> a2ErrorTyping{
         "Je_3_PackageClashWithType_Linked/javax/swing/tree.java",
         "Je_3_PackageClashWithType_Linked/Main.java",
     },
+    {
+        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/Main.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/awt/"
+        "List.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/io/"
+        "File.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/util/"
+        "List.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/util/"
+        "Collection.java",
+    },
+    {
+        "Je_3_SingleTypeImport_ClashWithEachOther/Main.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther/java/awt/List.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther/java/util/List.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther/java/util/Collection.java",
+        "Je_3_SingleTypeImport_ClashWithEachOther/java/util/ArrayList.java",
+    },
+    {
+        "Je_3_SingleTypeImport_ClashWithClass/List.java",
+        "Je_3_SingleTypeImport_ClashWithClass/Main.java",
+        "Je_3_SingleTypeImport_ClashWithClass/java/util/List.java",
+        "Je_3_SingleTypeImport_ClashWithClass/java/util/Collection.java",
+        "Je_3_SingleTypeImport_ClashWithClass/java/util/ArrayList.java",
+    },
+    {
+        "Je_3_SingleTypeImport_ClashWithClass_InPackage/foo/List.java",
+        "Je_3_SingleTypeImport_ClashWithClass_InPackage/Main.java",
+        "Je_3_SingleTypeImport_ClashWithClass_InPackage/java/util/List.java",
+        "Je_3_SingleTypeImport_ClashWithClass_InPackage/java/util/"
+        "Collection.java",
+        "Je_3_SingleTypeImport_ClashWithClass_InPackage/java/util/"
+        "ArrayList.java",
+    },
+    {
+        "Je_3_SingleTypeImport_ClashWithInterface/List.java",
+        "Je_3_SingleTypeImport_ClashWithInterface/Main.java",
+        "Je_3_SingleTypeImport_ClashWithInterface/java/util/List.java",
+        "Je_3_SingleTypeImport_ClashWithInterface/java/util/Collection.java",
+        "Je_3_SingleTypeImport_ClashWithInterface/java/util/ArrayList.java",
+    },
 };
+
 const std::vector<std::vector<std::string>> a2Error{
     {
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
@@ -1135,47 +1177,6 @@ const std::vector<std::vector<std::string>> a2Error{
     },
     {
         "Je_3_Resolve_SamePackageAndClassName.java",
-    },
-    {
-        "Je_3_SingleTypeImport_ClashWithClass/List.java",
-        "Je_3_SingleTypeImport_ClashWithClass/Main.java",
-        "Je_3_SingleTypeImport_ClashWithClass/java/util/List.java",
-        "Je_3_SingleTypeImport_ClashWithClass/java/util/Collection.java",
-        "Je_3_SingleTypeImport_ClashWithClass/java/util/ArrayList.java",
-    },
-    {
-        "Je_3_SingleTypeImport_ClashWithClass_InPackage/foo/List.java",
-        "Je_3_SingleTypeImport_ClashWithClass_InPackage/Main.java",
-        "Je_3_SingleTypeImport_ClashWithClass_InPackage/java/util/List.java",
-        "Je_3_SingleTypeImport_ClashWithClass_InPackage/java/util/"
-        "Collection.java",
-        "Je_3_SingleTypeImport_ClashWithClass_InPackage/java/util/"
-        "ArrayList.java",
-    },
-    {
-        "Je_3_SingleTypeImport_ClashWithEachOther/Main.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther/java/awt/List.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther/java/util/List.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther/java/util/Collection.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther/java/util/ArrayList.java",
-    },
-    {
-        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/Main.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/awt/"
-        "List.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/io/"
-        "File.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/util/"
-        "List.java",
-        "Je_3_SingleTypeImport_ClashWithEachOther_MultipleImports/java/util/"
-        "Collection.java",
-    },
-    {
-        "Je_3_SingleTypeImport_ClashWithInterface/List.java",
-        "Je_3_SingleTypeImport_ClashWithInterface/Main.java",
-        "Je_3_SingleTypeImport_ClashWithInterface/java/util/List.java",
-        "Je_3_SingleTypeImport_ClashWithInterface/java/util/Collection.java",
-        "Je_3_SingleTypeImport_ClashWithInterface/java/util/ArrayList.java",
     },
     {
         "Je_3_UndefinedType_DefaultPackageNotVisible/Main.java",

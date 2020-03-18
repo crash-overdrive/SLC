@@ -7,8 +7,8 @@
 namespace Lex {
 
 struct Token {
-  Token();
-  Token(const std::string &type, const std::string &lexeme);
+  Token() = default;
+  Token(std::string type, std::string lexeme);
   std::string type;
   std::string lexeme;
 };
