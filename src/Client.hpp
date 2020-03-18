@@ -52,7 +52,9 @@ private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
 
-  std::vector<std::unique_ptr<Env::Hierarchy>> hierarchies;
+  std::vector<std::unique_ptr<Env::ClassHierarchy>> classes;
+  std::vector<std::unique_ptr<Env::InterfaceHierarchy>> interfaces;
+  std::vector<Env::Hierarchy *> hierarchies;
 
   std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};

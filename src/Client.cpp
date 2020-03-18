@@ -173,8 +173,22 @@ void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
 }
 
 void Client::buildHierarchy(Env::FileHeader fileHeader) {
-  auto hierarchy = std::make_unique<Env::Hierarchy>(std::move(fileHeader));
-  hierarchies.emplace_back(std::move(hierarchy));
+  switch (fileHeader.getType()) {
+  case Env::Type::Class: {
+    auto classHierarchy =
+        std::make_unique<Env::ClassHierarchy>(std::move(fileHeader));
+    auto &hierarchy = classes.emplace_back(std::move(classHierarchy));
+    hierarchies.emplace_back(hierarchy.get());
+    break;
+  }
+  case Env::Type::Interface: {
+    auto interfaceHierarchy =
+        std::make_unique<Env::InterfaceHierarchy>(std::move(fileHeader));
+    auto &interface = interfaces.emplace_back(std::move(interfaceHierarchy));
+    hierarchies.emplace_back(interface.get());
+    break;
+  }
+  }
 }
 
 void Client::buildEnvironment() {
