@@ -34,8 +34,8 @@ bool InterfaceHierarchy::addExtends(Hierarchy *hierarchy) {
   if (hierarchy->getType() != Type::Interface) {
     return false;
   }
-  implements.emplace_back(hierarchy);
-  return true;
+  auto [it, flag] = implements.emplace(hierarchy);
+  return flag;
 }
 
 ClassHierarchy::ClassHierarchy(FileHeader header)
@@ -53,8 +53,37 @@ bool ClassHierarchy::addImplements(Hierarchy *hierarchy) {
   if (hierarchy->getType() != Type::Interface) {
     return false;
   }
-  implements.emplace_back(hierarchy);
-  return true;
+  auto [it, flag] = implements.emplace(hierarchy);
+  return flag;
 }
+
+InterfaceHierarchy &HierarchyGraph::addInterface(FileHeader header) {
+  auto ptr = std::make_unique<Env::InterfaceHierarchy>(std::move(header));
+  auto &hierarchy = interfaces.emplace_back(std::move(ptr));
+  hierarchies.emplace_back(hierarchy.get());
+  return *hierarchy;
+}
+
+ClassHierarchy &HierarchyGraph::addClass(FileHeader header) {
+  auto ptr = std::make_unique<Env::ClassHierarchy>(std::move(header));
+  auto &hierarchy = classes.emplace_back(std::move(ptr));
+  hierarchies.emplace_back(hierarchy.get());
+  return *hierarchy;
+}
+
+std::vector<std::unique_ptr<InterfaceHierarchy>> &
+HierarchyGraph::getInterfaces() {
+  return interfaces;
+}
+
+std::vector<std::unique_ptr<ClassHierarchy>> &HierarchyGraph::getClasses() {
+  return classes;
+}
+
+std::vector<Hierarchy *> &HierarchyGraph::getHierarchies() {
+  return hierarchies;
+}
+
+bool HierarchyGraph::topologicalSort() const { return false; }
 
 } // namespace Env

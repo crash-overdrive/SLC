@@ -3,11 +3,12 @@
 
 #include "EnvFileHeader.hpp"
 #include <string>
-#include <vector>
+#include <unordered_set>
 
 namespace Env {
 
 class TypeLink;
+class HierarchyGraph;
 
 class Hierarchy {
 public:
@@ -35,7 +36,8 @@ public:
   bool addExtends(Hierarchy *hierarchy);
 
 private:
-  std::vector<Hierarchy *> implements;
+  friend HierarchyGraph;
+  std::unordered_set<Hierarchy *> implements;
 };
 
 class ClassHierarchy : public Hierarchy {
@@ -45,11 +47,29 @@ public:
   bool addImplements(Hierarchy *hierarchy);
 
 private:
+  friend HierarchyGraph;
   Hierarchy *extends = nullptr;
-  std::vector<Hierarchy *> implements;
+  std::unordered_set<Hierarchy *> implements;
 };
 
-class HierarchyBuilder {};
+class HierarchyGraph {
+public:
+  InterfaceHierarchy &addInterface(FileHeader header);
+  ClassHierarchy &addClass(FileHeader header);
+  std::vector<std::unique_ptr<InterfaceHierarchy>> &getInterfaces();
+  std::vector<std::unique_ptr<ClassHierarchy>> &getClasses();
+  std::vector<Hierarchy *> &getHierarchies();
+
+  bool topologicalSort() const;
+  void buildSubType();
+  bool buildContains();
+
+private:
+  void augmentJavaObject();
+  std::vector<std::unique_ptr<InterfaceHierarchy>> interfaces;
+  std::vector<std::unique_ptr<ClassHierarchy>> classes;
+  std::vector<Env::Hierarchy *> hierarchies;
+};
 
 } // namespace Env
 

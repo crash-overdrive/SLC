@@ -174,18 +174,11 @@ void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
 
 void Client::buildHierarchy(Env::FileHeader fileHeader) {
   switch (fileHeader.getType()) {
-  case Env::Type::Class: {
-    auto classHierarchy =
-        std::make_unique<Env::ClassHierarchy>(std::move(fileHeader));
-    auto &hierarchy = classes.emplace_back(std::move(classHierarchy));
-    hierarchies.emplace_back(hierarchy.get());
+  case Env::Type::Class:
+    graph.addClass(std::move(fileHeader));
     break;
-  }
   case Env::Type::Interface: {
-    auto interfaceHierarchy =
-        std::make_unique<Env::InterfaceHierarchy>(std::move(fileHeader));
-    auto &interface = interfaces.emplace_back(std::move(interfaceHierarchy));
-    hierarchies.emplace_back(interface.get());
+    graph.addInterface(std::move(fileHeader));
     break;
   }
   }
@@ -200,7 +193,7 @@ void Client::buildEnvironment() {
 
 void Client::buildPackageTree() {
   auto tree = std::make_shared<Env::PackageTree>();
-  for (auto &&hierarchy : hierarchies) {
+  for (auto &&hierarchy : graph.getHierarchies()) {
     Env::PackageTreeVisitor visitor;
     hierarchy->getASTNode()->accept(visitor);
     if (!tree->update(visitor.getPackagePath(), *hierarchy)) {
@@ -215,7 +208,7 @@ void Client::buildPackageTree() {
 }
 
 void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
-  for (auto &&hierarchy : hierarchies) {
+  for (auto &&hierarchy : graph.getHierarchies()) {
     Env::TypeLinkVisitor visitor;
     hierarchy->getASTNode()->accept(visitor);
 
