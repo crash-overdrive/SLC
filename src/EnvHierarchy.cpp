@@ -7,6 +7,10 @@ Hierarchy::Hierarchy(FileHeader header) : header(std::move(header)) {}
 
 const AST::Node *Hierarchy::getASTNode() const { return header.getASTNode(); }
 
+bool Hierarchy::findModifiers(AST::ModifierCode code) const {
+  return header.findModifiers(code);
+}
+
 const std::string &Hierarchy::getIdentifier() const {
   return header.getIdentifier();
 }
@@ -38,11 +42,17 @@ bool InterfaceHierarchy::addExtends(const Hierarchy *hierarchy) {
   return flag;
 }
 
+bool InterfaceHierarchy::subType(const Hierarchy *hierarchy) const {
+  (void)hierarchy;
+  return false;
+}
+
 ClassHierarchy::ClassHierarchy(FileHeader header)
     : Hierarchy(std::move(header)) {}
 
 bool ClassHierarchy::setExtends(const Hierarchy *hierarchy) {
-  if (hierarchy->getType() != Type::Class) {
+  if (hierarchy->getType() != Type::Class ||
+      hierarchy->findModifiers(AST::ModifierCode::Final)) {
     return false;
   }
   extends = hierarchy;
@@ -55,6 +65,11 @@ bool ClassHierarchy::addImplements(const Hierarchy *hierarchy) {
   }
   auto [it, flag] = implements.emplace(hierarchy);
   return flag;
+}
+
+bool ClassHierarchy::subType(const Hierarchy *hierarchy) const {
+  (void)hierarchy;
+  return false;
 }
 
 InterfaceHierarchy &HierarchyGraph::addInterface(FileHeader header) {
@@ -111,6 +126,8 @@ bool HierarchyGraph::topologicalSort() {
   hierarchies = std::vector<Hierarchy *>(order.begin(), order.end());
   return true;
 }
+
+bool HierarchyGraph::buildSubType() { return true; }
 
 HierarchyGraph::DAGNode::DAGNode(Hierarchy *hierarchy) : hierarchy(hierarchy) {}
 

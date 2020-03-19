@@ -78,7 +78,7 @@ public:
              TypeDescriptor typeDescriptor,
              std::unique_ptr<AST::Node> node = nullptr);
   const AST::Node *getASTNode() const;
-  const std::set<AST::ModifierCode> &getModifiers() const;
+  bool findModifiers(AST::ModifierCode code) const;
   const std::string &getIdentifier() const;
   const Type &getType() const;
 

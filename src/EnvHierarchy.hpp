@@ -18,13 +18,14 @@ public:
 
   const AST::Node *getASTNode() const;
   const std::string &getIdentifier() const;
+  bool findModifiers(AST::ModifierCode code) const;
   Type getType() const;
 
   const std::vector<std::string> &getPackage() const;
   void setPackage(std::vector<std::string> package);
   const TypeLink *getTypeLink() const;
   void setTypeLink(std::unique_ptr<TypeLink> typeLink);
-  virtual bool subtype(const Hierarchy *hierarchy) const = 0;
+  virtual bool subType(const Hierarchy *hierarchy) const = 0;
 
 private:
   FileHeader header;
@@ -36,7 +37,7 @@ class InterfaceHierarchy : public Hierarchy {
 public:
   explicit InterfaceHierarchy(FileHeader header);
   bool addExtends(const Hierarchy *hierarchy);
-  bool subtype(const Hierarchy *hierarchy) const override;
+  bool subType(const Hierarchy *hierarchy) const override;
 
 private:
   friend HierarchyGraph;
@@ -48,7 +49,7 @@ public:
   explicit ClassHierarchy(FileHeader header);
   bool setExtends(const Hierarchy *hierarchy);
   bool addImplements(const Hierarchy *hierarchy);
-  bool subtype(const Hierarchy *hierarchy) const override;
+  bool subType(const Hierarchy *hierarchy) const override;
 
 private:
   friend HierarchyGraph;
@@ -65,7 +66,7 @@ public:
   std::vector<Hierarchy *> &getHierarchies();
 
   bool topologicalSort();
-  void buildSubType();
+  bool buildSubType();
   bool buildContains();
 
 private:

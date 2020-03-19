@@ -34,8 +34,8 @@ FileHeader::FileHeader(std::set<AST::ModifierCode> modifiers,
 
 const AST::Node *FileHeader::getASTNode() const { return node.get(); }
 
-const std::set<AST::ModifierCode> &FileHeader::getModifiers() const {
-  return modifiers;
+bool FileHeader::findModifiers(AST::ModifierCode code) const {
+  return modifiers.find(code) != modifiers.end();
 }
 
 const std::string &FileHeader::getIdentifier() const {

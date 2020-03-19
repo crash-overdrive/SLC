@@ -5,9 +5,9 @@
 #include "catch.hpp"
 
 TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
-  Env::Hierarchy mainHier(Env::FileHeader({}, {Env::Type::Class, "Main"}));
-  Env::Hierarchy listHier(Env::FileHeader({}, {Env::Type::Class, "List"},
-                                          std::make_unique<AST::Start>()));
+  Env::ClassHierarchy mainHier(Env::FileHeader({}, {Env::Type::Class, "Main"}));
+  Env::ClassHierarchy listHier(Env::FileHeader({}, {Env::Type::Class, "List"},
+                                               std::make_unique<AST::Start>()));
   auto tree = std::make_shared<Env::PackageTree>();
 
   SECTION("Single Type Lookup") {
@@ -78,8 +78,8 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
 
   SECTION("Single import clash") {
     tree->update({"foo", "canary"}, listHier);
-    Env::Hierarchy list2Hier(Env::FileHeader({}, {Env::Type::Class, "List"},
-                                             std::make_unique<AST::Start>()));
+    Env::ClassHierarchy list2Hier(Env::FileHeader(
+        {}, {Env::Type::Class, "List"}, std::make_unique<AST::Start>()));
     tree->update({"foo", "bar"}, list2Hier);
     Env::TypeLink typeLink(mainHier, tree);
     typeLink.addSingleImport({"foo", "bar", "List"});
@@ -87,7 +87,8 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
   }
 
   SECTION("Same Package Import") {
-    Env::Hierarchy arrayHier(Env::FileHeader({}, {Env::Type::Class, "Array"}));
+    Env::ClassHierarchy arrayHier(
+        Env::FileHeader({}, {Env::Type::Class, "Array"}));
     tree->update({"foo", "canary"}, listHier);
     tree->update({"foo", "canary"}, arrayHier);
     Env::TypeLink typeLink(listHier, tree);
@@ -96,8 +97,8 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
 
   SECTION("Single Import class own name") {
     tree->update({"Test"}, listHier);
-    Env::Hierarchy list2Hier(Env::FileHeader({}, {Env::Type::Class, "List"},
-                                             std::make_unique<AST::Start>()));
+    Env::ClassHierarchy list2Hier(Env::FileHeader(
+        {}, {Env::Type::Class, "List"}, std::make_unique<AST::Start>()));
     Env::TypeLink typeLink(list2Hier, tree);
     REQUIRE_FALSE(typeLink.addSingleImport({"Test", "List"}));
   }

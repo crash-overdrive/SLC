@@ -1,4 +1,5 @@
 #include "EnvHierarchy.hpp"
+#include "ASTNode.hpp"
 #include "EnvTypeLink.hpp"
 #include "catch.hpp"
 
@@ -14,6 +15,12 @@ TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
 
   SECTION("class implements class") {
     REQUIRE_FALSE(classType.addImplements(&classType));
+  }
+
+  SECTION("class extends final class") {
+    Env::ClassHierarchy class2Type{Env::FileHeader(
+        {AST::ModifierCode::Final}, {Env::Type::Class, "canary"})};
+    REQUIRE_FALSE(classType.setExtends(&class2Type));
   }
 
   SECTION("class implements duplicate") {
@@ -80,5 +87,18 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph][!hide]") {
     interface2Type.addExtends(&interface3Type);
     interface3Type.addExtends(&interfaceType);
     REQUIRE_FALSE(graph.topologicalSort());
+  }
+
+  SECTION("class subtype interface") {
+    classType.addImplements(&interfaceType);
+    graph.topologicalSort();
+    graph.buildSubType();
+    REQUIRE(classType.subType(&interfaceType));
+  }
+
+  SECTION("no subtype default") {
+    graph.topologicalSort();
+    graph.buildSubType();
+    REQUIRE_FALSE(classType.subType(&interfaceType));
   }
 }
