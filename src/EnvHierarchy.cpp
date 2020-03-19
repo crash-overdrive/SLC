@@ -1,6 +1,5 @@
 #include "EnvHierarchy.hpp"
 #include "EnvTypeLink.hpp"
-#include <queue>
 
 namespace Env {
 
@@ -31,7 +30,7 @@ void Hierarchy::setTypeLink(std::unique_ptr<TypeLink> typeLink) {
 InterfaceHierarchy::InterfaceHierarchy(FileHeader header)
     : Hierarchy(std::move(header)) {}
 
-bool InterfaceHierarchy::addExtends(Hierarchy *hierarchy) {
+bool InterfaceHierarchy::addExtends(const Hierarchy *hierarchy) {
   if (hierarchy->getType() != Type::Interface) {
     return false;
   }
@@ -42,7 +41,7 @@ bool InterfaceHierarchy::addExtends(Hierarchy *hierarchy) {
 ClassHierarchy::ClassHierarchy(FileHeader header)
     : Hierarchy(std::move(header)) {}
 
-bool ClassHierarchy::setExtends(Hierarchy *hierarchy) {
+bool ClassHierarchy::setExtends(const Hierarchy *hierarchy) {
   if (hierarchy->getType() != Type::Class) {
     return false;
   }
@@ -50,7 +49,7 @@ bool ClassHierarchy::setExtends(Hierarchy *hierarchy) {
   return true;
 }
 
-bool ClassHierarchy::addImplements(Hierarchy *hierarchy) {
+bool ClassHierarchy::addImplements(const Hierarchy *hierarchy) {
   if (hierarchy->getType() != Type::Interface) {
     return false;
   }
@@ -122,7 +121,7 @@ void HierarchyGraph::DAGNode::addOutNode(DAGNode *node) {
 
 std::list<HierarchyGraph::DAGNode> HierarchyGraph::augmentGraph() {
   std::list<DAGNode> nodes;
-  std::unordered_map<Hierarchy *, DAGNode *> dagMap;
+  std::unordered_map<const Hierarchy *, DAGNode *> dagMap;
   for (const auto &hierarchy : hierarchies) {
     DAGNode &node = nodes.emplace_back(hierarchy);
     dagMap.emplace(hierarchy, &node);

@@ -24,6 +24,7 @@ public:
   void setPackage(std::vector<std::string> package);
   const TypeLink *getTypeLink() const;
   void setTypeLink(std::unique_ptr<TypeLink> typeLink);
+  virtual bool subtype(const Hierarchy *hierarchy) const = 0;
 
 private:
   FileHeader header;
@@ -34,23 +35,25 @@ private:
 class InterfaceHierarchy : public Hierarchy {
 public:
   explicit InterfaceHierarchy(FileHeader header);
-  bool addExtends(Hierarchy *hierarchy);
+  bool addExtends(const Hierarchy *hierarchy);
+  bool subtype(const Hierarchy *hierarchy) const override;
 
 private:
   friend HierarchyGraph;
-  std::unordered_set<Hierarchy *> extends;
+  std::unordered_set<const Hierarchy *> extends;
 };
 
 class ClassHierarchy : public Hierarchy {
 public:
   explicit ClassHierarchy(FileHeader header);
-  bool setExtends(Hierarchy *hierarchy);
-  bool addImplements(Hierarchy *hierarchy);
+  bool setExtends(const Hierarchy *hierarchy);
+  bool addImplements(const Hierarchy *hierarchy);
+  bool subtype(const Hierarchy *hierarchy) const override;
 
 private:
   friend HierarchyGraph;
-  Hierarchy *extends = nullptr;
-  std::unordered_set<Hierarchy *> implements;
+  const Hierarchy *extends = nullptr;
+  std::unordered_set<const Hierarchy *> implements;
 };
 
 class HierarchyGraph {
