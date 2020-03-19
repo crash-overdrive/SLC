@@ -2,6 +2,7 @@
 #define ENVHIERARCHY_HPP
 
 #include "EnvFileHeader.hpp"
+#include <list>
 #include <string>
 #include <unordered_set>
 
@@ -37,7 +38,7 @@ public:
 
 private:
   friend HierarchyGraph;
-  std::unordered_set<Hierarchy *> implements;
+  std::unordered_set<Hierarchy *> extends;
 };
 
 class ClassHierarchy : public Hierarchy {
@@ -60,12 +61,20 @@ public:
   std::vector<std::unique_ptr<ClassHierarchy>> &getClasses();
   std::vector<Hierarchy *> &getHierarchies();
 
-  bool topologicalSort() const;
+  bool topologicalSort();
   void buildSubType();
   bool buildContains();
 
 private:
-  void augmentJavaObject();
+  struct DAGNode {
+    Hierarchy *hierarchy;
+    unsigned int inDegree = 0;
+    std::vector<DAGNode *> outNodes;
+    explicit DAGNode(Hierarchy *hierarchy);
+    void addOutNode(DAGNode *node);
+  };
+
+  std::list<DAGNode> augmentGraph();
   std::vector<std::unique_ptr<InterfaceHierarchy>> interfaces;
   std::vector<std::unique_ptr<ClassHierarchy>> classes;
   std::vector<Env::Hierarchy *> hierarchies;

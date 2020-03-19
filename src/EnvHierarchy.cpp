@@ -1,5 +1,6 @@
 #include "EnvHierarchy.hpp"
 #include "EnvTypeLink.hpp"
+#include <queue>
 
 namespace Env {
 
@@ -34,7 +35,7 @@ bool InterfaceHierarchy::addExtends(Hierarchy *hierarchy) {
   if (hierarchy->getType() != Type::Interface) {
     return false;
   }
-  auto [it, flag] = implements.emplace(hierarchy);
+  auto [it, flag] = extends.emplace(hierarchy);
   return flag;
 }
 
@@ -84,6 +85,64 @@ std::vector<Hierarchy *> &HierarchyGraph::getHierarchies() {
   return hierarchies;
 }
 
-bool HierarchyGraph::topologicalSort() const { return false; }
+bool HierarchyGraph::topologicalSort() {
+  std::list<DAGNode> nodes = augmentGraph();
+  std::set<DAGNode *> workList;
+  std::list<Hierarchy *> order;
+  for (auto &node : nodes) {
+    if (node.inDegree == 0) {
+      workList.emplace(&node);
+    }
+  }
+  while (workList.size()) {
+    auto it = workList.begin();
+    DAGNode *node = *it;
+    order.emplace_front(node->hierarchy);
+    for (auto &outNode : node->outNodes) {
+      --outNode->inDegree;
+      if (!outNode->inDegree) {
+        workList.emplace(outNode);
+      }
+    }
+    workList.erase(it);
+  }
+  if (order.size() != hierarchies.size()) {
+    return false;
+  }
+  hierarchies = std::vector<Hierarchy *>(order.begin(), order.end());
+  return true;
+}
+
+HierarchyGraph::DAGNode::DAGNode(Hierarchy *hierarchy) : hierarchy(hierarchy) {}
+
+void HierarchyGraph::DAGNode::addOutNode(DAGNode *node) {
+  outNodes.emplace_back(node);
+  ++node->inDegree;
+}
+
+std::list<HierarchyGraph::DAGNode> HierarchyGraph::augmentGraph() {
+  std::list<DAGNode> nodes;
+  std::unordered_map<Hierarchy *, DAGNode *> dagMap;
+  for (const auto &hierarchy : hierarchies) {
+    DAGNode &node = nodes.emplace_back(hierarchy);
+    dagMap.emplace(hierarchy, &node);
+  }
+  for (const auto &interfaceType : interfaces) {
+    DAGNode *node = dagMap.at(interfaceType.get());
+    for (const auto &extend : interfaceType->extends) {
+      node->addOutNode(dagMap.at(extend));
+    }
+  }
+  for (const auto &classType : classes) {
+    DAGNode *node = dagMap.at(classType.get());
+    if (classType->extends) {
+      node->addOutNode(dagMap.at(classType->extends));
+    }
+    for (const auto &implement : classType->implements) {
+      node->addOutNode(dagMap.at(implement));
+    }
+  }
+  return nodes;
+}
 
 } // namespace Env

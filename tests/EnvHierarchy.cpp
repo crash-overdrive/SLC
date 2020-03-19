@@ -33,14 +33,22 @@ TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
   }
 }
 
-TEST_CASE("builder contruct contains set", "[EnvHierarchyBuilder][!hide]") {
+TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph][!hide]") {
   Env::HierarchyGraph graph;
   Env::ClassHierarchy &classType =
       graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
-  Env::ClassHierarchy &interfaceType =
-      graph.addClass(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
+  Env::InterfaceHierarchy &interfaceType =
+      graph.addInterface(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
 
-  SECTION("basic") { REQUIRE(graph.topologicalSort()); }
+  SECTION("basic") {
+    Env::ClassHierarchy &class2Type =
+        graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
+    Env::ClassHierarchy &class3Type =
+        graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
+    classType.setExtends(&class2Type);
+    class2Type.setExtends(&class3Type);
+    REQUIRE(graph.topologicalSort());
+  }
 
   SECTION("class self cyclic") {
     classType.setExtends(&classType);
@@ -48,7 +56,7 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyBuilder][!hide]") {
   }
 
   SECTION("interface self cyclic") {
-    interfaceType.setExtends(&interfaceType);
+    interfaceType.addExtends(&interfaceType);
     REQUIRE_FALSE(graph.topologicalSort());
   }
 
@@ -64,13 +72,13 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyBuilder][!hide]") {
   }
 
   SECTION("interface cyclic") {
-    Env::ClassHierarchy &interface2Type =
-        graph.addClass(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
-    Env::ClassHierarchy &interface3Type =
-        graph.addClass(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
-    interfaceType.setExtends(&interface2Type);
-    interface2Type.setExtends(&interface3Type);
-    interface3Type.setExtends(&interfaceType);
+    Env::InterfaceHierarchy &interface2Type =
+        graph.addInterface(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
+    Env::InterfaceHierarchy &interface3Type =
+        graph.addInterface(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
+    interfaceType.addExtends(&interface2Type);
+    interface2Type.addExtends(&interface3Type);
+    interface3Type.addExtends(&interfaceType);
     REQUIRE_FALSE(graph.topologicalSort());
   }
 }
