@@ -13,6 +13,7 @@ TEST_CASE("client process", "[client]") {
       REQUIRE(client.compile({"folder/good.java"}));
     }
     SECTION("reject") { REQUIRE_FALSE(client.compile({"foo.txt"})); }
+    SECTION("reject no dot ") { REQUIRE_FALSE(client.compile({"foooo"})); }
     SECTION("reject first dot") {
       REQUIRE_FALSE(client.compile({"bar.foo.java"}));
     }

@@ -38,7 +38,7 @@ void Client::buildHierarchy(const std::string &file) {
 }
 
 void Client::verifyFileName(const std::string &fullName) {
-  std::string fileName{fullName};
+  std::string fileName(fullName);
   const auto pos = fileName.find_last_of('/');
   if (pos != std::string::npos) {
     fileName = fileName.substr(pos + 1);
@@ -50,6 +50,11 @@ void Client::verifyFileName(const std::string &fullName) {
     return;
   }
   size_t position = fileName.find(".");
+  if (position == std::string::npos) {
+    std::cerr << fileName << " is invalid\n";
+    errorState = true;
+    return;
+  }
   if (fileName.compare(position, ext.size(), ext) != 0) {
     std::cerr << fileName << " is invalid\n";
     errorState = true;
