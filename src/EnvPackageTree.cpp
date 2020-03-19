@@ -47,14 +47,14 @@ PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   if (it != children.end()) {
     return (it->second.type == Package) ? &it->second : nullptr;
   }
-  auto [ChildIt, Flag] = children.emplace(name, PackageNode{type, name});
-  return &ChildIt->second;
+  auto [childIt, flag] = children.emplace(name, PackageNode{type, name});
+  return &childIt->second;
 }
 
 PackageNode *PackageNode::addType(Type type, const std::string &name,
                                   Hierarchy *header) {
-  auto [It, Flag] = children.emplace(name, PackageNode{type, name, header});
-  return Flag ? &It->second : nullptr;
+  auto [it, flag] = children.emplace(name, PackageNode{type, name, header});
+  return flag ? &it->second : nullptr;
 }
 
 Hierarchy *PackageTree::findType(const std::vector<std::string> &path) const {
