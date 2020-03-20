@@ -24,7 +24,7 @@ struct JoosType {
   std::string identifier;
   JoosBody declare;
   JoosBody contains;
-  std::unique_ptr<AST::Node> node;
+  std::unique_ptr<AST::Node> astNode;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosType &joosType);
 

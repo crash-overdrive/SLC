@@ -3,27 +3,28 @@
 
 namespace Env {
 
-TypeLink::TypeLink(Hierarchy &hierarchy, std::shared_ptr<PackageTree> tree)
-    : hierarchy(hierarchy), tree(std::move(tree)) {}
+TypeLink::TypeLink(JoosType &joosType, std::vector<std::string> package,
+                   std::shared_ptr<PackageTree> tree)
+    : joosType(joosType), package(std::move(package)), tree(std::move(tree)) {}
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
-  Hierarchy *importHierarchy = tree->findType(name);
-  if (!importHierarchy) {
+  JoosType *importJoosType = tree->findType(name);
+  if (!importJoosType) {
     return false;
   }
   // Self import
-  if (importHierarchy->getASTNode() == hierarchy.getASTNode()) {
+  if (importJoosType->astNode == joosType.astNode) {
     return true;
   }
   // Import name clash with self
-  if (importHierarchy->getIdentifier() == hierarchy.getIdentifier()) {
+  if (importJoosType->identifier == joosType.identifier) {
     return false;
   }
-  auto it = singleImports.find(importHierarchy->getIdentifier());
+  auto it = singleImports.find(importJoosType->identifier);
   if (it != singleImports.end()) {
-    return (it->second->getASTNode() == importHierarchy->getASTNode());
+    return (it->second->astNode == importJoosType->astNode);
   }
-  singleImports.emplace(importHierarchy->getIdentifier(), importHierarchy);
+  singleImports.emplace(importJoosType->identifier, importJoosType);
   return true;
 }
 
@@ -36,7 +37,7 @@ bool TypeLink::addDemandImport(const std::vector<std::string> &name) {
   return true;
 }
 
-Hierarchy *TypeLink::find(const std::vector<std::string> &name) const {
+JoosType *TypeLink::find(const std::vector<std::string> &name) const {
   if (name.size() == 0) {
     return nullptr;
   }
@@ -45,37 +46,37 @@ Hierarchy *TypeLink::find(const std::vector<std::string> &name) const {
     return tree->findType(name);
   }
   const std::string &simpleName = name.at(0);
-  if (hierarchy.getIdentifier() == simpleName) {
-    return &hierarchy;
+  if (joosType.identifier == simpleName) {
+    return &joosType;
   }
   auto singleImportsIt = singleImports.find(simpleName);
   if (singleImportsIt != singleImports.end()) {
     return singleImportsIt->second;
   }
-  Hierarchy *samePackageHierarchy = findSamePackage(simpleName);
-  if (samePackageHierarchy != nullptr) {
-    return samePackageHierarchy;
+  JoosType *samePackageJoosType = findSamePackage(simpleName);
+  if (samePackageJoosType != nullptr) {
+    return samePackageJoosType;
   }
-  Hierarchy *demandHierarchy = findDemand(simpleName);
-  if (demandHierarchy != nullptr) {
-    return demandHierarchy;
+  JoosType *demandJoosType = findDemand(simpleName);
+  if (demandJoosType != nullptr) {
+    return demandJoosType;
   }
   return nullptr;
 }
 
-Hierarchy *TypeLink::findSamePackage(const std::string &name) const {
-  PackageNode *node = tree->findPackage(hierarchy.getPackage());
+JoosType *TypeLink::findSamePackage(const std::string &name) const {
+  PackageNode *node = tree->findPackage(package);
   if (node != nullptr) {
-    return node->findHierarchy(name);
+    return node->findJoosType(name);
   }
   return nullptr;
 }
 
-Hierarchy *TypeLink::findDemand(const std::string &name) const {
+JoosType *TypeLink::findDemand(const std::string &name) const {
   for (const auto &onDemandImport : onDemandImports) {
-    Hierarchy *hierarchy = onDemandImport->findHierarchy(name);
-    if (hierarchy != nullptr) {
-      return hierarchy;
+    JoosType *joosType = onDemandImport->findJoosType(name);
+    if (joosType != nullptr) {
+      return joosType;
     }
   }
   return nullptr;
