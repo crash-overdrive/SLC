@@ -9,27 +9,6 @@ namespace AST {
 
 class Visitor;
 
-enum class ModifierCode {
-  Public,
-  Protected,
-  Static,
-  Abstract,
-  Final,
-  Native,
-};
-
-const std::unordered_map<std::string, ModifierCode> nameModifierCode{
-    {"PUBLIC", ModifierCode::Public}, {"PROTECTED", ModifierCode::Protected},
-    {"STATIC", ModifierCode::Static}, {"ABSTRACT", ModifierCode::Abstract},
-    {"FINAL", ModifierCode::Final},   {"NATIVE", ModifierCode::Native},
-};
-
-const std::unordered_map<ModifierCode, std::string> modifierCodeName{
-    {ModifierCode::Public, "PUBLIC"}, {ModifierCode::Protected, "PROTECTED"},
-    {ModifierCode::Static, "STATIC"}, {ModifierCode::Abstract, "ABSTRACT"},
-    {ModifierCode::Final, "FINAL"},   {ModifierCode::Native, "NATIVE"},
-};
-
 class Node {
 public:
   virtual ~Node() = default;
@@ -228,12 +207,12 @@ public:
 
 class Modifier : public Node {
 public:
-  Modifier(const std::string &nameCode);
-  const ModifierCode &getCode() const;
+  Modifier(std::string name);
+  const std::string &getName() const;
   void accept(Visitor &visitor) const override;
 
 private:
-  ModifierCode code;
+  std::string name;
 };
 
 class Identifier : public Node {

@@ -123,10 +123,9 @@ void AST::ForInit::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void AST::ForUpdate::accept(Visitor &visitor) const { visitor.visit(*this); }
 
-AST::Modifier::Modifier(const std::string &nameCode)
-    : code(nameModifierCode.at(nameCode)) {}
+AST::Modifier::Modifier(std::string name) : name(std::move(name)) {}
 
-const AST::ModifierCode &AST::Modifier::getCode() const { return code; }
+const std::string &AST::Modifier::getName() const { return name; }
 
 void AST::Modifier::accept(Visitor &visitor) const { visitor.visit(*this); }
 
