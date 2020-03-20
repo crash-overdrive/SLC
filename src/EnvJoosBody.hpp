@@ -3,6 +3,7 @@
 
 #include "ASTVisitor.hpp"
 #include <set>
+#include <vector>
 
 namespace Env {
 
@@ -32,6 +33,11 @@ enum class VariableType {
   ArrayType,
 };
 
+const std::unordered_map<VariableType, std::string> variableTypeName{
+    {VariableType::SimpleType, "SimpleType"},
+    {VariableType::ArrayType, "ArrayType"},
+};
+
 struct VariableDescriptor {
   VariableType variableType;
   std::vector<std::string> dataType;
@@ -40,35 +46,38 @@ struct VariableDescriptor {
 std::ostream &operator<<(std::ostream &stream,
                          const VariableDescriptor &variableDescriptor);
 
-const std::unordered_map<VariableType, std::string> variableTypeName{
-    {VariableType::SimpleType, "SimpleType"},
-    {VariableType::ArrayType, "ArrayType"},
-};
-
 struct JoosField {
-  const AST::Node *astNode;
   std::set<Modifier> modifiers;
   VariableDescriptor variableDescriptor;
   std::string identifier;
+  const AST::Node *astNode;
+  JoosField(std::set<Modifier> modifiers, VariableDescriptor descriptor,
+            std::string identifier, const AST::Node *astNode);
   bool operator==(const JoosField &joosField) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField);
 
 struct JoosMethod {
-  const AST::Node *astNode;
-  std::set<AST::Modifier> modifiers;
+  std::set<Modifier> modifiers;
   VariableDescriptor returnType;
   std::string identifier;
   std::vector<VariableDescriptor> args;
+  const AST::Node *astNode;
+  JoosMethod(std::set<Modifier> modifiers, VariableDescriptor returnType,
+             std::string identifier, std::vector<VariableDescriptor> args,
+             const AST::Node *astNode);
   bool operator==(const JoosMethod &joosMethod) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod);
 
 struct JoosConstructor {
-  std::set<AST::Modifier> modifiers;
+  std::set<Modifier> modifiers;
   std::string identifier;
   std::vector<VariableDescriptor> args;
   const AST::Node *astNode;
+  JoosConstructor(std::set<Modifier> modifiers, std::string identifier,
+                  std::vector<VariableDescriptor> args,
+                  const AST::Node *astNode);
   bool operator==(const JoosConstructor &joosConstructor) const;
 };
 std::ostream &operator<<(std::ostream &stream,
@@ -76,6 +85,10 @@ std::ostream &operator<<(std::ostream &stream,
 
 class JoosBody {
 public:
+  bool addField(JoosField joosField);
+  bool addMethod(JoosMethod joosMethod);
+  bool addConstructor(JoosConstructor joosConstructor);
+
   const JoosField *findField(const VariableDescriptor &variableDescriptor,
                              const std::string &identifier) const;
   const JoosMethod *
@@ -86,10 +99,13 @@ public:
                   const std::vector<VariableDescriptor> &args) const;
 
 private:
+  friend std::ostream &operator<<(std::ostream &stream,
+                                  const JoosBody &joosBody);
   std::vector<JoosMethod> methods;
   std::vector<JoosField> fields;
   std::vector<JoosConstructor> constructors;
 };
+std::ostream &operator<<(std::ostream &stream, const JoosBody &joosBody);
 
 class JoosBodyVisitor : public AST::Visitor {
 public:
