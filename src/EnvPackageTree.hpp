@@ -2,43 +2,42 @@
 #define ENVPACKAGETREE_HPP
 
 #include "ASTVisitor.hpp"
-#include "EnvHierarchy.hpp"
+#include "EnvJoosType.hpp"
 #include <map>
-#include <string>
 
 namespace Env {
 
 class PackageNode {
 public:
-  enum Type { Global, Package, JoosType };
+  enum class Type { Global, Package, JoosType };
 
-  PackageNode(Type type, std::string name = "", Hierarchy *hierarchy = nullptr);
+  PackageNode(Type type, std::string name = "", JoosType *joosType = nullptr);
   PackageNode *update(Type type, const std::string &name,
-                      Hierarchy *hierarchy = nullptr);
+                      JoosType *joosType = nullptr);
   PackageNode *find(const std::string &name);
-  Hierarchy *findHierarchy(const std::string &name);
+  JoosType *findJoosType(const std::string &name);
 
 private:
   friend class PackageTree;
   PackageNode *updatePackage(Type type, const std::string &name);
   PackageNode *addType(Type type, const std::string &name,
-                       Hierarchy *hierarchy = nullptr);
+                       JoosType *joosType = nullptr);
   Type type;
   std::string name;
-  Hierarchy *hierarchy;
+  JoosType *joosType;
   std::map<std::string, PackageNode> children;
 };
 
 class PackageTree {
 public:
-  Hierarchy *findType(const std::vector<std::string> &path) const;
+  JoosType *findType(const std::vector<std::string> &path) const;
   PackageNode *findPackage(const std::vector<std::string> &path) const;
-  bool update(std::vector<std::string> &&packagePath, Hierarchy &hierarchy);
+  bool update(std::vector<std::string> &&packagePath, JoosType &joosType);
 
 private:
   PackageNode *findNode(const std::vector<std::string> &path) const;
   std::unique_ptr<PackageNode> root =
-      std::make_unique<PackageNode>(PackageNode::Global);
+      std::make_unique<PackageNode>(PackageNode::Type::Global);
 };
 
 class PackageTreeVisitor : public AST::Visitor {
