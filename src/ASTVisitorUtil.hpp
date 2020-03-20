@@ -1,8 +1,6 @@
 #ifndef ASTVISITORUTIL_HPP
 #define ASTVISITORUTIL_HPP
 
-#include <set>
-
 #include "ASTVisitor.hpp"
 #include "EnvFileHeader.hpp"
 
@@ -29,7 +27,9 @@ public:
   void visit(const Identifier &identifier) override;
   std::set<ModifierCode> getModifiers(); // gets all the modifiers
   std::string getIdentifier();
-  Env::VariableDescriptor getVariableDescriptor(); // gets VariableDescriptor for Primitive, Array and Simple Type
+  Env::VariableDescriptor
+  getVariableDescriptor(); // gets VariableDescriptor for Primitive, Array and
+                           // Simple Type
 
 private:
   std::set<ModifierCode> modifiers;

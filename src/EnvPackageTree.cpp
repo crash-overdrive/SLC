@@ -3,11 +3,11 @@
 
 namespace Env {
 
-PackageNode::PackageNode(Type type, const std::string &name, FileHeader *header)
-    : type(type), name(name), header(header) {}
+PackageNode::PackageNode(Type type, std::string name, Hierarchy *hierarchy)
+    : type(type), name(std::move(name)), hierarchy(hierarchy) {}
 
 PackageNode *PackageNode::update(Type type, const std::string &name,
-                                 FileHeader *header) {
+                                 Hierarchy *header) {
   if (this->type != Global && this->type != Package)
     return nullptr;
   switch (type) {
@@ -28,60 +28,97 @@ PackageNode *PackageNode::find(const std::string &name) {
   return (it != children.end()) ? &it->second : nullptr;
 }
 
-PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
-  auto It = children.find(name);
-  if (It != children.end()) {
-    return (It->second.type == Package) ? &It->second : nullptr;
+/**
+ * Find hierarchy under a package
+ */
+Hierarchy *PackageNode::findHierarchy(const std::string &name) {
+  if (type == PackageNode::Global) {
+    return nullptr;
   }
-  auto ChildIt = children.emplace(name, PackageNode{type, name});
-  return &ChildIt.first->second;
+  PackageNode *node = find(name);
+  if (node == nullptr) {
+    return nullptr;
+  }
+  return node->hierarchy;
+}
+
+PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
+  auto it = children.find(name);
+  if (it != children.end()) {
+    return (it->second.type == Package) ? &it->second : nullptr;
+  }
+  auto [ChildIt, Flag] = children.emplace(name, PackageNode{type, name});
+  return &ChildIt->second;
 }
 
 PackageNode *PackageNode::addType(Type type, const std::string &name,
-                                  FileHeader *header) {
-  auto It = children.emplace(name, PackageNode{type, name, header});
-  return It.second ? &It.first->second : nullptr;
+                                  Hierarchy *header) {
+  auto [It, Flag] = children.emplace(name, PackageNode{type, name, header});
+  return Flag ? &It->second : nullptr;
 }
 
-void PackageTreeVisitor::visit(const AST::PackageDeclaration &Decl) {
-  AST::NameVisitor Visitor;
-  Visitor.dispatchChildren(Decl);
-  packagePath = Visitor.getName();
-}
-
-void PackageTreeVisitor::visit(const AST::ClassDeclaration &) {}
-
-void PackageTreeVisitor::visit(const AST::InterfaceDeclaration &) {}
-
-std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
-  return packagePath;
-}
-
-FileHeader *PackageTree::lookUp(const std::vector<std::string> &PackagePath) {
-  PackageNode *Node = Root.get();
-  for (const auto &Component : PackagePath) {
-    Node = Node->find(Component);
-    if (!Node) {
-      return nullptr;
-    }
+Hierarchy *PackageTree::findType(const std::vector<std::string> &path) const {
+  PackageNode *node = findNode(path);
+  if (node == nullptr) {
+    return nullptr;
   }
-  return Node->header;
+  return (node->type == PackageNode::JoosType) ? node->hierarchy : nullptr;
 }
 
-bool PackageTree::update(const std::vector<std::string> &PackagePath,
-                         FileHeader &Header) {
+PackageNode *
+PackageTree::findPackage(const std::vector<std::string> &path) const {
+  PackageNode *node = findNode(path);
+  if (node == nullptr) {
+    return nullptr;
+  }
+  return (node->type == PackageNode::Package) ? node : nullptr;
+}
+
+bool PackageTree::update(std::vector<std::string> &&packagePath,
+                         Hierarchy &hierarchy) {
   // No Package
-  if (PackagePath.size() == 0)
+  if (packagePath.size() == 0) {
     return true;
-  PackageNode *Node = Root.get();
-  for (const auto &Component : PackagePath) {
-    Node = Node->update(PackageNode::Package, Component);
-    if (!Node) {
+  }
+  PackageNode *node = root.get();
+  for (const auto &component : packagePath) {
+    node = node->update(PackageNode::Package, component);
+    if (!node) {
       return false;
     }
   }
-  Node = Node->update(PackageNode::JoosType, Header.getName(), &Header);
-  return Node != nullptr;
+  std::string identifier = hierarchy.getIdentifier();
+  node = node->update(PackageNode::JoosType, identifier, &hierarchy);
+  if (node == nullptr) {
+    return false;
+  }
+  hierarchy.setPackage(std::move(packagePath));
+  return true;
+}
+
+PackageNode *PackageTree::findNode(const std::vector<std::string> &path) const {
+  PackageNode *node = root.get();
+  for (const auto &component : path) {
+    node = node->find(component);
+    if (!node) {
+      return nullptr;
+    }
+  }
+  return node;
+}
+
+void PackageTreeVisitor::visit(const AST::Start &start) {
+  dispatchChildren(start);
+}
+
+void PackageTreeVisitor::visit(const AST::PackageDeclaration &decl) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(decl);
+  packagePath = visitor.getName();
+}
+
+std::vector<std::string> PackageTreeVisitor::getPackagePath() const {
+  return std::move(packagePath);
 }
 
 } // namespace Env

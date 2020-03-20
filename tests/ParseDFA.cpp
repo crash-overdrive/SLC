@@ -6,83 +6,83 @@
 #include <sstream>
 
 TEST_CASE("DFA is able to detect ", "[parse-dfa]") {
-  Parse::DFA DFA;
-  std::ifstream Stream;
-  Stream.open(TestDataDir + "/grammar/sample.lr1");
-  Stream >> DFA;
+  Parse::DFA dfa;
+  std::ifstream stream;
+  stream.open(testDataDir + "/grammar/sample.lr1");
+  stream >> dfa;
 
   SECTION("DFA rejects") {
-    DFA.read({"BOF", "BOF"});
-    DFA.read({"id", "3"});
-    DFA.read({"-", "-"});
-    REQUIRE_FALSE(DFA.accept());
-    REQUIRE_FALSE(DFA.error());
-    DFA.read({"EOF", "EOF"});
-    REQUIRE(DFA.error());
-    REQUIRE_FALSE(DFA.accept());
+    dfa.read({"BOF", "BOF"});
+    dfa.read({"id", "3"});
+    dfa.read({"-", "-"});
+    REQUIRE_FALSE(dfa.accept());
+    REQUIRE_FALSE(dfa.error());
+    dfa.read({"EOF", "EOF"});
+    REQUIRE(dfa.error());
+    REQUIRE_FALSE(dfa.accept());
   }
 
   SECTION("DFA accepts basic") {
-    DFA.read({"BOF", "BOF"});
-    DFA.read({"id", "2"});
-    DFA.read({"EOF", "EOF"});
-    REQUIRE(DFA.accept());
-    REQUIRE_FALSE(DFA.error());
+    dfa.read({"BOF", "BOF"});
+    dfa.read({"id", "2"});
+    dfa.read({"EOF", "EOF"});
+    REQUIRE(dfa.accept());
+    REQUIRE_FALSE(dfa.error());
 
-    Parse::Tree T = DFA.buildTree();
-    std::ostringstream OSStream;
-    OSStream << T;
+    Parse::Tree t = dfa.buildTree();
+    std::ostringstream osStream;
+    osStream << t;
 
-    std::ifstream TreeStream(TestDataDir + "/grammar/sample.tree");
-    std::string TreeString(std::istreambuf_iterator<char>(TreeStream), {});
-    REQUIRE(TreeString == OSStream.str());
+    std::ifstream treeStream(testDataDir + "/grammar/sample.tree");
+    std::string treeString(std::istreambuf_iterator<char>(treeStream), {});
+    REQUIRE(treeString == osStream.str());
   }
 
   SECTION("DFA accepts complex") {
-    std::vector<Lex::Token> V{
+    std::vector<Lex::Token> v{
         {"BOF", "BOF"}, {"id", "3"}, {"-", "-"}, {"(", "("},     {"id", "5"},
         {"-", "-"},     {"id", "4"}, {")", ")"}, {"EOF", "EOF"},
     };
-    for (const auto &Tok : V) {
-      DFA.read(Tok);
+    for (const auto &tok : v) {
+      dfa.read(tok);
     }
-    REQUIRE(DFA.accept());
-    REQUIRE_FALSE(DFA.error());
+    REQUIRE(dfa.accept());
+    REQUIRE_FALSE(dfa.error());
   }
 
   SECTION("DFA reject complex") {
-    std::vector<Lex::Token> V{
+    std::vector<Lex::Token> v{
         {"BOF", "BOF"}, {"id", "3"}, {"-", "-"},  {"(", "("},
         {"id", "5"},    {"-", "-"},  {"id", "4"}, {"id", "3"},
     };
-    for (const auto &Tok : V) {
-      DFA.read(Tok);
+    for (const auto &tok : v) {
+      dfa.read(tok);
     }
-    REQUIRE_FALSE(DFA.accept());
-    REQUIRE(DFA.error());
+    REQUIRE_FALSE(dfa.accept());
+    REQUIRE(dfa.error());
   }
 }
 
 TEST_CASE("parser detects Java", "[parse-java]") {
-  Parse::DFA Parser;
-  std::ifstream ParserStream;
-  ParserStream.open(JoosLRFile);
-  ParserStream >> Parser;
-  std::ifstream TokenStream;
+  Parse::DFA parser;
+  std::ifstream parserStream;
+  parserStream.open(joosLRFile);
+  parserStream >> parser;
+  std::ifstream tokenStream;
 
   SECTION("parser accepts a2") {
     SECTION("import") {
-      TokenStream.open(TestDataDir + "/tokens/a2/J1_classimportMain.tokens");
-      INFO("The file is open: " << std::boolalpha << TokenStream.is_open());
-      bool status = Parser.parse(TokenStream);
-      INFO("This is the parse tree: \n" << Parser.buildTree());
+      tokenStream.open(testDataDir + "/tokens/a2/J1_classimportMain.tokens");
+      INFO("The file is open: " << std::boolalpha << tokenStream.is_open());
+      bool status = parser.parse(tokenStream);
+      INFO("This is the parse tree: \n" << parser.buildTree());
       REQUIRE(status);
     }
 
     SECTION("package") {
-      TokenStream.open(TestDataDir + "/tokens/a2/J1_classimportVector.tokens");
-      bool status = Parser.parse(TokenStream);
-      INFO("This is the parse tree: \n" << Parser.buildTree());
+      tokenStream.open(testDataDir + "/tokens/a2/J1_classimportVector.tokens");
+      bool status = parser.parse(tokenStream);
+      INFO("This is the parse tree: \n" << parser.buildTree());
       REQUIRE(status);
     }
   }

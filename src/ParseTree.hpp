@@ -13,44 +13,44 @@ namespace Parse {
 
 class Node {
 public:
-  Node(const std::string &Name);
-  Node(const std::string &Name, const std::string &Tag);
+  Node(std::string name);
+  Node(std::string name, std::string tag);
   void addChild(std::unique_ptr<Node> child);
   std::string getName() const;
   size_t getLevel() const;
   std::string getTag() const;
-  const Node *getSuccessor(std::initializer_list<std::string> Names) const;
-  const Node *getChild(const std::string &String) const;
+  const Node *getSuccessor(std::initializer_list<std::string> names) const;
+  const Node *getChild(const std::string &string) const;
   const std::vector<std::unique_ptr<Node>> &getChildren() const;
   const Node *getFirstChild() const;
 
 private:
   friend class Tree;
-  std::string Name;
-  std::string Tag;
-  size_t Level;
-  std::vector<std::unique_ptr<Node>> Children;
-  std::unordered_map<std::string, Node &> ChildrenCache;
+  std::string name;
+  std::string tag;
+  size_t level = 0;
+  std::vector<std::unique_ptr<Node>> children;
+  std::unordered_map<std::string, Node &> childrenCache;
 };
 
 class Tree {
 public:
-  Tree();
-  Tree(std::unique_ptr<Node> Head);
+  Tree() = default;
+  Tree(std::unique_ptr<Node> head);
 
   class Iterator {
   public:
-    Iterator(Node *Ptr);
+    Iterator(Node *ptr);
     Iterator &operator++();
     Node &operator*() const;
     Node *operator->();
-    bool operator!=(const Iterator &Iter) const;
-    bool operator==(const Iterator &Iter) const;
+    bool operator!=(const Iterator &iter) const;
+    bool operator==(const Iterator &iter) const;
 
   private:
-    friend std::ostream &operator<<(std::ostream &Stream, const Tree &T);
-    Node *Ptr;
-    std::vector<Node *> Vector;
+    friend std::ostream &operator<<(std::ostream &stream, const Tree &t);
+    Node *ptr;
+    std::vector<Node *> vector;
   };
 
   Iterator begin() const;
@@ -58,10 +58,10 @@ public:
   const Node &getRoot() const;
 
 private:
-  std::unique_ptr<Node> Root;
+  std::unique_ptr<Node> root;
 };
 
-std::ostream &operator<<(std::ostream &Stream, const Tree &T);
+std::ostream &operator<<(std::ostream &stream, const Tree &t);
 
 } // namespace Parse
 

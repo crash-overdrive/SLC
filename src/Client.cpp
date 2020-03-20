@@ -1,9 +1,8 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
-
 #include <fstream>
-#include <optional>
+#include <iterator>
 
 Client::Client(std::unique_ptr<Lex::Scanner> scanner,
                std::unique_ptr<Parse::DFA> parser)
@@ -13,193 +12,215 @@ void Client::setBreakPoint(BreakPointType breakPoint) {
   this->breakPoint = breakPoint;
 }
 
-bool Client::compile() {
-  std::vector<Env::FileHeader> fileHeaderList;
-
-  for (const auto &file : files) {
-    if (!verifyFileName(file)) {
-      std::cerr << file << " is invalid " << std::endl;
-      return false;
-    }
-    if (breakPoint == VerifyName) {
-      continue;
-    }
-
-    if (outputToken || outputParse || outputAst || outputFileHeader) {
-      std::cout << file << std::endl;
-    }
-
-    std::ifstream javaFileStream;
-
-    javaFileStream.open(file);
-    if (!javaFileStream.is_open()) {
-      std::cerr << "Error: " << file << " could not be opened" << std::endl;
-      return false;
-    }
-
-    auto tokens = scan(javaFileStream);
-    if (!tokens) {
-      std::cerr << file << " is not recognized by scanner" << std::endl;
-      return false;
-    }
-    if (outputToken) {
-      for (auto const &token : *tokens) {
-        std::cout << token << std::endl;
-      }
-    }
-    if (breakPoint == Scan) {
-      continue;
-    }
-
-    auto Tree = parse(*tokens);
-    if (!Tree) {
-      std::cerr << file << " is not recognized by parser\n";
-      return false;
-    }
-    if (outputParse) {
-      std::cout << *Tree << std::endl;
-    }
-    if (breakPoint == Parse) {
-      continue;
-    }
-
-    std::unique_ptr<AST::Start> astRoot = buildAST(*Tree);
-    if (outputAst) {
-      AST::TrackVisitor Visitor;
-      Visitor.setLog(std::cerr);
-      astRoot->accept(Visitor);
-    }
-    if (breakPoint == Ast) {
-      continue;
-    }
-
-    auto fileHeader = buildFileHeader(std::move(astRoot));
-    if (!fileHeader) {
-      std::cerr << "File header creation failed"
-                << "\n";
-      return false;
-    }
-    if (outputFileHeader) {
-      std::cout << *fileHeader;
-    }
-    if (breakPoint == FileHeader) {
-      continue;
-    }
-    fileHeaderList.emplace_back(std::move(*fileHeader));
-
-    // TODO: implement weeder logic here
-    // Weeder logic
-    if (breakPoint == Weed) {
-      continue;
-    }
-  }
-  if (breakPoint < Weed) {
-    return true;
-  }
-
-  auto Tree = buildPackageTree(fileHeaderList);
-  if (!Tree) {
-    std::cerr << "Error building package tree\n";
-    return false;
-  }
-  if (breakPoint == PackageTree) {
-    return true;
-  }
-  return true;
+void Client::addPrintPoint(BreakPointType printPoint) {
+  printPoints.emplace(printPoint);
 }
 
-void Client::addJavaFile(std::string &&file) { files.emplace(std::move(file)); }
-
-void Client::addJavaFiles(std::set<std::string> &&files) {
-  this->files = std::move(files);
+std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
+  setBreakPoint(BreakPointType::Ast);
+  buildHierarchy(fullName);
+  return std::move(logAstRoot);
 }
 
-bool Client::verifyFileName(std::string FileName) {
-  const auto pos = FileName.find_last_of('/');
+bool Client::compile(const std::vector<std::string> &fullNames) {
+  for (const auto &file : fullNames) {
+    buildHierarchy(file);
+  }
+  buildEnvironment();
+  return !errorState;
+}
+
+void Client::buildHierarchy(const std::string &file) {
+  if (errorState) {
+    return;
+  }
+  verifyFileName(file);
+}
+
+void Client::verifyFileName(const std::string &fullName) {
+  std::string fileName{fullName};
+  const auto pos = fileName.find_last_of('/');
   if (pos != std::string::npos) {
-    FileName = FileName.substr(pos + 1);
+    fileName = fileName.substr(pos + 1);
   }
-  const std::string Ext(".java");
-  if (FileName.length() < Ext.length()) {
-    return false;
+  const std::string ext(".java");
+  if (fileName.length() < ext.length()) {
+    std::cerr << fileName << " is invalid\n";
+    errorState = true;
+    return;
   }
-  size_t Position = FileName.find(".");
-  return FileName.compare(Position, Ext.size(), Ext) == 0;
-}
-
-std::optional<std::vector<Lex::Token>> Client::scan(std::istream &Stream) {
-  if (scanner->scan(Stream)) {
-    return scanner->getTokens();
+  size_t position = fileName.find(".");
+  if (fileName.compare(position, ext.size(), ext) != 0) {
+    std::cerr << fileName << " is invalid\n";
+    errorState = true;
+    return;
   }
-  return std::nullopt;
-}
-
-std::optional<Parse::Tree>
-Client::parse(const std::vector<Lex::Token> &Tokens) {
-  if (parser->parse(Tokens)) {
-    return parser->buildTree();
+  if (printPoints.size() > 0) {
+    std::cerr << fullName << '\n';
   }
-  return std::nullopt;
+  if (breakPoint != VerifyName) {
+    openFile(fullName);
+  }
 }
 
-std::unique_ptr<AST::Start> Client::buildAST(const Parse::Tree &ParseTree) {
-  std::unique_ptr<AST::Start> Root = std::make_unique<AST::Start>();
-  const Parse::Node &ParseRoot = ParseTree.getRoot();
-  dispatch(ParseRoot, *Root);
-  return Root;
+void Client::openFile(const std::string &fullName) {
+  std::ifstream javaFileStream;
+  javaFileStream.open(fullName);
+  if (!javaFileStream.is_open()) {
+    std::cerr << "Error: " << fullName << " could not be opened\n";
+    errorState = true;
+    return;
+  }
+  scan(javaFileStream, fullName);
 }
 
-std::unique_ptr<AST::Start> Client::buildAST(const std::string &FileName) {
-  std::ifstream JavaStream;
-  JavaStream.open(FileName);
-  return buildAST(*parse(*scan(JavaStream)));
+void Client::scan(std::istream &stream, const std::string &fullName) {
+  if (!scanner->scan(stream)) {
+    std::cerr << fullName << " is not recognized by scanner\n";
+    errorState = true;
+    return;
+  }
+  std::vector<Lex::Token> tokens = scanner->getTokens();
+  if (printPoints.find(Scan) != printPoints.end()) {
+    std::copy(tokens.begin(), tokens.end(),
+              std::ostream_iterator<Lex::Token>(std::cerr, "\n"));
+  }
+  if (breakPoint != Scan) {
+    parse(tokens, fullName);
+  }
 }
 
-std::optional<Env::FileHeader>
-Client::buildFileHeader(std::unique_ptr<AST::Start> node) {
-  std::optional<Env::FileHeader> fileHeader;
+void Client::parse(const std::vector<Lex::Token> &tokens,
+                   const std::string &fullName) {
+  if (!parser->parse(tokens)) {
+    std::cerr << fullName << " is not recognized by parser\n";
+    std::cerr << parser->buildTree() << '\n';
+    errorState = true;
+    return;
+  }
+  Parse::Tree tree = parser->buildTree();
+  if (printPoints.find(Parse) != printPoints.end()) {
+    std::cerr << tree << '\n';
+  }
+  if (breakPoint != Parse) {
+    buildAST(tree, fullName);
+  }
+}
+
+void Client::buildAST(const Parse::Tree &tree, const std::string &fullName) {
+  auto root = std::make_unique<AST::Start>();
+  const Parse::Node &parseRoot = tree.getRoot();
+  AST::dispatch(parseRoot, *root);
+  if (printPoints.find(Ast) != printPoints.end()) {
+    AST::TrackVisitor visitor;
+    visitor.setLog(std::cerr);
+    root->accept(visitor);
+  }
+  if (breakPoint != Ast) {
+    buildFileHeader(std::move(root), fullName);
+  } else {
+    logAstRoot = std::move(root);
+  }
+}
+
+void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
+                             const std::string &fullName) {
   Env::JoosTypeVisitor typeVisitor;
   Env::JoosTypeBodyVisitor typeBodyVisitor;
 
   node->accept(typeVisitor);
   node->accept(typeBodyVisitor);
-  fileHeader =
-      Env::FileHeader(typeVisitor.getModifiers(),
-                      typeVisitor.getTypeDescriptor(), std::move(node));
+  Env::FileHeader fileHeader{typeVisitor.getModifiers(),
+                             typeVisitor.getTypeDescriptor(), std::move(node)};
   for (auto const &field : typeBodyVisitor.getJoosFields()) {
-    if (!fileHeader->addField(field)) {
-      std::cerr << "Duplicate Field found in file\n";
-      std::cerr << field;
-      return std::nullopt;
+    if (!fileHeader.addField(field)) {
+      std::cerr << "Duplicate Field found in file\n" << field << '\n';
+      std::cerr << "File header creation failed" << '\n';
+      errorState = true;
+      return;
     };
   }
   for (auto const &method : typeBodyVisitor.getJoosMethods()) {
-    if (!fileHeader->addMethod(method)) {
-      std::cerr << "Duplicate Method found in file\n";
-      std::cerr << method;
-      return std::nullopt;
+    if (!fileHeader.addMethod(method)) {
+      std::cerr << "Duplicate Method found in file\n" << method << '\n';
+      std::cerr << "File header creation failed" << '\n';
+      errorState = true;
+      return;
     };
   }
   for (auto const &constructor : typeBodyVisitor.getJoosConstructors()) {
-    if (!fileHeader->addConstructor(constructor)) {
-      std::cerr << "Duplicate Constructor found in file\n";
-      std::cerr << constructor;
-      return std::nullopt;
+    if (!fileHeader.addConstructor(constructor)) {
+      std::cerr << "Duplicate Constructor found in file\n"
+                << constructor << '\n';
+      std::cerr << "File header creation failed" << '\n';
+      errorState = true;
+      return;
     };
   }
-  return fileHeader;
+  if (printPoints.find(FileHeader) != printPoints.end()) {
+    std::cerr << fileHeader;
+  }
+  if (breakPoint != FileHeader) {
+    weed(std::move(fileHeader), fullName);
+  }
 }
 
-std::optional<Env::PackageTree>
-Client::buildPackageTree(std::vector<Env::FileHeader> &Headers) {
-  std::optional<Env::PackageTree> Tree;
-  Tree = Env::PackageTree{};
-  for (auto &&Header : Headers) {
-    Env::PackageTreeVisitor Visitor;
-    Header.getASTNode()->accept(Visitor);
-    if (!Tree->update(Visitor.getPackagePath(), Header)) {
-      return std::nullopt;
+void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
+  (void)fullName;
+  if (breakPoint != Weed) {
+    buildHierarchy(std::move(fileHeader));
+  }
+}
+
+void Client::buildHierarchy(Env::FileHeader fileHeader) {
+  hierarchies.emplace_back(std::move(fileHeader));
+}
+
+void Client::buildEnvironment() {
+  if (errorState || breakPoint < PackageTree) {
+    return;
+  }
+  buildPackageTree();
+}
+
+void Client::buildPackageTree() {
+  auto tree = std::make_shared<Env::PackageTree>();
+  for (auto &&hierarchy : hierarchies) {
+    Env::PackageTreeVisitor visitor;
+    hierarchy.getASTNode()->accept(visitor);
+    if (!tree->update(visitor.getPackagePath(), hierarchy)) {
+      std::cerr << "Error building package tree\n";
+      errorState = true;
+      return;
     };
   }
-  return Tree;
+  if (breakPoint != PackageTree) {
+    buildTypeLink(std::move(tree));
+  }
 }
+
+void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
+  for (auto &&hierarchy : hierarchies) {
+    Env::TypeLinkVisitor visitor;
+    hierarchy.getASTNode()->accept(visitor);
+
+    Env::TypeLink typeLink(hierarchy, tree);
+    for (const auto &singleImport : visitor.getSingleImports()) {
+      if (!typeLink.addSingleImport(singleImport)) {
+        errorState = true;
+        return;
+      }
+    }
+    for (const auto &demandImport : visitor.getDemandImports()) {
+      if (!typeLink.addDemandImport(demandImport)) {
+        errorState = true;
+        return;
+      }
+    }
+    environments.emplace_back(std::move(hierarchy), typeLink);
+  }
+}
+
+Client::Environment::Environment(Env::Hierarchy hierarchy,
+                                 Env::TypeLink typeLink)
+    : hierarchy(std::move(hierarchy)), typeLink(std::move(typeLink)) {}

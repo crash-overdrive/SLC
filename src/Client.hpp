@@ -1,11 +1,10 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include <set>
-
 #include "ASTNode.hpp"
 #include "EnvFileHeader.hpp"
 #include "EnvPackageTree.hpp"
+#include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
 
@@ -21,35 +20,50 @@ public:
     PackageTree,
     TypeLink,
     Hierarchy,
+    None,
   };
-  bool outputToken = false;
-  bool outputParse = false;
-  bool outputAst = false;
-  bool outputFileHeader = false;
 
-  Client(std::unique_ptr<Lex::Scanner> scanner = nullptr,
-         std::unique_ptr<Parse::DFA> parser = nullptr);
+  Client(std::unique_ptr<Lex::Scanner> scanner,
+         std::unique_ptr<Parse::DFA> parser);
   void setBreakPoint(BreakPointType breakPoint);
-  void addJavaFile(std::string &&files);
-  void addJavaFiles(std::set<std::string> &&files);
-  bool compile();
+  void addPrintPoint(BreakPointType printPoint);
 
-  bool verifyFileName(std::string fileName);
-  std::optional<std::vector<Lex::Token>> scan(std::istream &stream);
-  std::optional<Parse::Tree> parse(const std::vector<Lex::Token> &tokens);
-  std::unique_ptr<AST::Start> buildAST(const Parse::Tree &ParseTree);
-  std::unique_ptr<AST::Start> buildAST(const std::string &FileName);
-  std::optional<Env::FileHeader>
-  buildFileHeader(std::unique_ptr<AST::Start> node);
-  bool weed(const AST::Node &ast, const std::string &typeName);
-  std::optional<Env::PackageTree>
-  buildPackageTree(std::vector<Env::FileHeader> &Headers);
+  bool compile(const std::vector<std::string> &fullNames);
+
+  void buildHierarchy(const std::string &fullName);
+  void verifyFileName(const std::string &fullName);
+  void openFile(const std::string &fullName);
+  void scan(std::istream &stream, const std::string &fullName);
+  void parse(const std::vector<Lex::Token> &tokens, const std::string &fulName);
+  void buildAST(const Parse::Tree &parseTree, const std::string &fullName);
+  void buildFileHeader(std::unique_ptr<AST::Start> root,
+                       const std::string &fulName);
+  void weed(Env::FileHeader fileHeader, const std::string &fullName);
+  void buildHierarchy(Env::FileHeader fileHeader);
+
+  void buildEnvironment();
+  void buildPackageTree();
+  void buildTypeLink(std::shared_ptr<Env::PackageTree> tree);
+
+  // buildAST is for debugging and testing
+  std::unique_ptr<AST::Start> buildAST(const std::string &fullName);
 
 private:
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
-  std::set<std::string> files;
-  BreakPointType breakPoint{Hierarchy};
+
+  struct Environment {
+    Env::Hierarchy hierarchy;
+    Env::TypeLink typeLink;
+    Environment(Env::Hierarchy hierarchy, Env::TypeLink typeLink);
+  };
+  std::vector<Env::Hierarchy> hierarchies;
+  std::vector<Environment> environments;
+
+  std::unique_ptr<AST::Start> logAstRoot;
+  BreakPointType breakPoint{None};
+  std::unordered_set<BreakPointType> printPoints;
+  bool errorState{false};
 };
 
 #endif // CLIENT_HPP

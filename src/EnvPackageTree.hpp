@@ -2,7 +2,7 @@
 #define ENVPACKAGETREE_HPP
 
 #include "ASTVisitor.hpp"
-#include "EnvFileHeader.hpp"
+#include "EnvHierarchy.hpp"
 #include <map>
 #include <string>
 
@@ -12,40 +12,39 @@ class PackageNode {
 public:
   enum Type { Global, Package, JoosType };
 
-  PackageNode(Type type, const std::string &name = "",
-              FileHeader *header = nullptr);
+  PackageNode(Type type, std::string name = "", Hierarchy *hierarchy = nullptr);
   PackageNode *update(Type type, const std::string &name,
-                      FileHeader *Header = nullptr);
+                      Hierarchy *hierarchy = nullptr);
   PackageNode *find(const std::string &name);
+  Hierarchy *findHierarchy(const std::string &name);
 
 private:
   friend class PackageTree;
   PackageNode *updatePackage(Type type, const std::string &name);
   PackageNode *addType(Type type, const std::string &name,
-                       FileHeader *header = nullptr);
+                       Hierarchy *hierarchy = nullptr);
   Type type;
   std::string name;
-  FileHeader *header;
-  std::map<std::string, PackageNode> children{};
+  Hierarchy *hierarchy;
+  std::map<std::string, PackageNode> children;
 };
 
 class PackageTree {
 public:
-  FileHeader *lookUp(const std::vector<std::string> &PackagePath);
-  bool update(const std::vector<std::string> &PackagePath,
-              FileHeader &Header);
+  Hierarchy *findType(const std::vector<std::string> &path) const;
+  PackageNode *findPackage(const std::vector<std::string> &path) const;
+  bool update(std::vector<std::string> &&packagePath, Hierarchy &hierarchy);
 
 private:
-  std::unique_ptr<PackageNode> Root =
+  PackageNode *findNode(const std::vector<std::string> &path) const;
+  std::unique_ptr<PackageNode> root =
       std::make_unique<PackageNode>(PackageNode::Global);
 };
 
-class PackageTreeVisitor : public AST::TrackVisitor {
+class PackageTreeVisitor : public AST::Visitor {
 public:
-  void visit(const AST::PackageDeclaration &Decl) override;
-  // Avoid unecessary traversal
-  void visit(const AST::ClassDeclaration &Decl) override;
-  void visit(const AST::InterfaceDeclaration &Decl) override;
+  void visit(const AST::Start &start) override;
+  void visit(const AST::PackageDeclaration &decl) override;
   std::vector<std::string> getPackagePath() const;
 
 private:

@@ -1,10 +1,9 @@
 #ifndef ENVFILEHEADER_HPP
 #define ENVFILEHEADER_HPP
 
-#include <set>
-
 #include "ASTNode.hpp"
 #include "ASTVisitor.hpp"
+#include <set>
 
 namespace Env {
 
@@ -18,12 +17,12 @@ enum class Type {
   Interface,
 };
 
-const std::unordered_map<VariableType, std::string> VariableTypeName{
+const std::unordered_map<VariableType, std::string> variableTypeName{
     {VariableType::SimpleType, "SimpleType"},
     {VariableType::ArrayType, "ArrayType"},
 };
 
-const std::unordered_map<Type, std::string> TypeName{
+const std::unordered_map<Type, std::string> typeName{
     {Type::Class, "Class"},
     {Type::Interface, "Interface"},
 };
@@ -75,12 +74,14 @@ std::ostream &operator<<(std::ostream &stream,
 
 struct FileHeader {
 public:
-  TypeDescriptor typeDescriptor;
-  std::set<AST::ModifierCode> classModifiers;
-
-  FileHeader(std::set<AST::ModifierCode> classModifiers,
+  FileHeader(std::set<AST::ModifierCode> modifiers,
              TypeDescriptor typeDescriptor,
-             std::unique_ptr<AST::Node> Node = nullptr);
+             std::unique_ptr<AST::Node> node = nullptr);
+  const AST::Node *getASTNode() const;
+  const std::set<AST::ModifierCode> &getModifiers() const;
+  const std::string &getIdentifier() const;
+  const Type &getType() const;
+
   bool addField(JoosField joosField);
   bool addMethod(JoosMethod joosMethod);
   bool addConstructor(JoosConstructor joosConstructor);
@@ -92,17 +93,17 @@ public:
   const JoosConstructor *
   findConstructor(const std::string &identifier,
                   const std::vector<VariableDescriptor> &args) const;
-  const std::set<AST::ModifierCode> &getModifiers() const;
-  const std::string &getName() const;
-  const AST::Node *getASTNode() const;
+  void setPackage(std::vector<std::string> package);
 
 private:
-  std::unique_ptr<AST::Node> node;
-  std::vector<JoosField> fields;
-  std::vector<JoosMethod> methods;
-  std::vector<JoosConstructor> constructors;
   friend std::ostream &operator<<(std::ostream &stream,
                                   const FileHeader &fileHeader);
+  std::unique_ptr<AST::Node> node;
+  std::set<AST::ModifierCode> modifiers;
+  TypeDescriptor typeDescriptor;
+  std::vector<JoosMethod> methods;
+  std::vector<JoosField> fields;
+  std::vector<JoosConstructor> constructors;
 };
 std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
 
@@ -117,9 +118,9 @@ public:
 
 private:
   void visitProperties(const AST::Node &node);
-  std::set<AST::ModifierCode> classModifiers;
+  std::set<AST::ModifierCode> modifiers;
   TypeDescriptor typeDescriptor;
-  const AST::Node *Node;
+  const AST::Node *node;
 };
 
 class JoosTypeBodyVisitor : public AST::Visitor {

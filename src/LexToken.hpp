@@ -7,14 +7,14 @@
 namespace Lex {
 
 struct Token {
-  Token();
-  Token(const std::string &Type, const std::string &Lexeme);
-  std::string Type;
-  std::string Lexeme;
+  Token() = default;
+  Token(std::string type, std::string lexeme);
+  std::string type;
+  std::string lexeme;
 };
 
-std::istream &operator>>(std::istream &Stream, Token &Tok);
-std::ostream &operator<<(std::ostream &Stream, const Token &Tok);
+std::istream &operator>>(std::istream &stream, Token &tok);
+std::ostream &operator<<(std::ostream &stream, const Token &tok);
 
 } // namespace Lex
 
