@@ -17,6 +17,7 @@ public:
     Ast,
     FileHeader,
     Weed,
+    LocalVariableAnalysis,
     PackageTree,
     TypeLink,
     Hierarchy,
@@ -39,6 +40,7 @@ public:
   void buildFileHeader(std::unique_ptr<AST::Start> root,
                        const std::string &fulName);
   void weed(Env::FileHeader fileHeader, const std::string &fullName);
+  void localVariableAnalysis(Env::FileHeader fileHeader, const std::string &fullName);
   void buildHierarchy(Env::FileHeader fileHeader);
 
   void buildEnvironment();

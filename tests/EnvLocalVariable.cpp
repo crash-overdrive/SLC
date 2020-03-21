@@ -5,8 +5,7 @@
 #include "EnvLocalVariable.hpp"
 
 TEST_CASE("LocalVariableAnalysis", "[local-variable]") {
-  Env::LocalVariableAnalysis localVariableAnalysis;
-  localVariableAnalysis.addEnvironment();
+  Env::LocalVariableAnalysis localVariableAnalysis(false);
   REQUIRE(localVariableAnalysis.addVariable("outer", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
   localVariableAnalysis.addEnvironment();
   REQUIRE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));

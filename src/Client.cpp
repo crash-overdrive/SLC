@@ -1,8 +1,21 @@
-#include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
+#include "Client.hpp"
+#include "EnvLocalVariable.hpp"
 #include <fstream>
 #include <iterator>
+
+template <class T>
+std::ostream& operator << (std::ostream& stream, const std::vector<T>& vec)
+{
+    stream << "[";
+    for (auto const& element : vec)
+    {
+        stream << " " << element;
+    }
+    stream << "]";
+    return stream;
+}
 
 Client::Client(std::unique_ptr<Lex::Scanner> scanner,
                std::unique_ptr<Parse::DFA> parser)
@@ -135,7 +148,7 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
   for (auto const &field : typeBodyVisitor.getJoosFields()) {
     if (!fileHeader.addField(field)) {
       std::cerr << "Duplicate Field found in file\n" << field << '\n';
-      std::cerr << "File header creation failed" << '\n';
+      std::cerr << "File header creation for file " << fullName << " failed" << '\n';
       errorState = true;
       return;
     };
@@ -143,7 +156,7 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
   for (auto const &method : typeBodyVisitor.getJoosMethods()) {
     if (!fileHeader.addMethod(method)) {
       std::cerr << "Duplicate Method found in file\n" << method << '\n';
-      std::cerr << "File header creation failed" << '\n';
+      std::cerr << "File header creation for file " << fullName << " failed" << '\n';
       errorState = true;
       return;
     };
@@ -152,7 +165,7 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
     if (!fileHeader.addConstructor(constructor)) {
       std::cerr << "Duplicate Constructor found in file\n"
                 << constructor << '\n';
-      std::cerr << "File header creation failed" << '\n';
+      std::cerr << "File header creation for file " << fullName << " failed" << '\n';
       errorState = true;
       return;
     };
@@ -168,6 +181,51 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
 void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
+    localVariableAnalysis(std::move(fileHeader), fullName);
+  }
+}
+
+void Client::localVariableAnalysis(Env::FileHeader fileHeader, const std::string &fullName) {
+  (void)fullName;
+  bool log = (printPoints.find(LocalVariableAnalysis) != printPoints.end());
+
+  for (auto const &constructor : fileHeader.getConstructors()) {
+    Env::JoosLocalVariableVisitor joosLocalVariableVisitor(log);
+
+    if (log) {
+      std::cerr << "Local Variable Analysis for Constructor: " << constructor.identifier
+      << " with args: " << constructor.args << " started...\n";
+    }
+    constructor.constructorDeclaration->accept(joosLocalVariableVisitor);
+    if (log) {
+      std::cerr << "Local Variable Analysis for Constructor: " << constructor.identifier
+      << " with args: " << constructor.args << " ended...\n";
+    }
+    if (joosLocalVariableVisitor.isErrorState()) {
+      std::cerr << "Local Variable Analysis for file " << fullName << " failed" << '\n';
+      errorState = true;
+      return;
+    }
+  }
+  for (auto const &method : fileHeader.getMethods()) {
+    Env::JoosLocalVariableVisitor joosLocalVariableVisitor(log);
+
+    if (log) {
+      std::cerr << "Local Variable Analysis for Method: " << method.identifier
+      << " with args: " << method.args << " started...\n";
+    }
+    method.methodDeclaration->accept(joosLocalVariableVisitor);
+    if (log) {
+      std::cerr << "Local Variable Analysis for Method: " << method.identifier
+      << " with args: " << method.args << " ended...\n";
+    }
+    if (joosLocalVariableVisitor.isErrorState()) {
+      std::cerr << "Local Variable Analysis for file " << fullName << " failed" << '\n';
+      errorState = true;
+      return;
+    }
+  }
+  if (breakPoint != LocalVariableAnalysis) {
     buildHierarchy(std::move(fileHeader));
   }
 }

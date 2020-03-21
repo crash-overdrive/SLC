@@ -47,7 +47,7 @@ struct JoosField {
   std::set<AST::ModifierCode> modifiers;
   VariableDescriptor variableDescriptor;
   std::string identifier;
-  const AST::Node *astNode;
+  const AST::FieldDeclaration *fieldDeclaration;
   bool operator==(const JoosField &joosField) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField);
@@ -57,7 +57,7 @@ struct JoosMethod {
   VariableDescriptor returnType;
   std::string identifier;
   std::vector<VariableDescriptor> args;
-  const AST::Node *astNode;
+  const AST::MethodDeclaration *methodDeclaration;
   bool operator==(const JoosMethod &joosMethod) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod);
@@ -66,7 +66,7 @@ struct JoosConstructor {
   std::set<AST::ModifierCode> modifiers;
   std::string identifier;
   std::vector<VariableDescriptor> args;
-  const AST::Node *astNode;
+  const AST::ConstructorDeclaration *constructorDeclaration;
   bool operator==(const JoosConstructor &joosConstructor) const;
 };
 std::ostream &operator<<(std::ostream &stream,
@@ -76,11 +76,13 @@ struct FileHeader {
 public:
   FileHeader(std::set<AST::ModifierCode> modifiers,
              TypeDescriptor typeDescriptor,
-             std::unique_ptr<AST::Node> node = nullptr);
-  const AST::Node *getASTNode() const;
+             std::unique_ptr<AST::Start> startNode = nullptr);
+  const AST::Start *getASTStart() const;
   const std::set<AST::ModifierCode> &getModifiers() const;
   const std::string &getIdentifier() const;
   const Type &getType() const;
+  const std::vector<JoosMethod> getMethods();
+  const std::vector<JoosConstructor> getConstructors();
 
   bool addField(JoosField joosField);
   bool addMethod(JoosMethod joosMethod);
@@ -93,14 +95,13 @@ public:
   const JoosConstructor *
   findConstructor(const std::string &identifier,
                   const std::vector<VariableDescriptor> &args) const;
-  void setPackage(std::vector<std::string> package);
 
 private:
   friend std::ostream &operator<<(std::ostream &stream,
                                   const FileHeader &fileHeader);
-  std::unique_ptr<AST::Node> node;
-  std::set<AST::ModifierCode> modifiers;
-  TypeDescriptor typeDescriptor;
+  std::unique_ptr<AST::Start> startNode; // unique pointer to start of ast
+  std::set<AST::ModifierCode> modifiers; // type modifiers
+  TypeDescriptor typeDescriptor; // type Descriptor
   std::vector<JoosMethod> methods;
   std::vector<JoosField> fields;
   std::vector<JoosConstructor> constructors;

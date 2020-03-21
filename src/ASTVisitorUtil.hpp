@@ -25,11 +25,9 @@ public:
   void visit(const SimpleType &simpleType) override;
   void visit(const ArrayType &arrayType) override;
   void visit(const Identifier &identifier) override;
-  std::set<ModifierCode> getModifiers(); // gets all the modifiers
+  std::set<ModifierCode> getModifiers();
   std::string getIdentifier();
-  Env::VariableDescriptor
-  getVariableDescriptor(); // gets VariableDescriptor for Primitive, Array and
-                           // Simple Type
+  Env::VariableDescriptor getVariableDescriptor();
 
 private:
   std::set<ModifierCode> modifiers;
