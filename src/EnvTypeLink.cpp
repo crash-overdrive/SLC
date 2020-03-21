@@ -3,9 +3,15 @@
 
 namespace Env {
 
-TypeLink::TypeLink(JoosType &joosType, std::vector<std::string> package,
-                   std::shared_ptr<PackageTree> tree)
-    : joosType(joosType), package(std::move(package)), tree(std::move(tree)) {}
+TypeLink::TypeLink(JoosType &joosType) : joosType(joosType) {}
+
+void TypeLink::setPackage(std::vector<std::string> package) {
+  this->package = std::move(package);
+}
+
+void TypeLink::setTree(std::shared_ptr<PackageTree> tree) {
+  this->tree = std::move(tree);
+}
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
   JoosType *importJoosType = tree->findType(name);

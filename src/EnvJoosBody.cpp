@@ -3,6 +3,10 @@
 
 namespace Env {
 
+VariableDescriptor::VariableDescriptor(VariableType variableType,
+                                       std::vector<std::string> dataType)
+    : variableType(std::move(variableType)), dataType(std::move(dataType)) {}
+
 bool VariableDescriptor::
 operator==(const VariableDescriptor &variableDescriptor) const {
   return variableType == variableDescriptor.variableType &&
@@ -104,6 +108,8 @@ std::ostream &operator<<(std::ostream &stream,
   return stream << "\n";
 }
 
+const std::vector<JoosField> &JoosBody::getFields() const { return fields; }
+
 bool JoosBody::addField(JoosField joosField) {
   for (auto const &field : fields) {
     if (field == joosField) {
@@ -113,6 +119,8 @@ bool JoosBody::addField(JoosField joosField) {
   fields.emplace_back(std::move(joosField));
   return true;
 }
+
+const std::vector<JoosMethod> &JoosBody::getMethods() const { return methods; }
 
 bool JoosBody::addMethod(JoosMethod joosMethod) {
   for (auto const &method : methods) {
@@ -124,6 +132,10 @@ bool JoosBody::addMethod(JoosMethod joosMethod) {
   return true;
 }
 
+const std::vector<JoosConstructor> &JoosBody::getConstructors() const {
+  return constructors;
+}
+
 bool JoosBody::addConstructor(JoosConstructor joosConstructor) {
   for (auto const &constructor : constructors) {
     if (constructor == joosConstructor) {
@@ -132,40 +144,6 @@ bool JoosBody::addConstructor(JoosConstructor joosConstructor) {
   }
   constructors.emplace_back(std::move(joosConstructor));
   return true;
-}
-
-const JoosField *
-JoosBody::findField(const VariableDescriptor &variableDescriptor,
-                    const std::string &identifier) const {
-  for (auto const &field : fields) {
-    if (field.identifier == identifier &&
-        field.variableDescriptor == variableDescriptor) {
-      return &field;
-    }
-  }
-  return nullptr;
-}
-
-const JoosMethod *
-JoosBody::findMethod(const std::string &identifier,
-                     const std::vector<VariableDescriptor> &args) const {
-  for (auto const &method : methods) {
-    if (method.identifier == identifier && method.args == args) {
-      return &method;
-    }
-  }
-  return nullptr;
-}
-
-const JoosConstructor *
-JoosBody::findConstructor(const std::string &identifier,
-                          const std::vector<VariableDescriptor> &args) const {
-  for (auto const &constructor : constructors) {
-    if (constructor.identifier == identifier && constructor.args == args) {
-      return &constructor;
-    }
-  }
-  return nullptr;
 }
 
 std::ostream &operator<<(std::ostream &stream, const JoosBody &joosBody) {

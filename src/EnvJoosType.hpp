@@ -22,9 +22,10 @@ struct JoosType {
   std::set<Modifier> modifiers;
   Type type;
   std::string identifier;
-  JoosBody declare;
-  JoosBody contains;
   std::unique_ptr<AST::Node> astNode;
+  JoosBody declare;
+  JoosType(std::set<Modifier> modifiers, Type type, std::string identifier,
+           std::unique_ptr<AST::Node> astNode);
 };
 std::ostream &operator<<(std::ostream &stream, const JoosType &joosType);
 

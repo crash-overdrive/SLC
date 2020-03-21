@@ -74,7 +74,7 @@ PackageTree::findPackage(const std::vector<std::string> &path) const {
   return (node->type == PackageNode::Type::Package) ? node : nullptr;
 }
 
-bool PackageTree::update(std::vector<std::string> &&packagePath,
+bool PackageTree::update(const std::vector<std::string> &packagePath,
                          JoosType &joosType) {
   // No Package
   if (packagePath.size() == 0) {

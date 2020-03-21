@@ -2,7 +2,7 @@
 #define CLIENT_HPP
 
 #include "ASTNode.hpp"
-#include "EnvFileHeader.hpp"
+#include "EnvJoosType.hpp"
 #include "EnvPackageTree.hpp"
 #include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
@@ -15,7 +15,7 @@ public:
     Scan,
     Parse,
     Ast,
-    FileHeader,
+    JoosType,
     Weed,
     PackageTree,
     TypeLink,
@@ -30,29 +30,35 @@ public:
 
   bool compile(const std::vector<std::string> &fullNames);
 
-  void buildHierarchy(const std::string &fullName);
+  void buildJoosType(const std::string &fullName);
   void verifyFileName(const std::string &fullName);
   void openFile(const std::string &fullName);
   void scan(std::istream &stream, const std::string &fullName);
   void parse(const std::vector<Lex::Token> &tokens, const std::string &fulName);
   void buildAST(const Parse::Tree &parseTree, const std::string &fullName);
-  void buildFileHeader(std::unique_ptr<AST::Start> root,
-                       const std::string &fulName);
-  void weed(Env::FileHeader fileHeader, const std::string &fullName);
-  void buildHierarchy(Env::FileHeader fileHeader);
+  void buildJoosType(std::unique_ptr<AST::Start> root,
+                     const std::string &fulName);
+  void weed(Env::JoosType joosType, const std::string &fullName);
 
   void buildEnvironment();
   void buildPackageTree();
-  void buildTypeLink(std::shared_ptr<Env::PackageTree> tree);
+  void buildTypeLink();
+  void buildHierarchy();
 
   // buildAST is for debugging and testing
   std::unique_ptr<AST::Start> buildAST(const std::string &fullName);
 
 private:
+  struct Environment {
+    Env::JoosType joosType;
+    Env::TypeLink typeLink;
+    explicit Environment(Env::JoosType joosType);
+  };
+
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
 
-  Env::HierarchyGraph graph;
+  std::vector<Environment> environments;
   std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;

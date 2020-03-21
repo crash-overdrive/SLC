@@ -16,21 +16,15 @@ void Client::addPrintPoint(BreakPointType printPoint) {
   printPoints.emplace(printPoint);
 }
 
-std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
-  setBreakPoint(BreakPointType::Ast);
-  buildHierarchy(fullName);
-  return std::move(logAstRoot);
-}
-
 bool Client::compile(const std::vector<std::string> &fullNames) {
   for (const auto &file : fullNames) {
-    buildHierarchy(file);
+    buildJoosType(file);
   }
   buildEnvironment();
   return !errorState;
 }
 
-void Client::buildHierarchy(const std::string &file) {
+void Client::buildJoosType(const std::string &file) {
   if (errorState) {
     return;
   }
@@ -122,39 +116,43 @@ void Client::buildAST(const Parse::Tree &tree, const std::string &fullName) {
     root->accept(visitor);
   }
   if (breakPoint != Ast) {
-    buildFileHeader(std::move(root), fullName);
+    buildJoosType(std::move(root), fullName);
   } else {
     logAstRoot = std::move(root);
   }
 }
 
-void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
-                             const std::string &fullName) {
+void Client::buildJoosType(std::unique_ptr<AST::Start> node,
+                           const std::string &fullName) {
   Env::JoosTypeVisitor typeVisitor;
-  Env::JoosTypeBodyVisitor typeBodyVisitor;
+  Env::JoosBodyVisitor bodyVisitor;
 
   node->accept(typeVisitor);
-  node->accept(typeBodyVisitor);
-  Env::FileHeader fileHeader{typeVisitor.getModifiers(),
-                             typeVisitor.getTypeDescriptor(), std::move(node)};
-  for (auto const &field : typeBodyVisitor.getJoosFields()) {
-    if (!fileHeader.addField(field)) {
+  node->accept(bodyVisitor);
+  Env::JoosType joosType{
+      typeVisitor.getModifiers(),
+      typeVisitor.getType(),
+      typeVisitor.getIdentifier(),
+      std::move(node),
+  };
+  for (auto const &field : bodyVisitor.getJoosFields()) {
+    if (!joosType.declare.addField(field)) {
       std::cerr << "Duplicate Field found in file\n" << field << '\n';
       std::cerr << "File header creation failed" << '\n';
       errorState = true;
       return;
     };
   }
-  for (auto const &method : typeBodyVisitor.getJoosMethods()) {
-    if (!fileHeader.addMethod(method)) {
+  for (auto const &method : bodyVisitor.getJoosMethods()) {
+    if (!joosType.declare.addMethod(method)) {
       std::cerr << "Duplicate Method found in file\n" << method << '\n';
       std::cerr << "File header creation failed" << '\n';
       errorState = true;
       return;
     };
   }
-  for (auto const &constructor : typeBodyVisitor.getJoosConstructors()) {
-    if (!fileHeader.addConstructor(constructor)) {
+  for (auto const &constructor : bodyVisitor.getJoosConstructors()) {
+    if (!joosType.declare.addConstructor(constructor)) {
       std::cerr << "Duplicate Constructor found in file\n"
                 << constructor << '\n';
       std::cerr << "File header creation failed" << '\n';
@@ -162,30 +160,18 @@ void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
       return;
     };
   }
-  if (printPoints.find(FileHeader) != printPoints.end()) {
-    std::cerr << fileHeader;
+  if (printPoints.find(JoosType) != printPoints.end()) {
+    std::cerr << JoosType;
   }
-  if (breakPoint != FileHeader) {
-    weed(std::move(fileHeader), fullName);
+  if (breakPoint != JoosType) {
+    weed(std::move(joosType), fullName);
   }
 }
 
-void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
+void Client::weed(Env::JoosType joosType, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
-    buildHierarchy(std::move(fileHeader));
-  }
-}
-
-void Client::buildHierarchy(Env::FileHeader fileHeader) {
-  switch (fileHeader.getType()) {
-  case Env::Type::Class:
-    graph.addClass(std::move(fileHeader));
-    break;
-  case Env::Type::Interface: {
-    graph.addInterface(std::move(fileHeader));
-    break;
-  }
+    environments.emplace_back(std::move(joosType));
   }
 }
 
@@ -198,38 +184,49 @@ void Client::buildEnvironment() {
 
 void Client::buildPackageTree() {
   auto tree = std::make_shared<Env::PackageTree>();
-  for (auto &&hierarchy : graph.getHierarchies()) {
+  for (auto &&environment : environments) {
     Env::PackageTreeVisitor visitor;
-    hierarchy->getASTNode()->accept(visitor);
-    if (!tree->update(visitor.getPackagePath(), *hierarchy)) {
+    environment.joosType.astNode->accept(visitor);
+
+    std::vector<std::string> packagePath = visitor.getPackagePath();
+    if (!tree->update(packagePath, environment.joosType)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
     };
+    environment.typeLink.setPackage(std::move(packagePath));
+    environment.typeLink.setTree(tree);
   }
   if (breakPoint != PackageTree) {
-    buildTypeLink(std::move(tree));
+    buildTypeLink();
   }
 }
 
-void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
-  for (auto &&hierarchy : graph.getHierarchies()) {
+void Client::buildTypeLink() {
+  for (auto &&environment : environments) {
     Env::TypeLinkVisitor visitor;
-    hierarchy->getASTNode()->accept(visitor);
+    environment.joosType.astNode->accept(visitor);
 
-    auto typeLink = std::make_unique<Env::TypeLink>(*hierarchy, tree);
     for (const auto &singleImport : visitor.getSingleImports()) {
-      if (!typeLink->addSingleImport(singleImport)) {
+      if (!environment.typeLink.addSingleImport(singleImport)) {
         errorState = true;
         return;
       }
     }
     for (const auto &demandImport : visitor.getDemandImports()) {
-      if (!typeLink->addDemandImport(demandImport)) {
+      if (!environment.typeLink.addDemandImport(demandImport)) {
         errorState = true;
         return;
       }
     }
-    hierarchy->setTypeLink(std::move(typeLink));
   }
 }
+
+std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
+  setBreakPoint(BreakPointType::Ast);
+  buildJoosType(fullName);
+  return std::move(logAstRoot);
+}
+
+Client::Environment::Environment(Env::JoosType joosType)
+    : joosType(std::move(joosType)), typeLink(this->joosType) {}

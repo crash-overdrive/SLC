@@ -10,8 +10,9 @@ namespace Env {
 
 class TypeLink {
 public:
-  TypeLink(JoosType &joosType, std::vector<std::string> package,
-           std::shared_ptr<PackageTree> tree);
+  TypeLink(JoosType &joosType);
+  void setPackage(std::vector<std::string> package);
+  void setTree(std::shared_ptr<PackageTree> tree);
   bool addSingleImport(const std::vector<std::string> &name);
   bool addDemandImport(const std::vector<std::string> &name);
   JoosType *find(const std::vector<std::string> &name) const;

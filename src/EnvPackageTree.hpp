@@ -32,7 +32,7 @@ class PackageTree {
 public:
   JoosType *findType(const std::vector<std::string> &path) const;
   PackageNode *findPackage(const std::vector<std::string> &path) const;
-  bool update(std::vector<std::string> &&packagePath, JoosType &joosType);
+  bool update(const std::vector<std::string> &packagePath, JoosType &joosType);
 
 private:
   PackageNode *findNode(const std::vector<std::string> &path) const;

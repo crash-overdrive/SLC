@@ -11,7 +11,7 @@ const std::vector<std::array<std::string, 2>> usageArray{
     {"--output-tokens", "outputs scanned tokens for each class"},
     {"--output-parse", "outputs parse tree for each class"},
     {"--output-ast", "outputs abstract syntax tree for each class"},
-    {"--output-fileheader", "outputs file header for each class"},
+    {"--output-joostype", "outputs joos type for each class"},
     {"--std-lib2", "includes Java standard libarary from Stdlib2Files"},
     {"--std-lib3", "includes Java standard libarary from Stdlib3Files"},
     {"--std-lib4", "includes Java standard libarary from Stdlib4Files"},
@@ -22,7 +22,7 @@ const std::unordered_map<std::string, Client::BreakPointType> outputMap{
     {"--output-tokens", Client::BreakPointType::Scan},
     {"--output-parse", Client::BreakPointType::Parse},
     {"--output-ast", Client::BreakPointType::Ast},
-    {"--output-fileheader", Client::BreakPointType::FileHeader},
+    {"--output-joostype", Client::BreakPointType::JoosType},
 };
 
 const std::unordered_map<std::string, std::vector<std::string>> stdlibMap{

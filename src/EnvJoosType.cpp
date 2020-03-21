@@ -3,6 +3,11 @@
 
 namespace Env {
 
+JoosType::JoosType(std::set<Modifier> modifiers, Type type,
+                   std::string identifier, std::unique_ptr<AST::Node> astNode)
+    : modifiers(std::move(modifiers)), type(type),
+      identifier(std::move(identifier)), astNode(std::move(astNode)) {}
+
 std::ostream &operator<<(std::ostream &stream, const JoosType &joosType) {
   stream << "TYPE MODIFIERS: {";
   for (auto const &modifier : joosType.modifiers) {

@@ -66,8 +66,8 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    SECTION("error-fileheader") {
-      client.setBreakPoint(Client::FileHeader);
+    SECTION("error-joostype") {
+      client.setBreakPoint(Client::JoosType);
       for (const auto &group : a2ErrorFileHeader) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));

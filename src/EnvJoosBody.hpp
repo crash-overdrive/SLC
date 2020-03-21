@@ -41,6 +41,9 @@ const std::unordered_map<VariableType, std::string> variableTypeName{
 struct VariableDescriptor {
   VariableType variableType;
   std::vector<std::string> dataType;
+  VariableDescriptor() = default;
+  VariableDescriptor(VariableType variableType,
+                     std::vector<std::string> dataType);
   bool operator==(const VariableDescriptor &variableDescriptor) const;
 };
 std::ostream &operator<<(std::ostream &stream,
@@ -85,18 +88,14 @@ std::ostream &operator<<(std::ostream &stream,
 
 class JoosBody {
 public:
+  const std::vector<JoosField> &getFields() const;
   bool addField(JoosField joosField);
-  bool addMethod(JoosMethod joosMethod);
-  bool addConstructor(JoosConstructor joosConstructor);
 
-  const JoosField *findField(const VariableDescriptor &variableDescriptor,
-                             const std::string &identifier) const;
-  const JoosMethod *
-  findMethod(const std::string &identifier,
-             const std::vector<VariableDescriptor> &args) const;
-  const JoosConstructor *
-  findConstructor(const std::string &identifier,
-                  const std::vector<VariableDescriptor> &args) const;
+  const std::vector<JoosMethod> &getMethods() const;
+  bool addMethod(JoosMethod joosMethod);
+
+  const std::vector<JoosConstructor> &getConstructors() const;
+  bool addConstructor(JoosConstructor joosConstructor);
 
 private:
   friend std::ostream &operator<<(std::ostream &stream,
