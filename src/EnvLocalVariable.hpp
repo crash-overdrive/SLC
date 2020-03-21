@@ -1,24 +1,42 @@
 #ifndef LOCALVARIABLESCOPE_HPP
 #define LOCALVARIABLESCOPE_HPP
 
-#include <memory>
-#include <unordered_set>
-#include <vector>
+#include <map>
+#include <stack>
+
+#include "ASTVisitor.hpp"
+#include "EnvFileHeader.hpp"
 
 namespace Env {
 
-class LocalVariableScope {
+class Environment {
 public:
-  LocalVariableScope(LocalVariableScope *parent = nullptr);
-  LocalVariableScope *pop() const;
-  LocalVariableScope *push();
-  bool lookUp(const std::string &name);
-  bool add(const std::string &name);
+  std::map<std::string, VariableDescriptor> getVariableTable();
+  bool findVariable(const std::string &name);
+  bool addVariable(const std::string &name, VariableDescriptor variableDescriptor);
 
 private:
-  LocalVariableScope *parent;
-  std::unordered_set<std::string> variables;
-  std::vector<std::unique_ptr<LocalVariableScope>> children;
+  std::map<std::string, VariableDescriptor> variableTable;
+};
+
+class LocalVariableAnalysis {
+public:
+  LocalVariableAnalysis(bool log);
+  bool findVariable(const std::string &name);
+  bool addVariable(const std::string &name, VariableDescriptor variableDescriptor);
+  void addEnvironment();
+  void removeEnvironment();
+private:
+  bool log;
+  std::vector <Environment> environments;
+};
+
+class JoosLocalVariableVisitor : public AST::TrackVisitor {
+public:
+  JoosLocalVariableVisitor(bool log);
+  void visit(const AST::SingleVariableDeclaration &decl) override;
+  void visit(const AST::Block &block) override;
+  LocalVariableAnalysis localVariableAnalysis;
 };
 
 }; // namespace Env

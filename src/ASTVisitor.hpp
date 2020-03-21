@@ -125,10 +125,10 @@ private:
 class TrackVisitor : public Visitor {
 public:
   void setLog(std::ostream &stream);
+  bool isErrorState();
 
 protected:
   void setError();
-  bool error();
   void postVisit(const Node &parent) override;
 
 private:
