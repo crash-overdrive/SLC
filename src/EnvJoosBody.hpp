@@ -97,6 +97,15 @@ public:
   const std::vector<JoosConstructor> &getConstructors() const;
   bool addConstructor(JoosConstructor joosConstructor);
 
+  const JoosField *findField(const VariableDescriptor &variableDescriptor,
+                             const std::string &identifier) const;
+  const JoosMethod *
+  findMethod(const std::string &identifier,
+             const std::vector<VariableDescriptor> &args) const;
+  const JoosConstructor *
+  findConstructor(const std::string &identifier,
+                  const std::vector<VariableDescriptor> &args) const;
+
 private:
   friend std::ostream &operator<<(std::ostream &stream,
                                   const JoosBody &joosBody);

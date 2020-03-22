@@ -4,101 +4,104 @@
 #include "catch.hpp"
 
 TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
-  Env::ClassHierarchy classType{
-      Env::FileHeader({}, {Env::Type::Class, "canary"})};
-  Env::InterfaceHierarchy interfaceType{
-      Env::FileHeader({}, {Env::Type::Interface, "foo"})};
+  Env::JoosType interfaceType{{}, Env::Type::Interface, "foo"};
+  Env::InterfaceHierarchy interfaceHierarchy{interfaceType};
+
+  Env::JoosType classType{{}, Env::Type::Class, "foo"};
+  Env::ClassHierarchy classHierarchy{classType};
 
   SECTION("class extends interface") {
-    REQUIRE_FALSE(classType.setExtends(&interfaceType));
+    REQUIRE_FALSE(classHierarchy.setExtends(&interfaceType));
   }
 
   SECTION("class implements class") {
-    REQUIRE_FALSE(classType.addImplements(&classType));
+    REQUIRE_FALSE(classHierarchy.addImplements(&classType));
   }
 
   SECTION("class extends final class") {
-    Env::ClassHierarchy class2Type{Env::FileHeader(
-        {AST::ModifierCode::Final}, {Env::Type::Class, "canary"})};
-    REQUIRE_FALSE(classType.setExtends(&class2Type));
+    Env::JoosType classType2({Env::Modifier::Final}, Env::Type::Class,
+                             "canary");
+    REQUIRE_FALSE(classHierarchy.setExtends(&classType2));
   }
 
   SECTION("class implements duplicate") {
-    REQUIRE(classType.addImplements(&interfaceType));
-    REQUIRE_FALSE(classType.addImplements(&interfaceType));
+    REQUIRE(classHierarchy.addImplements(&interfaceType));
+    REQUIRE_FALSE(classHierarchy.addImplements(&interfaceType));
   }
 
   SECTION("interface extends class") {
-    REQUIRE_FALSE(interfaceType.addExtends(&classType));
+    REQUIRE_FALSE(interfaceHierarchy.addExtends(&classType));
   }
 
   SECTION("interface extends duplicate") {
-    Env::InterfaceHierarchy interface2Type{
-        Env::FileHeader({}, {Env::Type::Interface, "foo"})};
-    REQUIRE(interfaceType.addExtends(&interface2Type));
-    REQUIRE_FALSE(interfaceType.addExtends(&interface2Type));
+    Env::JoosType interfaceType2({}, Env::Type::Interface, "foo");
+    REQUIRE(interfaceHierarchy.addExtends(&interfaceType2));
+    REQUIRE_FALSE(interfaceHierarchy.addExtends(&interfaceType2));
   }
 }
 
 TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph][!hide]") {
   Env::HierarchyGraph graph;
-  Env::ClassHierarchy &classType =
-      graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
-  Env::InterfaceHierarchy &interfaceType =
-      graph.addInterface(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
+
+  Env::JoosType interfaceType({}, Env::Type::Interface, "foo");
+  Env::InterfaceHierarchy interfaceHierarchy(interfaceType);
+  graph.addInterface(interfaceHierarchy);
+
+  Env::JoosType classType({}, Env::Type::Class, "foo");
+  Env::ClassHierarchy classHierarchy(classType);
+  graph.addClass(classHierarchy);
 
   SECTION("basic") {
-    Env::ClassHierarchy &class2Type =
-        graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
-    Env::ClassHierarchy &class3Type =
-        graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
-    classType.setExtends(&class2Type);
-    class2Type.setExtends(&class3Type);
+    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::ClassHierarchy classHierarchy2(classType2);
+    graph.addClass(classHierarchy2);
+
+    Env::JoosType classType3({}, Env::Type::Class, "foo");
+    Env::ClassHierarchy classHierarchy3(classType3);
+    graph.addClass(classHierarchy3);
+
+    classHierarchy.setExtends(&classType2);
+    classHierarchy2.setExtends(&classType3);
     REQUIRE(graph.topologicalSort());
   }
 
   SECTION("class self cyclic") {
-    classType.setExtends(&classType);
+    classHierarchy.setExtends(&classType);
     REQUIRE_FALSE(graph.topologicalSort());
   }
 
   SECTION("interface self cyclic") {
-    interfaceType.addExtends(&interfaceType);
+    interfaceHierarchy.addExtends(&interfaceType);
     REQUIRE_FALSE(graph.topologicalSort());
   }
 
   SECTION("class cyclic") {
-    Env::ClassHierarchy &class2Type =
-        graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
-    Env::ClassHierarchy &class3Type =
-        graph.addClass(Env::FileHeader({}, {Env::Type::Class, "foo"}));
-    classType.setExtends(&class2Type);
-    class2Type.setExtends(&class3Type);
-    class3Type.setExtends(&classType);
+    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::ClassHierarchy classHierarchy2(classType2);
+    graph.addClass(classHierarchy2);
+
+    Env::JoosType classType3({}, Env::Type::Class, "foo");
+    Env::ClassHierarchy classHierarchy3(classType3);
+    graph.addClass(classHierarchy3);
+
+    classHierarchy.setExtends(&classType2);
+    classHierarchy2.setExtends(&classType3);
+    classHierarchy3.setExtends(&classType);
     REQUIRE_FALSE(graph.topologicalSort());
   }
 
   SECTION("interface cyclic") {
-    Env::InterfaceHierarchy &interface2Type =
-        graph.addInterface(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
-    Env::InterfaceHierarchy &interface3Type =
-        graph.addInterface(Env::FileHeader({}, {Env::Type::Interface, "foo"}));
-    interfaceType.addExtends(&interface2Type);
-    interface2Type.addExtends(&interface3Type);
-    interface3Type.addExtends(&interfaceType);
+    Env::JoosType interfaceType2({}, Env::Type::Interface, "foo");
+    Env::InterfaceHierarchy interfaceHierarchy2(interfaceType2);
+    graph.addInterface(interfaceHierarchy2);
+
+    Env::JoosType interfaceType3({}, Env::Type::Interface, "foo");
+    Env::InterfaceHierarchy interfaceHierarchy3(interfaceType3);
+    graph.addInterface(interfaceHierarchy3);
+
+    interfaceHierarchy.addExtends(&interfaceType2);
+    interfaceHierarchy2.addExtends(&interfaceType3);
+    interfaceHierarchy3.addExtends(&interfaceType);
     REQUIRE_FALSE(graph.topologicalSort());
-  }
-
-  SECTION("class subtype interface") {
-    classType.addImplements(&interfaceType);
-    graph.topologicalSort();
-    graph.buildSubType();
-    REQUIRE(classType.subType(&interfaceType));
-  }
-
-  SECTION("no subtype default") {
-    graph.topologicalSort();
-    graph.buildSubType();
-    REQUIRE_FALSE(classType.subType(&interfaceType));
   }
 }

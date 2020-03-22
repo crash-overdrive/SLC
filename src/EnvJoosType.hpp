@@ -25,7 +25,7 @@ struct JoosType {
   std::unique_ptr<AST::Node> astNode;
   JoosBody declare;
   JoosType(std::set<Modifier> modifiers, Type type, std::string identifier,
-           std::unique_ptr<AST::Node> astNode);
+           std::unique_ptr<AST::Node> astNode = nullptr);
 };
 std::ostream &operator<<(std::ostream &stream, const JoosType &joosType);
 

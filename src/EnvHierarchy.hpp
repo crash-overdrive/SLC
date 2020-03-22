@@ -1,87 +1,70 @@
 #ifndef ENVHIERARCHY_HPP
 #define ENVHIERARCHY_HPP
 
-#include "EnvFileHeader.hpp"
-#include <list>
-#include <string>
+#include "EnvJoosType.hpp"
 #include <unordered_set>
 
 namespace Env {
 
-class TypeLink;
 class HierarchyGraph;
 
 class Hierarchy {
 public:
-  Hierarchy(FileHeader header);
   virtual ~Hierarchy() = default;
-
-  const AST::Node *getASTNode() const;
-  const std::string &getIdentifier() const;
-  bool findModifiers(AST::ModifierCode code) const;
-  Type getType() const;
-
-  const std::vector<std::string> &getPackage() const;
-  void setPackage(std::vector<std::string> package);
-  const TypeLink *getTypeLink() const;
-  void setTypeLink(std::unique_ptr<TypeLink> typeLink);
-  virtual bool subType(const Hierarchy *hierarchy) const = 0;
-
-private:
-  FileHeader header;
-  std::unique_ptr<TypeLink> typeLink;
-  std::vector<std::string> package;
+  virtual void buildSubType() const = 0;
+  virtual void buildContains() const = 0;
 };
 
 class InterfaceHierarchy : public Hierarchy {
 public:
-  explicit InterfaceHierarchy(FileHeader header);
-  bool addExtends(const Hierarchy *hierarchy);
-  bool subType(const Hierarchy *hierarchy) const override;
+  explicit InterfaceHierarchy(JoosType &joosType);
+  bool addExtends(const JoosType *joosType);
+  bool subType(const JoosType *joosType) const;
+  void buildSubType() const override;
+  void buildContains() const override;
 
 private:
   friend HierarchyGraph;
-  std::unordered_set<const Hierarchy *> extends;
+  JoosType &joosType;
+  std::unordered_set<const JoosType *> extends;
 };
 
 class ClassHierarchy : public Hierarchy {
 public:
-  explicit ClassHierarchy(FileHeader header);
-  bool setExtends(const Hierarchy *hierarchy);
-  bool addImplements(const Hierarchy *hierarchy);
-  bool subType(const Hierarchy *hierarchy) const override;
+  explicit ClassHierarchy(JoosType &joosType);
+  bool setExtends(const JoosType *joosType);
+  bool addImplements(const JoosType *joosType);
+  void buildSubType() const override;
+  void buildContains() const override;
 
 private:
   friend HierarchyGraph;
-  const Hierarchy *extends = nullptr;
-  std::unordered_set<const Hierarchy *> implements;
+  JoosType &joosType;
+  const JoosType *extends = nullptr;
+  std::unordered_set<const JoosType *> implements;
 };
 
 class HierarchyGraph {
 public:
-  InterfaceHierarchy &addInterface(FileHeader header);
-  ClassHierarchy &addClass(FileHeader header);
-  std::vector<std::unique_ptr<InterfaceHierarchy>> &getInterfaces();
-  std::vector<std::unique_ptr<ClassHierarchy>> &getClasses();
-  std::vector<Hierarchy *> &getHierarchies();
-
+  void addClass(ClassHierarchy hierarchy);
+  void addInterface(InterfaceHierarchy hierarchy);
   bool topologicalSort();
   bool buildSubType();
   bool buildContains();
 
 private:
   struct DAGNode {
-    Hierarchy *hierarchy;
     unsigned int inDegree = 0;
     std::vector<DAGNode *> outNodes;
-    explicit DAGNode(Hierarchy *hierarchy);
+    Hierarchy &hierarchy;
+    explicit DAGNode(Hierarchy &hierarchy);
     void addOutNode(DAGNode *node);
   };
 
-  std::list<DAGNode> augmentGraph();
-  std::vector<std::unique_ptr<InterfaceHierarchy>> interfaces;
-  std::vector<std::unique_ptr<ClassHierarchy>> classes;
-  std::vector<Env::Hierarchy *> hierarchies;
+  std::vector<DAGNode> augmentGraph();
+  std::vector<InterfaceHierarchy> interfaces;
+  std::vector<ClassHierarchy> classes;
+  std::vector<std::reference_wrapper<Hierarchy>> order;
 };
 
 } // namespace Env
