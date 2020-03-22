@@ -28,9 +28,8 @@ TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
   Env::PackageTree tree;
 
   SECTION("Basic lookup") {
-    Env::ClassHierarchy canary(
-        Env::FileHeader({}, {Env::Type::Class, "canary"}));
-    Env::ClassHierarchy bar(Env::FileHeader({}, {Env::Type::Class, "bar"}));
+    Env::JoosType canary({}, Env::Type::Class, "canary");
+    Env::JoosType bar({}, Env::Type::Class, "bar");
     REQUIRE(tree.update({"foo", "bar"}, canary));
     REQUIRE_FALSE(tree.update({"foo"}, bar));
     REQUIRE(tree.findType({"foo", "bar", "canary"}) == &canary);
@@ -38,11 +37,10 @@ TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
   }
 
   SECTION("Single File") {
-    Env::ClassHierarchy aHier(Env::FileHeader({}, {Env::Type::Class, "A"}));
-    Env::ClassHierarchy mainHier(
-        Env::FileHeader({}, {Env::Type::Class, "Main"}));
-    REQUIRE(tree.update({"Main", "B"}, aHier));
-    REQUIRE(tree.update({}, mainHier));
+    Env::JoosType a({}, Env::Type::Class, "A");
+    Env::JoosType main({}, Env::Type::Class, "Main");
+    REQUIRE(tree.update({"Main", "B"}, a));
+    REQUIRE(tree.update({}, main));
   }
 }
 
