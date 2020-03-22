@@ -1,105 +1,118 @@
 #include "EnvTypeLink.hpp"
-#include "EnvFileHeader.hpp"
+#include "EnvJoosType.hpp"
 #include "TestConfig.hpp"
 #include "TestUtil.hpp"
 #include "catch.hpp"
 
 TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
-  Env::ClassHierarchy mainHier(Env::FileHeader({}, {Env::Type::Class, "Main"}));
-  Env::ClassHierarchy listHier(Env::FileHeader({}, {Env::Type::Class, "List"},
-                                               std::make_unique<AST::Start>()));
+  Env::JoosType main({}, Env::Type::Class, "Main");
+  Env::JoosType list({}, Env::Type::Class, "List",
+                     std::make_unique<AST::Start>());
   auto tree = std::make_shared<Env::PackageTree>();
 
   SECTION("Single Type Lookup") {
-    tree->update({"foo", "bar"}, listHier);
-    Env::TypeLink typeLink(mainHier, tree);
-    REQUIRE(typeLink.find({"foo", "bar", "List"}) == &listHier);
+    tree->update({"foo", "bar"}, list);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
+    REQUIRE(typeLink.find({"foo", "bar", "List"}) == &list);
     REQUIRE(typeLink.addSingleImport({"foo", "bar", "List"}));
-    REQUIRE(typeLink.find({"List"}) == &listHier);
+    REQUIRE(typeLink.find({"List"}) == &list);
   }
 
   SECTION("No existing Import") {
-    Env::TypeLink typeLink(mainHier, tree);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
   }
 
   SECTION("OnDemand Lookup") {
-    tree->update({"foo", "bar"}, listHier);
-    Env::TypeLink typeLink(mainHier, tree);
+    tree->update({"foo", "bar"}, list);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     typeLink.addDemandImport({"foo", "bar"});
-    REQUIRE(typeLink.find({"List"}) == &listHier);
+    REQUIRE(typeLink.find({"List"}) == &list);
   }
 
   SECTION("Missing entries") {
-    Env::TypeLink typeLink(mainHier, tree);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
   }
 
   SECTION("Self Lookup") {
-    Env::TypeLink typeLink(listHier, tree);
-    REQUIRE(typeLink.find({"List"}) == &listHier);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
+    REQUIRE(typeLink.find({"List"}) == &list);
   }
 
   SECTION("Self Import") {
-    tree->update({"Test"}, listHier);
-    Env::TypeLink typeLink(listHier, tree);
+    tree->update({"Test"}, list);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
     REQUIRE(typeLink.addSingleImport({"Test", "List"}));
   }
 
   SECTION("Multiple Single Import Same") {
-    tree->update({"Test"}, listHier);
-    Env::TypeLink typeLink(mainHier, tree);
+    tree->update({"Test"}, list);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     REQUIRE(typeLink.addSingleImport({"Test", "List"}));
     REQUIRE(typeLink.addSingleImport({"Test", "List"}));
   }
 
   SECTION("Multiple On Demand Import Same") {
-    tree->update({"Test"}, listHier);
-    Env::TypeLink typeLink(mainHier, tree);
+    tree->update({"Test"}, list);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     REQUIRE(typeLink.addDemandImport({"Test"}));
     REQUIRE(typeLink.addDemandImport({"Test"}));
   }
 
   SECTION("Package clash with type") {
-    tree->update({"java", "swing"}, listHier);
-    Env::TypeLink typeLink(mainHier, tree);
+    tree->update({"java", "swing"}, list);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     REQUIRE_FALSE(typeLink.addDemandImport({"java", "swing", "List"}));
   }
 
   SECTION("No Single type import equal class same file") {
-    Env::TypeLink typeLink(listHier, tree);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
     REQUIRE_FALSE(typeLink.addSingleImport({"foo", "bar", "List"}));
   }
 
   SECTION("No Single type import equal class same file") {
-    Env::TypeLink typeLink(listHier, tree);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
     REQUIRE_FALSE(typeLink.addSingleImport({"foo", "bar", "List"}));
   }
 
   SECTION("Single import clash") {
-    tree->update({"foo", "canary"}, listHier);
-    Env::ClassHierarchy list2Hier(Env::FileHeader(
-        {}, {Env::Type::Class, "List"}, std::make_unique<AST::Start>()));
-    tree->update({"foo", "bar"}, list2Hier);
-    Env::TypeLink typeLink(mainHier, tree);
+    tree->update({"foo", "canary"}, list);
+    Env::JoosType list2({}, Env::Type::Class, "List",
+                        std::make_unique<AST::Start>());
+    tree->update({"foo", "bar"}, list2);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
     typeLink.addSingleImport({"foo", "bar", "List"});
     REQUIRE_FALSE(typeLink.addSingleImport({"foo", "canary", "List"}));
   }
 
   SECTION("Same Package Import") {
-    Env::ClassHierarchy arrayHier(
-        Env::FileHeader({}, {Env::Type::Class, "Array"}));
-    tree->update({"foo", "canary"}, listHier);
-    tree->update({"foo", "canary"}, arrayHier);
-    Env::TypeLink typeLink(listHier, tree);
+    Env::JoosType array({}, Env::Type::Class, "Array");
+    tree->update({"foo", "canary"}, list);
+    tree->update({"foo", "canary"}, array);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
     REQUIRE(typeLink.find({"Array"}));
   }
 
   SECTION("Single Import class own name") {
-    tree->update({"Test"}, listHier);
-    Env::ClassHierarchy list2Hier(Env::FileHeader(
-        {}, {Env::Type::Class, "List"}, std::make_unique<AST::Start>()));
-    Env::TypeLink typeLink(list2Hier, tree);
+    tree->update({"Test"}, list);
+    Env::JoosType list2({}, Env::Type::Class, "List",
+                        std::make_unique<AST::Start>());
+    Env::TypeLink typeLink(list2);
+    typeLink.setTree(tree);
     REQUIRE_FALSE(typeLink.addSingleImport({"Test", "List"}));
   }
 }
