@@ -2,7 +2,7 @@
 #define ASTVISITORUTIL_HPP
 
 #include "ASTVisitor.hpp"
-#include "EnvFileHeader.hpp"
+#include "EnvJoosBody.hpp"
 
 namespace AST {
 
@@ -25,12 +25,12 @@ public:
   void visit(const SimpleType &simpleType) override;
   void visit(const ArrayType &arrayType) override;
   void visit(const Identifier &identifier) override;
-  std::set<ModifierCode> getModifiers();
+  std::set<Env::Modifier> getModifiers(); // gets all the modifiers
   std::string getIdentifier();
   Env::VariableDescriptor getVariableDescriptor();
 
 private:
-  std::set<ModifierCode> modifiers;
+  std::set<Env::Modifier> modifiers;
   Env::VariableDescriptor variableDescriptor;
   std::string identifier;
 };

@@ -1,20 +1,36 @@
-#ifndef ENVFILEHEADER_HPP
-#define ENVFILEHEADER_HPP
+#ifndef ENJOOSBODY_HPP
+#define ENJOOSBODY_HPP
 
-#include "ASTNode.hpp"
 #include "ASTVisitor.hpp"
 #include <set>
+#include <vector>
 
 namespace Env {
+
+enum class Modifier {
+  Public,
+  Protected,
+  Static,
+  Abstract,
+  Final,
+  Native,
+};
+
+const std::unordered_map<std::string, Modifier> nameModifier{
+    {"PUBLIC", Modifier::Public}, {"PROTECTED", Modifier::Protected},
+    {"STATIC", Modifier::Static}, {"ABSTRACT", Modifier::Abstract},
+    {"FINAL", Modifier::Final},   {"NATIVE", Modifier::Native},
+};
+
+const std::unordered_map<Modifier, std::string> modifierName{
+    {Modifier::Public, "PUBLIC"}, {Modifier::Protected, "PROTECTED"},
+    {Modifier::Static, "STATIC"}, {Modifier::Abstract, "ABSTRACT"},
+    {Modifier::Final, "FINAL"},   {Modifier::Native, "NATIVE"},
+};
 
 enum class VariableType {
   SimpleType,
   ArrayType,
-};
-
-enum class Type {
-  Class,
-  Interface,
 };
 
 const std::unordered_map<VariableType, std::string> variableTypeName{
@@ -22,71 +38,65 @@ const std::unordered_map<VariableType, std::string> variableTypeName{
     {VariableType::ArrayType, "ArrayType"},
 };
 
-const std::unordered_map<Type, std::string> typeName{
-    {Type::Class, "Class"},
-    {Type::Interface, "Interface"},
-};
-
 struct VariableDescriptor {
   VariableType variableType;
   std::vector<std::string> dataType;
+  VariableDescriptor() = default;
+  VariableDescriptor(VariableType variableType,
+                     std::vector<std::string> dataType);
   bool operator==(const VariableDescriptor &variableDescriptor) const;
 };
 std::ostream &operator<<(std::ostream &stream,
                          const VariableDescriptor &variableDescriptor);
 
-struct TypeDescriptor {
-  Type type;
-  std::string identifier;
-  bool operator==(const TypeDescriptor &typeDescriptor) const;
-};
-std::ostream &operator<<(std::ostream &stream,
-                         const TypeDescriptor &typeDescriptor);
-
 struct JoosField {
-  std::set<AST::ModifierCode> modifiers;
+  std::set<Modifier> modifiers;
   VariableDescriptor variableDescriptor;
   std::string identifier;
-  const AST::FieldDeclaration *fieldDeclaration;
+  const AST::FieldDeclaration *astNode;
+  JoosField(std::set<Modifier> modifiers, VariableDescriptor descriptor,
+            std::string identifier, const AST::FieldDeclaration *astNode);
   bool operator==(const JoosField &joosField) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField);
 
 struct JoosMethod {
-  std::set<AST::ModifierCode> modifiers;
+  std::set<Modifier> modifiers;
   VariableDescriptor returnType;
   std::string identifier;
   std::vector<VariableDescriptor> args;
-  const AST::MethodDeclaration *methodDeclaration;
+  const AST::MethodDeclaration *astNode;
+  JoosMethod(std::set<Modifier> modifiers, VariableDescriptor returnType,
+             std::string identifier, std::vector<VariableDescriptor> args,
+             const AST::MethodDeclaration *astNode);
   bool operator==(const JoosMethod &joosMethod) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod);
 
 struct JoosConstructor {
-  std::set<AST::ModifierCode> modifiers;
+  std::set<Modifier> modifiers;
   std::string identifier;
   std::vector<VariableDescriptor> args;
-  const AST::ConstructorDeclaration *constructorDeclaration;
+  const AST::ConstructorDeclaration *astNode;
+  JoosConstructor(std::set<Modifier> modifiers, std::string identifier,
+                  std::vector<VariableDescriptor> args,
+                  const AST::ConstructorDeclaration *astNode);
   bool operator==(const JoosConstructor &joosConstructor) const;
 };
 std::ostream &operator<<(std::ostream &stream,
                          const JoosConstructor &joosConstructor);
 
-struct FileHeader {
+class JoosBody {
 public:
-  FileHeader(std::set<AST::ModifierCode> modifiers,
-             TypeDescriptor typeDescriptor,
-             std::unique_ptr<AST::Start> startNode = nullptr);
-  const AST::Start *getASTStart() const;
-  const std::set<AST::ModifierCode> &getModifiers() const;
-  const std::string &getIdentifier() const;
-  const Type &getType() const;
-  const std::vector<JoosMethod> getMethods();
-  const std::vector<JoosConstructor> getConstructors();
-
+  const std::vector<JoosField> &getFields() const;
   bool addField(JoosField joosField);
+
+  const std::vector<JoosMethod> &getMethods() const;
   bool addMethod(JoosMethod joosMethod);
+
+  const std::vector<JoosConstructor> &getConstructors() const;
   bool addConstructor(JoosConstructor joosConstructor);
+
   const JoosField *findField(const VariableDescriptor &variableDescriptor,
                              const std::string &identifier) const;
   const JoosMethod *
@@ -98,33 +108,14 @@ public:
 
 private:
   friend std::ostream &operator<<(std::ostream &stream,
-                                  const FileHeader &fileHeader);
-  std::unique_ptr<AST::Start> startNode; // unique pointer to start of ast
-  std::set<AST::ModifierCode> modifiers; // type modifiers
-  TypeDescriptor typeDescriptor; // type Descriptor
+                                  const JoosBody &joosBody);
   std::vector<JoosMethod> methods;
   std::vector<JoosField> fields;
   std::vector<JoosConstructor> constructors;
 };
-std::ostream &operator<<(std::ostream &stream, const FileHeader &fileHeader);
+std::ostream &operator<<(std::ostream &stream, const JoosBody &joosBody);
 
-class JoosTypeVisitor : public AST::Visitor {
-public:
-  void visit(const AST::Start &start) override;
-  void visit(const AST::ClassDeclaration &decl) override;
-  void visit(const AST::InterfaceDeclaration &decl) override;
-  TypeDescriptor getTypeDescriptor();
-  std::set<AST::ModifierCode> getModifiers();
-  const AST::Node *getASTNode();
-
-private:
-  void visitProperties(const AST::Node &node);
-  std::set<AST::ModifierCode> modifiers;
-  TypeDescriptor typeDescriptor;
-  const AST::Node *node;
-};
-
-class JoosTypeBodyVisitor : public AST::Visitor {
+class JoosBodyVisitor : public AST::Visitor {
 public:
   void visit(const AST::Start &start) override;
   void visit(const AST::ClassDeclaration &decl) override;
@@ -142,6 +133,6 @@ private:
   std::vector<JoosConstructor> constructors;
 };
 
-}; // namespace Env
+} // namespace Env
 
-#endif
+#endif // ENJOOSBODY_HPP

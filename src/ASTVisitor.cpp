@@ -101,7 +101,7 @@ void PrintVisitor::visit(const MethodDeclaration &) {
 }
 
 void PrintVisitor::visit(const Modifier &modifier) {
-  stream << "Modifier: " << modifierCodeName.at(modifier.getCode());
+  stream << "Modifier: " << modifier.getName();
 }
 
 void PrintVisitor::visit(const Identifier &identifier) {

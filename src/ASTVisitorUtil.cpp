@@ -15,7 +15,7 @@ void NameVisitor::visit(const PrimitiveType &primitiveType) {
 std::vector<std::string> NameVisitor::getName() { return std::move(name); }
 
 void PropertiesVisitor::visit(const Modifier &modifier) {
-  modifiers.emplace(modifier.getCode());
+  modifiers.emplace(Env::nameModifier.at(modifier.getName()));
 }
 
 void PropertiesVisitor::visit(const PrimitiveType &primitiveType) {
@@ -46,7 +46,7 @@ void PropertiesVisitor::visit(const Identifier &node) {
   identifier = node.getName();
 }
 
-std::set<ModifierCode> PropertiesVisitor::getModifiers() {
+std::set<Env::Modifier> PropertiesVisitor::getModifiers() {
   return std::move(modifiers);
 }
 

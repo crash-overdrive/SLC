@@ -7,27 +7,28 @@
 
 const int errorCode = 42;
 
-std::vector<std::array<std::string, 2>> usageArray{
+const std::vector<std::array<std::string, 2>> usageArray{
     {"--output-tokens", "outputs scanned tokens for each class"},
     {"--output-parse", "outputs parse tree for each class"},
     {"--output-ast", "outputs abstract syntax tree for each class"},
-    {"--output-fileheader", "outputs file header for each class"},
-    {"--output-localvariable", "outputs local variable analysis for each class"},
+    {"--output-joostype", "outputs joos type for each class"},
+    {"--output-localvariable",
+     "outputs local variable analysis for each class"},
     {"--std-lib2", "includes Java standard libarary from Stdlib2Files"},
     {"--std-lib3", "includes Java standard libarary from Stdlib3Files"},
     {"--std-lib4", "includes Java standard libarary from Stdlib4Files"},
     {"--std-lib5", "includes Java standard libarary from Stdlib5Files"},
 };
 
-std::unordered_map<std::string, Client::BreakPointType> outputMap{
+const std::unordered_map<std::string, Client::BreakPointType> outputMap{
     {"--output-tokens", Client::BreakPointType::Scan},
     {"--output-parse", Client::BreakPointType::Parse},
     {"--output-ast", Client::BreakPointType::Ast},
-    {"--output-fileheader", Client::BreakPointType::FileHeader},
+    {"--output-joostype", Client::BreakPointType::JoosType},
     {"--output-localvariable", Client::BreakPointType::LocalVariableAnalysis},
 };
 
-std::unordered_map<std::string, std::vector<std::string>> stdlibMap{
+const std::unordered_map<std::string, std::vector<std::string>> stdlibMap{
     {"--std-lib2", stdlib2Files},
     {"--std-lib3", stdlib3Files},
     {"--std-lib4", stdlib4Files},
@@ -88,8 +89,8 @@ int main(int argc, char *argv[]) {
                    stdlibIt->second.end());
       continue;
     }
-    if (argument[0] != '-') {
-      files.push_back(argument);
+    if (argument.at(0) != '-') {
+      files.emplace_back(std::move(argument));
       continue;
     }
     std::cerr << "Error: Incorrect flag passed" << std::endl;

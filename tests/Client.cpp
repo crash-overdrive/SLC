@@ -13,6 +13,7 @@ TEST_CASE("client process", "[client]") {
       REQUIRE(client.compile({"folder/good.java"}));
     }
     SECTION("reject") { REQUIRE_FALSE(client.compile({"foo.txt"})); }
+    SECTION("reject no dot ") { REQUIRE_FALSE(client.compile({"foooo"})); }
     SECTION("reject first dot") {
       REQUIRE_FALSE(client.compile({"bar.foo.java"}));
     }
@@ -65,9 +66,9 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    SECTION("error-fileheader") {
-      client.setBreakPoint(Client::FileHeader);
-      for (const auto &group : a2ErrorFileHeader) {
+    SECTION("error-joostype") {
+      client.setBreakPoint(Client::JoosType);
+      for (const auto &group : a2ErrorJoosType) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }

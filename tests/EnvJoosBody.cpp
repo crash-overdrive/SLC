@@ -1,24 +1,19 @@
-#include "EnvFileHeader.hpp"
+#include "EnvJoosBody.hpp"
 #include "Config.hpp"
 #include "TestUtil.hpp"
 #include "catch.hpp"
 
-TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
-  Env::FileHeader fileHeader =
-      Env::FileHeader({AST::ModifierCode::Public, AST::ModifierCode::Native,
-                       AST::ModifierCode::Abstract},
-                      Env::TypeDescriptor{Env::Type::Interface, "ClassName"});
+TEST_CASE("EnvJoosBody created from Env", "[EnvJoosBody]") {
+  Env::JoosBody body;
 
-  REQUIRE(fileHeader.addField(Env::JoosField{
-      {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-       AST::ModifierCode::Static},
+  REQUIRE(body.addField(Env::JoosField{
+      {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
       Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
       "str",
       nullptr}));
 
-  REQUIRE(fileHeader.addMethod(Env::JoosMethod{
-      {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-       AST::ModifierCode::Static},
+  REQUIRE(body.addMethod(Env::JoosMethod{
+      {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
       Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
       "methodName1",
       {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -28,60 +23,54 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
       nullptr}));
 
   SECTION("JoosField different identifier add successful") {
-    REQUIRE(fileHeader.addField(Env::JoosField{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(body.addField(Env::JoosField{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         "str2",
         nullptr}));
   }
 
   SECTION("JoosField different type add successful") {
-    REQUIRE(!fileHeader.addField(
-        Env::JoosField{{AST::ModifierCode::Protected, AST::ModifierCode::Final,
-                        AST::ModifierCode::Static},
-                       Env::VariableDescriptor{Env::VariableType::SimpleType,
-                                               {"Java", "Util", "Array"}},
-                       "str",
-                       nullptr}));
-    REQUIRE(!fileHeader.addField(Env::JoosField{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(!body.addField(Env::JoosField{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
+        Env::VariableDescriptor{Env::VariableType::SimpleType,
+                                {"Java", "Util", "Array"}},
+        "str",
+        nullptr}));
+    REQUIRE(!body.addField(Env::JoosField{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "str",
         nullptr}));
   }
 
   SECTION("JoosField duplicate add un-successfull") {
-    REQUIRE(!fileHeader.addField(Env::JoosField{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(!body.addField(Env::JoosField{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         "str",
         nullptr}));
   }
 
   SECTION("JoosField different VariableType add un-successfull") {
-    REQUIRE(!fileHeader.addField(Env::JoosField{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(!body.addField(Env::JoosField{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
         "str",
         nullptr}));
   }
 
   SECTION("JoosField different Modifier add un-successfull") {
-    REQUIRE(!fileHeader.addField(Env::JoosField{
-        {AST::ModifierCode::Public},
+    REQUIRE(!body.addField(Env::JoosField{
+        {Env::Modifier::Public},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         "str",
         nullptr}));
   }
 
   SECTION("JoosMethod different method name - add successfull") {
-    REQUIRE(fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName2",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -92,9 +81,8 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   }
 
   SECTION("JoosMethod different method name and args - add successfull") {
-    REQUIRE(fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName3",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}}},
@@ -103,9 +91,8 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
 
   SECTION("JoosMethod method overloading - add successfull") {
     // different order of arguments
-    REQUIRE(fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -114,17 +101,15 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
          Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}},
         nullptr}));
     // different number of arguments
-    REQUIRE(fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}}},
         nullptr}));
     // different variable type of arguments
-    REQUIRE(fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
@@ -136,9 +121,8 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
 
   SECTION("JoosMethod method overloading - add un-successfull") {
     // different return DataType
-    REQUIRE(!fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(!body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -147,9 +131,8 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
          Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}},
         nullptr}));
     // different return VariableType
-    REQUIRE(!fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(!body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -158,8 +141,8 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
          Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}},
         nullptr}));
     // different method modifiers
-    REQUIRE(!fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Public},
+    REQUIRE(!body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Public},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -170,9 +153,8 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   }
 
   SECTION("JoosMethod same name, same args add unsuccessfull") {
-    REQUIRE(!fileHeader.addMethod(Env::JoosMethod{
-        {AST::ModifierCode::Protected, AST::ModifierCode::Final,
-         AST::ModifierCode::Static},
+    REQUIRE(!body.addMethod(Env::JoosMethod{
+        {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -183,10 +165,9 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   }
 
   SECTION("JoosField find Successful") {
-    std::set<AST::ModifierCode> modifiers = {AST::ModifierCode::Protected,
-                                             AST::ModifierCode::Final,
-                                             AST::ModifierCode::Static};
-    const Env::JoosField *joosField = fileHeader.findField(
+    std::set<Env::Modifier> modifiers = {
+        Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static};
+    const Env::JoosField *joosField = body.findField(
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         "str");
 
@@ -199,31 +180,29 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
 
   SECTION("JoosField find Unsuccessful") {
     const Env::JoosField *joosField;
-    joosField = fileHeader.findField(
+    joosField = body.findField(
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         "str2");
     REQUIRE(joosField == nullptr);
-    joosField = fileHeader.findField(
+    joosField = body.findField(
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"Array"}},
         "str");
     REQUIRE(joosField == nullptr);
-    joosField = fileHeader.findField(
+    joosField = body.findField(
         Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
         "str");
     REQUIRE(joosField == nullptr);
   }
 
   SECTION("JoosMethod find Successful") {
-    const std::set<AST::ModifierCode> modifiers = {AST::ModifierCode::Protected,
-                                                   AST::ModifierCode::Final,
-                                                   AST::ModifierCode::Static};
+    const std::set<Env::Modifier> modifiers = {
+        Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static};
     std::vector<Env::VariableDescriptor> argList = {
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}};
-    const Env::JoosMethod *joosMethod =
-        fileHeader.findMethod("methodName1", argList);
+    const Env::JoosMethod *joosMethod = body.findMethod("methodName1", argList);
     Env::VariableDescriptor returnType =
         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}};
 
@@ -236,7 +215,7 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   SECTION("JoosMethod find Unsuccessful") {
     const Env::JoosMethod *joosMethod;
     // wrong identifier
-    joosMethod = fileHeader.findMethod(
+    joosMethod = body.findMethod(
         "methodName2",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
          Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
@@ -245,7 +224,7 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
     REQUIRE(joosMethod == nullptr);
 
     // wrong argument datatype
-    joosMethod = fileHeader.findMethod(
+    joosMethod = body.findMethod(
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
          Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
@@ -254,7 +233,7 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
     REQUIRE(joosMethod == nullptr);
 
     // wrong argument variabletype
-    joosMethod = fileHeader.findMethod(
+    joosMethod = body.findMethod(
         "methodName1",
         {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
          Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
@@ -264,70 +243,68 @@ TEST_CASE("EnvFileHeader created from AST", "[EnvFileHeader]") {
   }
 }
 
-TEST_CASE("Visitor to create FileHeader", "[FileHeaderVisitor]") {
+TEST_CASE("Visitor to create JoosType", "[JoosTypeVisitor]") {
   Client client = createClient();
   std::unique_ptr<AST::Start> root =
       client.buildAST(stdlib + "/2.0/java/lang/Integer.java");
   Env::JoosTypeVisitor visitor;
-  Env::JoosTypeBodyVisitor typeBodyVisitor;
+  Env::JoosBodyVisitor bodyVisitor;
   root->accept(visitor);
-  root->accept(typeBodyVisitor);
+  root->accept(bodyVisitor);
 
-  std::set<AST::ModifierCode> modifiers{
-      AST::ModifierCode::Final,
-      AST::ModifierCode::Public,
+  std::set<Env::Modifier> modifiers{
+      Env::Modifier::Final,
+      Env::Modifier::Public,
   };
-  Env::TypeDescriptor descriptor{
-      Env::Type::Class,
-      "Integer",
-  };
+  Env::Type type{Env::Type::Class};
+  std::string identifier{"Integer"};
   std::vector<Env::JoosField> fields = {
       Env::JoosField{
-          {AST::ModifierCode::Public},
+          {Env::Modifier::Public},
           Env::VariableDescriptor{Env::VariableType::SimpleType, {"INT"}},
           "value",
           nullptr},
       Env::JoosField{
-          {AST::ModifierCode::Public, AST::ModifierCode::Static},
+          {Env::Modifier::Public, Env::Modifier::Static},
           Env::VariableDescriptor{Env::VariableType::SimpleType, {"INT"}},
           "MAX_VALUE",
           nullptr}};
   std::vector<Env::JoosConstructor> constructors = {
       Env::JoosConstructor{
-          {AST::ModifierCode::Public},
+          {Env::Modifier::Public},
           "Integer",
           {Env::VariableDescriptor{Env::VariableType::SimpleType, {"INT"}}},
           nullptr},
       Env::JoosConstructor{
-          {AST::ModifierCode::Public},
+          {Env::Modifier::Public},
           "Integer",
           {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}}},
           nullptr},
-      Env::JoosConstructor{
-          {AST::ModifierCode::Public}, "Integer", {}, nullptr}};
+      Env::JoosConstructor{{Env::Modifier::Public}, "Integer", {}, nullptr}};
   std::vector<Env::JoosMethod> methods = {
       Env::JoosMethod{
-          {AST::ModifierCode::Public},
+          {Env::Modifier::Public},
           Env::VariableDescriptor{Env::VariableType::SimpleType, {"INT"}},
           "intValue",
           {},
           nullptr},
       Env::JoosMethod{
-          {AST::ModifierCode::Public, AST::ModifierCode::Static},
+          {Env::Modifier::Public, Env::Modifier::Static},
           Env::VariableDescriptor{Env::VariableType::SimpleType, {"INT"}},
           "parseInt",
           {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}}},
           nullptr},
       Env::JoosMethod{
-          {AST::ModifierCode::Public},
+          {Env::Modifier::Public},
           Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
           "toString",
           {},
           nullptr}};
 
   REQUIRE(visitor.getModifiers() == modifiers);
-  REQUIRE(visitor.getTypeDescriptor() == descriptor);
-  REQUIRE(typeBodyVisitor.getJoosFields() == fields);
-  REQUIRE(typeBodyVisitor.getJoosConstructors() == constructors);
-  REQUIRE(typeBodyVisitor.getJoosMethods() == methods);
+  REQUIRE(visitor.getIdentifier() == identifier);
+  REQUIRE(visitor.getType() == type);
+  REQUIRE(bodyVisitor.getJoosFields() == fields);
+  REQUIRE(bodyVisitor.getJoosConstructors() == constructors);
+  REQUIRE(bodyVisitor.getJoosMethods() == methods);
 }

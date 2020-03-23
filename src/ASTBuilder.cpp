@@ -13,7 +13,7 @@ void AST::identifierVisit(const Parse::Node &parseNode, AST::Node &astNode) {
 
 void AST::modifierVisit(const Parse::Node &parseNode, AST::Node &astNode) {
   const std::string &name = parseNode.getFirstChild()->getName();
-  astNode.addChild(std::make_unique<AST::Modifier>(name));
+  astNode.addChild(std::make_unique<AST::Modifier>(std::move(name)));
 }
 
 void AST::primitiveTypeVisit(const Parse::Node &parseNode, AST::Node &astNode) {

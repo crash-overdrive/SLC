@@ -1,20 +1,18 @@
+#include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "ASTVisitor.hpp"
-#include "Client.hpp"
 #include "EnvLocalVariable.hpp"
 #include <fstream>
 #include <iterator>
 
 template <class T>
-std::ostream& operator << (std::ostream& stream, const std::vector<T>& vec)
-{
-    stream << "[";
-    for (auto const& element : vec)
-    {
-        stream << " " << element;
-    }
-    stream << "]";
-    return stream;
+std::ostream &operator<<(std::ostream &stream, const std::vector<T> &vec) {
+  stream << "[";
+  for (auto const &element : vec) {
+    stream << " " << element;
+  }
+  stream << "]";
+  return stream;
 }
 
 Client::Client(std::unique_ptr<Lex::Scanner> scanner,
@@ -29,21 +27,16 @@ void Client::addPrintPoint(BreakPointType printPoint) {
   printPoints.emplace(printPoint);
 }
 
-std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
-  setBreakPoint(BreakPointType::Ast);
-  buildHierarchy(fullName);
-  return std::move(logAstRoot);
-}
-
 bool Client::compile(const std::vector<std::string> &fullNames) {
+  environments.reserve(fullNames.size());
   for (const auto &file : fullNames) {
-    buildHierarchy(file);
+    buildJoosType(file);
   }
   buildEnvironment();
   return !errorState;
 }
 
-void Client::buildHierarchy(const std::string &file) {
+void Client::buildJoosType(const std::string &file) {
   if (errorState) {
     return;
   }
@@ -51,7 +44,7 @@ void Client::buildHierarchy(const std::string &file) {
 }
 
 void Client::verifyFileName(const std::string &fullName) {
-  std::string fileName{fullName};
+  std::string fileName(fullName);
   const auto pos = fileName.find_last_of('/');
   if (pos != std::string::npos) {
     fileName = fileName.substr(pos + 1);
@@ -63,6 +56,11 @@ void Client::verifyFileName(const std::string &fullName) {
     return;
   }
   size_t position = fileName.find(".");
+  if (position == std::string::npos) {
+    std::cerr << fileName << " is invalid\n";
+    errorState = true;
+    return;
+  }
   if (fileName.compare(position, ext.size(), ext) != 0) {
     std::cerr << fileName << " is invalid\n";
     errorState = true;
@@ -130,108 +128,115 @@ void Client::buildAST(const Parse::Tree &tree, const std::string &fullName) {
     root->accept(visitor);
   }
   if (breakPoint != Ast) {
-    buildFileHeader(std::move(root), fullName);
+    buildJoosType(std::move(root), fullName);
   } else {
     logAstRoot = std::move(root);
   }
 }
 
-void Client::buildFileHeader(std::unique_ptr<AST::Start> node,
-                             const std::string &fullName) {
+void Client::buildJoosType(std::unique_ptr<AST::Start> node,
+                           const std::string &fullName) {
   Env::JoosTypeVisitor typeVisitor;
-  Env::JoosTypeBodyVisitor typeBodyVisitor;
+  Env::JoosBodyVisitor bodyVisitor;
 
   node->accept(typeVisitor);
-  node->accept(typeBodyVisitor);
-  Env::FileHeader fileHeader{typeVisitor.getModifiers(),
-                             typeVisitor.getTypeDescriptor(), std::move(node)};
-  for (auto const &field : typeBodyVisitor.getJoosFields()) {
-    if (!fileHeader.addField(field)) {
+  node->accept(bodyVisitor);
+  Env::JoosType joosType{
+      typeVisitor.getModifiers(),
+      typeVisitor.getType(),
+      typeVisitor.getIdentifier(),
+      std::move(node),
+  };
+  for (auto const &field : bodyVisitor.getJoosFields()) {
+    if (!joosType.declare.addField(field)) {
       std::cerr << "Duplicate Field found in file\n" << field << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed" << '\n';
+      std::cerr << "File header creation for file " << fullName << " failed"
+                << '\n';
       errorState = true;
       return;
     };
   }
-  for (auto const &method : typeBodyVisitor.getJoosMethods()) {
-    if (!fileHeader.addMethod(method)) {
+  for (auto const &method : bodyVisitor.getJoosMethods()) {
+    if (!joosType.declare.addMethod(method)) {
       std::cerr << "Duplicate Method found in file\n" << method << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed" << '\n';
+      std::cerr << "File header creation for file " << fullName << " failed"
+                << '\n';
       errorState = true;
       return;
     };
   }
-  for (auto const &constructor : typeBodyVisitor.getJoosConstructors()) {
-    if (!fileHeader.addConstructor(constructor)) {
+  for (auto const &constructor : bodyVisitor.getJoosConstructors()) {
+    if (!joosType.declare.addConstructor(constructor)) {
       std::cerr << "Duplicate Constructor found in file\n"
                 << constructor << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed" << '\n';
+      std::cerr << "File header creation for file " << fullName << " failed"
+                << '\n';
       errorState = true;
       return;
     };
   }
-  if (printPoints.find(FileHeader) != printPoints.end()) {
-    std::cerr << fileHeader;
+  if (printPoints.find(JoosType) != printPoints.end()) {
+    std::cerr << joosType;
   }
-  if (breakPoint != FileHeader) {
-    weed(std::move(fileHeader), fullName);
+  if (breakPoint != JoosType) {
+    weed(std::move(joosType), fullName);
   }
 }
 
-void Client::weed(Env::FileHeader fileHeader, const std::string &fullName) {
+void Client::weed(Env::JoosType joosType, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
-    localVariableAnalysis(std::move(fileHeader), fullName);
+    localVariableAnalysis(std::move(joosType), fullName);
   }
 }
 
-void Client::localVariableAnalysis(Env::FileHeader fileHeader, const std::string &fullName) {
-  (void)fullName;
+void Client::localVariableAnalysis(Env::JoosType joosType,
+                                   const std::string &fullName) {
   bool log = (printPoints.find(LocalVariableAnalysis) != printPoints.end());
 
-  for (auto const &constructor : fileHeader.getConstructors()) {
+  for (auto const &constructor : joosType.declare.getConstructors()) {
     Env::JoosLocalVariableVisitor joosLocalVariableVisitor(log);
 
     if (log) {
-      std::cerr << "Local Variable Analysis for Constructor: " << constructor.identifier
-      << " with args: " << constructor.args << " started...\n";
+      std::cerr << "Local Variable Analysis for Constructor: "
+                << constructor.identifier << " with args: " << constructor.args
+                << " started...\n";
     }
-    constructor.constructorDeclaration->accept(joosLocalVariableVisitor);
+    constructor.astNode->accept(joosLocalVariableVisitor);
     if (log) {
-      std::cerr << "Local Variable Analysis for Constructor: " << constructor.identifier
-      << " with args: " << constructor.args << " ended...\n";
+      std::cerr << "Local Variable Analysis for Constructor: "
+                << constructor.identifier << " with args: " << constructor.args
+                << " ended...\n";
     }
     if (joosLocalVariableVisitor.isErrorState()) {
-      std::cerr << "Local Variable Analysis for file " << fullName << " failed" << '\n';
+      std::cerr << "Local Variable Analysis for file " << fullName << " failed"
+                << '\n';
       errorState = true;
       return;
     }
   }
-  for (auto const &method : fileHeader.getMethods()) {
+  for (auto const &method : joosType.declare.getMethods()) {
     Env::JoosLocalVariableVisitor joosLocalVariableVisitor(log);
 
     if (log) {
       std::cerr << "Local Variable Analysis for Method: " << method.identifier
-      << " with args: " << method.args << " started...\n";
+                << " with args: " << method.args << " started...\n";
     }
-    method.methodDeclaration->accept(joosLocalVariableVisitor);
+    method.astNode->accept(joosLocalVariableVisitor);
     if (log) {
       std::cerr << "Local Variable Analysis for Method: " << method.identifier
-      << " with args: " << method.args << " ended...\n";
+                << " with args: " << method.args << " ended...\n";
     }
     if (joosLocalVariableVisitor.isErrorState()) {
-      std::cerr << "Local Variable Analysis for file " << fullName << " failed" << '\n';
+      std::cerr << "Local Variable Analysis for file " << fullName << " failed"
+                << '\n';
       errorState = true;
       return;
     }
   }
   if (breakPoint != LocalVariableAnalysis) {
-    buildHierarchy(std::move(fileHeader));
+    environments.emplace_back(std::move(joosType));
   }
-}
-
-void Client::buildHierarchy(Env::FileHeader fileHeader) {
-  hierarchies.emplace_back(std::move(fileHeader));
 }
 
 void Client::buildEnvironment() {
@@ -243,42 +248,51 @@ void Client::buildEnvironment() {
 
 void Client::buildPackageTree() {
   auto tree = std::make_shared<Env::PackageTree>();
-  for (auto &&hierarchy : hierarchies) {
+  for (auto &&environment : environments) {
     Env::PackageTreeVisitor visitor;
-    hierarchy.getASTNode()->accept(visitor);
-    if (!tree->update(visitor.getPackagePath(), hierarchy)) {
+    environment.joosType.astNode->accept(visitor);
+
+    std::vector<std::string> packagePath = visitor.getPackagePath();
+    if (!tree->update(packagePath, environment.joosType)) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
     };
+    environment.typeLink.setPackage(std::move(packagePath));
+    environment.typeLink.setTree(tree);
   }
   if (breakPoint != PackageTree) {
-    buildTypeLink(std::move(tree));
+    buildTypeLink();
   }
 }
 
-void Client::buildTypeLink(std::shared_ptr<Env::PackageTree> tree) {
-  for (auto &&hierarchy : hierarchies) {
+void Client::buildTypeLink() {
+  for (auto &&environment : environments) {
     Env::TypeLinkVisitor visitor;
-    hierarchy.getASTNode()->accept(visitor);
+    environment.joosType.astNode->accept(visitor);
 
-    Env::TypeLink typeLink(hierarchy, tree);
     for (const auto &singleImport : visitor.getSingleImports()) {
-      if (!typeLink.addSingleImport(singleImport)) {
+      if (!environment.typeLink.addSingleImport(singleImport)) {
+        std::cerr << "Error in Single Import\n";
         errorState = true;
         return;
       }
     }
     for (const auto &demandImport : visitor.getDemandImports()) {
-      if (!typeLink.addDemandImport(demandImport)) {
+      if (!environment.typeLink.addDemandImport(demandImport)) {
+        std::cerr << "Error in on demand\n";
         errorState = true;
         return;
       }
     }
-    environments.emplace_back(std::move(hierarchy), typeLink);
   }
 }
 
-Client::Environment::Environment(Env::Hierarchy hierarchy,
-                                 Env::TypeLink typeLink)
-    : hierarchy(std::move(hierarchy)), typeLink(std::move(typeLink)) {}
+std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
+  setBreakPoint(BreakPointType::Ast);
+  buildJoosType(fullName);
+  return std::move(logAstRoot);
+}
+
+Client::Environment::Environment(Env::JoosType joosType)
+    : joosType(std::move(joosType)), typeLink(this->joosType) {}

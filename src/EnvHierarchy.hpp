@@ -1,29 +1,70 @@
 #ifndef ENVHIERARCHY_HPP
 #define ENVHIERARCHY_HPP
 
-#include "EnvFileHeader.hpp"
-#include <string>
-#include <vector>
+#include "EnvJoosType.hpp"
+#include <unordered_set>
 
 namespace Env {
 
+class HierarchyGraph;
+
 class Hierarchy {
 public:
-  explicit Hierarchy(FileHeader &&header);
-  const AST::Node *getASTNode() const;
-  const Type &getType() const;
-  const std::string &getIdentifier() const;
+  virtual ~Hierarchy() = default;
+  virtual void buildSubType() const = 0;
+  virtual void buildContains() const = 0;
+};
 
-  const std::vector<std::string> &getPackage() const;
-  void setPackage(std::vector<std::string> &&package);
-  void setExtension(Hierarchy *hierarchy);
-  void addInterface(Hierarchy *hierarchy);
+class InterfaceHierarchy : public Hierarchy {
+public:
+  explicit InterfaceHierarchy(JoosType &joosType);
+  bool addExtends(const JoosType *joosType);
+  bool subType(const JoosType *joosType) const;
+  void buildSubType() const override;
+  void buildContains() const override;
 
 private:
-  FileHeader header;
-  std::vector<std::string> package;
-  Hierarchy *extension = nullptr;
-  std::vector<Hierarchy *> interfaces;
+  friend HierarchyGraph;
+  JoosType &joosType;
+  std::unordered_set<const JoosType *> extends;
+};
+
+class ClassHierarchy : public Hierarchy {
+public:
+  explicit ClassHierarchy(JoosType &joosType);
+  bool setExtends(const JoosType *joosType);
+  bool addImplements(const JoosType *joosType);
+  void buildSubType() const override;
+  void buildContains() const override;
+
+private:
+  friend HierarchyGraph;
+  JoosType &joosType;
+  const JoosType *extends = nullptr;
+  std::unordered_set<const JoosType *> implements;
+};
+
+class HierarchyGraph {
+public:
+  void addClass(ClassHierarchy hierarchy);
+  void addInterface(InterfaceHierarchy hierarchy);
+  bool topologicalSort();
+  void buildSubType();
+  bool buildContains();
+
+private:
+  struct DAGNode {
+    unsigned int inDegree = 0;
+    std::vector<DAGNode *> outNodes;
+    Hierarchy &hierarchy;
+    explicit DAGNode(Hierarchy &hierarchy);
+    void addOutNode(DAGNode *node);
+  };
+
+  std::vector<DAGNode> augmentGraph();
+  std::vector<InterfaceHierarchy> interfaces;
+  std::vector<ClassHierarchy> classes;
+  std::vector<Hierarchy *> order;
 };
 
 } // namespace Env
