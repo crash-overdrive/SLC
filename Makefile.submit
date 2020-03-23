@@ -1,6 +1,8 @@
+export CXX = /usr/bin/g++-9
+
 .PHONY: all
 
 all:
-	cmake -H. -Bbuild
-	cmake --build build
+	/usr/local/bin/cmake -H. -Bbuild
+	/usr/local/bin/cmake --build build
 	ln -s build/bin/joosc .
