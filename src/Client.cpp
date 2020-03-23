@@ -186,14 +186,15 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
 void Client::weed(Env::JoosType joosType, const std::string &fullName) {
   (void)fullName;
   if (breakPoint != Weed) {
-    localVariableAnalysis(std::move(fileHeader), fullName);
+    localVariableAnalysis(std::move(joosType), fullName);
   }
 }
 
-void Client::localVariableAnalysis(Env::JoosType joosType) {
+void Client::localVariableAnalysis(Env::JoosType joosType,
+                                   const std::string &fullName) {
   bool log = (printPoints.find(LocalVariableAnalysis) != printPoints.end());
 
-  for (auto const &constructor : fileHeader.getConstructors()) {
+  for (auto const &constructor : joosType.declare.getConstructors()) {
     Env::JoosLocalVariableVisitor joosLocalVariableVisitor(log);
 
     if (log) {
@@ -201,7 +202,7 @@ void Client::localVariableAnalysis(Env::JoosType joosType) {
                 << constructor.identifier << " with args: " << constructor.args
                 << " started...\n";
     }
-    constructor.constructorDeclaration->accept(joosLocalVariableVisitor);
+    constructor.astNode->accept(joosLocalVariableVisitor);
     if (log) {
       std::cerr << "Local Variable Analysis for Constructor: "
                 << constructor.identifier << " with args: " << constructor.args
@@ -214,14 +215,14 @@ void Client::localVariableAnalysis(Env::JoosType joosType) {
       return;
     }
   }
-  for (auto const &method : fileHeader.getMethods()) {
+  for (auto const &method : joosType.declare.getMethods()) {
     Env::JoosLocalVariableVisitor joosLocalVariableVisitor(log);
 
     if (log) {
       std::cerr << "Local Variable Analysis for Method: " << method.identifier
                 << " with args: " << method.args << " started...\n";
     }
-    method.methodDeclaration->accept(joosLocalVariableVisitor);
+    method.astNode->accept(joosLocalVariableVisitor);
     if (log) {
       std::cerr << "Local Variable Analysis for Method: " << method.identifier
                 << " with args: " << method.args << " ended...\n";

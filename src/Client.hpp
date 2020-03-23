@@ -40,7 +40,8 @@ public:
   void buildJoosType(std::unique_ptr<AST::Start> root,
                      const std::string &fulName);
   void weed(Env::JoosType joosType, const std::string &fullName);
-  void localVariableAnalysis(Env::JoosType joosType);
+  void localVariableAnalysis(Env::JoosType joosType,
+                             const std::string &fulName);
 
   void buildEnvironment();
   void buildPackageTree();
