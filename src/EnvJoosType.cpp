@@ -14,8 +14,8 @@ std::ostream &operator<<(std::ostream &stream, const JoosType &joosType) {
     stream << modifierName.at(modifier) << " ";
   }
   stream << "}\n\n";
-  stream << "Type: " << typeName.at(joosType.type) << ';';
-  stream << "Identifier: " << joosType.identifier << "}\n";
+  stream << "Type: " << typeName.at(joosType.type) << "\n";
+  stream << "Identifier: " << joosType.identifier << "\n";
   stream << joosType.declare << '\n';
   return stream;
 }

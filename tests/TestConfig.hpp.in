@@ -906,7 +906,7 @@ const std::vector<std::vector<std::string>> a2ErrorParse{
     },
 };
 
-const std::vector<std::vector<std::string>> a2ErrorFileHeader{
+const std::vector<std::vector<std::string>> a2ErrorJoosType{
     {
         "Je_12_Fields_StaticNonStatic.java",
     },

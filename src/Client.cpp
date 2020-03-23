@@ -17,6 +17,7 @@ void Client::addPrintPoint(BreakPointType printPoint) {
 }
 
 bool Client::compile(const std::vector<std::string> &fullNames) {
+  environments.reserve(fullNames.size());
   for (const auto &file : fullNames) {
     buildJoosType(file);
   }
@@ -161,7 +162,7 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
     };
   }
   if (printPoints.find(JoosType) != printPoints.end()) {
-    std::cerr << JoosType;
+    std::cerr << joosType;
   }
   if (breakPoint != JoosType) {
     weed(std::move(joosType), fullName);
@@ -209,12 +210,14 @@ void Client::buildTypeLink() {
 
     for (const auto &singleImport : visitor.getSingleImports()) {
       if (!environment.typeLink.addSingleImport(singleImport)) {
+        std::cerr << "Error in Single Import\n";
         errorState = true;
         return;
       }
     }
     for (const auto &demandImport : visitor.getDemandImports()) {
       if (!environment.typeLink.addDemandImport(demandImport)) {
+        std::cerr << "Error in on demand\n";
         errorState = true;
         return;
       }

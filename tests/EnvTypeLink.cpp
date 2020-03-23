@@ -104,6 +104,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     tree->update({"foo", "canary"}, array);
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
+    typeLink.setPackage({"foo", "canary"});
     REQUIRE(typeLink.find({"Array"}));
   }
 
