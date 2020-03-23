@@ -12,6 +12,8 @@ const std::vector<std::array<std::string, 2>> usageArray{
     {"--output-parse", "outputs parse tree for each class"},
     {"--output-ast", "outputs abstract syntax tree for each class"},
     {"--output-joostype", "outputs joos type for each class"},
+    {"--output-localvariable",
+     "outputs local variable analysis for each class"},
     {"--std-lib2", "includes Java standard libarary from Stdlib2Files"},
     {"--std-lib3", "includes Java standard libarary from Stdlib3Files"},
     {"--std-lib4", "includes Java standard libarary from Stdlib4Files"},
@@ -23,6 +25,7 @@ const std::unordered_map<std::string, Client::BreakPointType> outputMap{
     {"--output-parse", Client::BreakPointType::Parse},
     {"--output-ast", Client::BreakPointType::Ast},
     {"--output-joostype", Client::BreakPointType::JoosType},
+    {"--output-localvariable", Client::BreakPointType::LocalVariableAnalysis},
 };
 
 const std::unordered_map<std::string, std::vector<std::string>> stdlibMap{

@@ -226,7 +226,7 @@ void TrackVisitor::setLog(std::ostream &stream) { this->streamRef = stream; }
 
 void TrackVisitor::setError() { errorState = true; }
 
-bool TrackVisitor::error() { return errorState; }
+bool TrackVisitor::isErrorState() { return errorState; }
 
 inline void TrackVisitor::postVisit(const Node &parent) {
   streamRef.get() << parent << '\n';

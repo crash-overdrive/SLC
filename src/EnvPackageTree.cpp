@@ -47,8 +47,9 @@ PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   if (it != children.end()) {
     return (it->second.type == Type::Package) ? &it->second : nullptr;
   }
-  auto [childIt, flag] = children.emplace(name, PackageNode{type, name});
-  return &childIt->second;
+  auto [ChildIt, Flag] = children.emplace(name, PackageNode{type, name});
+  (void)Flag;
+  return &ChildIt->second;
 }
 
 PackageNode *PackageNode::addType(Type type, const std::string &name,

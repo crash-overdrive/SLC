@@ -17,6 +17,7 @@ public:
     Ast,
     JoosType,
     Weed,
+    LocalVariableAnalysis,
     PackageTree,
     TypeLink,
     Hierarchy,
@@ -39,6 +40,7 @@ public:
   void buildJoosType(std::unique_ptr<AST::Start> root,
                      const std::string &fulName);
   void weed(Env::JoosType joosType, const std::string &fullName);
+  void localVariableAnalysis(Env::JoosType joosType);
 
   void buildEnvironment();
   void buildPackageTree();

@@ -29,7 +29,7 @@ std::ostream &operator<<(std::ostream &stream,
 
 JoosField::JoosField(std::set<Modifier> modifiers,
                      VariableDescriptor descriptor, std::string identifier,
-                     const AST::Node *astNode)
+                     const AST::FieldDeclaration *astNode)
     : modifiers(std::move(modifiers)),
       variableDescriptor(std::move(descriptor)),
       identifier(std::move(identifier)), astNode(astNode) {}
@@ -54,7 +54,7 @@ std::ostream &operator<<(std::ostream &stream, const JoosField &joosField) {
 JoosMethod::JoosMethod(std::set<Modifier> modifiers,
                        VariableDescriptor returnType, std::string identifier,
                        std::vector<VariableDescriptor> args,
-                       const AST::Node *astNode)
+                       const AST::MethodDeclaration *astNode)
     : modifiers(std::move(modifiers)), returnType(std::move(returnType)),
       identifier(std::move(identifier)), args(std::move(args)),
       astNode(astNode) {}
@@ -83,7 +83,7 @@ std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod) {
 JoosConstructor::JoosConstructor(std::set<Modifier> modifiers,
                                  std::string identifier,
                                  std::vector<VariableDescriptor> args,
-                                 const AST::Node *astNode)
+                                 const AST::ConstructorDeclaration *astNode)
     : modifiers(std::move(modifiers)), identifier(std::move(identifier)),
       args(std::move(args)), astNode(astNode) {}
 

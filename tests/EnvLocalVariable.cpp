@@ -1,38 +1,66 @@
-#include "EnvLocalVariable.hpp"
 #include "TestConfig.hpp"
 #include "catch.hpp"
 
-TEST_CASE("LocalVariableScope", "[local-scope]") {
-  Env::LocalVariableScope head;
-  Env::LocalVariableScope *node = &head;
+#include "EnvFileHeader.hpp"
+#include "EnvLocalVariable.hpp"
 
-  SECTION("simple-test") {
-    REQUIRE(node->add("x"));
-    REQUIRE(node->lookUp("x"));
+TEST_CASE("LocalVariableAnalysis", "[local-variable]") {
+  Env::LocalVariableAnalysis localVariableAnalysis(false);
+  REQUIRE(localVariableAnalysis.addVariable("outer", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
+  localVariableAnalysis.addEnvironment();
+  REQUIRE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
+
+  SECTION("Adding variable with existing name and existing variableType in middle block fails") {
+    REQUIRE_FALSE(localVariableAnalysis.addVariable("outer", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
+    REQUIRE_FALSE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
   }
 
-  SECTION("simple-test") {
-    REQUIRE_FALSE(node->lookUp("y"));
+  SECTION("Adding variable with existing name and non-existing variableType in middle block fails") {
+    REQUIRE_FALSE(localVariableAnalysis.addVariable("outer", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
+    REQUIRE_FALSE(localVariableAnalysis.addVariable("middle", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
   }
 
-  SECTION("variable-shadowing") {
-    REQUIRE(node->add("x"));
-    node = node->push();
-    REQUIRE_FALSE(node->add("x"));
+  SECTION("Adding variable with non-existing name and existing variableType in middle block passes") {
+    REQUIRE(localVariableAnalysis.addVariable("different", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
+    REQUIRE(localVariableAnalysis.addVariable("different2", Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}}));
   }
 
-  SECTION("variable") {
-    REQUIRE(node->add("x"));
-    node = node->push();
-    node = node->pop();
-    REQUIRE_FALSE(node->add("x"));
+  SECTION("Adding variable with non-existing name, non-existing variableType passes") {
+    REQUIRE(localVariableAnalysis.addVariable("different", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
+    REQUIRE(localVariableAnalysis.addVariable("different2", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
   }
 
-  SECTION("after-block") {
-    REQUIRE(node->add("x"));
-    node = node->push();
-    node = node->pop();
-    REQUIRE(node->lookUp("x"));
-    REQUIRE_FALSE(node->lookUp("y"));
+  SECTION("Finding existing variable in middle block, while in middle block passes") {
+    REQUIRE(localVariableAnalysis.findVariable("middle"));
+  }
+
+  SECTION("Finding existing variable in parent block, while in middle block passes") {
+    REQUIRE(localVariableAnalysis.findVariable("outer"));
+  }
+
+  SECTION("Finding existing variable in middle block, while in parent block fails") {
+    localVariableAnalysis.removeEnvironment();
+    REQUIRE_FALSE(localVariableAnalysis.findVariable("middle"));
+  }
+
+  SECTION("Finding exisinting variable in parent block, while in parent block passes") {
+    localVariableAnalysis.removeEnvironment();
+    REQUIRE(localVariableAnalysis.findVariable("outer"));
+  }
+
+  SECTION("Add non-existing variable in a block passes and then adding it after the block passes") {
+    localVariableAnalysis.addEnvironment();
+    REQUIRE(localVariableAnalysis.addVariable("inner", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
+    localVariableAnalysis.removeEnvironment();
+    REQUIRE(localVariableAnalysis.addVariable("inner", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
+  }
+
+ SECTION("Add non-existing variable in 2 different block passes") {
+    localVariableAnalysis.addEnvironment();
+    REQUIRE(localVariableAnalysis.addVariable("inner", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
+    localVariableAnalysis.removeEnvironment();
+    localVariableAnalysis.addEnvironment();
+    REQUIRE(localVariableAnalysis.addVariable("inner", Env::VariableDescriptor{Env::VariableType::ArrayType, {"int"}}));
+    localVariableAnalysis.removeEnvironment();
   }
 }
