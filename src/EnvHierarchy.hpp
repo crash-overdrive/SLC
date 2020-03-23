@@ -49,7 +49,7 @@ public:
   void addClass(ClassHierarchy hierarchy);
   void addInterface(InterfaceHierarchy hierarchy);
   bool topologicalSort();
-  bool buildSubType();
+  void buildSubType();
   bool buildContains();
 
 private:
@@ -64,7 +64,7 @@ private:
   std::vector<DAGNode> augmentGraph();
   std::vector<InterfaceHierarchy> interfaces;
   std::vector<ClassHierarchy> classes;
-  std::vector<std::reference_wrapper<Hierarchy>> order;
+  std::vector<Hierarchy *> order;
 };
 
 } // namespace Env

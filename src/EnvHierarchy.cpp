@@ -16,7 +16,12 @@ bool InterfaceHierarchy::addExtends(const JoosType *joosType) {
   return flag;
 }
 
-void InterfaceHierarchy::buildSubType() const {}
+void InterfaceHierarchy::buildSubType() const {
+  for (const auto &extend : extends) {
+    joosType.subType.insert(extend->subType.begin(), extend->subType.end());
+  }
+  joosType.subType.emplace(&joosType);
+}
 
 void InterfaceHierarchy::buildContains() const {}
 
@@ -39,7 +44,16 @@ bool ClassHierarchy::addImplements(const JoosType *joosType) {
   return flag;
 }
 
-void ClassHierarchy::buildSubType() const {}
+void ClassHierarchy::buildSubType() const {
+  if (extends) {
+    joosType.subType.insert(extends->subType.begin(), extends->subType.end());
+  }
+  for (const auto &implement : implements) {
+    joosType.subType.insert(implement->subType.begin(),
+                            implement->subType.end());
+  }
+  joosType.subType.emplace(&joosType);
+}
 
 void ClassHierarchy::buildContains() const {}
 
@@ -62,7 +76,7 @@ bool HierarchyGraph::topologicalSort() {
   while (workList.size()) {
     auto it = workList.begin();
     DAGNode *node = *it;
-    order.emplace_back(node->hierarchy);
+    order.emplace_back(&node->hierarchy);
     for (auto &outNode : node->outNodes) {
       --outNode->inDegree;
       if (!outNode->inDegree) {
@@ -78,7 +92,11 @@ bool HierarchyGraph::topologicalSort() {
   return true;
 }
 
-bool HierarchyGraph::buildSubType() { return true; }
+void HierarchyGraph::buildSubType() {
+  for (const auto &hierarchy : order) {
+    hierarchy->buildSubType();
+  }
+}
 
 HierarchyGraph::DAGNode::DAGNode(Hierarchy &hierarchy) : hierarchy(hierarchy) {}
 
@@ -89,6 +107,7 @@ void HierarchyGraph::DAGNode::addOutNode(DAGNode *node) {
 
 std::vector<HierarchyGraph::DAGNode> HierarchyGraph::augmentGraph() {
   std::vector<DAGNode> nodes;
+  nodes.reserve(interfaces.size() + classes.size());
   std::unordered_map<const JoosType *, DAGNode *> dagMap;
   for (auto &interfaceType : interfaces) {
     DAGNode &node = nodes.emplace_back(interfaceType);

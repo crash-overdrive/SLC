@@ -5,6 +5,7 @@
 #include "ASTVisitor.hpp"
 #include "EnvJoosBody.hpp"
 #include <set>
+#include <unordered_set>
 
 namespace Env {
 
@@ -26,6 +27,7 @@ struct JoosType {
   JoosBody declare;
   JoosType(std::set<Modifier> modifiers, Type type, std::string identifier,
            std::unique_ptr<AST::Node> astNode = nullptr);
+  std::unordered_set<JoosType *> subType;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosType &joosType);
 
