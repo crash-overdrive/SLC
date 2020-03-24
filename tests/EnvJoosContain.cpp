@@ -4,7 +4,6 @@
 
 TEST_CASE("EnvJoosContain created from Env", "[EnvJoosContain]") {
   Env::JoosContain contain;
-  Env::JoosBody body;
   Env::JoosMethod method;
   method.returnType = {Env::VariableType::SimpleType, {"Integer"}};
   method.identifier = "foo";

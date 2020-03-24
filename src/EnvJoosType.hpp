@@ -4,6 +4,7 @@
 #include "ASTNode.hpp"
 #include "ASTVisitor.hpp"
 #include "EnvJoosBody.hpp"
+#include "EnvJoosContain.hpp"
 #include <set>
 #include <unordered_set>
 
@@ -28,6 +29,7 @@ struct JoosType {
   JoosType(std::set<Modifier> modifiers, Type type, std::string identifier,
            std::unique_ptr<AST::Node> astNode = nullptr);
   std::unordered_set<JoosType *> subType;
+  JoosContain contain;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosType &joosType);
 

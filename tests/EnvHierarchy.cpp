@@ -130,15 +130,15 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
             classType.subType.end());
   }
 
-  SECTION("class subtype interfaces and class") {
+  SECTION("build subtype class from interfaces and class") {
     Env::JoosType classType2({}, Env::Type::Class, "foo");
     Env::ClassHierarchy classHierarchy2(classType2);
-    graph.addClass(classHierarchy2);
 
     classHierarchy.setExtends(&classType2);
     classHierarchy.addImplements(&interfaceType);
 
     graph.addClass(classHierarchy);
+    graph.addClass(classHierarchy2);
     graph.addInterface(interfaceHierarchy);
     graph.topologicalSort();
     graph.buildSubType();
@@ -146,5 +146,32 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
     REQUIRE(classType.subType.find(&classType2) != classType.subType.end());
     REQUIRE(classType.subType.find(&interfaceType) != classType.subType.end());
     REQUIRE(classType.subType.find(&classType) != classType.subType.end());
+  }
+
+  SECTION("build contain") {
+    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::JoosMethod method;
+    method.returnType = {Env::VariableType::SimpleType, {"Integer"}};
+    method.identifier = "foo";
+    method.args.emplace_back(Env::VariableType::SimpleType,
+                             std::vector<std::string>{"Integer"});
+    Env::ClassHierarchy classHierarchy2(classType2);
+    classHierarchy.setExtends(&classType2);
+    graph.addClass(classHierarchy);
+    graph.addClass(classHierarchy2);
+    REQUIRE(graph.topologicalSort());
+
+    SECTION("Inherit function") {
+      classType2.declare.addMethod(method);
+      REQUIRE(graph.buildContains());
+      REQUIRE(classType.contain.findMethod(method.identifier, method.args) !=
+              nullptr);
+    }
+
+    SECTION("Inherit abstract function") {
+      method.modifiers = {Env::Modifier::Abstract};
+      classType2.declare.addMethod(std::move(method));
+      REQUIRE_FALSE(graph.buildContains());
+    }
   }
 }

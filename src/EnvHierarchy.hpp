@@ -12,7 +12,7 @@ class Hierarchy {
 public:
   virtual ~Hierarchy() = default;
   virtual void buildSubType() const = 0;
-  virtual void buildContains() const = 0;
+  virtual bool buildContains() const = 0;
 };
 
 class InterfaceHierarchy : public Hierarchy {
@@ -21,7 +21,7 @@ public:
   bool addExtends(const JoosType *joosType);
   bool subType(const JoosType *joosType) const;
   void buildSubType() const override;
-  void buildContains() const override;
+  bool buildContains() const override;
 
 private:
   friend HierarchyGraph;
@@ -35,7 +35,7 @@ public:
   bool setExtends(const JoosType *joosType);
   bool addImplements(const JoosType *joosType);
   void buildSubType() const override;
-  void buildContains() const override;
+  bool buildContains() const override;
 
 private:
   friend HierarchyGraph;
@@ -49,8 +49,8 @@ public:
   void addClass(ClassHierarchy hierarchy);
   void addInterface(InterfaceHierarchy hierarchy);
   bool topologicalSort();
-  void buildSubType();
-  bool buildContains();
+  void buildSubType() const;
+  bool buildContains() const;
 
 private:
   struct DAGNode {

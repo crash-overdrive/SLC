@@ -20,7 +20,6 @@ public:
   const JoosMethod *
   findMethod(const std::string &identifier,
              const std::vector<VariableDescriptor> &args) const;
-
   bool hasAbstract() const;
 
 private:
