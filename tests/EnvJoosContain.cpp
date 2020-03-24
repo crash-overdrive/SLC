@@ -75,3 +75,103 @@ TEST_CASE("EnvJoosContain created from Env", "[EnvJoosContain]") {
     REQUIRE(contain.hasAbstract());
   }
 }
+
+TEST_CASE("EnvJoosContain find methods", "[EnvJoosContainFind]") {
+  Env::JoosContain contain;
+  Env::JoosField field{
+      {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
+      Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+      "str",
+      nullptr};
+  contain.addField(field);
+
+  Env::JoosMethod method{
+      {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
+      Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+      "methodName1",
+      {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+       Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+       Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+       Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}},
+      nullptr};
+  contain.addMethod(method);
+
+  SECTION("JoosField find Successful") {
+    std::set<Env::Modifier> modifiers = {
+        Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static};
+    const Env::JoosField *joosField = contain.findField(
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+        "str");
+
+    REQUIRE((joosField->identifier == "str" &&
+             joosField->variableDescriptor ==
+                 Env::VariableDescriptor{Env::VariableType::SimpleType,
+                                         {"String"}} &&
+             joosField->modifiers == modifiers));
+  }
+
+  SECTION("JoosField find Unsuccessful") {
+    const Env::JoosField *joosField;
+    joosField = contain.findField(
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+        "str2");
+    REQUIRE(joosField == nullptr);
+    joosField = contain.findField(
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"Array"}},
+        "str");
+    REQUIRE(joosField == nullptr);
+    joosField = contain.findField(
+        Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
+        "str");
+    REQUIRE(joosField == nullptr);
+  }
+
+  SECTION("JoosMethod find Successful") {
+    const std::set<Env::Modifier> modifiers = {
+        Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static};
+    std::vector<Env::VariableDescriptor> argList = {
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}};
+    const Env::JoosMethod *joosMethod =
+        contain.findMethod("methodName1", argList);
+    Env::VariableDescriptor returnType =
+        Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}};
+
+    REQUIRE((joosMethod->identifier == "methodName1" &&
+             joosMethod->args == argList &&
+             joosMethod->modifiers == modifiers &&
+             joosMethod->returnType == returnType));
+  }
+
+  SECTION("JoosMethod find Unsuccessful") {
+    const Env::JoosMethod *joosMethod;
+    // wrong identifier
+    joosMethod = contain.findMethod(
+        "methodName2",
+        {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}});
+    REQUIRE(joosMethod == nullptr);
+
+    // wrong argument datatype
+    joosMethod = contain.findMethod(
+        "methodName1",
+        {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}});
+    REQUIRE(joosMethod == nullptr);
+
+    // wrong argument variabletype
+    joosMethod = contain.findMethod(
+        "methodName1",
+        {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
+         Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
+         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}});
+    REQUIRE(joosMethod == nullptr);
+  }
+}
