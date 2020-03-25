@@ -1068,27 +1068,7 @@ const std::vector<std::vector<std::string>> a2ErrorTypeLink{
     },
 };
 
-const std::vector<std::vector<std::string>> a2Error{
-    {
-        "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
-        "Je_14_Interface_DeclaresToString_DifferentReturnType/Interface.java",
-    },
-    {
-        "Je_14_Interface_DeclaresToString_ThrowsConflict/Main.java",
-        "Je_14_Interface_DeclaresToString_ThrowsConflict/Interface.java",
-    },
-    {
-        "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Main.java",
-        "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Foo.java",
-    },
-    {
-        "Je_14_Interface_SelfDependency_CyclicExtend/Bar.java",
-        "Je_14_Interface_SelfDependency_CyclicExtend/Main.java",
-        "Je_14_Interface_SelfDependency_CyclicExtend/Foo.java",
-    },
-    {
-        "Je_14_Interface_SelfDependency_ExtendsItself.java",
-    },
+const std::vector<std::vector<std::string>> a2ErrorLocalVariable{
     {
         "Je_2_ConstructorParameter_Duplicate.java",
     },
@@ -1142,6 +1122,29 @@ const std::vector<std::vector<std::string>> a2Error{
     },
     {
         "Je_2_Parameter_OverlappingWithParameter.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a2Error{
+    {
+        "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
+        "Je_14_Interface_DeclaresToString_DifferentReturnType/Interface.java",
+    },
+    {
+        "Je_14_Interface_DeclaresToString_ThrowsConflict/Main.java",
+        "Je_14_Interface_DeclaresToString_ThrowsConflict/Interface.java",
+    },
+    {
+        "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Main.java",
+        "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Foo.java",
+    },
+    {
+        "Je_14_Interface_SelfDependency_CyclicExtend/Bar.java",
+        "Je_14_Interface_SelfDependency_CyclicExtend/Main.java",
+        "Je_14_Interface_SelfDependency_CyclicExtend/Foo.java",
+    },
+    {
+        "Je_14_Interface_SelfDependency_ExtendsItself.java",
     },
     {
         "Je_3_ImportOnDemand_ClashWithImplicitImport/Main.java",
