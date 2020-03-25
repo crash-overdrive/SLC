@@ -1,6 +1,8 @@
 #include "EnvHierarchy.hpp"
 #include "ASTNode.hpp"
 #include "EnvTypeLink.hpp"
+#include "TestConfig.hpp"
+#include "TestUtil.hpp"
 #include "catch.hpp"
 
 TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
@@ -206,5 +208,26 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
       classType.declare.addMethod(method2);
       REQUIRE(graph.buildContains());
     }
+  }
+}
+
+TEST_CASE("Hierarchy Visitor", "[EnvHierarchyVisitor]") {
+  Client client = createClient();
+  Env::HierarchyVisitor visitor;
+
+  SECTION("Super and Interfaces") {
+    std::unique_ptr<AST::Start> root = client.buildAST(
+        testDataDir +
+        "/java/a2/J1_4_ClassImplementsInterface_MultipleTimes/Bar.java");
+    root->accept(visitor);
+    REQUIRE(visitor.getSuper() == std::vector<std::string>{"Foo"});
+    REQUIRE(visitor.getInterfaces().at(0) == std::vector<std::string>{"List"});
+  }
+
+  SECTION("Extensions") {
+    std::unique_ptr<AST::Start> root = client.buildAST(
+        testDataDir + "/java/a2/J2_4_InterfaceExtends_MultipleWays/B.java");
+    root->accept(visitor);
+    REQUIRE(visitor.getExtensions().at(0) == std::vector<std::string>{"A"});
   }
 }

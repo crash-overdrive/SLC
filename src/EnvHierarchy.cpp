@@ -1,4 +1,5 @@
 #include "EnvHierarchy.hpp"
+#include "ASTVisitorUtil.hpp"
 #include "EnvTypeLink.hpp"
 #include <algorithm>
 
@@ -170,6 +171,46 @@ std::vector<HierarchyGraph::DAGNode> HierarchyGraph::augmentGraph() {
     }
   }
   return nodes;
+}
+
+void HierarchyVisitor::visit(const AST::Start &node) { dispatchChildren(node); }
+
+void HierarchyVisitor::visit(const AST::ClassDeclaration &node) {
+  dispatchChildren(node);
+}
+
+void HierarchyVisitor::visit(const AST::InterfaceDeclaration &node) {
+  dispatchChildren(node);
+}
+
+void HierarchyVisitor::visit(const AST::Interfaces &node) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(node);
+  interfaces.emplace_back(visitor.getName());
+}
+
+void HierarchyVisitor::visit(const AST::Extensions &node) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(node);
+  extensions.emplace_back(visitor.getName());
+};
+
+void HierarchyVisitor::visit(const AST::Super &node) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(node);
+  super = visitor.getName();
+}
+
+std::vector<std::vector<std::string>> HierarchyVisitor::getInterfaces() {
+  return std::move(interfaces);
+}
+
+std::vector<std::vector<std::string>> HierarchyVisitor::getExtensions() {
+  return std::move(extensions);
+}
+
+std::vector<std::string> HierarchyVisitor::getSuper() {
+  return std::move(super);
 }
 
 } // namespace Env

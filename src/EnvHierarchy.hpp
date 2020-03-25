@@ -1,6 +1,7 @@
 #ifndef ENVHIERARCHY_HPP
 #define ENVHIERARCHY_HPP
 
+#include "ASTVisitor.hpp"
 #include "EnvJoosType.hpp"
 #include <unordered_set>
 
@@ -65,6 +66,24 @@ private:
   std::vector<InterfaceHierarchy> interfaces;
   std::vector<ClassHierarchy> classes;
   std::vector<Hierarchy *> order;
+};
+
+class HierarchyVisitor : public AST::Visitor {
+public:
+  void visit(const AST::Start &node) override;
+  void visit(const AST::ClassDeclaration &node) override;
+  void visit(const AST::InterfaceDeclaration &node) override;
+  void visit(const AST::Interfaces &node) override;
+  void visit(const AST::Extensions &node) override;
+  void visit(const AST::Super &node) override;
+  std::vector<std::vector<std::string>> getInterfaces();
+  std::vector<std::vector<std::string>> getExtensions();
+  std::vector<std::string> getSuper();
+
+private:
+  std::vector<std::vector<std::string>> interfaces;
+  std::vector<std::vector<std::string>> extensions;
+  std::vector<std::string> super;
 };
 
 } // namespace Env
