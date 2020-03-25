@@ -1,7 +1,6 @@
 #include "EnvHierarchy.hpp"
 #include "EnvTypeLink.hpp"
 #include <algorithm>
-#include <list>
 
 namespace Env {
 
@@ -24,13 +23,13 @@ void InterfaceHierarchy::buildSubType() const {
 }
 
 bool InterfaceHierarchy::buildContains() const {
-  for (const auto &method : joosType.declare.getMethods()) {
-    joosType.contain.addMethod(method);
-  }
   for (const auto &extend : extends) {
     if (!joosType.contain.mergeContain(extend->contain)) {
       return false;
     }
+  }
+  for (const auto &method : joosType.declare.getMethods()) {
+    joosType.contain.addDeclareMethod(&method);
   }
   return true;
 }
@@ -66,12 +65,6 @@ void ClassHierarchy::buildSubType() const {
 }
 
 bool ClassHierarchy::buildContains() const {
-  for (const auto &field : joosType.declare.getFields()) {
-    joosType.contain.addField(field);
-  }
-  for (const auto &method : joosType.declare.getMethods()) {
-    joosType.contain.addMethod(method);
-  }
   if (extends && !joosType.contain.mergeContain(extends->contain)) {
     return false;
   }
@@ -79,6 +72,12 @@ bool ClassHierarchy::buildContains() const {
     if (!joosType.contain.mergeContain(implement->contain)) {
       return false;
     }
+  }
+  for (const auto &field : joosType.declare.getFields()) {
+    joosType.contain.addDeclareField(&field);
+  }
+  for (const auto &method : joosType.declare.getMethods()) {
+    joosType.contain.addDeclareMethod(&method);
   }
   return !(joosType.contain.hasAbstract() &&
            joosType.modifiers.find(Modifier::Abstract) ==

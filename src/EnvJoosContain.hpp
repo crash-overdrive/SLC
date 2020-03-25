@@ -7,11 +7,11 @@ namespace Env {
 
 class JoosContain {
 public:
-  void addMethod(const JoosMethod &method);
   bool inheritMethod(const JoosMethod *method);
+  bool addDeclareMethod(const JoosMethod *method);
 
-  void addField(const JoosField &field);
   bool inheritField(const JoosField *field);
+  bool addDeclareField(const JoosField *field);
 
   bool mergeContain(const JoosContain &contain);
 
@@ -23,12 +23,15 @@ public:
   bool hasAbstract() const;
 
 private:
-  static bool replaceSignature(const JoosMethod *base,
-                               const JoosMethod *parent);
-  static bool replaceFinal(const JoosMethod *parent);
-  static bool replaceStatic(const JoosMethod *base, const JoosMethod *parent);
-  static bool replaceModifier(const JoosMethod *base, const JoosMethod *parent);
-
+  static bool validReplace(const JoosMethod *derived, const JoosMethod *base);
+  static bool validSignature(const JoosMethod *derived, const JoosMethod *base);
+  static bool validFinal(const JoosMethod *base);
+  static bool validDerivedStatic(const JoosMethod *derived,
+                                 const JoosMethod *base);
+  static bool validBaseStatic(const JoosMethod *derived,
+                              const JoosMethod *base);
+  static bool validModifier(const JoosMethod *derived, const JoosMethod *base);
+  static bool isReplace(const JoosMethod *derived, const JoosMethod *base);
   std::vector<const JoosMethod *> methods;
   std::vector<const JoosField *> fields;
 };
