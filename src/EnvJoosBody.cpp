@@ -146,6 +146,12 @@ bool JoosBody::addConstructor(JoosConstructor joosConstructor) {
   return true;
 }
 
+void JoosBody::setAbstract() {
+  for (auto &method : methods) {
+    method.modifiers.emplace(Modifier::Abstract);
+  }
+}
+
 std::ostream &operator<<(std::ostream &stream, const JoosBody &joosBody) {
   for (auto const &field : joosBody.fields) {
     stream << field;

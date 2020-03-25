@@ -99,6 +99,8 @@ public:
   const std::vector<JoosConstructor> &getConstructors() const;
   bool addConstructor(JoosConstructor joosConstructor);
 
+  void setAbstract();
+
 private:
   friend std::ostream &operator<<(std::ostream &stream,
                                   const JoosBody &joosBody);
