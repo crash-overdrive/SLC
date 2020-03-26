@@ -33,6 +33,7 @@
 
 build/*
 *Config.hpp
+!*MarmosetConfig.hpp
 
 compile_commands.json
 

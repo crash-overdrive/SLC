@@ -150,7 +150,7 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
   for (auto const &field : bodyVisitor.getJoosFields()) {
     if (!joosType.declare.addField(field)) {
       std::cerr << "Duplicate Field found in file\n" << field << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed"
+      std::cerr << "Joos Type creation for file " << fullName << " failed"
                 << '\n';
       errorState = true;
       return;
@@ -159,7 +159,7 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
   for (auto const &method : bodyVisitor.getJoosMethods()) {
     if (!joosType.declare.addMethod(method)) {
       std::cerr << "Duplicate Method found in file\n" << method << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed"
+      std::cerr << "Joos Type creation for file " << fullName << " failed"
                 << '\n';
       errorState = true;
       return;
@@ -169,7 +169,7 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
     if (!joosType.declare.addConstructor(constructor)) {
       std::cerr << "Duplicate Constructor found in file\n"
                 << constructor << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed"
+      std::cerr << "Joos Type creation for file " << fullName << " failed"
                 << '\n';
       errorState = true;
       return;
@@ -340,7 +340,10 @@ bool Client::buildClassHierarchy(Env::HierarchyGraph &graph,
       std::cerr << "Extends from class not found in typelink\n";
       return false;
     }
-    classHierarchy.setExtends(type);
+    if (!classHierarchy.setExtends(type)) {
+      std::cerr << "Extends for class can't be set\n";
+      return false;
+    }
   }
   for (auto &&interface : visitor.getInterfaces()) {
     Env::JoosType *type = environment.typeLink.find(interface);
@@ -348,7 +351,10 @@ bool Client::buildClassHierarchy(Env::HierarchyGraph &graph,
       std::cerr << "Interface from class not found in typelink\n";
       return false;
     }
-    classHierarchy.addImplements(type);
+    if (!classHierarchy.addImplements(type)) {
+      std::cerr << "Extends for class can't be set\n";
+      return false;
+    }
   }
   graph.addClass(std::move(classHierarchy));
   return true;
@@ -366,7 +372,10 @@ bool Client::buildInterfaceHierarchy(Env::HierarchyGraph &graph,
       std::cerr << "Interface from interface not found in typelink\n";
       return false;
     }
-    interfaceHierarchy.addExtends(type);
+    if (!interfaceHierarchy.addExtends(type)) {
+      std::cerr << "Extends for interfaces can't be set\n";
+      return false;
+    }
   }
   graph.addInterface(std::move(interfaceHierarchy));
   return true;
