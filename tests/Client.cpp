@@ -1,3 +1,4 @@
+#include "MarmosetConfig.hpp"
 #include "TestConfig.hpp"
 #include "TestUtil.hpp"
 #include "catch.hpp"
@@ -96,6 +97,15 @@ TEST_CASE("client process", "[client]") {
     SECTION("error-typeLink") {
       client.setBreakPoint(Client::TypeLink);
       for (const auto &group : a2ErrorTypeLink) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
+        }
+      }
+    }
+
+    SECTION("error-hierarchy") {
+      client.setBreakPoint(Client::Hierarchy);
+      for (const auto &group : a2ErrorHierarchy) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }
