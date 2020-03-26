@@ -108,6 +108,15 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"Array"}));
   }
 
+  SECTION("Default Package") {
+    Env::JoosType array({}, Env::Type::Class, "Array");
+    tree->update({}, list);
+    tree->update({}, array);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
+    REQUIRE(typeLink.find({"Array"}));
+  }
+
   SECTION("Single Import class own name") {
     tree->update({"Test"}, list);
     Env::JoosType list2({}, Env::Type::Class, "List",

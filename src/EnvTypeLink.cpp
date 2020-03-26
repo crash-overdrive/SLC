@@ -71,6 +71,9 @@ JoosType *TypeLink::find(const std::vector<std::string> &name) const {
 }
 
 JoosType *TypeLink::findSamePackage(const std::string &name) const {
+  if (package.size() == 0) {
+    return tree->findDefault(name);
+  }
   PackageNode *node = tree->findPackage(package);
   if (node != nullptr) {
     return node->findJoosType(name);

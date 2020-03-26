@@ -32,12 +32,14 @@ class PackageTree {
 public:
   JoosType *findType(const std::vector<std::string> &path) const;
   PackageNode *findPackage(const std::vector<std::string> &path) const;
+  JoosType *findDefault(const std::string &name) const;
   bool update(const std::vector<std::string> &packagePath, JoosType &joosType);
 
 private:
   PackageNode *findNode(const std::vector<std::string> &path) const;
   std::unique_ptr<PackageNode> root =
       std::make_unique<PackageNode>(PackageNode::Type::Global);
+  std::unordered_map<std::string, JoosType *> defaultPackage;
 };
 
 class PackageTreeVisitor : public AST::Visitor {

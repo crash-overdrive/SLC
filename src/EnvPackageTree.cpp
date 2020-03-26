@@ -74,11 +74,20 @@ PackageTree::findPackage(const std::vector<std::string> &path) const {
   return (node->type == PackageNode::Type::Package) ? node : nullptr;
 }
 
+JoosType *PackageTree::findDefault(const std::string &name) const {
+  auto it = defaultPackage.find(name);
+  if (it == defaultPackage.end()) {
+    return nullptr;
+  }
+  return it->second;
+}
+
 bool PackageTree::update(const std::vector<std::string> &packagePath,
                          JoosType &joosType) {
-  // No Package
+  // Default Package
   if (packagePath.size() == 0) {
-    return true;
+    auto [it, flag] = defaultPackage.emplace(joosType.identifier, &joosType);
+    return flag;
   }
   PackageNode *node = root.get();
   for (const auto &component : packagePath) {
