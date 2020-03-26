@@ -16,6 +16,18 @@ bool InterfaceHierarchy::addExtends(const JoosType *joosType) {
   return flag;
 }
 
+bool InterfaceHierarchy::setBaseObject(const JoosType *base) {
+  if (extends.size()) {
+    return true;
+  }
+  for (const auto &method : base->declare.getMethods()) {
+    if (!joosType.declare.addMethod(method)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void InterfaceHierarchy::buildSubType() const {
   for (const auto &extend : extends) {
     joosType.subType.insert(extend->subType.begin(), extend->subType.end());
@@ -24,13 +36,16 @@ void InterfaceHierarchy::buildSubType() const {
 }
 
 bool InterfaceHierarchy::buildContains() const {
+  joosType.declare.setAbstract();
   for (const auto &extend : extends) {
     if (!joosType.contain.mergeContain(extend->contain)) {
       return false;
     }
   }
   for (const auto &method : joosType.declare.getMethods()) {
-    joosType.contain.addDeclareMethod(&method);
+    if (!joosType.contain.addDeclareMethod(&method)) {
+      return false;
+    }
   }
   return true;
 }
@@ -52,6 +67,13 @@ bool ClassHierarchy::addImplements(const JoosType *joosType) {
   }
   auto [it, flag] = implements.emplace(joosType);
   return flag;
+}
+
+bool ClassHierarchy::setBaseObject(const JoosType *base) {
+  if (!extends && base->astNode != joosType.astNode) {
+    extends = base;
+  }
+  return true;
 }
 
 void ClassHierarchy::buildSubType() const {
@@ -78,7 +100,10 @@ bool ClassHierarchy::buildContains() const {
     joosType.contain.addDeclareField(&field);
   }
   for (const auto &method : joosType.declare.getMethods()) {
-    joosType.contain.addDeclareMethod(&method);
+    if (!joosType.contain.addDeclareMethod(&method)) {
+      std::cerr << method;
+      return false;
+    }
   }
   return !(joosType.contain.hasAbstract() &&
            joosType.modifiers.find(Modifier::Abstract) ==

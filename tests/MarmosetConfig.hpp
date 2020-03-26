@@ -1274,9 +1274,6 @@ const std::vector<std::vector<std::string>> a2ErrorHierarchy{
         "Je_4_ImplementTwice_QualifiedName/Main.java",
         "Je_4_ImplementTwice_QualifiedName/java/lang/Runnable.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a2Error{
     {
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Main.java",
         "Je_14_Interface_DeclaresToString_DifferentReturnType/Interface.java",
@@ -1286,9 +1283,63 @@ const std::vector<std::vector<std::string>> a2Error{
         "Je_14_Interface_DeclaresToString_ThrowsConflict/Interface.java",
     },
     {
+        "Je_5_Interface_ImplicitReplace_DifferentReturnType.java",
+    },
+    {
+        "Je_4_ProtectedOverride_Exception_Clone/javax/naming/Name.java",
+        "Je_4_ProtectedOverride_Exception_Clone/Main.java",
+    },
+    {
         "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Main.java",
         "Je_14_Interface_ImplicitPublicMethod_ProtectedOverride/Foo.java",
     },
+    {
+        "Je_4_FinalOverride_DifferentReturnTypes.java",
+    },
+    {
+        "Je_4_FinalOverride_SameSignature.java",
+    },
+    {
+        "Je_4_Hide_DifferentReturnTypes/Main.java",
+        "Je_4_Hide_DifferentReturnTypes/A.java",
+    },
+    {
+        "Je_4_Override_DifferentReturnTypesFromInterface/Main.java",
+        "Je_4_Override_DifferentReturnTypesFromInterface/java/lang/"
+        "Comparable.java",
+    },
+    {
+        "Je_4_ProtectedHide_FromSuperclass/Main.java",
+        "Je_4_ProtectedHide_FromSuperclass/A.java",
+    },
+    {
+        "Je_4_ProtectedOverride_FromSuperclass/Main.java",
+        "Je_4_ProtectedOverride_FromSuperclass/java/lang/Thread.java",
+    },
+    {
+        "Je_4_ReplaceInstance_FromSuperclass.java",
+    },
+    {
+        "Je_4_ReplaceStatic_FromSuperclass_DifferentReturnTypes/Main.java",
+        "Je_4_ReplaceStatic_FromSuperclass_DifferentReturnTypes/java/lang/"
+        "Thread.java",
+    },
+    {
+        "Je_4_ReplaceStatic_FromSuperclass/Main.java",
+        "Je_4_ReplaceStatic_FromSuperclass/java/lang/Thread.java",
+    },
+    {
+        "Je_4_ProtectedOverride_Abstract/Main.java",
+        "Je_4_ProtectedOverride_Abstract/Foo.java",
+    },
+    {
+        "Je_4_Interface_FinalMethodFromObject/B.java",
+        "Je_4_Interface_FinalMethodFromObject/Main.java",
+        "Je_4_Interface_FinalMethodFromObject/A.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a2Error{
     {
         "Je_3_ImportOnDemand_ClashWithImplicitImport/Main.java",
         "Je_3_ImportOnDemand_ClashWithImplicitImport/Integer.java",
@@ -1319,42 +1370,6 @@ const std::vector<std::vector<std::string>> a2Error{
         "Je_4_FinalHide/Main.java",
     },
     {
-        "Je_4_FinalOverride_DifferentReturnTypes.java",
-    },
-    {
-        "Je_4_FinalOverride_SameSignature.java",
-    },
-    {
-        "Je_4_Hide_DifferentReturnTypes/Main.java",
-        "Je_4_Hide_DifferentReturnTypes/A.java",
-    },
-    {
-        "Je_4_Interface_FinalMethodFromObject/B.java",
-        "Je_4_Interface_FinalMethodFromObject/Main.java",
-        "Je_4_Interface_FinalMethodFromObject/A.java",
-    },
-    {
-        "Je_4_Override_DifferentReturnTypesFromInterface/Main.java",
-        "Je_4_Override_DifferentReturnTypesFromInterface/java/lang/"
-        "Comparable.java",
-    },
-    {
-        "Je_4_ProtectedHide_FromSuperclass/Main.java",
-        "Je_4_ProtectedHide_FromSuperclass/A.java",
-    },
-    {
-        "Je_4_ProtectedOverride_Abstract/Main.java",
-        "Je_4_ProtectedOverride_Abstract/Foo.java",
-    },
-    {
-        "Je_4_ProtectedOverride_Exception_Clone/javax/naming/Name.java",
-        "Je_4_ProtectedOverride_Exception_Clone/Main.java",
-    },
-    {
-        "Je_4_ProtectedOverride_FromSuperclass/Main.java",
-        "Je_4_ProtectedOverride_FromSuperclass/java/lang/Thread.java",
-    },
-    {
         "Je_4_ProtectedOverride_FromSuperclassAndInterface/Main.java",
         "Je_4_ProtectedOverride_FromSuperclassAndInterface/java/lang/"
         "Comparable.java",
@@ -1368,24 +1383,9 @@ const std::vector<std::vector<std::string>> a2Error{
         "Iterator.java",
     },
     {
-        "Je_4_ReplaceInstance_FromSuperclass.java",
-    },
-    {
-        "Je_4_ReplaceStatic_FromSuperclass/Main.java",
-        "Je_4_ReplaceStatic_FromSuperclass/java/lang/Thread.java",
-    },
-    {
-        "Je_4_ReplaceStatic_FromSuperclass_DifferentReturnTypes/Main.java",
-        "Je_4_ReplaceStatic_FromSuperclass_DifferentReturnTypes/java/lang/"
-        "Thread.java",
-    },
-    {
         "Je_4_Resolve_DefaultPackage/foo.java",
         "Je_4_Resolve_DefaultPackage/foo/bar.java",
         "Je_4_Resolve_DefaultPackage/Main.java",
-    },
-    {
-        "Je_5_Interface_ImplicitReplace_DifferentReturnType.java",
     },
 };
 

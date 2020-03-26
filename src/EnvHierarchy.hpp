@@ -14,13 +14,15 @@ public:
   virtual ~Hierarchy() = default;
   virtual void buildSubType() const = 0;
   virtual bool buildContains() const = 0;
+  virtual bool setBaseObject(const JoosType *base) = 0;
 };
 
 class InterfaceHierarchy : public Hierarchy {
 public:
   explicit InterfaceHierarchy(JoosType &joosType);
   bool addExtends(const JoosType *joosType);
-  bool subType(const JoosType *joosType) const;
+
+  bool setBaseObject(const JoosType *base) override;
   void buildSubType() const override;
   bool buildContains() const override;
 
@@ -35,6 +37,8 @@ public:
   explicit ClassHierarchy(JoosType &joosType);
   bool setExtends(const JoosType *joosType);
   bool addImplements(const JoosType *joosType);
+
+  bool setBaseObject(const JoosType *base) override;
   void buildSubType() const override;
   bool buildContains() const override;
 

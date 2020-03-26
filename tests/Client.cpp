@@ -112,13 +112,13 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    // SECTION("reject") {
-    // for (const auto &group : a2Error) {
-    // SECTION(group[0]) {
-    // REQUIRE(client.compile(createMarmosetTest(2, group)));
-    //}
-    //}
-    //}
+    SECTION("reject") {
+      for (const auto &group : a2Error) {
+        SECTION(group[0]) {
+          REQUIRE(client.compile(createMarmosetTest(2, group)));
+        }
+      }
+    }
 
     SECTION("accept") {
       for (const auto &group : a2Valid) {
@@ -156,15 +156,5 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-  }
-
-  SECTION("multiple files") {
-    std::vector<std::string> files{
-        testDataDir +
-            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
-        testDataDir +
-            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
-    };
-    REQUIRE(client.compile(files));
   }
 }

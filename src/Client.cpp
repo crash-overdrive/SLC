@@ -175,9 +175,6 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
       return;
     };
   }
-  if (joosType.type == Env::Type::Interface) {
-    joosType.declare.setAbstract();
-  }
   if (printPoints.find(JoosType) != printPoints.end()) {
     std::cerr << joosType;
   }
@@ -356,6 +353,8 @@ bool Client::buildClassHierarchy(Env::HierarchyGraph &graph,
       return false;
     }
   }
+  classHierarchy.setBaseObject(
+      environment.typeLink.find({"java", "lang", "Object"}));
   graph.addClass(std::move(classHierarchy));
   return true;
 }
@@ -376,6 +375,11 @@ bool Client::buildInterfaceHierarchy(Env::HierarchyGraph &graph,
       std::cerr << "Extends for interfaces can't be set\n";
       return false;
     }
+  }
+  Env::JoosType *base = environment.typeLink.find({"java", "lang", "Object"});
+  if (!interfaceHierarchy.setBaseObject(base)) {
+    std::cerr << "Error setting base interface\n";
+    return false;
   }
   graph.addInterface(std::move(interfaceHierarchy));
   return true;
