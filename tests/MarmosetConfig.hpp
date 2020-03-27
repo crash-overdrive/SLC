@@ -1337,6 +1337,19 @@ const std::vector<std::vector<std::string>> a2ErrorHierarchy{
         "Je_4_Interface_FinalMethodFromObject/Main.java",
         "Je_4_Interface_FinalMethodFromObject/A.java",
     },
+    {
+        "Je_4_ProtectedOverride_FromSuperclassAndInterface/Main.java",
+        "Je_4_ProtectedOverride_FromSuperclassAndInterface/java/lang/"
+        "Comparable.java",
+        "Je_4_ProtectedOverride_FromSuperclassAndInterface/Foo.java",
+    },
+    {
+        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/C.java",
+        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/B.java",
+        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/Main.java",
+        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/java/util/"
+        "Iterator.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a2Error{
@@ -1368,19 +1381,6 @@ const std::vector<std::vector<std::string>> a2Error{
         "Je_4_FinalHide/javax/swing/text/Utilities.java",
         "Je_4_FinalHide/javax/swing/text/JTextComponent.java",
         "Je_4_FinalHide/Main.java",
-    },
-    {
-        "Je_4_ProtectedOverride_FromSuperclassAndInterface/Main.java",
-        "Je_4_ProtectedOverride_FromSuperclassAndInterface/java/lang/"
-        "Comparable.java",
-        "Je_4_ProtectedOverride_FromSuperclassAndInterface/Foo.java",
-    },
-    {
-        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/C.java",
-        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/B.java",
-        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/Main.java",
-        "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/java/util/"
-        "Iterator.java",
     },
     {
         "Je_4_Resolve_DefaultPackage/foo.java",

@@ -15,22 +15,23 @@ bool JoosContain::inheritMethod(const JoosMethod *method) {
   if (isReplace(derived, method)) {
     return validReplace(derived, method);
   }
+  methods.emplace_back(method);
   return true;
 }
 
 bool JoosContain::addDeclareMethod(const JoosMethod *method) {
-  auto it = std::find_if(methods.begin(), methods.end(),
-                         [&](const JoosMethod *containMethod) {
-                           return *containMethod == *method;
-                         });
-  if (it == methods.end()) {
-    methods.emplace_back(method);
-    return true;
+  for (auto it = methods.begin(); it != methods.end();) {
+    const JoosMethod *base = *it;
+    if (*base != *method) {
+      ++it;
+      continue;
+    }
+    if (!validSignature(method, base) || !validReplace(method, base)) {
+      return false;
+    }
+    it = methods.erase(it);
   }
-  if (!(validSignature(method, *it) && validReplace(method, *it))) {
-    return false;
-  }
-  *it = method;
+  methods.emplace_back(method);
   return true;
 }
 
@@ -80,12 +81,10 @@ bool JoosContain::validModifier(const JoosMethod *derived,
            base->modifiers.find(Modifier::Public) != base->modifiers.end());
 }
 
-bool JoosContain::isReplace(const JoosMethod *method1,
-                            const JoosMethod *method2) {
-  return method1->modifiers.find(Modifier::Abstract) !=
-             method1->modifiers.end() &&
-         method2->modifiers.find(Modifier::Abstract) ==
-             method2->modifiers.end();
+bool JoosContain::isReplace(const JoosMethod *derived, const JoosMethod *base) {
+  return derived->modifiers.find(Modifier::Abstract) ==
+             derived->modifiers.end() &&
+         base->modifiers.find(Modifier::Abstract) != base->modifiers.end();
 }
 
 bool JoosContain::mergeContain(const JoosContain &contain) {

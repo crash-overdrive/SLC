@@ -21,8 +21,16 @@ bool InterfaceHierarchy::setBaseObject(const JoosType *base) {
     return true;
   }
   for (const auto &method : base->declare.getMethods()) {
-    if (!joosType.declare.addMethod(method)) {
-      return false;
+    // Skip getClass
+    if (isGetClass(method)) {
+      continue;
+    }
+    if (method.modifiers.find(Modifier::Public) != method.modifiers.end()) {
+      JoosMethod baseMethod(method);
+      baseMethod.modifiers = {Modifier::Public};
+      if (!joosType.declare.addMethod(baseMethod)) {
+        return false;
+      }
     }
   }
   return true;
@@ -43,11 +51,16 @@ bool InterfaceHierarchy::buildContains() const {
     }
   }
   for (const auto &method : joosType.declare.getMethods()) {
-    if (!joosType.contain.addDeclareMethod(&method)) {
+    // Interface cannot override getclass method
+    if (isGetClass(method) || !joosType.contain.addDeclareMethod(&method)) {
       return false;
     }
   }
   return true;
+}
+
+bool InterfaceHierarchy::isGetClass(const JoosMethod &method) {
+  return method.identifier == "getClass" && method.args.empty();
 }
 
 ClassHierarchy::ClassHierarchy(JoosType &joosType) : joosType(joosType) {}
@@ -101,7 +114,6 @@ bool ClassHierarchy::buildContains() const {
   }
   for (const auto &method : joosType.declare.getMethods()) {
     if (!joosType.contain.addDeclareMethod(&method)) {
-      std::cerr << method;
       return false;
     }
   }

@@ -28,6 +28,9 @@ public:
 
 private:
   friend HierarchyGraph;
+  // Hard Coding getClass to filter getClass override due to
+  // Java specs ambiguity
+  static bool isGetClass(const JoosMethod &method);
   JoosType &joosType;
   std::unordered_set<const JoosType *> extends;
 };

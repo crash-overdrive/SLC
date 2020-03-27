@@ -274,7 +274,7 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
                                 // SEMI Expression SEMI ForUpdate RPAREN
                                 // StatementNoShortIf
 
-}; // namespace AST
+};
 
 } // namespace AST
 
