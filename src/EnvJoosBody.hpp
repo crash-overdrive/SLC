@@ -54,6 +54,7 @@ struct JoosField {
   VariableDescriptor variableDescriptor;
   std::string identifier;
   const AST::FieldDeclaration *astNode;
+  JoosField() = default;
   JoosField(std::set<Modifier> modifiers, VariableDescriptor descriptor,
             std::string identifier, const AST::FieldDeclaration *astNode);
   bool operator==(const JoosField &joosField) const;
@@ -66,6 +67,7 @@ struct JoosMethod {
   std::string identifier;
   std::vector<VariableDescriptor> args;
   const AST::MethodDeclaration *astNode;
+  JoosMethod() = default;
   JoosMethod(std::set<Modifier> modifiers, VariableDescriptor returnType,
              std::string identifier, std::vector<VariableDescriptor> args,
              const AST::MethodDeclaration *astNode);
@@ -97,14 +99,7 @@ public:
   const std::vector<JoosConstructor> &getConstructors() const;
   bool addConstructor(JoosConstructor joosConstructor);
 
-  const JoosField *findField(const VariableDescriptor &variableDescriptor,
-                             const std::string &identifier) const;
-  const JoosMethod *
-  findMethod(const std::string &identifier,
-             const std::vector<VariableDescriptor> &args) const;
-  const JoosConstructor *
-  findConstructor(const std::string &identifier,
-                  const std::vector<VariableDescriptor> &args) const;
+  void setAbstract();
 
 private:
   friend std::ostream &operator<<(std::ostream &stream,

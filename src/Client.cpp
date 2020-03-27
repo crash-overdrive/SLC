@@ -175,6 +175,9 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
       return;
     };
   }
+  if (joosType.type == Env::Type::Interface) {
+    joosType.declare.setAbstract();
+  }
   if (printPoints.find(JoosType) != printPoints.end()) {
     std::cerr << joosType;
   }

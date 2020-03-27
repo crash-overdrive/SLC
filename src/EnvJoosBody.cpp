@@ -146,38 +146,10 @@ bool JoosBody::addConstructor(JoosConstructor joosConstructor) {
   return true;
 }
 
-const JoosField *
-JoosBody::findField(const VariableDescriptor &variableDescriptor,
-                    const std::string &identifier) const {
-  for (auto const &field : fields) {
-    if (field.identifier == identifier &&
-        field.variableDescriptor == variableDescriptor) {
-      return &field;
-    }
+void JoosBody::setAbstract() {
+  for (auto &method : methods) {
+    method.modifiers.emplace(Modifier::Abstract);
   }
-  return nullptr;
-}
-
-const JoosMethod *
-JoosBody::findMethod(const std::string &identifier,
-                     const std::vector<VariableDescriptor> &args) const {
-  for (auto const &method : methods) {
-    if (method.identifier == identifier && method.args == args) {
-      return &method;
-    }
-  }
-  return nullptr;
-}
-
-const JoosConstructor *
-JoosBody::findConstructor(const std::string &identifier,
-                          const std::vector<VariableDescriptor> &args) const {
-  for (auto const &constructor : constructors) {
-    if (constructor.identifier == identifier && constructor.args == args) {
-      return &constructor;
-    }
-  }
-  return nullptr;
 }
 
 std::ostream &operator<<(std::ostream &stream, const JoosBody &joosBody) {

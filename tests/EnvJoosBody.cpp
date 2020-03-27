@@ -163,87 +163,9 @@ TEST_CASE("EnvJoosBody created from Env", "[EnvJoosBody]") {
          Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}},
         nullptr}));
   }
-
-  SECTION("JoosField find Successful") {
-    std::set<Env::Modifier> modifiers = {
-        Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static};
-    const Env::JoosField *joosField = body.findField(
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-        "str");
-
-    REQUIRE((joosField->identifier == "str" &&
-             joosField->variableDescriptor ==
-                 Env::VariableDescriptor{Env::VariableType::SimpleType,
-                                         {"String"}} &&
-             joosField->modifiers == modifiers));
-  }
-
-  SECTION("JoosField find Unsuccessful") {
-    const Env::JoosField *joosField;
-    joosField = body.findField(
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-        "str2");
-    REQUIRE(joosField == nullptr);
-    joosField = body.findField(
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"Array"}},
-        "str");
-    REQUIRE(joosField == nullptr);
-    joosField = body.findField(
-        Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
-        "str");
-    REQUIRE(joosField == nullptr);
-  }
-
-  SECTION("JoosMethod find Successful") {
-    const std::set<Env::Modifier> modifiers = {
-        Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static};
-    std::vector<Env::VariableDescriptor> argList = {
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}};
-    const Env::JoosMethod *joosMethod = body.findMethod("methodName1", argList);
-    Env::VariableDescriptor returnType =
-        Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}};
-
-    REQUIRE((joosMethod->identifier == "methodName1" &&
-             joosMethod->args == argList &&
-             joosMethod->modifiers == modifiers &&
-             joosMethod->returnType == returnType));
-  }
-
-  SECTION("JoosMethod find Unsuccessful") {
-    const Env::JoosMethod *joosMethod;
-    // wrong identifier
-    joosMethod = body.findMethod(
-        "methodName2",
-        {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}});
-    REQUIRE(joosMethod == nullptr);
-
-    // wrong argument datatype
-    joosMethod = body.findMethod(
-        "methodName1",
-        {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}});
-    REQUIRE(joosMethod == nullptr);
-
-    // wrong argument variabletype
-    joosMethod = body.findMethod(
-        "methodName1",
-        {Env::VariableDescriptor{Env::VariableType::SimpleType, {"String"}},
-         Env::VariableDescriptor{Env::VariableType::ArrayType, {"String"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"int"}},
-         Env::VariableDescriptor{Env::VariableType::SimpleType, {"char"}}});
-    REQUIRE(joosMethod == nullptr);
-  }
 }
 
-TEST_CASE("Visitor to create JoosType", "[JoosTypeVisitor]") {
+TEST_CASE("Visitor to create JoosType", "[JoosBodyVisitor]") {
   Client client = createClient();
   std::unique_ptr<AST::Start> root =
       client.buildAST(stdlib + "/2.0/java/lang/Integer.java");

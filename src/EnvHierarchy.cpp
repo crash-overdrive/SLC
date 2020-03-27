@@ -1,7 +1,6 @@
 #include "EnvHierarchy.hpp"
 #include "EnvTypeLink.hpp"
 #include <algorithm>
-#include <list>
 
 namespace Env {
 
@@ -23,7 +22,17 @@ void InterfaceHierarchy::buildSubType() const {
   joosType.subType.emplace(&joosType);
 }
 
-void InterfaceHierarchy::buildContains() const {}
+bool InterfaceHierarchy::buildContains() const {
+  for (const auto &extend : extends) {
+    if (!joosType.contain.mergeContain(extend->contain)) {
+      return false;
+    }
+  }
+  for (const auto &method : joosType.declare.getMethods()) {
+    joosType.contain.addDeclareMethod(&method);
+  }
+  return true;
+}
 
 ClassHierarchy::ClassHierarchy(JoosType &joosType) : joosType(joosType) {}
 
@@ -55,7 +64,25 @@ void ClassHierarchy::buildSubType() const {
   joosType.subType.emplace(&joosType);
 }
 
-void ClassHierarchy::buildContains() const {}
+bool ClassHierarchy::buildContains() const {
+  if (extends && !joosType.contain.mergeContain(extends->contain)) {
+    return false;
+  }
+  for (const auto &implement : implements) {
+    if (!joosType.contain.mergeContain(implement->contain)) {
+      return false;
+    }
+  }
+  for (const auto &field : joosType.declare.getFields()) {
+    joosType.contain.addDeclareField(&field);
+  }
+  for (const auto &method : joosType.declare.getMethods()) {
+    joosType.contain.addDeclareMethod(&method);
+  }
+  return !(joosType.contain.hasAbstract() &&
+           joosType.modifiers.find(Modifier::Abstract) ==
+               joosType.modifiers.end());
+}
 
 void HierarchyGraph::addClass(ClassHierarchy hierarchy) {
   classes.emplace_back(std::move(hierarchy));
@@ -92,10 +119,19 @@ bool HierarchyGraph::topologicalSort() {
   return true;
 }
 
-void HierarchyGraph::buildSubType() {
+void HierarchyGraph::buildSubType() const {
   for (const auto &hierarchy : order) {
     hierarchy->buildSubType();
   }
+}
+
+bool HierarchyGraph::buildContains() const {
+  for (const auto &hierarchy : order) {
+    if (!hierarchy->buildContains()) {
+      return false;
+    }
+  }
+  return true;
 }
 
 HierarchyGraph::DAGNode::DAGNode(Hierarchy &hierarchy) : hierarchy(hierarchy) {}
