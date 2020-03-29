@@ -108,6 +108,17 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"Array"}));
   }
 
+  SECTION("On demand clash") {
+    Env::JoosType list2({}, Env::Type::Class, "List");
+    tree->update({"foo", "canary"}, list);
+    tree->update({"foo", "bar"}, list2);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
+    typeLink.addDemandImport({"foo", "canary"});
+    typeLink.addDemandImport({"foo", "bar"});
+    REQUIRE_FALSE(typeLink.find({"List"}));
+  }
+
   SECTION("Default Package") {
     Env::JoosType array({}, Env::Type::Class, "Array");
     tree->update({}, list);

@@ -82,13 +82,19 @@ JoosType *TypeLink::findSamePackage(const std::string &name) const {
 }
 
 JoosType *TypeLink::findDemand(const std::string &name) const {
+  JoosType *found = nullptr;
   for (const auto &onDemandImport : onDemandImports) {
     JoosType *joosType = onDemandImport->findJoosType(name);
-    if (joosType != nullptr) {
-      return joosType;
+    if (joosType == nullptr) {
+      continue;
     }
+    // Name Clash in demand
+    if (found) {
+      return nullptr;
+    }
+    found = joosType;
   }
-  return nullptr;
+  return found;
 }
 
 void TypeLinkVisitor::visit(const AST::Start &start) {
