@@ -68,26 +68,25 @@ void LocalVariableAnalysis::removeVariableTable() {
   tables.pop_back();
 }
 
-JoosLocalVariableVisitor::JoosLocalVariableVisitor(const TypeLink &typeLink,
-                                                   bool log)
+LocalVariableVisitor::LocalVariableVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), localVariableAnalysis(LocalVariableAnalysis(log)){};
 
-void JoosLocalVariableVisitor::visit(
-    const AST::SingleVariableDeclaration &decl) {
+void LocalVariableVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
   AST::TypeVisitor typeVisitor(typeLink);
   typeVisitor.dispatchChildren(decl);
 
-  if (!localVariableAnalysis.addVariable(propertiesVisitor.getIdentifier(),
+  if (typeVisitor.isErrorState() ||
+      !localVariableAnalysis.addVariable(propertiesVisitor.getIdentifier(),
                                          typeVisitor.getType())) {
     setError();
     return;
   }
 }
 
-void JoosLocalVariableVisitor::visit(const AST::Block &block) {
+void LocalVariableVisitor::visit(const AST::Block &block) {
   localVariableAnalysis.addVariableTable();
   dispatchChildren(block);
   localVariableAnalysis.removeVariableTable();

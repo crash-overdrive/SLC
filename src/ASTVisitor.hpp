@@ -61,7 +61,7 @@ public:
   virtual void visit(const ForUpdate &node);
 
   virtual void dispatchChildren(const Node &parent);
-  bool isErrorState();
+  bool isErrorState() const;
 
 protected:
   void setError();

@@ -34,9 +34,9 @@ private:
   std::vector<VariableTable> tables;
 };
 
-class JoosLocalVariableVisitor : public AST::TrackVisitor {
+class LocalVariableVisitor : public AST::TrackVisitor {
 public:
-  JoosLocalVariableVisitor(const TypeLink &typeLink, bool log = false);
+  LocalVariableVisitor(const TypeLink &typeLink, bool log = false);
   void visit(const AST::SingleVariableDeclaration &decl) override;
   void visit(const AST::Block &block) override;
 

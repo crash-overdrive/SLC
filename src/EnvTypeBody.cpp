@@ -146,6 +146,9 @@ std::ostream &operator<<(std::ostream &stream, const TypeBody &body) {
   return stream << '\n';
 }
 
+TypeBodyVisitor::TypeBodyVisitor(const TypeLink &typeLink)
+    : typeLink(typeLink) {}
+
 void TypeBodyVisitor::visit(const AST::Start &start) {
   dispatchChildren(start);
 }

@@ -60,6 +60,8 @@ void Visitor::dispatchChildren(const Node &parent) {
   }
 }
 
+bool Visitor::isErrorState() const { return errorState; }
+
 void Visitor::setError() { errorState = true; }
 
 void Visitor::postVisit(const Node &) {}
