@@ -55,8 +55,12 @@ void Visitor::visit(const ForUpdate &node) { postVisit(node); }
 void Visitor::dispatchChildren(const Node &parent) {
   for (const auto &child : parent.getChildren()) {
     child->accept(*this);
+    if (errorState)
+      return;
   }
 }
+
+void Visitor::setError() { errorState = true; }
 
 void Visitor::postVisit(const Node &) {}
 
@@ -224,10 +228,6 @@ void PrintVisitor::visit(const ForUpdate &) { stream << "ForUpdate"; }
 
 void TrackVisitor::setLog(std::ostream &stream) { this->streamRef = stream; }
 
-void TrackVisitor::setError() { errorState = true; }
-
-bool TrackVisitor::isErrorState() { return errorState; }
-
 inline void TrackVisitor::postVisit(const Node &parent) {
   streamRef.get() << parent << '\n';
   for (const auto &child : parent.getChildren()) {
@@ -235,7 +235,7 @@ inline void TrackVisitor::postVisit(const Node &parent) {
     streamRef.get() << std::string(level * 2, ' ');
     child->accept(*this);
     level--;
-    if (errorState)
+    if (isErrorState())
       return;
   }
 }

@@ -2,7 +2,7 @@
 #define ENVHIERARCHY_HPP
 
 #include "ASTVisitor.hpp"
-#include "EnvJoosType.hpp"
+#include "EnvTypeBody.hpp"
 #include <unordered_set>
 
 namespace Env {
@@ -14,42 +14,42 @@ public:
   virtual ~Hierarchy() = default;
   virtual void buildSubType() const = 0;
   virtual bool buildContains() const = 0;
-  virtual bool setBaseObject(const JoosType *base) = 0;
+  virtual bool setBaseObject(const TypeDeclaration *base) = 0;
 };
 
 class InterfaceHierarchy : public Hierarchy {
 public:
-  explicit InterfaceHierarchy(JoosType &joosType);
-  bool addExtends(const JoosType *joosType);
+  explicit InterfaceHierarchy(TypeDeclaration &decl);
+  bool addExtends(const TypeDeclaration *decl);
 
-  bool setBaseObject(const JoosType *base) override;
+  bool setBaseObject(const TypeDeclaration *base) override;
   void buildSubType() const override;
   bool buildContains() const override;
 
 private:
   friend HierarchyGraph;
-  // Hard Coding getClass to filter getClass override due to
+  // Hard Coding getClass to filter getClass override in due to
   // Java specs ambiguity
-  static bool isGetClass(const JoosMethod &method);
-  JoosType &joosType;
-  std::unordered_set<const JoosType *> extends;
+  static bool isGetClass(const Method &method);
+  TypeDeclaration &decl;
+  std::unordered_set<const TypeDeclaration *> extends;
 };
 
 class ClassHierarchy : public Hierarchy {
 public:
-  explicit ClassHierarchy(JoosType &joosType);
-  bool setExtends(const JoosType *joosType);
-  bool addImplements(const JoosType *joosType);
+  explicit ClassHierarchy(TypeDeclaration &decl);
+  bool setExtends(const TypeDeclaration *decl);
+  bool addImplements(const TypeDeclaration *decl);
 
-  bool setBaseObject(const JoosType *base) override;
+  bool setBaseObject(const TypeDeclaration *base) override;
   void buildSubType() const override;
   bool buildContains() const override;
 
 private:
   friend HierarchyGraph;
-  JoosType &joosType;
-  const JoosType *extends = nullptr;
-  std::unordered_set<const JoosType *> implements;
+  TypeDeclaration &decl;
+  const TypeDeclaration *extends = nullptr;
+  std::unordered_set<const TypeDeclaration *> implements;
 };
 
 class HierarchyGraph {

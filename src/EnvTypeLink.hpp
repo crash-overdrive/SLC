@@ -2,7 +2,6 @@
 #define ENVTYPELINK_HPP
 
 #include "ASTVisitor.hpp"
-#include "EnvJoosType.hpp"
 #include "EnvPackageTree.hpp"
 #include <unordered_set>
 
@@ -10,21 +9,21 @@ namespace Env {
 
 class TypeLink {
 public:
-  TypeLink(JoosType &joosType);
+  TypeLink(TypeDeclaration &type);
   void setPackage(std::vector<std::string> package);
   void setTree(std::shared_ptr<PackageTree> tree);
   bool addSingleImport(const std::vector<std::string> &name);
   bool addDemandImport(const std::vector<std::string> &name);
-  JoosType *find(const std::vector<std::string> &name) const;
+  TypeDeclaration *find(const std::vector<std::string> &name) const;
 
 private:
-  JoosType &joosType;
+  TypeDeclaration &decl;
   std::vector<std::string> package;
   std::shared_ptr<PackageTree> tree;
-  std::unordered_map<std::string, JoosType *> singleImports;
+  std::unordered_map<std::string, TypeDeclaration *> singleImports;
   std::unordered_set<PackageNode *> onDemandImports;
-  JoosType *findSamePackage(const std::string &name) const;
-  JoosType *findDemand(const std::string &name) const;
+  TypeDeclaration *findSamePackage(const std::string &name) const;
+  TypeDeclaration *findDemand(const std::string &name) const;
 };
 
 class TypeLinkVisitor : public AST::Visitor {
