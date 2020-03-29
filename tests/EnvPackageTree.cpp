@@ -3,7 +3,7 @@
 #include "TestUtil.hpp"
 #include "catch.hpp"
 
-TEST_CASE("Package Node", "[PackageNode]") {
+TEST_CASE("Package Node", "[EnvPackageNode]") {
   Env::PackageNode root{Env::PackageNode::Type::Global};
   Env::PackageNode *foo = root.update(Env::PackageNode::Type::Package, "foo");
   Env::PackageNode *bar = foo->update(Env::PackageNode::Type::Package, "bar");
@@ -12,19 +12,19 @@ TEST_CASE("Package Node", "[PackageNode]") {
   SECTION("Node will reject duplicates") {
     Env::PackageNode *node;
     node = foo->update(Env::PackageNode::Type::JoosType, "bar");
-    REQUIRE(node == nullptr);
+    REQUIRE_FALSE(node);
     node = foo->update(Env::PackageNode::Type::Package, "bar");
-    REQUIRE(node != nullptr);
+    REQUIRE(node);
     node = bar->update(Env::PackageNode::Type::Package, "canary");
-    REQUIRE(node == nullptr);
+    REQUIRE_FALSE(node);
     node = bar->update(Env::PackageNode::Type::JoosType, "canary");
-    REQUIRE(node == nullptr);
+    REQUIRE_FALSE(node);
     node = bar->update(Env::PackageNode::Type::JoosType, "canary");
-    REQUIRE(node == nullptr);
+    REQUIRE_FALSE(node);
   }
 }
 
-TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
+TEST_CASE("Package Tree", "[EnvPackageTree]") {
   Env::PackageTree tree;
 
   SECTION("Basic lookup") {
@@ -33,7 +33,14 @@ TEST_CASE("Package Tree", "[PackageTreeLookup]]") {
     REQUIRE(tree.update({"foo", "bar"}, canary));
     REQUIRE_FALSE(tree.update({"foo"}, bar));
     REQUIRE(tree.findType({"foo", "bar", "canary"}) == &canary);
-    REQUIRE(tree.findType({"foo"}) == nullptr);
+    REQUIRE_FALSE(tree.findType({"foo"}));
+  }
+
+  SECTION("Default Package lookup") {
+    Env::JoosType canary({}, Env::Type::Class, "canary");
+    REQUIRE(tree.update({}, canary));
+    REQUIRE_FALSE(tree.findType({"canary"}));
+    REQUIRE(tree.findDefault({"canary"}) == &canary);
   }
 
   SECTION("Single File") {

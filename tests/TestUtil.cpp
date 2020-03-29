@@ -4,7 +4,7 @@
 #include <fstream>
 
 const std::unordered_map<unsigned int, std::vector<std::string>> stdLibMap{
-    {1, {}},           {2, stdlib2Files}, {3, stdlib3Files},
+    {1, stdlib2Files}, {2, stdlib2Files}, {3, stdlib3Files},
     {4, stdlib4Files}, {5, stdlib5Files},
 };
 

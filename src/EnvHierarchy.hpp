@@ -1,6 +1,7 @@
 #ifndef ENVHIERARCHY_HPP
 #define ENVHIERARCHY_HPP
 
+#include "ASTVisitor.hpp"
 #include "EnvJoosType.hpp"
 #include <unordered_set>
 
@@ -13,18 +14,23 @@ public:
   virtual ~Hierarchy() = default;
   virtual void buildSubType() const = 0;
   virtual bool buildContains() const = 0;
+  virtual bool setBaseObject(const JoosType *base) = 0;
 };
 
 class InterfaceHierarchy : public Hierarchy {
 public:
   explicit InterfaceHierarchy(JoosType &joosType);
   bool addExtends(const JoosType *joosType);
-  bool subType(const JoosType *joosType) const;
+
+  bool setBaseObject(const JoosType *base) override;
   void buildSubType() const override;
   bool buildContains() const override;
 
 private:
   friend HierarchyGraph;
+  // Hard Coding getClass to filter getClass override due to
+  // Java specs ambiguity
+  static bool isGetClass(const JoosMethod &method);
   JoosType &joosType;
   std::unordered_set<const JoosType *> extends;
 };
@@ -34,6 +40,8 @@ public:
   explicit ClassHierarchy(JoosType &joosType);
   bool setExtends(const JoosType *joosType);
   bool addImplements(const JoosType *joosType);
+
+  bool setBaseObject(const JoosType *base) override;
   void buildSubType() const override;
   bool buildContains() const override;
 
@@ -65,6 +73,24 @@ private:
   std::vector<InterfaceHierarchy> interfaces;
   std::vector<ClassHierarchy> classes;
   std::vector<Hierarchy *> order;
+};
+
+class HierarchyVisitor : public AST::Visitor {
+public:
+  void visit(const AST::Start &node) override;
+  void visit(const AST::ClassDeclaration &node) override;
+  void visit(const AST::InterfaceDeclaration &node) override;
+  void visit(const AST::Interfaces &node) override;
+  void visit(const AST::Extensions &node) override;
+  void visit(const AST::Super &node) override;
+  std::vector<std::vector<std::string>> getInterfaces();
+  std::vector<std::vector<std::string>> getExtensions();
+  std::vector<std::string> getSuper();
+
+private:
+  std::vector<std::vector<std::string>> interfaces;
+  std::vector<std::vector<std::string>> extensions;
+  std::vector<std::string> super;
 };
 
 } // namespace Env

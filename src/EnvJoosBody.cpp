@@ -38,6 +38,10 @@ bool JoosField::operator==(const JoosField &joosField) const {
   return identifier == joosField.identifier;
 }
 
+bool JoosField::operator!=(const JoosField &joosField) const {
+  return identifier != joosField.identifier;
+}
+
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField) {
   stream << "JOOSFIELD"
          << "\n";
@@ -61,6 +65,10 @@ JoosMethod::JoosMethod(std::set<Modifier> modifiers,
 
 bool JoosMethod::operator==(const JoosMethod &joosMethod) const {
   return identifier == joosMethod.identifier && args == joosMethod.args;
+}
+
+bool JoosMethod::operator!=(const JoosMethod &joosMethod) const {
+  return identifier != joosMethod.identifier || args != joosMethod.args;
 }
 
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod) {
@@ -90,6 +98,11 @@ JoosConstructor::JoosConstructor(std::set<Modifier> modifiers,
 bool JoosConstructor::operator==(const JoosConstructor &joosConstructor) const {
   return identifier == joosConstructor.identifier &&
          args == joosConstructor.args;
+}
+
+bool JoosConstructor::operator!=(const JoosConstructor &joosConstructor) const {
+  return identifier != joosConstructor.identifier ||
+         args != joosConstructor.args;
 }
 
 std::ostream &operator<<(std::ostream &stream,

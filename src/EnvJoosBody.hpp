@@ -58,6 +58,7 @@ struct JoosField {
   JoosField(std::set<Modifier> modifiers, VariableDescriptor descriptor,
             std::string identifier, const AST::FieldDeclaration *astNode);
   bool operator==(const JoosField &joosField) const;
+  bool operator!=(const JoosField &joosField) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosField &joosField);
 
@@ -72,6 +73,7 @@ struct JoosMethod {
              std::string identifier, std::vector<VariableDescriptor> args,
              const AST::MethodDeclaration *astNode);
   bool operator==(const JoosMethod &joosMethod) const;
+  bool operator!=(const JoosMethod &joosMethod) const;
 };
 std::ostream &operator<<(std::ostream &stream, const JoosMethod &joosMethod);
 
@@ -84,6 +86,7 @@ struct JoosConstructor {
                   std::vector<VariableDescriptor> args,
                   const AST::ConstructorDeclaration *astNode);
   bool operator==(const JoosConstructor &joosConstructor) const;
+  bool operator!=(const JoosConstructor &joosConstructor) const;
 };
 std::ostream &operator<<(std::ostream &stream,
                          const JoosConstructor &joosConstructor);

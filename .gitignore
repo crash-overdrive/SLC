@@ -32,7 +32,8 @@
 *.app
 
 build/*
-*Config.hpp
+src/Config.hpp
+tests/TestConfig.hpp
 
 compile_commands.json
 

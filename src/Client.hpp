@@ -2,6 +2,7 @@
 #define CLIENT_HPP
 
 #include "ASTNode.hpp"
+#include "EnvHierarchy.hpp"
 #include "EnvJoosType.hpp"
 #include "EnvPackageTree.hpp"
 #include "EnvTypeLink.hpp"
@@ -57,6 +58,11 @@ private:
     Env::TypeLink typeLink;
     explicit Environment(Env::JoosType joosType);
   };
+
+  bool buildClassHierarchy(Env::HierarchyGraph &graph,
+                           Environment &environment);
+  bool buildInterfaceHierarchy(Env::HierarchyGraph &graph,
+                               Environment &environment);
 
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;

@@ -64,10 +64,12 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
     {"Modifier", modifierVisit}, // Modifier -> PUBLIC, PRIVATE, PROTECTED,
                                  // STATIC, ABSTRACT, FINAL, NATIVE
 
-    {"Extensions",
-     inodeVisit<Extensions>}, // Extensions -> EXTENDS ExtensionList
-    {"ExtensionList",
-     dispatchChildren}, // ExtensionList -> ExtensionList COMMA Name
+    {"Extensions", dispatchChildren},
+    // Extensions -> EXTENDS ExtensionList
+    {"ExtensionList", dispatchChildren},
+    // ExtensionList -> ExtensionList COMMA Name
+    {"ExtensionType", inodeVisit<Extensions>},
+    // ExtensionType -> Name
 
     {"InterfaceBodyDeclarationList",
      dispatchChildren}, // InterfaceBodyDeclarationList ->
@@ -105,10 +107,12 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
 
     {"Super", inodeVisit<Super>}, // Super -> EXTENDS Name
 
-    {"Interfaces",
+    {"Interfaces", dispatchChildren}, // Interfaces -> IMPLEMENTS InterfaceList
+    {"InterfaceList", dispatchChildren},
+    // InterfaceList -> InterfaceList COMMA Name, Name
+
+    {"InterfaceType",
      inodeVisit<Interfaces>}, // Interfaces -> IMPLEMENTS InterfaceList
-    {"InterfaceList",
-     dispatchChildren}, // InterfaceList -> InterfaceList COMMA Name, Name
 
     {"ClassBodyDeclarationList",
      dispatchChildren}, // ClassBodyDeclarationList -> ClassBodyDeclarationList

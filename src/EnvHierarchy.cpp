@@ -1,4 +1,5 @@
 #include "EnvHierarchy.hpp"
+#include "ASTVisitorUtil.hpp"
 #include "EnvTypeLink.hpp"
 #include <algorithm>
 
@@ -15,6 +16,26 @@ bool InterfaceHierarchy::addExtends(const JoosType *joosType) {
   return flag;
 }
 
+bool InterfaceHierarchy::setBaseObject(const JoosType *base) {
+  if (extends.size()) {
+    return true;
+  }
+  for (const auto &method : base->declare.getMethods()) {
+    // Skip getClass
+    if (isGetClass(method)) {
+      continue;
+    }
+    if (method.modifiers.find(Modifier::Public) != method.modifiers.end()) {
+      JoosMethod baseMethod(method);
+      baseMethod.modifiers = {Modifier::Public};
+      if (!joosType.declare.addMethod(baseMethod)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 void InterfaceHierarchy::buildSubType() const {
   for (const auto &extend : extends) {
     joosType.subType.insert(extend->subType.begin(), extend->subType.end());
@@ -23,15 +44,23 @@ void InterfaceHierarchy::buildSubType() const {
 }
 
 bool InterfaceHierarchy::buildContains() const {
+  joosType.declare.setAbstract();
   for (const auto &extend : extends) {
     if (!joosType.contain.mergeContain(extend->contain)) {
       return false;
     }
   }
   for (const auto &method : joosType.declare.getMethods()) {
-    joosType.contain.addDeclareMethod(&method);
+    // Interface cannot override getclass method
+    if (isGetClass(method) || !joosType.contain.addDeclareMethod(&method)) {
+      return false;
+    }
   }
   return true;
+}
+
+bool InterfaceHierarchy::isGetClass(const JoosMethod &method) {
+  return method.identifier == "getClass" && method.args.empty();
 }
 
 ClassHierarchy::ClassHierarchy(JoosType &joosType) : joosType(joosType) {}
@@ -51,6 +80,13 @@ bool ClassHierarchy::addImplements(const JoosType *joosType) {
   }
   auto [it, flag] = implements.emplace(joosType);
   return flag;
+}
+
+bool ClassHierarchy::setBaseObject(const JoosType *base) {
+  if (!extends && base->astNode != joosType.astNode) {
+    extends = base;
+  }
+  return true;
 }
 
 void ClassHierarchy::buildSubType() const {
@@ -77,7 +113,9 @@ bool ClassHierarchy::buildContains() const {
     joosType.contain.addDeclareField(&field);
   }
   for (const auto &method : joosType.declare.getMethods()) {
-    joosType.contain.addDeclareMethod(&method);
+    if (!joosType.contain.addDeclareMethod(&method)) {
+      return false;
+    }
   }
   return !(joosType.contain.hasAbstract() &&
            joosType.modifiers.find(Modifier::Abstract) ==
@@ -170,6 +208,46 @@ std::vector<HierarchyGraph::DAGNode> HierarchyGraph::augmentGraph() {
     }
   }
   return nodes;
+}
+
+void HierarchyVisitor::visit(const AST::Start &node) { dispatchChildren(node); }
+
+void HierarchyVisitor::visit(const AST::ClassDeclaration &node) {
+  dispatchChildren(node);
+}
+
+void HierarchyVisitor::visit(const AST::InterfaceDeclaration &node) {
+  dispatchChildren(node);
+}
+
+void HierarchyVisitor::visit(const AST::Interfaces &node) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(node);
+  interfaces.emplace_back(visitor.getName());
+}
+
+void HierarchyVisitor::visit(const AST::Extensions &node) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(node);
+  extensions.emplace_back(visitor.getName());
+};
+
+void HierarchyVisitor::visit(const AST::Super &node) {
+  AST::NameVisitor visitor;
+  visitor.dispatchChildren(node);
+  super = visitor.getName();
+}
+
+std::vector<std::vector<std::string>> HierarchyVisitor::getInterfaces() {
+  return std::move(interfaces);
+}
+
+std::vector<std::vector<std::string>> HierarchyVisitor::getExtensions() {
+  return std::move(extensions);
+}
+
+std::vector<std::string> HierarchyVisitor::getSuper() {
+  return std::move(super);
 }
 
 } // namespace Env

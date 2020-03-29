@@ -1,3 +1,4 @@
+#include "MarmosetConfig.hpp"
 #include "TestConfig.hpp"
 #include "TestUtil.hpp"
 #include "catch.hpp"
@@ -75,6 +76,15 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
+    SECTION("error-localvariable") {
+      client.setBreakPoint(Client::LocalVariableAnalysis);
+      for (const auto &group : a2ErrorLocalVariable) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
+        }
+      }
+    }
+
     SECTION("error-packagetree") {
       client.setBreakPoint(Client::PackageTree);
       for (const auto &group : a2ErrorPackageTree) {
@@ -87,6 +97,15 @@ TEST_CASE("client process", "[client]") {
     SECTION("error-typeLink") {
       client.setBreakPoint(Client::TypeLink);
       for (const auto &group : a2ErrorTypeLink) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
+        }
+      }
+    }
+
+    SECTION("error-hierarchy") {
+      client.setBreakPoint(Client::Hierarchy);
+      for (const auto &group : a2ErrorHierarchy) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }
@@ -137,15 +156,5 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-  }
-
-  SECTION("multiple files") {
-    std::vector<std::string> files{
-        testDataDir +
-            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/A/A.java",
-        testDataDir +
-            "/java/a2/J1_3_PackageDecl_SamePackageAndClassName/Main.java",
-    };
-    REQUIRE(client.compile(files));
   }
 }

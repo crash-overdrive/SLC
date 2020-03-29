@@ -150,7 +150,7 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
   for (auto const &field : bodyVisitor.getJoosFields()) {
     if (!joosType.declare.addField(field)) {
       std::cerr << "Duplicate Field found in file\n" << field << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed"
+      std::cerr << "Joos Type creation for file " << fullName << " failed"
                 << '\n';
       errorState = true;
       return;
@@ -159,7 +159,7 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
   for (auto const &method : bodyVisitor.getJoosMethods()) {
     if (!joosType.declare.addMethod(method)) {
       std::cerr << "Duplicate Method found in file\n" << method << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed"
+      std::cerr << "Joos Type creation for file " << fullName << " failed"
                 << '\n';
       errorState = true;
       return;
@@ -169,14 +169,11 @@ void Client::buildJoosType(std::unique_ptr<AST::Start> node,
     if (!joosType.declare.addConstructor(constructor)) {
       std::cerr << "Duplicate Constructor found in file\n"
                 << constructor << '\n';
-      std::cerr << "File header creation for file " << fullName << " failed"
+      std::cerr << "Joos Type creation for file " << fullName << " failed"
                 << '\n';
       errorState = true;
       return;
     };
-  }
-  if (joosType.type == Env::Type::Interface) {
-    joosType.declare.setAbstract();
   }
   if (printPoints.find(JoosType) != printPoints.end()) {
     std::cerr << joosType;
@@ -270,7 +267,7 @@ void Client::buildPackageTree() {
 }
 
 void Client::buildTypeLink() {
-  for (auto &&environment : environments) {
+  for (auto &environment : environments) {
     Env::TypeLinkVisitor visitor;
     environment.joosType.astNode->accept(visitor);
 
@@ -288,7 +285,104 @@ void Client::buildTypeLink() {
         return;
       }
     }
+    environment.typeLink.addDemandImport({"java", "lang"});
   }
+  if (breakPoint != TypeLink) {
+    buildHierarchy();
+  }
+}
+
+void Client::buildHierarchy() {
+  Env::HierarchyGraph graph;
+  for (auto &environment : environments) {
+    bool flag;
+    switch (environment.joosType.type) {
+    case Env::Type::Class:
+      flag = buildClassHierarchy(graph, environment);
+      break;
+    case Env::Type::Interface:
+      flag = buildInterfaceHierarchy(graph, environment);
+      break;
+    }
+    if (!flag) {
+      std::cerr << "Error building hierarchy\n";
+      errorState = true;
+      return;
+    }
+  }
+  if (!graph.topologicalSort()) {
+    std::cerr << "Error circular dependencies\n";
+    errorState = true;
+    return;
+  }
+  graph.buildSubType();
+  if (!graph.buildContains()) {
+    std::cerr << "Error building contains set\n";
+    errorState = true;
+    return;
+  }
+}
+
+bool Client::buildClassHierarchy(Env::HierarchyGraph &graph,
+                                 Environment &environment) {
+  Env::HierarchyVisitor visitor;
+  environment.joosType.astNode->accept(visitor);
+  Env::ClassHierarchy classHierarchy(environment.joosType);
+
+  std::vector<std::string> super = visitor.getSuper();
+  if (!super.empty()) {
+    Env::JoosType *type = environment.typeLink.find(super);
+    if (!type) {
+      std::cout << super;
+      std::cerr << "Extends from class not found in typelink\n";
+      return false;
+    }
+    if (!classHierarchy.setExtends(type)) {
+      std::cerr << "Extends for class can't be set\n";
+      return false;
+    }
+  }
+  for (auto &&interface : visitor.getInterfaces()) {
+    Env::JoosType *type = environment.typeLink.find(interface);
+    if (!type) {
+      std::cerr << "Interface from class not found in typelink\n";
+      return false;
+    }
+    if (!classHierarchy.addImplements(type)) {
+      std::cerr << "Extends for class can't be set\n";
+      return false;
+    }
+  }
+  classHierarchy.setBaseObject(
+      environment.typeLink.find({"java", "lang", "Object"}));
+  graph.addClass(std::move(classHierarchy));
+  return true;
+}
+
+bool Client::buildInterfaceHierarchy(Env::HierarchyGraph &graph,
+                                     Environment &environment) {
+  Env::HierarchyVisitor visitor;
+  environment.joosType.astNode->accept(visitor);
+  Env::InterfaceHierarchy interfaceHierarchy(environment.joosType);
+
+  for (auto &&interface : visitor.getExtensions()) {
+    Env::JoosType *type = environment.typeLink.find(interface);
+    if (!type) {
+      std::cerr << "Interface from interface not found in typelink\n";
+      return false;
+    }
+    if (!interfaceHierarchy.addExtends(type)) {
+      std::cerr << "Extends for interfaces can't be set\n";
+      return false;
+    }
+  }
+  Env::JoosType *base = environment.typeLink.find({"java", "lang", "Object"});
+  if (!interfaceHierarchy.setBaseObject(base)) {
+    std::cerr << "Error setting base interface\n";
+    return false;
+  }
+  graph.addInterface(std::move(interfaceHierarchy));
+  return true;
 }
 
 std::unique_ptr<AST::Start> Client::buildAST(const std::string &fullName) {
