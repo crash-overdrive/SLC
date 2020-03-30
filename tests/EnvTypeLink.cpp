@@ -127,6 +127,25 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"Array"}));
   }
 
+  SECTION("Resolve prefix clash default package") {
+    Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
+    tree->update({"Array"}, list);
+    tree->update({}, array);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
+    REQUIRE_FALSE(typeLink.find({"Array", "List"}));
+  }
+
+  SECTION("Resolve prefix clash import") {
+    Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
+    tree->update({"Array"}, list);
+    tree->update({"foo", "bar"}, array);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
+    typeLink.addSingleImport({"foo", "bar", "Array"});
+    REQUIRE_FALSE(typeLink.find({"Array", "List"}));
+  }
+
   SECTION("Single Import class own name") {
     tree->update({"Test"}, list);
     Env::TypeDeclaration list2({}, Env::DeclarationKeyword::Class, "List",

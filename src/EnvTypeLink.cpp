@@ -49,6 +49,10 @@ TypeDeclaration *TypeLink::find(const std::vector<std::string> &name) const {
   }
   // Name is fully qualified-name
   if (name.size() > 1) {
+    // Make sure simple name does not resolve to any type
+    if (find({name.at(0)})) {
+      return nullptr;
+    }
     return tree->findDeclaration(name);
   }
   const std::string &simpleName = name.at(0);
