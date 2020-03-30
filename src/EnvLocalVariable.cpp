@@ -86,6 +86,15 @@ void LocalVariableVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   }
 }
 
+void LocalVariableVisitor::visit(const AST::SimpleType &simpleType) {
+  AST::TypeVisitor typeVisitor(typeLink);
+  simpleType.accept(typeVisitor);
+  if (typeVisitor.isErrorState()) {
+    setError();
+    return;
+  }
+}
+
 void LocalVariableVisitor::visit(const AST::Block &block) {
   localVariableAnalysis.addVariableTable();
   dispatchChildren(block);
