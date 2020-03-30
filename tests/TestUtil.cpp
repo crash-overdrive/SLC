@@ -26,11 +26,11 @@ std::vector<std::string>
 createMarmosetTest(unsigned int num,
                    const std::vector<std::string> &fileNames) {
   std::vector<std::string> files;
+  auto it = stdLibMap.find(num);
+  files.insert(files.end(), it->second.begin(), it->second.end());
   for (const auto &fileName : fileNames) {
     files.emplace_back(testDataDir + "/java/a" + std::to_string(num) + "/" +
                        fileName);
   }
-  auto it = stdLibMap.find(num);
-  files.insert(files.end(), it->second.begin(), it->second.end());
   return files;
 }
