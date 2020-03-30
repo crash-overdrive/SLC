@@ -91,25 +91,25 @@ std::ostream &operator<<(std::ostream &stream, const Constructor &constructor) {
 
 const std::vector<Field> &TypeBody::getFields() const { return fields; }
 
-bool TypeBody::addField(Field field) {
+bool TypeBody::addField(Field other) {
   for (auto const &field : fields) {
-    if (field == field) {
+    if (field == other) {
       return false;
     }
   }
-  fields.emplace_back(std::move(field));
+  fields.emplace_back(std::move(other));
   return true;
 }
 
 const std::vector<Method> &TypeBody::getMethods() const { return methods; }
 
-bool TypeBody::addMethod(Method method) {
+bool TypeBody::addMethod(Method other) {
   for (auto const &method : methods) {
-    if (method == method) {
+    if (method == other) {
       return false;
     }
   }
-  methods.emplace_back(std::move(method));
+  methods.emplace_back(std::move(other));
   return true;
 }
 
@@ -117,13 +117,13 @@ const std::vector<Constructor> &TypeBody::getConstructors() const {
   return constructors;
 }
 
-bool TypeBody::addConstructor(Constructor constructor) {
+bool TypeBody::addConstructor(Constructor other) {
   for (auto const &constructor : constructors) {
-    if (constructor == constructor) {
+    if (constructor == other) {
       return false;
     }
   }
-  constructors.emplace_back(std::move(constructor));
+  constructors.emplace_back(std::move(other));
   return true;
 }
 

@@ -15,7 +15,7 @@ public:
 
   bool mergeContain(const TypeContain &contain);
 
-  const Field *findField(const Type &type, const std::string &identifier) const;
+  const Field *findField(const std::string &identifier) const;
   const Method *findMethod(const std::string &identifier,
                            const std::vector<Type> &args) const;
   bool hasAbstract() const;

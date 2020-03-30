@@ -34,7 +34,6 @@ struct Field {
   Type type;
   std::string identifier;
   const AST::FieldDeclaration *astNode;
-  Field() = default;
   Field(std::set<Modifier> modifiers, Type type, std::string identifier,
         const AST::FieldDeclaration *astNode);
   bool operator==(const Field &field) const;
@@ -72,13 +71,13 @@ std::ostream &operator<<(std::ostream &stream, const Constructor &constructor);
 class TypeBody {
 public:
   const std::vector<Field> &getFields() const;
-  bool addField(Field field);
+  bool addField(Field other);
 
   const std::vector<Method> &getMethods() const;
-  bool addMethod(Method method);
+  bool addMethod(Method other);
 
   const std::vector<Constructor> &getConstructors() const;
-  bool addConstructor(Constructor constructor);
+  bool addConstructor(Constructor other);
 
   void setAbstract();
 

@@ -97,10 +97,9 @@ bool TypeContain::mergeContain(const TypeContain &contain) {
   return true;
 }
 
-const Field *TypeContain::findField(const Type &type,
-                                    const std::string &identifier) const {
+const Field *TypeContain::findField(const std::string &identifier) const {
   for (const auto &field : fields) {
-    if (field->identifier == identifier && field->type == type) {
+    if (field->identifier == identifier) {
       return field;
     }
   }

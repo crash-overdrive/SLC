@@ -225,7 +225,7 @@ void Client::buildTypeBody() {
     }
     for (auto &&method : bodyVisitor.getMethods()) {
       if (!body.addMethod(std::move(method))) {
-        std::cerr << "Duplicate Method found in file\n" << method << '\n';
+        std::cerr << "Duplicate Method found in file\n";
         std::cerr << "Joos Type creation for file " << environment.fullName
                   << " failed\n";
         errorState = true;
@@ -298,9 +298,9 @@ void Client::localVariableAnalysis() {
         return;
       }
     }
-    if (breakPoint != LocalVariableAnalysis) {
-      buildHierarchy();
-    }
+  }
+  if (breakPoint != LocalVariableAnalysis) {
+    buildHierarchy();
   }
 }
 

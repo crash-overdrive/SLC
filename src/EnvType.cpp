@@ -2,6 +2,9 @@
 
 namespace Env {
 
+Type::Type(TypeKeyword keyword, bool isArray, TypeDeclaration *declare)
+    : keyword(keyword), isArray(isArray), declare(declare) {}
+
 bool Type::operator==(const Type &type) const {
   return keyword == type.keyword && isArray == type.isArray &&
          declare == type.declare;

@@ -156,7 +156,7 @@ const std::vector<std::string> a1ErrorScan{
     "Je_1_NonJoosConstructs_Unicode.java",
 };
 
-const std::vector<std::string> A1ErrorParse{
+const std::vector<std::string> a1ErrorParse{
     "Je_16_Circularity_1.java",
     "Je_16_Circularity_2.java",
     "Je_16_Circularity_3.java",
@@ -904,7 +904,7 @@ const std::vector<std::vector<std::string>> a2ErrorParse{
     },
 };
 
-const std::vector<std::vector<std::string>> a2ErrorJoosType{
+const std::vector<std::vector<std::string>> a2ErrorTypeBody{
     {
         "Je_12_Fields_StaticNonStatic.java",
     },
