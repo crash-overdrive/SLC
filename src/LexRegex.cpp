@@ -8,30 +8,33 @@
 
 std::unordered_set<char> Lex::regexOperators = {'-', '*', '|', '^', '`', '?'};
 std::unordered_set<char> Lex::brackets = {'(', ')'};
-std::unordered_set<char> Lex::nongraphicalElements = {'b', 'B', 'f', 'F' ,'n', 'N', 'r', 'R', 't', 'T'};
+std::unordered_set<char> Lex::nongraphicalElements = {'b', 'B', 'f', 'F', 'n',
+                                                      'N', 'r', 'R', 't', 'T'};
 std::unordered_set<char> Lex::miscellaneousElements = {'\\'};
 
-Lex::RegexElement::RegexElement():
-  symbol(0), isOperator(false) {};
+Lex::RegexElement::RegexElement() : symbol(0), isOperator(false) {}
 
+Lex::RegexElement::RegexElement(char symbol)
+    : symbol(symbol), isOperator(false) {}
 
-Lex::RegexElement::RegexElement(char symbol):
-  symbol(symbol), isOperator(false) {};
-
-
-Lex::RegexElement::RegexElement(char symbol, bool isOperator):
-  symbol(symbol), isOperator(isOperator) {};
-
+Lex::RegexElement::RegexElement(char symbol, bool isOperator)
+    : symbol(symbol), isOperator(isOperator) {}
 
 int Lex::operatorPrecedence(char operatorSymbol) {
   assert(regexOperators.find(operatorSymbol) != regexOperators.end());
   switch (operatorSymbol) {
-    case '^': return 0;
-    case '|': return 1;
-    case '`': return 2;
-    case '*': return 3;
-    case '?': return 4;
-    case '-': return 5;
+  case '^':
+    return 0;
+  case '|':
+    return 1;
+  case '`':
+    return 2;
+  case '*':
+    return 3;
+  case '?':
+    return 4;
+  case '-':
+    return 5;
   }
   return INT32_MAX;
 }
@@ -46,39 +49,56 @@ std::vector<Lex::RegexElement> Lex::parseRegex(std::string regexPattern) {
       index = index + 1;
       token = regexPattern[index];
 
-       if (regexOperators.find(token) != regexOperators.end() ||
-          brackets.find(token) != brackets.end()) { // check if operator or bracket is escaped
-          parsedRegex.push_back(RegexElement(token));
-       } else if (nongraphicalElements.find(token) != nongraphicalElements.end()) { // check if non graphical character is escaped
-          switch (token) {
-            case 'b': parsedRegex.push_back(RegexElement('\b'));
-                      break;
-            case 'B': parsedRegex.push_back(RegexElement('\b'));
-                      break;
-            case 'f': parsedRegex.push_back(RegexElement('\f'));
-                      break;
-            case 'F': parsedRegex.push_back(RegexElement('\f'));
-                      break;
-            case 'n': parsedRegex.push_back(RegexElement('\n'));
-                      break;
-            case 'N': parsedRegex.push_back(RegexElement('\n'));
-                      break;
-            case 'r': parsedRegex.push_back(RegexElement('\r'));
-                      break;
-            case 'R': parsedRegex.push_back(RegexElement('\r'));
-                      break;
-            case 't': parsedRegex.push_back(RegexElement('\t'));
-                      break;
-            case 'T': parsedRegex.push_back(RegexElement('\t'));
-                      break;
-          }
-       } else if (miscellaneousElements.find(token) != miscellaneousElements.end()) { // check if miscellaneous element is escaped
-          parsedRegex.push_back(RegexElement('\\'));
-       } else { // ERROR
-          //assert(("Unexpected element found after \\ while parsing regex", false));
-       }
+      if (regexOperators.find(token) != regexOperators.end() ||
+          brackets.find(token) !=
+              brackets.end()) { // check if operator or bracket is escaped
+        parsedRegex.push_back(RegexElement(token));
+      } else if (nongraphicalElements.find(token) !=
+                 nongraphicalElements
+                     .end()) { // check if non graphical character is escaped
+        switch (token) {
+        case 'b':
+          parsedRegex.push_back(RegexElement('\b'));
+          break;
+        case 'B':
+          parsedRegex.push_back(RegexElement('\b'));
+          break;
+        case 'f':
+          parsedRegex.push_back(RegexElement('\f'));
+          break;
+        case 'F':
+          parsedRegex.push_back(RegexElement('\f'));
+          break;
+        case 'n':
+          parsedRegex.push_back(RegexElement('\n'));
+          break;
+        case 'N':
+          parsedRegex.push_back(RegexElement('\n'));
+          break;
+        case 'r':
+          parsedRegex.push_back(RegexElement('\r'));
+          break;
+        case 'R':
+          parsedRegex.push_back(RegexElement('\r'));
+          break;
+        case 't':
+          parsedRegex.push_back(RegexElement('\t'));
+          break;
+        case 'T':
+          parsedRegex.push_back(RegexElement('\t'));
+          break;
+        }
+      } else if (miscellaneousElements.find(token) !=
+                 miscellaneousElements
+                     .end()) { // check if miscellaneous element is escaped
+        parsedRegex.push_back(RegexElement('\\'));
+      } else { // ERROR
+        // assert(("Unexpected element found after \\ while parsing regex",
+        // false));
+      }
     } else if (regexOperators.find(token) != regexOperators.end() ||
-              brackets.find(token) != brackets.end()) { // check if token is an operator or bracket
+               brackets.find(token) !=
+                   brackets.end()) { // check if token is an operator or bracket
       parsedRegex.push_back(RegexElement(token, true));
     } else { // for every other case just add to parsedRegex
       parsedRegex.push_back(RegexElement(token));
@@ -94,8 +114,8 @@ std::vector<Lex::RegexElement> Lex::parseRegex(std::string regexPattern) {
   return parsedRegex;
 }
 
-
-std::vector<Lex::RegexElement> Lex::insertExplicitConcatenationOperator(std::string regexPattern) {
+std::vector<Lex::RegexElement>
+Lex::insertExplicitConcatenationOperator(std::string regexPattern) {
   std::vector<Lex::RegexElement> parsedRegex = Lex::parseRegex(regexPattern);
   std::vector<Lex::RegexElement> concatenatedRegexPattern;
 
@@ -105,7 +125,8 @@ std::vector<Lex::RegexElement> Lex::insertExplicitConcatenationOperator(std::str
 
     concatenatedRegexPattern.push_back(RegexElement(token, isOperator));
 
-    if (isOperator && (token == '|' || token == '-' || token == '(' || token == '^')) {
+    if (isOperator &&
+        (token == '|' || token == '-' || token == '(' || token == '^')) {
       continue;
     }
 
@@ -113,8 +134,9 @@ std::vector<Lex::RegexElement> Lex::insertExplicitConcatenationOperator(std::str
       char lookAheadToken = parsedRegex[index + 1].symbol;
       bool isOperatorAhead = parsedRegex[index + 1].isOperator;
 
-      if (isOperatorAhead && (lookAheadToken == '*' || lookAheadToken == '+' || lookAheadToken == '?' ||
-          lookAheadToken == '|' || lookAheadToken == ')' || lookAheadToken == '-')) {
+      if (isOperatorAhead && (lookAheadToken == '*' || lookAheadToken == '+' ||
+                              lookAheadToken == '?' || lookAheadToken == '|' ||
+                              lookAheadToken == ')' || lookAheadToken == '-')) {
         continue;
       }
       concatenatedRegexPattern.push_back(RegexElement('`', true));
@@ -136,21 +158,25 @@ std::vector<Lex::RegexElement> Lex::insertExplicitConcatenationOperator(std::str
   return concatenatedRegexPattern;
 }
 
-
-std::vector<Lex::RegexElement> Lex::convertRegexToPostFix(std::string regexPattern) {
-  std::vector<Lex::RegexElement> concatenatedRegexPattern = Lex::insertExplicitConcatenationOperator(regexPattern);
+std::vector<Lex::RegexElement>
+Lex::convertRegexToPostFix(std::string regexPattern) {
+  std::vector<Lex::RegexElement> concatenatedRegexPattern =
+      Lex::insertExplicitConcatenationOperator(regexPattern);
   std::vector<Lex::RegexElement> postFixRegexPattern;
   std::stack<char> operatorStack;
 
-  for (auto& element : concatenatedRegexPattern) {
+  for (auto &element : concatenatedRegexPattern) {
     char token = element.symbol;
     bool isOperator = element.isOperator;
 
     if (isOperator) {
-      if (token == '`' || token == '*' || token == '^' || token == '-' || token == '|' || token == '?') {
+      if (token == '`' || token == '*' || token == '^' || token == '-' ||
+          token == '|' || token == '?') {
         while (operatorStack.size() != 0 && operatorStack.top() != '(' &&
-          (Lex::operatorPrecedence(operatorStack.top()) >= Lex::operatorPrecedence(token))) {
-          postFixRegexPattern.push_back(Lex::RegexElement(operatorStack.top(), true));
+               (Lex::operatorPrecedence(operatorStack.top()) >=
+                Lex::operatorPrecedence(token))) {
+          postFixRegexPattern.push_back(
+              Lex::RegexElement(operatorStack.top(), true));
           operatorStack.pop();
         }
         operatorStack.push(token);
@@ -158,18 +184,20 @@ std::vector<Lex::RegexElement> Lex::convertRegexToPostFix(std::string regexPatte
         operatorStack.push(token);
       } else if (token == ')') {
         while (operatorStack.top() != '(') {
-          postFixRegexPattern.push_back(Lex::RegexElement(operatorStack.top(), true));
+          postFixRegexPattern.push_back(
+              Lex::RegexElement(operatorStack.top(), true));
           operatorStack.pop();
         }
         operatorStack.pop();
       } else {
-        //assert(("Unexpected character has an attribute of operator in concatenatedRegexPattern", false));
+        // assert(("Unexpected character has an attribute of operator in
+        // concatenatedRegexPattern", false));
       }
     } else {
       postFixRegexPattern.push_back(Lex::RegexElement(token, false));
     }
   }
-  while(operatorStack.size() != 0) {
+  while (operatorStack.size() != 0) {
     postFixRegexPattern.push_back(Lex::RegexElement(operatorStack.top(), true));
     operatorStack.pop();
   }
@@ -189,13 +217,14 @@ std::vector<Lex::RegexElement> Lex::convertRegexToPostFix(std::string regexPatte
   return postFixRegexPattern;
 }
 
-
-Lex::Nfa Lex::convertRegexToNfa(std::string regexPattern, std::string tokenType, int tokenPriority) {
+Lex::Nfa Lex::convertRegexToNfa(std::string regexPattern, std::string tokenType,
+                                int tokenPriority) {
   std::vector<Lex::Nfa> nfaStack;
   Lex::Nfa finalNfa;
-  std::vector<Lex::RegexElement> postFixRegexPattern = Lex::convertRegexToPostFix(regexPattern);
+  std::vector<Lex::RegexElement> postFixRegexPattern =
+      Lex::convertRegexToPostFix(regexPattern);
 
-  for (auto& element : postFixRegexPattern) {
+  for (auto &element : postFixRegexPattern) {
     char token = element.symbol;
     bool isOperator = element.isOperator;
 

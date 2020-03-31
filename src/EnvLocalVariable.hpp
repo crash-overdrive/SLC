@@ -46,6 +46,6 @@ private:
   LocalVariableAnalysis localVariableAnalysis;
 };
 
-}; // namespace Env
+} // namespace Env
 
-#endif
+#endif // ENVLOCALVARIABLE_HPP

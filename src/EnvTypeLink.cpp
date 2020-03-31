@@ -109,17 +109,17 @@ void TypeLinkVisitor::visit(const AST::SingleImportDeclaration &decl) {
   AST::NameVisitor visitor;
   visitor.dispatchChildren(decl);
   singleImports.emplace_back(visitor.getName());
-};
+}
 
 void TypeLinkVisitor::visit(const AST::DemandImportDeclaration &decl) {
   AST::NameVisitor visitor;
   visitor.dispatchChildren(decl);
   demandImports.emplace_back(visitor.getName());
-};
+}
 
-void TypeLinkVisitor::visit(const AST::InterfaceDeclaration &){};
+void TypeLinkVisitor::visit(const AST::InterfaceDeclaration &) {}
 
-void TypeLinkVisitor::visit(const AST::ClassDeclaration &){};
+void TypeLinkVisitor::visit(const AST::ClassDeclaration &) {}
 
 std::vector<std::vector<std::string>>
 TypeLinkVisitor::getSingleImports() const {

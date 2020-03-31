@@ -69,7 +69,7 @@ void LocalVariableAnalysis::removeVariableTable() {
 }
 
 LocalVariableVisitor::LocalVariableVisitor(const TypeLink &typeLink, bool log)
-    : typeLink(typeLink), localVariableAnalysis(LocalVariableAnalysis(log)){};
+    : typeLink(typeLink), localVariableAnalysis(log) {}
 
 void LocalVariableVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
@@ -100,4 +100,5 @@ void LocalVariableVisitor::visit(const AST::Block &block) {
   dispatchChildren(block);
   localVariableAnalysis.removeVariableTable();
 }
-}; // namespace Env
+
+} // namespace Env

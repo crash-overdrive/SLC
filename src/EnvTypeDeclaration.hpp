@@ -48,6 +48,6 @@ private:
   std::string identifier;
 };
 
-}; // namespace Env
+} // namespace Env
 
 #endif // ENVTYPEDECLARATION_HPP
