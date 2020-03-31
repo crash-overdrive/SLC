@@ -24,7 +24,7 @@ const std::unordered_map<std::string, Client::BreakPointType> outputMap{
     {"--output-tokens", Client::BreakPointType::Scan},
     {"--output-parse", Client::BreakPointType::Parse},
     {"--output-ast", Client::BreakPointType::Ast},
-    {"--output-joostype", Client::BreakPointType::JoosType},
+    {"--output-joostype", Client::BreakPointType::TypeDeclaration},
     {"--output-localvariable", Client::BreakPointType::LocalVariableAnalysis},
 };
 

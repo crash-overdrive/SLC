@@ -1,10 +1,7 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include "ASTNode.hpp"
 #include "EnvHierarchy.hpp"
-#include "EnvJoosType.hpp"
-#include "EnvPackageTree.hpp"
 #include "EnvTypeLink.hpp"
 #include "LexScanner.hpp"
 #include "ParseDFA.hpp"
@@ -16,11 +13,12 @@ public:
     Scan,
     Parse,
     Ast,
-    JoosType,
-    Weed,
-    LocalVariableAnalysis,
+    TypeDeclaration,
     PackageTree,
     TypeLink,
+    TypeBody,
+    Weed,
+    LocalVariableAnalysis,
     Hierarchy,
     None,
   };
@@ -30,33 +28,34 @@ public:
   void setBreakPoint(BreakPointType breakPoint);
   void addPrintPoint(BreakPointType printPoint);
 
-  bool compile(const std::vector<std::string> &fullNames);
+  bool compile(std::vector<std::string> fullNames);
 
-  void buildJoosType(const std::string &fullName);
-  void verifyFileName(const std::string &fullName);
-  void openFile(const std::string &fullName);
-  void scan(std::istream &stream, const std::string &fullName);
-  void parse(const std::vector<Lex::Token> &tokens, const std::string &fulName);
-  void buildAST(const Parse::Tree &parseTree, const std::string &fullName);
-  void buildJoosType(std::unique_ptr<AST::Start> root,
-                     const std::string &fulName);
-  void weed(Env::JoosType joosType, const std::string &fullName);
-  void localVariableAnalysis(Env::JoosType joosType,
-                             const std::string &fulName);
+  void setupEnvironment(std::string fullName);
+  void verifyFileName(std::string fullName);
+  void openFile(std::string fullName);
+  void scan(std::istream &stream, std::string fullName);
+  void parse(const std::vector<Lex::Token> &tokens, std::string fullName);
+  void buildAST(const Parse::Tree &parseTree, std::string fullName);
+  void buildTypeDeclaration(std::unique_ptr<AST::Start> root,
+                            std::string fullName);
 
   void buildEnvironment();
   void buildPackageTree();
   void buildTypeLink();
+  void buildTypeBody();
+  void weed();
+  void localVariableAnalysis();
   void buildHierarchy();
 
   // buildAST is for debugging and testing
-  std::unique_ptr<AST::Start> buildAST(const std::string &fullName);
+  std::unique_ptr<AST::Start> buildAST(std::string fullName);
 
 private:
   struct Environment {
-    Env::JoosType joosType;
+    Env::TypeDeclaration decl;
     Env::TypeLink typeLink;
-    explicit Environment(Env::JoosType joosType);
+    std::string fullName;
+    Environment(Env::TypeDeclaration decl, std::string fileName);
   };
 
   bool buildClassHierarchy(Env::HierarchyGraph &graph,

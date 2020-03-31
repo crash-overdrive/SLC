@@ -1,45 +1,46 @@
 #ifndef ENVPACKAGETREE_HPP
 #define ENVPACKAGETREE_HPP
 
-#include "ASTVisitor.hpp"
-#include "EnvJoosType.hpp"
+#include "EnvTypeDeclaration.hpp"
 #include <map>
 
 namespace Env {
 
 class PackageNode {
 public:
-  enum class Type { Global, Package, JoosType };
+  enum class Type { Global, Package, Declaration };
 
-  PackageNode(Type type, std::string name = "", JoosType *joosType = nullptr);
+  PackageNode(Type type, std::string name = "",
+              TypeDeclaration *decl = nullptr);
   PackageNode *update(Type type, const std::string &name,
-                      JoosType *joosType = nullptr);
+                      TypeDeclaration *decl = nullptr);
   PackageNode *find(const std::string &name);
-  JoosType *findJoosType(const std::string &name);
+  TypeDeclaration *findDeclaration(const std::string &name);
 
 private:
   friend class PackageTree;
   PackageNode *updatePackage(Type type, const std::string &name);
-  PackageNode *addType(Type type, const std::string &name,
-                       JoosType *joosType = nullptr);
+  PackageNode *addDeclaration(Type type, const std::string &name,
+                              TypeDeclaration *decl = nullptr);
   Type type;
   std::string name;
-  JoosType *joosType;
+  TypeDeclaration *decl;
   std::map<std::string, PackageNode> children;
 };
 
 class PackageTree {
 public:
-  JoosType *findType(const std::vector<std::string> &path) const;
+  TypeDeclaration *findDeclaration(const std::vector<std::string> &path) const;
   PackageNode *findPackage(const std::vector<std::string> &path) const;
-  JoosType *findDefault(const std::string &name) const;
-  bool update(const std::vector<std::string> &packagePath, JoosType &joosType);
+  TypeDeclaration *findDefault(const std::string &name) const;
+  bool update(const std::vector<std::string> &packagePath,
+              TypeDeclaration &decl);
 
 private:
   PackageNode *findNode(const std::vector<std::string> &path) const;
   std::unique_ptr<PackageNode> root =
       std::make_unique<PackageNode>(PackageNode::Type::Global);
-  std::unordered_map<std::string, JoosType *> defaultPackage;
+  std::unordered_map<std::string, TypeDeclaration *> defaultPackage;
 };
 
 class PackageTreeVisitor : public AST::Visitor {
@@ -54,4 +55,4 @@ private:
 
 } // namespace Env
 
-#endif // ENVSCOPE_HPP
+#endif // ENVPACKAGETREE_HPP

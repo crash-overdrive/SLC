@@ -6,10 +6,11 @@
 #include "catch.hpp"
 
 TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
-  Env::JoosType interfaceType{{}, Env::Type::Interface, "foo"};
+  Env::TypeDeclaration interfaceType{
+      {}, Env::DeclarationKeyword::Interface, "foo"};
   Env::InterfaceHierarchy interfaceHierarchy{interfaceType};
 
-  Env::JoosType classType{{}, Env::Type::Class, "foo"};
+  Env::TypeDeclaration classType{{}, Env::DeclarationKeyword::Class, "foo"};
   Env::ClassHierarchy classHierarchy{classType};
 
   SECTION("class extends interface") {
@@ -21,8 +22,8 @@ TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
   }
 
   SECTION("class extends final class") {
-    Env::JoosType classType2({Env::Modifier::Final}, Env::Type::Class,
-                             "canary");
+    Env::TypeDeclaration classType2({Env::Modifier::Final},
+                                    Env::DeclarationKeyword::Class, "canary");
     REQUIRE_FALSE(classHierarchy.setExtends(&classType2));
   }
 
@@ -36,7 +37,8 @@ TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
   }
 
   SECTION("interface extends duplicate") {
-    Env::JoosType interfaceType2({}, Env::Type::Interface, "foo");
+    Env::TypeDeclaration interfaceType2({}, Env::DeclarationKeyword::Interface,
+                                        "foo");
     REQUIRE(interfaceHierarchy.addExtends(&interfaceType2));
     REQUIRE_FALSE(interfaceHierarchy.addExtends(&interfaceType2));
   }
@@ -45,17 +47,18 @@ TEST_CASE("hierarchy validate inheritance", "[EnvHierarchy]") {
 TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
   Env::HierarchyGraph graph;
 
-  Env::JoosType interfaceType({}, Env::Type::Interface, "foo");
+  Env::TypeDeclaration interfaceType({}, Env::DeclarationKeyword::Interface,
+                                     "foo");
   Env::InterfaceHierarchy interfaceHierarchy(interfaceType);
 
-  Env::JoosType classType({}, Env::Type::Class, "foo");
+  Env::TypeDeclaration classType({}, Env::DeclarationKeyword::Class, "foo");
   Env::ClassHierarchy classHierarchy(classType);
 
   SECTION("basic") {
-    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::TypeDeclaration classType2({}, Env::DeclarationKeyword::Class, "foo");
     Env::ClassHierarchy classHierarchy2(classType2);
 
-    Env::JoosType classType3({}, Env::Type::Class, "foo");
+    Env::TypeDeclaration classType3({}, Env::DeclarationKeyword::Class, "foo");
     Env::ClassHierarchy classHierarchy3(classType3);
 
     classHierarchy.setExtends(&classType2);
@@ -82,9 +85,9 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
   }
 
   SECTION("class cyclic") {
-    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::TypeDeclaration classType2({}, Env::DeclarationKeyword::Class, "foo");
     Env::ClassHierarchy classHierarchy2(classType2);
-    Env::JoosType classType3({}, Env::Type::Class, "foo");
+    Env::TypeDeclaration classType3({}, Env::DeclarationKeyword::Class, "foo");
     Env::ClassHierarchy classHierarchy3(classType3);
 
     classHierarchy.setExtends(&classType2);
@@ -98,9 +101,11 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
   }
 
   SECTION("interface cyclic") {
-    Env::JoosType interfaceType2({}, Env::Type::Interface, "foo");
+    Env::TypeDeclaration interfaceType2({}, Env::DeclarationKeyword::Interface,
+                                        "foo");
     Env::InterfaceHierarchy interfaceHierarchy2(interfaceType2);
-    Env::JoosType interfaceType3({}, Env::Type::Interface, "foo");
+    Env::TypeDeclaration interfaceType3({}, Env::DeclarationKeyword::Interface,
+                                        "foo");
     Env::InterfaceHierarchy interfaceHierarchy3(interfaceType3);
 
     interfaceHierarchy.addExtends(&interfaceType2);
@@ -114,7 +119,8 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
   }
 
   SECTION("class subtype two interfaces") {
-    Env::JoosType interfaceType2({}, Env::Type::Interface, "foo");
+    Env::TypeDeclaration interfaceType2({}, Env::DeclarationKeyword::Interface,
+                                        "foo");
     Env::InterfaceHierarchy interfaceHierarchy2(interfaceType2);
     graph.addInterface(interfaceHierarchy2);
 
@@ -133,7 +139,7 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
   }
 
   SECTION("build subtype class from interfaces and class") {
-    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::TypeDeclaration classType2({}, Env::DeclarationKeyword::Class, "foo");
     Env::ClassHierarchy classHierarchy2(classType2);
 
     classHierarchy.setExtends(&classType2);
@@ -151,20 +157,19 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
   }
 
   SECTION("class extends") {
-    Env::JoosType classType2({}, Env::Type::Class, "foo");
+    Env::TypeDeclaration classType2({}, Env::DeclarationKeyword::Class, "foo");
     Env::ClassHierarchy classHierarchy2(classType2);
     classHierarchy.setExtends(&classType2);
     graph.addClass(classHierarchy);
     graph.addClass(classHierarchy2);
     REQUIRE(graph.topologicalSort());
 
-    Env::JoosMethod method;
-    method.returnType = {Env::VariableType::SimpleType, {"Integer"}};
+    Env::Method method;
+    method.returnType = Env::TypeKeyword::Integer;
     method.identifier = "foo";
-    method.args.emplace_back(Env::VariableType::SimpleType,
-                             std::vector<std::string>{"Integer"});
+    method.args.emplace_back(Env::TypeKeyword::Integer);
     SECTION("Inherit function") {
-      classType2.declare.addMethod(method);
+      classType2.body.addMethod(method);
       REQUIRE(graph.buildContains());
       REQUIRE(classType.contain.findMethod(method.identifier, method.args) !=
               nullptr);
@@ -172,7 +177,7 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
 
     SECTION("Inherit abstract function") {
       method.modifiers = {Env::Modifier::Abstract};
-      classType2.declare.addMethod(std::move(method));
+      classType2.body.addMethod(std::move(method));
       REQUIRE_FALSE(graph.buildContains());
     }
   }
@@ -183,13 +188,12 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
     graph.addInterface(interfaceHierarchy);
     graph.topologicalSort();
 
-    Env::JoosMethod method;
+    Env::Method method;
     method.modifiers = {Env::Modifier::Abstract};
-    method.returnType = {Env::VariableType::SimpleType, {"Integer"}};
+    method.returnType = Env::TypeKeyword::Integer;
     method.identifier = "foo";
-    method.args.emplace_back(Env::VariableType::SimpleType,
-                             std::vector<std::string>{"Integer"});
-    interfaceType.declare.addMethod(method);
+    method.args.emplace_back(Env::TypeKeyword::Integer);
+    interfaceType.body.addMethod(method);
 
     SECTION("unimplemented: without abstract") {
       classType.modifiers.clear();
@@ -203,9 +207,9 @@ TEST_CASE("builder contruct contains set", "[EnvHierarchyGraph]") {
 
     SECTION("implemented") {
       classType.modifiers.clear();
-      Env::JoosMethod method2(method);
+      Env::Method method2(method);
       method2.modifiers.clear();
-      classType.declare.addMethod(method2);
+      classType.body.addMethod(method2);
       REQUIRE(graph.buildContains());
     }
   }

@@ -3,19 +3,19 @@
 
 namespace Env {
 
-PackageNode::PackageNode(Type type, std::string name, JoosType *joosType)
-    : type(type), name(std::move(name)), joosType(joosType) {}
+PackageNode::PackageNode(Type type, std::string name, TypeDeclaration *decl)
+    : type(type), name(std::move(name)), decl(decl) {}
 
 PackageNode *PackageNode::update(Type type, const std::string &name,
-                                 JoosType *header) {
+                                 TypeDeclaration *decl) {
   if (this->type != Type::Global && this->type != Type::Package)
     return nullptr;
   switch (type) {
   case Type::Package:
     return updatePackage(type, name);
     break;
-  case Type::JoosType:
-    return addType(type, name, header);
+  case Type::Declaration:
+    return addDeclaration(type, name, decl);
     break;
   case Type::Global:
     break;
@@ -29,9 +29,9 @@ PackageNode *PackageNode::find(const std::string &name) {
 }
 
 /**
- * Find joosType under a package
+ * Find declaration under a package
  */
-JoosType *PackageNode::findJoosType(const std::string &name) {
+TypeDeclaration *PackageNode::findDeclaration(const std::string &name) {
   if (type == PackageNode::Type::Global) {
     return nullptr;
   }
@@ -39,7 +39,7 @@ JoosType *PackageNode::findJoosType(const std::string &name) {
   if (node == nullptr) {
     return nullptr;
   }
-  return node->joosType;
+  return node->decl;
 }
 
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
@@ -51,18 +51,19 @@ PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   return &ChildIt->second;
 }
 
-PackageNode *PackageNode::addType(Type type, const std::string &name,
-                                  JoosType *header) {
-  auto [it, flag] = children.emplace(name, PackageNode{type, name, header});
+PackageNode *PackageNode::addDeclaration(Type type, const std::string &name,
+                                         TypeDeclaration *decl) {
+  auto [it, flag] = children.emplace(name, PackageNode{type, name, decl});
   return flag ? &it->second : nullptr;
 }
 
-JoosType *PackageTree::findType(const std::vector<std::string> &path) const {
+TypeDeclaration *
+PackageTree::findDeclaration(const std::vector<std::string> &path) const {
   PackageNode *node = findNode(path);
   if (node == nullptr) {
     return nullptr;
   }
-  return (node->type == PackageNode::Type::JoosType) ? node->joosType : nullptr;
+  return (node->type == PackageNode::Type::Declaration) ? node->decl : nullptr;
 }
 
 PackageNode *
@@ -74,7 +75,7 @@ PackageTree::findPackage(const std::vector<std::string> &path) const {
   return (node->type == PackageNode::Type::Package) ? node : nullptr;
 }
 
-JoosType *PackageTree::findDefault(const std::string &name) const {
+TypeDeclaration *PackageTree::findDefault(const std::string &name) const {
   auto it = defaultPackage.find(name);
   if (it == defaultPackage.end()) {
     return nullptr;
@@ -83,10 +84,10 @@ JoosType *PackageTree::findDefault(const std::string &name) const {
 }
 
 bool PackageTree::update(const std::vector<std::string> &packagePath,
-                         JoosType &joosType) {
+                         TypeDeclaration &decl) {
   // Default Package
   if (packagePath.size() == 0) {
-    auto [it, flag] = defaultPackage.emplace(joosType.identifier, &joosType);
+    auto [it, flag] = defaultPackage.emplace(decl.identifier, &decl);
     return flag;
   }
   PackageNode *node = root.get();
@@ -96,8 +97,8 @@ bool PackageTree::update(const std::vector<std::string> &packagePath,
       return false;
     }
   }
-  const std::string &identifier = joosType.identifier;
-  node = node->update(PackageNode::Type::JoosType, identifier, &joosType);
+  const std::string &identifier = decl.identifier;
+  node = node->update(PackageNode::Type::Declaration, identifier, &decl);
   return node != nullptr;
 }
 

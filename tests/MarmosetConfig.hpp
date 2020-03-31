@@ -156,7 +156,7 @@ const std::vector<std::string> a1ErrorScan{
     "Je_1_NonJoosConstructs_Unicode.java",
 };
 
-const std::vector<std::string> A1ErrorParse{
+const std::vector<std::string> a1ErrorParse{
     "Je_16_Circularity_1.java",
     "Je_16_Circularity_2.java",
     "Je_16_Circularity_3.java",
@@ -904,7 +904,7 @@ const std::vector<std::vector<std::string>> a2ErrorParse{
     },
 };
 
-const std::vector<std::vector<std::string>> a2ErrorJoosType{
+const std::vector<std::vector<std::string>> a2ErrorTypeBody{
     {
         "Je_12_Fields_StaticNonStatic.java",
     },
@@ -1120,6 +1120,35 @@ const std::vector<std::vector<std::string>> a2ErrorLocalVariable{
     },
     {
         "Je_2_Parameter_OverlappingWithParameter.java",
+    },
+    {
+        "Je_3_ImportOnDemand_ClassInMultiplePackages/Main.java",
+        "Je_3_ImportOnDemand_ClassInMultiplePackages/java/sql/Date.java",
+        "Je_3_ImportOnDemand_ClassInMultiplePackages/java/util/Date.java",
+    },
+    {
+        "Je_3_Resolve_ImportDifferentFromSamePackage/Main.java",
+        "Je_3_Resolve_ImportDifferentFromSamePackage/java/util/List.java",
+        "Je_3_Resolve_ImportDifferentFromSamePackage/java/util/Collection.java",
+        "Je_3_Resolve_ImportDifferentFromSamePackage/java/util/ArrayList.java",
+    },
+    {
+        "Je_3_Resolve_MissingImport/Main.java",
+        "Je_3_Resolve_MissingImport/java/util/List.java",
+        "Je_3_Resolve_MissingImport/java/util/Collection.java",
+        "Je_3_Resolve_MissingImport/java/util/ArrayList.java",
+    },
+    {
+        "Je_3_ImportOnDemand_ClashWithImplicitImport/Main.java",
+        "Je_3_ImportOnDemand_ClashWithImplicitImport/Integer.java",
+    },
+    {
+        "Je_3_Resolve_SamePackageAndClassName.java",
+    },
+    {
+        "Je_4_Resolve_DefaultPackage/foo.java",
+        "Je_4_Resolve_DefaultPackage/foo/bar.java",
+        "Je_4_Resolve_DefaultPackage/Main.java",
     },
 };
 
@@ -1350,42 +1379,10 @@ const std::vector<std::vector<std::string>> a2ErrorHierarchy{
         "Je_4_ProtectedOverride_TwoVersionsFromSuperclass/java/util/"
         "Iterator.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a2Error{
-    {
-        "Je_3_ImportOnDemand_ClashWithImplicitImport/Main.java",
-        "Je_3_ImportOnDemand_ClashWithImplicitImport/Integer.java",
-    },
-    {
-        "Je_3_ImportOnDemand_ClassInMultiplePackages/Main.java",
-        "Je_3_ImportOnDemand_ClassInMultiplePackages/java/sql/Date.java",
-        "Je_3_ImportOnDemand_ClassInMultiplePackages/java/util/Date.java",
-    },
-    {
-        "Je_3_Resolve_ImportDifferentFromSamePackage/Main.java",
-        "Je_3_Resolve_ImportDifferentFromSamePackage/java/util/List.java",
-        "Je_3_Resolve_ImportDifferentFromSamePackage/java/util/Collection.java",
-        "Je_3_Resolve_ImportDifferentFromSamePackage/java/util/ArrayList.java",
-    },
-    {
-        "Je_3_Resolve_MissingImport/Main.java",
-        "Je_3_Resolve_MissingImport/java/util/List.java",
-        "Je_3_Resolve_MissingImport/java/util/Collection.java",
-        "Je_3_Resolve_MissingImport/java/util/ArrayList.java",
-    },
-    {
-        "Je_3_Resolve_SamePackageAndClassName.java",
-    },
     {
         "Je_4_FinalHide/javax/swing/text/Utilities.java",
         "Je_4_FinalHide/javax/swing/text/JTextComponent.java",
         "Je_4_FinalHide/Main.java",
-    },
-    {
-        "Je_4_Resolve_DefaultPackage/foo.java",
-        "Je_4_Resolve_DefaultPackage/foo/bar.java",
-        "Je_4_Resolve_DefaultPackage/Main.java",
     },
 };
 

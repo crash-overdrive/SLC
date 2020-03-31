@@ -1,4 +1,5 @@
 #include "ASTVisitorUtil.hpp"
+#include "EnvTypeLink.hpp"
 
 namespace AST {
 
@@ -8,38 +9,10 @@ void NameVisitor::visit(const Identifier &identifier) {
   name.emplace_back(identifier.getName());
 }
 
-void NameVisitor::visit(const PrimitiveType &primitiveType) {
-  name.emplace_back(primitiveType.getType());
-}
-
 std::vector<std::string> NameVisitor::getName() { return std::move(name); }
 
 void PropertiesVisitor::visit(const Modifier &modifier) {
-  modifiers.emplace(Env::nameModifier.at(modifier.getName()));
-}
-
-void PropertiesVisitor::visit(const PrimitiveType &primitiveType) {
-  variableDescriptor = Env::VariableDescriptor{Env::VariableType::SimpleType,
-                                               {primitiveType.getType()}};
-}
-
-void PropertiesVisitor::visit(const VoidType &voidType) {
-  variableDescriptor = Env::VariableDescriptor{Env::VariableType::SimpleType,
-                                               {voidType.getType()}};
-}
-
-void PropertiesVisitor::visit(const SimpleType &simpleType) {
-  NameVisitor nameVisitor;
-  nameVisitor.dispatchChildren(simpleType);
-  variableDescriptor = Env::VariableDescriptor{Env::VariableType::SimpleType,
-                                               nameVisitor.getName()};
-}
-
-void PropertiesVisitor::visit(const ArrayType &arrayType) {
-  NameVisitor nameVisitor;
-  nameVisitor.dispatchChildren(arrayType);
-  variableDescriptor = Env::VariableDescriptor{Env::VariableType::ArrayType,
-                                               nameVisitor.getName()};
+  modifiers.emplace(Env::stringModifier.at(modifier.getName()));
 }
 
 void PropertiesVisitor::visit(const Identifier &node) {
@@ -52,18 +25,46 @@ std::set<Env::Modifier> PropertiesVisitor::getModifiers() {
 
 std::string PropertiesVisitor::getIdentifier() { return std::move(identifier); }
 
-Env::VariableDescriptor PropertiesVisitor::getVariableDescriptor() {
-  return variableDescriptor;
+TypeVisitor::TypeVisitor(const Env::TypeLink &typeLink) : typeLink(typeLink) {}
+
+void TypeVisitor::visit(const PrimitiveType &primitiveType) {
+  type.keyword = Env::stringTypeKeyword.at(primitiveType.getType());
 }
+
+void TypeVisitor::visit(const VoidType &) {
+  type.keyword = Env::TypeKeyword::Void;
+}
+
+void TypeVisitor::visit(const SimpleType &simpleType) {
+  type.keyword = Env::TypeKeyword::Simple;
+  NameVisitor nameVisitor;
+  nameVisitor.dispatchChildren(simpleType);
+  type.declare = typeLink.find(nameVisitor.getName());
+  if (!type.declare) {
+    setError();
+  }
+}
+
+void TypeVisitor::visit(const ArrayType &arrayType) {
+  type.isArray = true;
+  dispatchChildren(arrayType);
+}
+
+Env::Type TypeVisitor::getType() { return std::move(type); }
+
+ArgumentsVisitor::ArgumentsVisitor(const Env::TypeLink &typeLink)
+    : typeLink(typeLink) {}
 
 void ArgumentsVisitor::visit(const SingleVariableDeclaration &decl) {
-  AST::PropertiesVisitor propertiesVisitor;
-  propertiesVisitor.dispatchChildren(decl);
-  args.push_back(propertiesVisitor.getVariableDescriptor());
+  AST::TypeVisitor typeVisitor(typeLink);
+  typeVisitor.dispatchChildren(decl);
+  if (typeVisitor.isErrorState()) {
+    setError();
+    return;
+  }
+  args.emplace_back(typeVisitor.getType());
 }
 
-std::vector<Env::VariableDescriptor> ArgumentsVisitor::getArgs() {
-  return std::move(args);
-}
+std::vector<Env::Type> ArgumentsVisitor::getArgs() { return std::move(args); }
 
 } // namespace AST

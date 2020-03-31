@@ -1,16 +1,15 @@
 #include "EnvTypeLink.hpp"
-#include "EnvJoosType.hpp"
 #include "TestConfig.hpp"
 #include "TestUtil.hpp"
 #include "catch.hpp"
 
 TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
-  Env::JoosType main({}, Env::Type::Class, "Main");
-  Env::JoosType list({}, Env::Type::Class, "List",
-                     std::make_unique<AST::Start>());
+  Env::TypeDeclaration main({}, Env::DeclarationKeyword::Class, "Main");
+  Env::TypeDeclaration list({}, Env::DeclarationKeyword::Class, "List",
+                            std::make_unique<AST::Start>());
   auto tree = std::make_shared<Env::PackageTree>();
 
-  SECTION("Single Type Lookup") {
+  SECTION("Single DeclarationKeyword Lookup") {
     tree->update({"foo", "bar"}, list);
     Env::TypeLink typeLink(main);
     typeLink.setTree(tree);
@@ -89,8 +88,8 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
 
   SECTION("Single import clash") {
     tree->update({"foo", "canary"}, list);
-    Env::JoosType list2({}, Env::Type::Class, "List",
-                        std::make_unique<AST::Start>());
+    Env::TypeDeclaration list2({}, Env::DeclarationKeyword::Class, "List",
+                               std::make_unique<AST::Start>());
     tree->update({"foo", "bar"}, list2);
     Env::TypeLink typeLink(main);
     typeLink.setTree(tree);
@@ -99,7 +98,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
   }
 
   SECTION("Same Package Import") {
-    Env::JoosType array({}, Env::Type::Class, "Array");
+    Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
     tree->update({"foo", "canary"}, list);
     tree->update({"foo", "canary"}, array);
     Env::TypeLink typeLink(list);
@@ -108,8 +107,19 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"Array"}));
   }
 
+  SECTION("On demand clash") {
+    Env::TypeDeclaration list2({}, Env::DeclarationKeyword::Class, "List");
+    tree->update({"foo", "canary"}, list);
+    tree->update({"foo", "bar"}, list2);
+    Env::TypeLink typeLink(main);
+    typeLink.setTree(tree);
+    typeLink.addDemandImport({"foo", "canary"});
+    typeLink.addDemandImport({"foo", "bar"});
+    REQUIRE_FALSE(typeLink.find({"List"}));
+  }
+
   SECTION("Default Package") {
-    Env::JoosType array({}, Env::Type::Class, "Array");
+    Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
     tree->update({}, list);
     tree->update({}, array);
     Env::TypeLink typeLink(list);
@@ -117,10 +127,29 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     REQUIRE(typeLink.find({"Array"}));
   }
 
+  SECTION("Resolve prefix clash default package") {
+    Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
+    tree->update({"Array"}, list);
+    tree->update({}, array);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
+    REQUIRE_FALSE(typeLink.find({"Array", "List"}));
+  }
+
+  SECTION("Resolve prefix clash import") {
+    Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
+    tree->update({"Array"}, list);
+    tree->update({"foo", "bar"}, array);
+    Env::TypeLink typeLink(list);
+    typeLink.setTree(tree);
+    typeLink.addSingleImport({"foo", "bar", "Array"});
+    REQUIRE_FALSE(typeLink.find({"Array", "List"}));
+  }
+
   SECTION("Single Import class own name") {
     tree->update({"Test"}, list);
-    Env::JoosType list2({}, Env::Type::Class, "List",
-                        std::make_unique<AST::Start>());
+    Env::TypeDeclaration list2({}, Env::DeclarationKeyword::Class, "List",
+                               std::make_unique<AST::Start>());
     Env::TypeLink typeLink(list2);
     typeLink.setTree(tree);
     REQUIRE_FALSE(typeLink.addSingleImport({"Test", "List"}));

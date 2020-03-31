@@ -41,7 +41,7 @@ TEST_CASE("client process", "[client]") {
 
     SECTION("error-parse") {
       client.setBreakPoint(Client::Parse);
-      for (const auto &fileName : A1ErrorParse) {
+      for (const auto &fileName : a1ErrorParse) {
         SECTION(fileName) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(1, {fileName})));
         }
@@ -61,15 +61,6 @@ TEST_CASE("client process", "[client]") {
     SECTION("error-parse") {
       client.setBreakPoint(Client::Parse);
       for (const auto &group : a2ErrorParse) {
-        SECTION(group[0]) {
-          REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
-        }
-      }
-    }
-
-    SECTION("error-joostype") {
-      client.setBreakPoint(Client::JoosType);
-      for (const auto &group : a2ErrorJoosType) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }
@@ -103,6 +94,15 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
+    SECTION("error-typebody") {
+      client.setBreakPoint(Client::TypeBody);
+      for (const auto &group : a2ErrorTypeBody) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
+        }
+      }
+    }
+
     SECTION("error-hierarchy") {
       client.setBreakPoint(Client::Hierarchy);
       for (const auto &group : a2ErrorHierarchy) {
@@ -111,14 +111,6 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
-
-    // SECTION("reject") {
-    // for (const auto &group : a2Error) {
-    // SECTION(group[0]) {
-    // REQUIRE(client.compile(createMarmosetTest(2, group)));
-    //}
-    //}
-    //}
 
     SECTION("accept") {
       for (const auto &group : a2Valid) {

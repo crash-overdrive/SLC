@@ -59,10 +59,16 @@ public:
   virtual void visit(const ThisExpression &node);
   virtual void visit(const ForInit &node);
   virtual void visit(const ForUpdate &node);
+
   virtual void dispatchChildren(const Node &parent);
+  bool isErrorState() const;
+
+protected:
+  void setError();
 
 private:
   virtual void postVisit(const Node &parent);
+  bool errorState = false;
 };
 
 class PrintVisitor : public Visitor {
@@ -125,14 +131,9 @@ private:
 class TrackVisitor : public Visitor {
 public:
   void setLog(std::ostream &stream);
-  bool isErrorState();
-
-protected:
-  void setError();
 
 private:
   void postVisit(const Node &parent) override;
-  bool errorState = false;
   unsigned int level = 0;
   std::ofstream nullStream{};
   std::reference_wrapper<std::ostream> streamRef = nullStream;

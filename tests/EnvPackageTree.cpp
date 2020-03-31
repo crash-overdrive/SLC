@@ -7,19 +7,19 @@ TEST_CASE("Package Node", "[EnvPackageNode]") {
   Env::PackageNode root{Env::PackageNode::Type::Global};
   Env::PackageNode *foo = root.update(Env::PackageNode::Type::Package, "foo");
   Env::PackageNode *bar = foo->update(Env::PackageNode::Type::Package, "bar");
-  bar->update(Env::PackageNode::Type::JoosType, "canary");
+  bar->update(Env::PackageNode::Type::Declaration, "canary");
 
   SECTION("Node will reject duplicates") {
     Env::PackageNode *node;
-    node = foo->update(Env::PackageNode::Type::JoosType, "bar");
+    node = foo->update(Env::PackageNode::Type::Declaration, "bar");
     REQUIRE_FALSE(node);
     node = foo->update(Env::PackageNode::Type::Package, "bar");
     REQUIRE(node);
     node = bar->update(Env::PackageNode::Type::Package, "canary");
     REQUIRE_FALSE(node);
-    node = bar->update(Env::PackageNode::Type::JoosType, "canary");
+    node = bar->update(Env::PackageNode::Type::Declaration, "canary");
     REQUIRE_FALSE(node);
-    node = bar->update(Env::PackageNode::Type::JoosType, "canary");
+    node = bar->update(Env::PackageNode::Type::Declaration, "canary");
     REQUIRE_FALSE(node);
   }
 }
@@ -28,24 +28,24 @@ TEST_CASE("Package Tree", "[EnvPackageTree]") {
   Env::PackageTree tree;
 
   SECTION("Basic lookup") {
-    Env::JoosType canary({}, Env::Type::Class, "canary");
-    Env::JoosType bar({}, Env::Type::Class, "bar");
+    Env::TypeDeclaration canary({}, Env::DeclarationKeyword::Class, "canary");
+    Env::TypeDeclaration bar({}, Env::DeclarationKeyword::Class, "bar");
     REQUIRE(tree.update({"foo", "bar"}, canary));
     REQUIRE_FALSE(tree.update({"foo"}, bar));
-    REQUIRE(tree.findType({"foo", "bar", "canary"}) == &canary);
-    REQUIRE_FALSE(tree.findType({"foo"}));
+    REQUIRE(tree.findDeclaration({"foo", "bar", "canary"}) == &canary);
+    REQUIRE_FALSE(tree.findDeclaration({"foo"}));
   }
 
   SECTION("Default Package lookup") {
-    Env::JoosType canary({}, Env::Type::Class, "canary");
+    Env::TypeDeclaration canary({}, Env::DeclarationKeyword::Class, "canary");
     REQUIRE(tree.update({}, canary));
-    REQUIRE_FALSE(tree.findType({"canary"}));
+    REQUIRE_FALSE(tree.findDeclaration({"canary"}));
     REQUIRE(tree.findDefault({"canary"}) == &canary);
   }
 
   SECTION("Single File") {
-    Env::JoosType a({}, Env::Type::Class, "A");
-    Env::JoosType main({}, Env::Type::Class, "Main");
+    Env::TypeDeclaration a({}, Env::DeclarationKeyword::Class, "A");
+    Env::TypeDeclaration main({}, Env::DeclarationKeyword::Class, "Main");
     REQUIRE(tree.update({"Main", "B"}, a));
     REQUIRE(tree.update({}, main));
   }

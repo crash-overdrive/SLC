@@ -1,10 +1,10 @@
-#include "EnvJoosContain.hpp"
+#include "EnvTypeContain.hpp"
 #include <algorithm>
 
 namespace Env {
 
-bool JoosContain::inheritMethod(const JoosMethod *method) {
-  const JoosMethod *derived = findMethod(method->identifier, method->args);
+bool TypeContain::inheritMethod(const Method *method) {
+  const Method *derived = findMethod(method->identifier, method->args);
   if (!derived) {
     methods.emplace_back(method);
     return true;
@@ -19,9 +19,9 @@ bool JoosContain::inheritMethod(const JoosMethod *method) {
   return true;
 }
 
-bool JoosContain::addDeclareMethod(const JoosMethod *method) {
+bool TypeContain::addDeclareMethod(const Method *method) {
   for (auto it = methods.begin(); it != methods.end();) {
-    const JoosMethod *base = *it;
+    const Method *base = *it;
     if (*base != *method) {
       ++it;
       continue;
@@ -35,59 +35,55 @@ bool JoosContain::addDeclareMethod(const JoosMethod *method) {
   return true;
 }
 
-bool JoosContain::inheritField(const JoosField *field) {
+bool TypeContain::inheritField(const Field *field) {
   fields.emplace_back(field);
   return true;
 }
 
-bool JoosContain::addDeclareField(const JoosField *field) {
+bool TypeContain::addDeclareField(const Field *field) {
   fields.emplace_back(field);
   return true;
 }
 
-bool JoosContain::validReplace(const JoosMethod *derived,
-                               const JoosMethod *base) {
+bool TypeContain::validReplace(const Method *derived, const Method *base) {
   return validFinal(base) && validBaseStatic(derived, base) &&
          validDerivedStatic(derived, base) && validModifier(derived, base);
 }
 
-bool JoosContain::validSignature(const JoosMethod *derived,
-                                 const JoosMethod *base) {
+bool TypeContain::validSignature(const Method *derived, const Method *base) {
   return derived->returnType == base->returnType;
 }
 
-bool JoosContain::validFinal(const JoosMethod *base) {
+bool TypeContain::validFinal(const Method *base) {
   return base->modifiers.find(Modifier::Final) == base->modifiers.end();
 }
 
-bool JoosContain::validDerivedStatic(const JoosMethod *derived,
-                                     const JoosMethod *base) {
+bool TypeContain::validDerivedStatic(const Method *derived,
+                                     const Method *base) {
   return !(derived->modifiers.find(Modifier::Static) ==
                derived->modifiers.end() &&
            base->modifiers.find(Modifier::Static) != base->modifiers.end());
 }
 
-bool JoosContain::validBaseStatic(const JoosMethod *derived,
-                                  const JoosMethod *base) {
+bool TypeContain::validBaseStatic(const Method *derived, const Method *base) {
   return !(derived->modifiers.find(Modifier::Static) !=
                derived->modifiers.end() &&
            base->modifiers.find(Modifier::Static) == base->modifiers.end());
 }
 
-bool JoosContain::validModifier(const JoosMethod *derived,
-                                const JoosMethod *base) {
+bool TypeContain::validModifier(const Method *derived, const Method *base) {
   return !(derived->modifiers.find(Modifier::Protected) !=
                derived->modifiers.end() &&
            base->modifiers.find(Modifier::Public) != base->modifiers.end());
 }
 
-bool JoosContain::isReplace(const JoosMethod *derived, const JoosMethod *base) {
+bool TypeContain::isReplace(const Method *derived, const Method *base) {
   return derived->modifiers.find(Modifier::Abstract) ==
              derived->modifiers.end() &&
          base->modifiers.find(Modifier::Abstract) != base->modifiers.end();
 }
 
-bool JoosContain::mergeContain(const JoosContain &contain) {
+bool TypeContain::mergeContain(const TypeContain &contain) {
   for (const auto &field : contain.fields) {
     if (!inheritField(field)) {
       return false;
@@ -101,21 +97,17 @@ bool JoosContain::mergeContain(const JoosContain &contain) {
   return true;
 }
 
-const JoosField *
-JoosContain::findField(const VariableDescriptor &variableDescriptor,
-                       const std::string &identifier) const {
+const Field *TypeContain::findField(const std::string &identifier) const {
   for (const auto &field : fields) {
-    if (field->identifier == identifier &&
-        field->variableDescriptor == variableDescriptor) {
+    if (field->identifier == identifier) {
       return field;
     }
   }
   return nullptr;
 }
 
-const JoosMethod *
-JoosContain::findMethod(const std::string &identifier,
-                        const std::vector<VariableDescriptor> &args) const {
+const Method *TypeContain::findMethod(const std::string &identifier,
+                                      const std::vector<Type> &args) const {
   for (const auto &method : methods) {
     if (method->identifier == identifier && method->args == args) {
       return method;
@@ -124,7 +116,7 @@ JoosContain::findMethod(const std::string &identifier,
   return nullptr;
 }
 
-bool JoosContain::hasAbstract() const {
+bool TypeContain::hasAbstract() const {
   for (auto const &method : methods) {
     if (method->modifiers.find(Modifier::Abstract) != method->modifiers.end()) {
       return true;

@@ -3,7 +3,7 @@
 
 namespace Env {
 
-TypeLink::TypeLink(JoosType &joosType) : joosType(joosType) {}
+TypeLink::TypeLink(TypeDeclaration &decl) : decl(decl) {}
 
 void TypeLink::setPackage(std::vector<std::string> package) {
   this->package = std::move(package);
@@ -14,23 +14,23 @@ void TypeLink::setTree(std::shared_ptr<PackageTree> tree) {
 }
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &name) {
-  JoosType *importJoosType = tree->findType(name);
-  if (!importJoosType) {
+  TypeDeclaration *importDecl = tree->findDeclaration(name);
+  if (!importDecl) {
     return false;
   }
   // Self import
-  if (importJoosType->astNode == joosType.astNode) {
+  if (importDecl->astNode == decl.astNode) {
     return true;
   }
   // Import name clash with self
-  if (importJoosType->identifier == joosType.identifier) {
+  if (importDecl->identifier == decl.identifier) {
     return false;
   }
-  auto it = singleImports.find(importJoosType->identifier);
+  auto it = singleImports.find(importDecl->identifier);
   if (it != singleImports.end()) {
-    return (it->second->astNode == importJoosType->astNode);
+    return (it->second->astNode == importDecl->astNode);
   }
-  singleImports.emplace(importJoosType->identifier, importJoosType);
+  singleImports.emplace(importDecl->identifier, importDecl);
   return true;
 }
 
@@ -43,52 +43,62 @@ bool TypeLink::addDemandImport(const std::vector<std::string> &name) {
   return true;
 }
 
-JoosType *TypeLink::find(const std::vector<std::string> &name) const {
+TypeDeclaration *TypeLink::find(const std::vector<std::string> &name) const {
   if (name.size() == 0) {
     return nullptr;
   }
   // Name is fully qualified-name
   if (name.size() > 1) {
-    return tree->findType(name);
+    // Make sure simple name does not resolve to any type
+    if (find({name.at(0)})) {
+      return nullptr;
+    }
+    return tree->findDeclaration(name);
   }
   const std::string &simpleName = name.at(0);
-  if (joosType.identifier == simpleName) {
-    return &joosType;
+  if (decl.identifier == simpleName) {
+    return &decl;
   }
   auto singleImportsIt = singleImports.find(simpleName);
   if (singleImportsIt != singleImports.end()) {
     return singleImportsIt->second;
   }
-  JoosType *samePackageJoosType = findSamePackage(simpleName);
-  if (samePackageJoosType != nullptr) {
-    return samePackageJoosType;
+  TypeDeclaration *samePackageDecl = findSamePackage(simpleName);
+  if (samePackageDecl != nullptr) {
+    return samePackageDecl;
   }
-  JoosType *demandJoosType = findDemand(simpleName);
-  if (demandJoosType != nullptr) {
-    return demandJoosType;
+  TypeDeclaration *demandDecl = findDemand(simpleName);
+  if (demandDecl != nullptr) {
+    return demandDecl;
   }
   return nullptr;
 }
 
-JoosType *TypeLink::findSamePackage(const std::string &name) const {
+TypeDeclaration *TypeLink::findSamePackage(const std::string &name) const {
   if (package.size() == 0) {
     return tree->findDefault(name);
   }
   PackageNode *node = tree->findPackage(package);
   if (node != nullptr) {
-    return node->findJoosType(name);
+    return node->findDeclaration(name);
   }
   return nullptr;
 }
 
-JoosType *TypeLink::findDemand(const std::string &name) const {
+TypeDeclaration *TypeLink::findDemand(const std::string &name) const {
+  TypeDeclaration *found = nullptr;
   for (const auto &onDemandImport : onDemandImports) {
-    JoosType *joosType = onDemandImport->findJoosType(name);
-    if (joosType != nullptr) {
-      return joosType;
+    TypeDeclaration *decl = onDemandImport->findDeclaration(name);
+    if (decl == nullptr) {
+      continue;
     }
+    // Name Clash in demand
+    if (found) {
+      return nullptr;
+    }
+    found = decl;
   }
-  return nullptr;
+  return found;
 }
 
 void TypeLinkVisitor::visit(const AST::Start &start) {
