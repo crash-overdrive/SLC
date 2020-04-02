@@ -10,7 +10,7 @@ namespace Env {
 
 class VariableTable {
 public:
-  Type *findVariable(const std::string &name);
+  std::optional<Type> findVariable(const std::string &name) const;
   bool addVariable(const std::string &name, Type type);
 
 private:
@@ -24,7 +24,7 @@ std::ostream &operator<<(std::ostream &stream, const VariableTable &table);
 class Local {
 public:
   Local(bool log = false);
-  Type *findVariable(const std::string &name);
+  std::optional<Type> findVariable(const std::string &name) const;
   bool addVariable(const std::string &name, Type type);
   void addVariableTable();
   void removeVariableTable();

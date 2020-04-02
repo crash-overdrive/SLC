@@ -1,11 +1,13 @@
 #include "EnvLocal.hpp"
 #include "ASTVisitorUtil.hpp"
+#include <optional>
 
 namespace Env {
 
-Type *VariableTable::findVariable(const std::string &name) {
+std::optional<Type> VariableTable::findVariable(const std::string &name) const {
   auto it = variableMap.find(name);
-  return (it != variableMap.end()) ? &it->second : nullptr;
+  return (it != variableMap.end()) ? std::make_optional(it->second)
+                                   : std::nullopt;
 }
 
 bool VariableTable::addVariable(const std::string &name, Type type) {
@@ -26,14 +28,14 @@ std::ostream &operator<<(std::ostream &stream, const VariableTable &table) {
 
 Local::Local(bool log) : log(log) { addVariableTable(); }
 
-Type *Local::findVariable(const std::string &name) {
+std::optional<Type> Local::findVariable(const std::string &name) const {
   for (auto &table : tables) {
-    Type *type = table.findVariable(name);
+    auto type = table.findVariable(name);
     if (type) {
       return type;
     }
   }
-  return nullptr;
+  return std::nullopt;
 }
 
 bool Local::addVariable(const std::string &name, Type type) {
