@@ -1,4 +1,4 @@
-#include "EnvLocalVariable.hpp"
+#include "EnvLocal.hpp"
 #include "ASTVisitorUtil.hpp"
 
 namespace Env {
@@ -24,11 +24,9 @@ std::ostream &operator<<(std::ostream &stream, const VariableTable &table) {
   return stream;
 }
 
-LocalVariableAnalysis::LocalVariableAnalysis(bool log) : log(log) {
-  addVariableTable();
-}
+Local::Local(bool log) : log(log) { addVariableTable(); }
 
-Type *LocalVariableAnalysis::findVariable(const std::string &name) {
+Type *Local::findVariable(const std::string &name) {
   for (auto &table : tables) {
     Type *type = table.findVariable(name);
     if (type) {
@@ -38,7 +36,7 @@ Type *LocalVariableAnalysis::findVariable(const std::string &name) {
   return nullptr;
 }
 
-bool LocalVariableAnalysis::addVariable(const std::string &name, Type type) {
+bool Local::addVariable(const std::string &name, Type type) {
   if (findVariable(name)) {
     std::cerr << "ERROR!! Variable: " << name << " with descriptor: " << type
               << " could not be added\n";
@@ -51,14 +49,14 @@ bool LocalVariableAnalysis::addVariable(const std::string &name, Type type) {
   return true;
 }
 
-void LocalVariableAnalysis::addVariableTable() {
+void Local::addVariableTable() {
   tables.emplace_back();
   if (log) {
     std::cerr << "Added: New VariableTable\n";
   }
 }
 
-void LocalVariableAnalysis::removeVariableTable() {
+void Local::removeVariableTable() {
   if (log) {
     auto &environment = tables.back();
     std::cerr << "Removed:\n"
@@ -68,10 +66,10 @@ void LocalVariableAnalysis::removeVariableTable() {
   tables.pop_back();
 }
 
-LocalVariableVisitor::LocalVariableVisitor(const TypeLink &typeLink, bool log)
-    : typeLink(typeLink), localVariableAnalysis(log) {}
+LocalVisitor::LocalVisitor(const TypeLink &typeLink, bool log)
+    : typeLink(typeLink), local(log) {}
 
-void LocalVariableVisitor::visit(const AST::SingleVariableDeclaration &decl) {
+void LocalVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
@@ -79,14 +77,14 @@ void LocalVariableVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   typeVisitor.dispatchChildren(decl);
 
   if (typeVisitor.isErrorState() ||
-      !localVariableAnalysis.addVariable(propertiesVisitor.getIdentifier(),
-                                         typeVisitor.getType())) {
+      !local.addVariable(propertiesVisitor.getIdentifier(),
+                         typeVisitor.getType())) {
     setError();
     return;
   }
 }
 
-void LocalVariableVisitor::visit(const AST::SimpleType &simpleType) {
+void LocalVisitor::visit(const AST::SimpleType &simpleType) {
   AST::TypeVisitor typeVisitor(typeLink);
   simpleType.accept(typeVisitor);
   if (typeVisitor.isErrorState()) {
@@ -95,10 +93,10 @@ void LocalVariableVisitor::visit(const AST::SimpleType &simpleType) {
   }
 }
 
-void LocalVariableVisitor::visit(const AST::Block &block) {
-  localVariableAnalysis.addVariableTable();
+void LocalVisitor::visit(const AST::Block &block) {
+  local.addVariableTable();
   dispatchChildren(block);
-  localVariableAnalysis.removeVariableTable();
+  local.removeVariableTable();
 }
 
 } // namespace Env

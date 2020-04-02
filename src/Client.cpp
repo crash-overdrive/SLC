@@ -1,6 +1,6 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
-#include "EnvLocalVariable.hpp"
+#include "EnvLocal.hpp"
 #include <fstream>
 #include <iterator>
 
@@ -254,12 +254,12 @@ void Client::weed() {
 }
 
 void Client::localVariableAnalysis() {
-  bool log = (printPoints.find(LocalVariableAnalysis) != printPoints.end());
+  bool log = (printPoints.find(LocalVariable) != printPoints.end());
 
   for (auto &environment : environments) {
     Env::TypeBody &body = environment.decl.body;
     for (auto const &constructor : body.getConstructors()) {
-      Env::LocalVariableVisitor visitor(environment.typeLink, log);
+      Env::LocalVisitor visitor(environment.typeLink, log);
 
       if (log) {
         std::cerr << "Local Variable Analysis for Constructor: "
@@ -280,7 +280,7 @@ void Client::localVariableAnalysis() {
       }
     }
     for (auto const &method : body.getMethods()) {
-      Env::LocalVariableVisitor visitor(environment.typeLink, log);
+      Env::LocalVisitor visitor(environment.typeLink, log);
 
       if (log) {
         std::cerr << "Local Variable Analysis for Method: " << method.identifier
@@ -299,7 +299,7 @@ void Client::localVariableAnalysis() {
       }
     }
   }
-  if (breakPoint != LocalVariableAnalysis) {
+  if (breakPoint != LocalVariable) {
     buildHierarchy();
   }
 }

@@ -18,7 +18,7 @@ public:
     TypeLink,
     TypeBody,
     Weed,
-    LocalVariableAnalysis,
+    LocalVariable,
     Hierarchy,
     None,
   };
