@@ -5,8 +5,9 @@ namespace Env {
 
 TypeLink::TypeLink(TypeDeclaration &decl) : decl(decl) {}
 
-void TypeLink::setPackage(std::vector<std::string> package) {
+bool TypeLink::setPackage(std::vector<std::string> package) {
   this->package = std::move(package);
+  return tree->update(this->package, decl);
 }
 
 void TypeLink::setTree(std::shared_ptr<PackageTree> tree) {

@@ -161,17 +161,17 @@ void Client::buildEnvironment() {
 void Client::buildPackageTree() {
   auto tree = std::make_shared<Env::PackageTree>();
   for (auto &environment : environments) {
+    environment.typeLink.setTree(tree);
+
     Env::PackageTreeVisitor visitor;
     environment.decl.astNode->accept(visitor);
 
     std::vector<std::string> packagePath = visitor.getPackagePath();
-    if (!tree->update(packagePath, environment.decl)) {
+    if (!environment.typeLink.setPackage(std::move(packagePath))) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
     };
-    environment.typeLink.setPackage(std::move(packagePath));
-    environment.typeLink.setTree(tree);
   }
   if (breakPoint != PackageTree) {
     buildTypeLink();

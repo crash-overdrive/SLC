@@ -99,7 +99,6 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
 
   SECTION("Same Package Import") {
     Env::TypeDeclaration array({}, Env::DeclarationKeyword::Class, "Array");
-    tree->update({"foo", "canary"}, list);
     tree->update({"foo", "canary"}, array);
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
