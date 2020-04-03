@@ -16,6 +16,7 @@ public:
                       TypeDeclaration *decl = nullptr);
   PackageNode *find(const std::string &name);
   TypeDeclaration *findDeclaration(const std::string &name);
+  TypeDeclaration *getDeclaration() const;
 
 private:
   friend class PackageTree;
@@ -32,6 +33,7 @@ class PackageTree {
 public:
   TypeDeclaration *findDeclaration(const std::vector<std::string> &path) const;
   PackageNode *findPackage(const std::vector<std::string> &path) const;
+  PackageNode *getRoot() const;
   TypeDeclaration *findDefault(const std::string &name) const;
   bool update(const std::vector<std::string> &packagePath,
               TypeDeclaration &decl);

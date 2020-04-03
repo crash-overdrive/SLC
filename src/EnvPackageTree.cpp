@@ -42,6 +42,8 @@ TypeDeclaration *PackageNode::findDeclaration(const std::string &name) {
   return node->decl;
 }
 
+TypeDeclaration *PackageNode::getDeclaration() const { return decl; }
+
 PackageNode *PackageNode::updatePackage(Type type, const std::string &name) {
   auto it = children.find(name);
   if (it != children.end()) {
@@ -74,6 +76,8 @@ PackageTree::findPackage(const std::vector<std::string> &path) const {
   }
   return (node->type == PackageNode::Type::Package) ? node : nullptr;
 }
+
+PackageNode *PackageTree::getRoot() const { return root.get(); }
 
 TypeDeclaration *PackageTree::findDefault(const std::string &name) const {
   auto it = defaultPackage.find(name);

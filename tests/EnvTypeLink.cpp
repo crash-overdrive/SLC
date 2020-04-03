@@ -15,13 +15,14 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     typeLink.setTree(tree);
     REQUIRE(typeLink.find({"foo", "bar", "List"}) == &list);
     REQUIRE(typeLink.addSingleImport({"foo", "bar", "List"}));
-    REQUIRE(typeLink.find({"List"}) == &list);
+    REQUIRE(typeLink.find("List") == &list);
   }
 
   SECTION("No existing Import") {
     Env::TypeLink typeLink(main);
     typeLink.setTree(tree);
-    REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
+    REQUIRE(typeLink.find(std::vector<std::string>{"nonexist", "class"}) ==
+            nullptr);
   }
 
   SECTION("OnDemand Lookup") {
@@ -29,19 +30,20 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     Env::TypeLink typeLink(main);
     typeLink.setTree(tree);
     typeLink.addDemandImport({"foo", "bar"});
-    REQUIRE(typeLink.find({"List"}) == &list);
+    REQUIRE(typeLink.find("List") == &list);
   }
 
   SECTION("Missing entries") {
     Env::TypeLink typeLink(main);
     typeLink.setTree(tree);
-    REQUIRE(typeLink.find({"nonexist", "class"}) == nullptr);
+    REQUIRE(typeLink.find(std::vector<std::string>{"nonexist", "class"}) ==
+            nullptr);
   }
 
   SECTION("Self Lookup") {
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
-    REQUIRE(typeLink.find({"List"}) == &list);
+    REQUIRE(typeLink.find("List") == &list);
   }
 
   SECTION("Self Import") {
@@ -103,7 +105,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
     typeLink.setPackage({"foo", "canary"});
-    REQUIRE(typeLink.find({"Array"}));
+    REQUIRE(typeLink.find("Array"));
   }
 
   SECTION("On demand clash") {
@@ -114,7 +116,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     typeLink.setTree(tree);
     typeLink.addDemandImport({"foo", "canary"});
     typeLink.addDemandImport({"foo", "bar"});
-    REQUIRE_FALSE(typeLink.find({"List"}));
+    REQUIRE_FALSE(typeLink.find("List"));
   }
 
   SECTION("Default Package") {
@@ -123,7 +125,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     tree->update({}, array);
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
-    REQUIRE(typeLink.find({"Array"}));
+    REQUIRE(typeLink.find("Array"));
   }
 
   SECTION("Resolve prefix clash default package") {
@@ -132,7 +134,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     tree->update({}, array);
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
-    REQUIRE_FALSE(typeLink.find({"Array", "List"}));
+    REQUIRE_FALSE(typeLink.find(std::vector<std::string>{"Array", "List"}));
   }
 
   SECTION("Resolve prefix clash import") {
@@ -142,7 +144,7 @@ TEST_CASE("EnvTypeLink", "[EnvTypeLink]") {
     Env::TypeLink typeLink(list);
     typeLink.setTree(tree);
     typeLink.addSingleImport({"foo", "bar", "Array"});
-    REQUIRE_FALSE(typeLink.find({"Array", "List"}));
+    REQUIRE_FALSE(typeLink.find(std::vector<std::string>{"Array", "List"}));
   }
 
   SECTION("Single Import class own name") {

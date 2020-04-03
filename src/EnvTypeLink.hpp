@@ -3,20 +3,22 @@
 
 #include "ASTVisitor.hpp"
 #include "EnvPackageTree.hpp"
-#include <unordered_set>
 
 namespace Env {
 
 class TypeLink {
 public:
-  explicit TypeLink(TypeDeclaration &type);
+  explicit TypeLink(TypeDeclaration &decl);
   bool setPackage(std::vector<std::string> package);
   void setTree(std::shared_ptr<PackageTree> tree);
   bool addSingleImport(const std::vector<std::string> &name);
   bool addDemandImport(const std::vector<std::string> &name);
   TypeDeclaration *find(const std::vector<std::string> &name) const;
+  TypeDeclaration *find(const std::string &name) const;
   template <class InputIt>
-  std::pair<InputIt, TypeDeclaration *> find(InputIt first, InputIt last) const;
+  std::pair<InputIt, TypeDeclaration *>
+  find(InputIt first, InputIt last) const;
+  TypeDeclaration *findSamePackage(const std::string &name) const;
 
 private:
   TypeDeclaration &decl;
@@ -24,7 +26,6 @@ private:
   std::shared_ptr<PackageTree> tree;
   std::unordered_map<std::string, TypeDeclaration *> singleImports;
   std::unordered_set<PackageNode *> onDemandImports;
-  TypeDeclaration *findSamePackage(const std::string &name) const;
   TypeDeclaration *findDemand(const std::string &name) const;
 };
 

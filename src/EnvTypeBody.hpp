@@ -77,6 +77,7 @@ public:
   const std::vector<Method> &getMethods() const;
   bool addMethod(Method other);
 
+  const Constructor *findConstructors(const std::vector<Env::Type> &args) const;
   const std::vector<Constructor> &getConstructors() const;
   bool addConstructor(Constructor other);
 
