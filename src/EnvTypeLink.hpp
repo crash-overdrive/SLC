@@ -9,12 +9,14 @@ namespace Env {
 
 class TypeLink {
 public:
-  TypeLink(TypeDeclaration &type);
+  explicit TypeLink(TypeDeclaration &type);
   bool setPackage(std::vector<std::string> package);
   void setTree(std::shared_ptr<PackageTree> tree);
   bool addSingleImport(const std::vector<std::string> &name);
   bool addDemandImport(const std::vector<std::string> &name);
   TypeDeclaration *find(const std::vector<std::string> &name) const;
+  template <class InputIt>
+  std::pair<InputIt, TypeDeclaration *> find(InputIt first, InputIt last) const;
 
 private:
   TypeDeclaration &decl;
