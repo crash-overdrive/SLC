@@ -16,7 +16,7 @@ std::istream &Lex::operator>>(std::istream &stream, Lex::Scanner &scanner) {
   Lex::setAlphabets();
 
   while (std::getline(stream, line)) {
-    int position = line.find(delimiter);
+    size_t position = line.find(delimiter);
     std::string tokenType = line.substr(0, position);
     std::string regexPattern = line.substr(position + delimiter.length());
     Lex::Nfa nfa = Lex::convertRegexToNfa(regexPattern, tokenType, ++priority);

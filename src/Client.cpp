@@ -1,6 +1,6 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
-#include "EnvLocalVariable.hpp"
+#include "EnvLocal.hpp"
 #include <fstream>
 #include <iterator>
 
@@ -147,7 +147,7 @@ void Client::buildTypeDeclaration(std::unique_ptr<AST::Start> node,
     std::cerr << decl;
   }
   if (breakPoint != TypeDeclaration) {
-    environments.emplace_back(std::move(decl), std::move(fullName));
+    environments.emplace_back(std::move(decl), tree, std::move(fullName));
   }
 }
 
@@ -159,19 +159,16 @@ void Client::buildEnvironment() {
 }
 
 void Client::buildPackageTree() {
-  auto tree = std::make_shared<Env::PackageTree>();
   for (auto &environment : environments) {
     Env::PackageTreeVisitor visitor;
     environment.decl.astNode->accept(visitor);
 
     std::vector<std::string> packagePath = visitor.getPackagePath();
-    if (!tree->update(packagePath, environment.decl)) {
+    if (!environment.typeLink.setPackage(std::move(packagePath))) {
       std::cerr << "Error building package tree\n";
       errorState = true;
       return;
     };
-    environment.typeLink.setPackage(std::move(packagePath));
-    environment.typeLink.setTree(tree);
   }
   if (breakPoint != PackageTree) {
     buildTypeLink();
@@ -254,12 +251,12 @@ void Client::weed() {
 }
 
 void Client::localVariableAnalysis() {
-  bool log = (printPoints.find(LocalVariableAnalysis) != printPoints.end());
+  bool log = (printPoints.find(LocalVariable) != printPoints.end());
 
   for (auto &environment : environments) {
     Env::TypeBody &body = environment.decl.body;
     for (auto const &constructor : body.getConstructors()) {
-      Env::LocalVariableVisitor visitor(environment.typeLink, log);
+      Env::LocalVisitor visitor(environment.typeLink, log);
 
       if (log) {
         std::cerr << "Local Variable Analysis for Constructor: "
@@ -280,7 +277,7 @@ void Client::localVariableAnalysis() {
       }
     }
     for (auto const &method : body.getMethods()) {
-      Env::LocalVariableVisitor visitor(environment.typeLink, log);
+      Env::LocalVisitor visitor(environment.typeLink, log);
 
       if (log) {
         std::cerr << "Local Variable Analysis for Method: " << method.identifier
@@ -299,7 +296,7 @@ void Client::localVariableAnalysis() {
       }
     }
   }
-  if (breakPoint != LocalVariableAnalysis) {
+  if (breakPoint != LocalVariable) {
     buildHierarchy();
   }
 }
@@ -405,6 +402,7 @@ std::unique_ptr<AST::Start> Client::buildAST(std::string fullName) {
 }
 
 Client::Environment::Environment(Env::TypeDeclaration decl,
+                                 std::shared_ptr<Env::PackageTree> tree,
                                  std::string fullName)
-    : decl(std::move(decl)), typeLink(this->decl),
+    : decl(std::move(decl)), typeLink(this->decl, std::move(tree)),
       fullName(std::move(fullName)) {}

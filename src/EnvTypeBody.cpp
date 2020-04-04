@@ -113,6 +113,16 @@ bool TypeBody::addMethod(Method other) {
   return true;
 }
 
+const Constructor *
+TypeBody::findConstructors(const std::vector<Env::Type> &args) const {
+  for (const auto &constructor : constructors) {
+    if (constructor.args == args) {
+      return &constructor;
+    }
+  }
+  return nullptr;
+}
+
 const std::vector<Constructor> &TypeBody::getConstructors() const {
   return constructors;
 }

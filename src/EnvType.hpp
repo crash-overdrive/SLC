@@ -36,10 +36,10 @@ const std::unordered_map<TypeKeyword, std::string> typeKeywordString{
 
 struct Type {
   TypeKeyword keyword;
+  const TypeDeclaration *declare;
   bool isArray;
-  TypeDeclaration *declare;
-  Type(TypeKeyword keyword = TypeKeyword::None, bool isArray = false,
-       TypeDeclaration *declare = nullptr);
+  Type(TypeKeyword keyword = TypeKeyword::None, bool isArray = false);
+  explicit Type(const TypeDeclaration *declare, bool isArray = false);
   bool operator==(const Type &type) const;
   bool operator!=(const Type &type) const;
 };

@@ -1,10 +1,10 @@
-#include "EnvLocalVariable.hpp"
+#include "EnvLocal.hpp"
 #include "EnvTypeBody.hpp"
 #include "TestConfig.hpp"
 #include "catch.hpp"
 
-TEST_CASE("LocalVariableAnalysis", "[local-variable]") {
-  Env::LocalVariableAnalysis tables(false);
+TEST_CASE("Local", "[local-variable]") {
+  Env::Local tables(false);
   REQUIRE(tables.addVariable("outer", Env::TypeKeyword::Integer));
   tables.addVariableTable();
   REQUIRE(tables.addVariable("middle", Env::TypeKeyword::Integer));

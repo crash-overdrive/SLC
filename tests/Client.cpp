@@ -68,7 +68,7 @@ TEST_CASE("client process", "[client]") {
     }
 
     SECTION("error-localvariable") {
-      client.setBreakPoint(Client::LocalVariableAnalysis);
+      client.setBreakPoint(Client::LocalVariable);
       for (const auto &group : a2ErrorLocalVariable) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));

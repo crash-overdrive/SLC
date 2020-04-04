@@ -7,7 +7,7 @@ TEST_CASE("EnvTypeBody created from Env", "[EnvTypeBody]") {
   Env::TypeBody body;
   Env::TypeDeclaration stringDecl{
       {Env::Modifier::Public}, Env::DeclarationKeyword::Class, "String"};
-  Env::Type stringType{Env::TypeKeyword::Simple, false, &stringDecl};
+  Env::Type stringType{&stringDecl};
 
   REQUIRE(body.addField(Env::Field{
       {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
@@ -38,7 +38,7 @@ TEST_CASE("EnvTypeBody created from Env", "[EnvTypeBody]") {
   SECTION("Field different type add successful") {
     Env::TypeDeclaration arrayDecl{
         {Env::Modifier::Public}, Env::DeclarationKeyword::Class, "Array"};
-    Env::Type arrayType{Env::TypeKeyword::Simple, false, &arrayDecl};
+    Env::Type arrayType{&arrayDecl};
 
     REQUIRE(!body.addField(Env::Field{
         {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
@@ -195,7 +195,8 @@ TEST_CASE("Visitor to create TypeBody", "[EnvTypeBodyVisitor]") {
 
   Env::TypeDeclaration outputStreamDecl{
       {Env::Modifier::Public}, Env::DeclarationKeyword::Class, "OutputStream"};
-  Env::TypeLink typeLink(outputStreamDecl);
+  auto tree = std::make_shared<Env::PackageTree>();
+  Env::TypeLink typeLink(outputStreamDecl, tree);
 
   Env::TypeDeclarationVisitor visitor;
   Env::TypeBodyVisitor bodyVisitor(typeLink);

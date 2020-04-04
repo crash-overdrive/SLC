@@ -1,5 +1,5 @@
-#ifndef ENVLOCALVARIABLE_HPP
-#define ENVLOCALVARIABLE_HPP
+#ifndef ENVLOCAL_HPP
+#define ENVLOCAL_HPP
 
 #include "ASTVisitor.hpp"
 #include "EnvTypeLink.hpp"
@@ -10,7 +10,7 @@ namespace Env {
 
 class VariableTable {
 public:
-  Type *findVariable(const std::string &name);
+  std::optional<Type> findVariable(const std::string &name) const;
   bool addVariable(const std::string &name, Type type);
 
 private:
@@ -21,10 +21,10 @@ private:
 
 std::ostream &operator<<(std::ostream &stream, const VariableTable &table);
 
-class LocalVariableAnalysis {
+class Local {
 public:
-  LocalVariableAnalysis(bool log = false);
-  Type *findVariable(const std::string &name);
+  Local(bool log = false);
+  std::optional<Type> findVariable(const std::string &name) const;
   bool addVariable(const std::string &name, Type type);
   void addVariableTable();
   void removeVariableTable();
@@ -34,18 +34,18 @@ private:
   std::vector<VariableTable> tables;
 };
 
-class LocalVariableVisitor : public AST::TrackVisitor {
+class LocalVisitor : public AST::TrackVisitor {
 public:
-  LocalVariableVisitor(const TypeLink &typeLink, bool log = false);
+  LocalVisitor(const TypeLink &typeLink, bool log = false);
   void visit(const AST::SingleVariableDeclaration &decl) override;
   void visit(const AST::Block &block) override;
   void visit(const AST::SimpleType &simpleType) override;
 
 private:
   const TypeLink &typeLink;
-  LocalVariableAnalysis localVariableAnalysis;
+  Local local;
 };
 
-}; // namespace Env
+} // namespace Env
 
-#endif
+#endif // ENVLOCAL_HPP

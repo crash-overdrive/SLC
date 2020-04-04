@@ -23,7 +23,7 @@ struct TypeDeclaration {
   std::string identifier;
   std::unique_ptr<AST::Node> astNode;
   TypeBody body;
-  std::unordered_set<TypeDeclaration *> subType;
+  std::unordered_set<const TypeDeclaration *> subType;
   TypeContain contain;
 
   TypeDeclaration(std::set<Modifier> modifiers, DeclarationKeyword keyword,
@@ -48,6 +48,6 @@ private:
   std::string identifier;
 };
 
-}; // namespace Env
+} // namespace Env
 
 #endif // ENVTYPEDECLARATION_HPP

@@ -11,7 +11,7 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
   method.args.emplace_back(Env::TypeKeyword::Integer);
   Env::TypeDeclaration stringDecl{
       {Env::Modifier::Public}, Env::DeclarationKeyword::Class, "String"};
-  Env::Type stringType{Env::TypeKeyword::Simple, false, &stringDecl};
+  Env::Type stringType{&stringDecl};
 
   SECTION("override signature different return") {
     Env::Method method2(method);
@@ -145,7 +145,7 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
 TEST_CASE("EnvJoosContain find methods", "[EnvTypeContainFind]") {
   Env::TypeDeclaration stringDecl{
       {Env::Modifier::Public}, Env::DeclarationKeyword::Class, "String"};
-  Env::Type stringType{Env::TypeKeyword::Simple, false, &stringDecl};
+  Env::Type stringType{&stringDecl, false};
 
   Env::TypeContain contain;
   Env::Field field{

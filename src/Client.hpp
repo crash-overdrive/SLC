@@ -18,7 +18,7 @@ public:
     TypeLink,
     TypeBody,
     Weed,
-    LocalVariableAnalysis,
+    LocalVariable,
     Hierarchy,
     None,
   };
@@ -51,21 +51,21 @@ public:
   std::unique_ptr<AST::Start> buildAST(std::string fullName);
 
 private:
+  std::shared_ptr<Env::PackageTree> tree = std::make_shared<Env::PackageTree>();
   struct Environment {
     Env::TypeDeclaration decl;
     Env::TypeLink typeLink;
     std::string fullName;
-    Environment(Env::TypeDeclaration decl, std::string fileName);
+    Environment(Env::TypeDeclaration decl,
+                std::shared_ptr<Env::PackageTree> tree, std::string fullName);
   };
+  std::unique_ptr<Lex::Scanner> scanner;
+  std::unique_ptr<Parse::DFA> parser;
 
   bool buildClassHierarchy(Env::HierarchyGraph &graph,
                            Environment &environment);
   bool buildInterfaceHierarchy(Env::HierarchyGraph &graph,
                                Environment &environment);
-
-  std::unique_ptr<Lex::Scanner> scanner;
-  std::unique_ptr<Parse::DFA> parser;
-
   std::vector<Environment> environments;
   std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};

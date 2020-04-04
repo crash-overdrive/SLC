@@ -227,7 +227,7 @@ void HierarchyVisitor::visit(const AST::Extensions &node) {
   AST::NameVisitor visitor;
   visitor.dispatchChildren(node);
   extensions.emplace_back(visitor.getName());
-};
+}
 
 void HierarchyVisitor::visit(const AST::Super &node) {
   AST::NameVisitor visitor;
