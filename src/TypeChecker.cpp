@@ -2,7 +2,7 @@
 
 namespace Type {
 
-Checker::Checker(const Env::TypeLink &typeLink) : typeLink(typeLink) {}
+Checker::Checker(const Env::PackageTree &tree) : tree(tree) {}
 
 std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
                                                   Env::Type ropt) const {
@@ -10,9 +10,9 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
     return lopt;
   }
   if (ropt.isArray &&
-      (lopt.declare == typeLink.find({"java", "lang", "Object"}) ||
-       lopt.declare == typeLink.find({"java", "lang", "Cloneable"}) ||
-       lopt.declare == typeLink.find({"java", "io", "Serializable"}))) {
+      (lopt.declare == tree.findDeclaration({"java", "lang", "Object"}) ||
+       lopt.declare == tree.findDeclaration({"java", "lang", "Cloneable"}) ||
+       lopt.declare == tree.findDeclaration({"java", "io", "Serializable"}))) {
     return lopt;
   }
   if (lopt.keyword == Env::TypeKeyword::Simple &&
@@ -59,7 +59,8 @@ Checker::checkBinaryOperation(const BinaryOperation &operation) const {
       return std::nullopt;
     }
   }
-  Env::TypeDeclaration *string = typeLink.find({"java", "lang", "String"});
+  Env::TypeDeclaration *string =
+      tree.findDeclaration({"java", "lang", "String"});
   if (operation.lopt.declare == string && operation.ropt.declare == string &&
       operation.binaryOperator == BinaryOperator::Addition) {
     // return operation.lopt;

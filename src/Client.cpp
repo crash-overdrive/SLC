@@ -147,7 +147,7 @@ void Client::buildTypeDeclaration(std::unique_ptr<AST::Start> node,
     std::cerr << decl;
   }
   if (breakPoint != TypeDeclaration) {
-    environments.emplace_back(std::move(decl), std::move(fullName));
+    environments.emplace_back(std::move(decl), tree, std::move(fullName));
   }
 }
 
@@ -159,10 +159,7 @@ void Client::buildEnvironment() {
 }
 
 void Client::buildPackageTree() {
-  auto tree = std::make_shared<Env::PackageTree>();
   for (auto &environment : environments) {
-    environment.typeLink.setTree(tree);
-
     Env::PackageTreeVisitor visitor;
     environment.decl.astNode->accept(visitor);
 
@@ -405,6 +402,7 @@ std::unique_ptr<AST::Start> Client::buildAST(std::string fullName) {
 }
 
 Client::Environment::Environment(Env::TypeDeclaration decl,
+                                 std::shared_ptr<Env::PackageTree> tree,
                                  std::string fullName)
-    : decl(std::move(decl)), typeLink(this->decl),
+    : decl(std::move(decl)), typeLink(this->decl, std::move(tree)),
       fullName(std::move(fullName)) {}

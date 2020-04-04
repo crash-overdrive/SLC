@@ -195,7 +195,8 @@ TEST_CASE("Visitor to create TypeBody", "[EnvTypeBodyVisitor]") {
 
   Env::TypeDeclaration outputStreamDecl{
       {Env::Modifier::Public}, Env::DeclarationKeyword::Class, "OutputStream"};
-  Env::TypeLink typeLink(outputStreamDecl);
+  auto tree = std::make_shared<Env::PackageTree>();
+  Env::TypeLink typeLink(outputStreamDecl, tree);
 
   Env::TypeDeclarationVisitor visitor;
   Env::TypeBodyVisitor bodyVisitor(typeLink);

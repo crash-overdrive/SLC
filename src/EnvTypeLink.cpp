@@ -3,15 +3,12 @@
 
 namespace Env {
 
-TypeLink::TypeLink(TypeDeclaration &decl) : decl(decl) {}
+TypeLink::TypeLink(TypeDeclaration &decl, std::shared_ptr<PackageTree> tree)
+    : decl(decl), tree(std::move(tree)) {}
 
 bool TypeLink::setPackage(std::vector<std::string> package) {
   this->package = std::move(package);
   return tree->update(this->package, decl);
-}
-
-void TypeLink::setTree(std::shared_ptr<PackageTree> tree) {
-  this->tree = std::move(tree);
 }
 
 bool TypeLink::addSingleImport(const std::vector<std::string> &name) {

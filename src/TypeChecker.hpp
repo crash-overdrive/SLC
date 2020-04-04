@@ -1,7 +1,7 @@
 #ifndef TYPECHECKER_HPP
 #define TYPECHECKER_HPP
 
-#include "EnvTypeLink.hpp"
+#include "EnvPackageTree.hpp"
 #include <unordered_set>
 #include <vector>
 
@@ -80,7 +80,7 @@ struct UnaryOperation {
 
 class Checker {
 public:
-  Checker(const Env::TypeLink &typeLink);
+  Checker(const Env::PackageTree &tree);
   std::optional<Env::Type> checkAssignment(Env::Type lopt,
                                            Env::Type ropt) const;
   std::optional<Env::Type>
@@ -99,7 +99,7 @@ private:
   bool isStringAddition(Env::Type lopt, Env::Type ropt) const;
   bool isNum(Env::Type type) const;
   bool isAssignable(Env::Type lopt, Env::Type ropt) const;
-  const Env::TypeLink &typeLink;
+  const Env::PackageTree &tree;
 };
 
 } // namespace Type

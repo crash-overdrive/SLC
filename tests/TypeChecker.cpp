@@ -2,11 +2,9 @@
 #include "catch.hpp"
 
 TEST_CASE("Check type with function", "[TypeChecker]") {
-  Env::TypeDeclaration listDecl({}, Env::DeclarationKeyword::Class, "List");
-  Env::TypeLink typeLink(listDecl);
   auto tree = std::make_shared<Env::PackageTree>();
-  typeLink.setTree(tree);
-  Type::Checker checker(typeLink);
+  Type::Checker checker(*tree);
+
   SECTION("Transitivity of assignment") {
     auto type = checker.checkAssignment(Env::TypeKeyword::Integer,
                                         Env::TypeKeyword::Byte);

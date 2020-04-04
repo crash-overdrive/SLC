@@ -8,8 +8,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   Env::Type arrayType(&arrayDecl);
 
   auto tree = std::make_shared<Env::PackageTree>();
-  Env::TypeLink typeLink(listDecl);
-  typeLink.setTree(tree);
+  Env::TypeLink typeLink(listDecl, tree);
   typeLink.setPackage({});
   Env::Local local;
   Name::Resolver resolver(local, typeLink, listDecl);
