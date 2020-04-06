@@ -31,6 +31,13 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
 
 std::optional<Env::Type>
 Checker::checkBinaryOperation(const BinaryOperation &operation) const {
+  Env::TypeDeclaration *string =
+      tree.findDeclaration({"java", "lang", "String"});
+  if ((operation.lopt.declare == string || operation.ropt.declare == string) &&
+      operation.binaryOperator == BinaryOperator::Addition) {
+    return Env::Type(string);
+  }
+
   if (isNum(operation.lopt) && isNum(operation.ropt)) {
     if (numBinaryOperator.find(operation.binaryOperator) !=
         numBinaryOperator.end()) {
@@ -58,12 +65,6 @@ Checker::checkBinaryOperation(const BinaryOperation &operation) const {
     } else {
       return std::nullopt;
     }
-  }
-  Env::TypeDeclaration *string =
-      tree.findDeclaration({"java", "lang", "String"});
-  if (operation.lopt.declare == string && operation.ropt.declare == string &&
-      operation.binaryOperator == BinaryOperator::Addition) {
-    // return operation.lopt;
   }
   return std::nullopt;
 }
@@ -101,8 +102,8 @@ std::optional<Env::Type> Checker::checkInstanceOf(Env::Type lopt,
   return std::nullopt;
 }
 
-std::optional<Env::Type> Checker::checkArrayIndex(Env::Type lopt,
-                                                  Env::Type ropt) const {
+std::optional<Env::Type> Checker::checkArrayAccess(Env::Type lopt,
+                                                   Env::Type ropt) const {
   if (isNum(ropt)) {
     return lopt;
   }

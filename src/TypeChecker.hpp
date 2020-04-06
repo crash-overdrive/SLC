@@ -24,7 +24,7 @@ const std::vector<std::array<Env::Type, 2>> primitiveAssignment{
 
 enum class BinaryOperator {
   Addition,
-  Substraction,
+  Subtraction,
   Multiplication,
   Division,
   Modulus,
@@ -48,7 +48,7 @@ enum class UnaryOperator {
 
 const std::unordered_map<std::string, BinaryOperator> symbolBinaryOperator{
     {"+", BinaryOperator::Addition},
-    {"-", BinaryOperator::Substraction},
+    {"-", BinaryOperator::Subtraction},
     {"*", BinaryOperator::Multiplication},
     {"/", BinaryOperator::Division},
     {"%", BinaryOperator::Modulus},
@@ -71,7 +71,7 @@ const std::unordered_map<std::string, UnaryOperator> symbolUnaryOperator{
 };
 
 const std::unordered_set<Type::BinaryOperator> numBinaryOperator{
-    Type::BinaryOperator::Addition,       Type::BinaryOperator::Substraction,
+    Type::BinaryOperator::Addition,       Type::BinaryOperator::Subtraction,
     Type::BinaryOperator::Multiplication, Type::BinaryOperator::Division,
     Type::BinaryOperator::Modulus,
 };
@@ -117,8 +117,8 @@ public:
   std::optional<Env::Type> checkCasting(Env::Type lopt, Env::Type ropt) const;
   std::optional<Env::Type> checkInstanceOf(Env::Type lopt,
                                            Env::Type ropt) const;
-  std::optional<Env::Type> checkArrayIndex(Env::Type lopt,
-                                           Env::Type ropt) const;
+  std::optional<Env::Type> checkArrayAccess(Env::Type lopt,
+                                            Env::Type ropt) const;
   std::optional<Env::Type> checkArrayCreation(Env::Type lopt,
                                               Env::Type ropt) const;
 
