@@ -7,8 +7,7 @@ namespace Name {
 
 class Resolver {
 public:
-  Resolver(const Env::Local &local, const Env::TypeLink &typeLink,
-           const Env::TypeDeclaration &decl);
+  Resolver(const Env::Local &local, const Env::TypeLink &typeLink);
 
   std::optional<Env::Type>
   findField(const std::vector<std::string> &name) const;

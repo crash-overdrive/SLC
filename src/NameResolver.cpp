@@ -3,9 +3,8 @@
 
 namespace Name {
 
-Resolver::Resolver(const Env::Local &local, const Env::TypeLink &typeLink,
-                   const Env::TypeDeclaration &decl)
-    : local(local), typeLink(typeLink), decl(decl) {}
+Resolver::Resolver(const Env::Local &local, const Env::TypeLink &typeLink)
+    : local(local), typeLink(typeLink), decl(typeLink.getDeclaration()) {}
 
 std::optional<Env::Type>
 Resolver::findField(const std::vector<std::string> &name) const {
@@ -54,7 +53,7 @@ Resolver::findMethod(const std::vector<std::string> &name,
     return std::nullopt;
   }
   if (name.size() == 1) {
-    findMethod(Env::Type(&decl), args, name.begin(), name.end());
+    return findMethod(Env::Type(&decl), args, name.begin(), name.end());
   }
   auto objectType = matchObject(*name.begin());
   if (objectType) {
@@ -88,8 +87,11 @@ Resolver::findMethod(Env::Type type, const std::string &identifier,
   if (type.keyword != Env::TypeKeyword::Simple) {
     return std::nullopt;
   }
-  const Env::Method *method = decl.contain.findMethod(identifier, args);
+  const Env::Method *method =
+      type.declare->contain.findMethod(identifier, args);
   if (!method || !isVisible(type.declare, method) || isStatic(method)) {
+    std::cerr << method;
+    std::cerr << "hello";
     return std::nullopt;
   }
   return method->returnType;
