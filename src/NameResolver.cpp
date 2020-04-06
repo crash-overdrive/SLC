@@ -98,18 +98,18 @@ Resolver::findMethod(Env::Type type, const std::string &identifier,
 }
 
 std::optional<Env::Type>
-Resolver::findConstructor(const std::vector<std::string> &name,
+Resolver::findConstructor(Env::Type type,
                           const std::vector<Env::Type> &args) const {
-  Env::TypeDeclaration *foundDecl = typeLink.find(name);
-  if (!foundDecl || foundDecl->modifiers.find(Env::Modifier::Abstract) !=
-                        foundDecl->modifiers.end()) {
+  const Env::TypeDeclaration *typeDecl = type.declare;
+  if (!typeDecl || typeDecl->modifiers.find(Env::Modifier::Abstract) !=
+                       typeDecl->modifiers.end()) {
     return std::nullopt;
   }
-  const Env::Constructor *constructor = foundDecl->body.findConstructors(args);
-  if (!constructor || !isVisible(foundDecl, constructor)) {
+  const Env::Constructor *constructor = typeDecl->body.findConstructors(args);
+  if (!constructor || !isVisible(typeDecl, constructor)) {
     return std::nullopt;
   }
-  return Env::Type{foundDecl};
+  return type;
 }
 
 template <class InputIt>

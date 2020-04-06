@@ -116,14 +116,14 @@ TEST_CASE("Resolve names", "[NameResolver]") {
                                   Env::DeclarationKeyword::Class, "Base");
     baseDecl.body.addConstructor({{Env::Modifier::Public}, "Base", {}});
     tree->update({"bar"}, baseDecl);
-    REQUIRE_FALSE(resolver.findConstructor({"bar", "Base"}, {}));
+    REQUIRE_FALSE(resolver.findConstructor(Env::Type{&baseDecl}, {}));
   }
 
   SECTION("World cannot use protected constructor") {
     Env::TypeDeclaration baseDecl({}, Env::DeclarationKeyword::Class, "Base");
     baseDecl.body.addConstructor({{Env::Modifier::Protected}, "Base", {}});
     tree->update({"bar"}, baseDecl);
-    REQUIRE_FALSE(resolver.findConstructor({"bar", "Base"}, {}));
+    REQUIRE_FALSE(resolver.findConstructor(Env::Type{&baseDecl}, {}));
   }
 
   SECTION("Found Constructor") {
@@ -131,6 +131,6 @@ TEST_CASE("Resolve names", "[NameResolver]") {
                                   Env::DeclarationKeyword::Class, "Base");
     baseDecl.body.addConstructor({{Env::Modifier::Public}, "Base", {}});
     tree->update({"bar"}, baseDecl);
-    REQUIRE(resolver.findConstructor({"bar", "Base"}, {}));
+    REQUIRE(resolver.findConstructor(Env::Type{&baseDecl}, {}));
   }
 }

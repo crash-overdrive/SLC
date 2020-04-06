@@ -21,8 +21,7 @@ public:
                                       const std::vector<Env::Type> &args) const;
 
   std::optional<Env::Type>
-  findConstructor(const std::vector<std::string> &name,
-                  const std::vector<Env::Type> &args) const;
+  findConstructor(Env::Type type, const std::vector<Env::Type> &args) const;
 
 private:
   template <class InputIt>
