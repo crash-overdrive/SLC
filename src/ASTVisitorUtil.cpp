@@ -48,10 +48,11 @@ void TypeVisitor::visit(const ArrayType &arrayType) {
 
 Env::Type TypeVisitor::getType() { return std::move(type); }
 
-ArgumentsVisitor::ArgumentsVisitor(const Env::TypeLink &typeLink)
+ArgumentsDeclarationVisitor::ArgumentsDeclarationVisitor(
+    const Env::TypeLink &typeLink)
     : typeLink(typeLink) {}
 
-void ArgumentsVisitor::visit(const SingleVariableDeclaration &decl) {
+void ArgumentsDeclarationVisitor::visit(const SingleVariableDeclaration &decl) {
   AST::TypeVisitor typeVisitor(typeLink);
   typeVisitor.dispatchChildren(decl);
   if (typeVisitor.isErrorState()) {
@@ -61,6 +62,8 @@ void ArgumentsVisitor::visit(const SingleVariableDeclaration &decl) {
   args.emplace_back(typeVisitor.getType());
 }
 
-std::vector<Env::Type> ArgumentsVisitor::getArgs() { return std::move(args); }
+std::vector<Env::Type> ArgumentsDeclarationVisitor::getArgs() {
+  return std::move(args);
+}
 
 } // namespace AST

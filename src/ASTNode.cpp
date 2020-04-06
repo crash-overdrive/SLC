@@ -51,6 +51,8 @@ void Expression::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void CastExpression::accept(Visitor &visitor) const { visitor.visit(*this); }
 
+void CastType::accept(Visitor &visitor) const { visitor.visit(*this); }
+
 void SingleVariableDeclaration::accept(Visitor &visitor) const {
   visitor.visit(*this);
 }
@@ -126,7 +128,7 @@ void UnaryExpression::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void ThisExpression::accept(Visitor &visitor) const { visitor.visit(*this); }
 
-void ArgumentList::accept(Visitor &visitor) const { visitor.visit(*this); }
+void Argument::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 Modifier::Modifier(std::string name) : name(std::move(name)) {}
 

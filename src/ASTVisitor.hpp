@@ -28,6 +28,7 @@ public:
   virtual void visit(const SimpleType &node);
   virtual void visit(const Expression &node);
   virtual void visit(const CastExpression &node);
+  virtual void visit(const CastType &node);
   virtual void visit(const SingleVariableDeclaration &node);
   virtual void visit(const Super &node);
   virtual void visit(const Interfaces &node);
@@ -51,7 +52,7 @@ public:
   virtual void visit(const CharacterLiteral &node);
   virtual void visit(const StringLiteral &node);
   virtual void visit(const NullLiteral &node);
-  virtual void visit(const ArgumentList &node);
+  virtual void visit(const Argument &node);
   virtual void visit(const FieldAccess &node);
   virtual void visit(const ArrayAccess &node);
   virtual void visit(const ArrayCreation &node);
@@ -92,6 +93,7 @@ public:
   void visit(const ArrayType &) override;
   void visit(const Expression &) override;
   void visit(const CastExpression &) override;
+  void visit(const CastType &) override;
   void visit(const SingleVariableDeclaration &) override;
   void visit(const Super &) override;
   void visit(const Interfaces &) override;
@@ -115,7 +117,7 @@ public:
   void visit(const CharacterLiteral &characterLiteral) override;
   void visit(const StringLiteral &stringLiteral) override;
   void visit(const NullLiteral &nullLiteral) override;
-  void visit(const ArgumentList &) override;
+  void visit(const Argument &) override;
   void visit(const FieldAccess &) override;
   void visit(const ArrayAccess &) override;
   void visit(const ArrayCreation &) override;

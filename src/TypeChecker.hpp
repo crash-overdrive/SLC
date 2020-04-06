@@ -36,6 +36,38 @@ enum class BinaryOperator {
   Greater,
   Or,
   And,
+  BitwiseOr,
+  BitwiseAnd,
+  BitwiseXor,
+};
+
+enum class UnaryOperator {
+  Negative,
+  Not,
+};
+
+const std::unordered_map<std::string, BinaryOperator> symbolBinaryOperator{
+    {"+", BinaryOperator::Addition},
+    {"-", BinaryOperator::Substraction},
+    {"*", BinaryOperator::Multiplication},
+    {"/", BinaryOperator::Division},
+    {"%", BinaryOperator::Modulus},
+    {"==", BinaryOperator::Equal},
+    {"!=", BinaryOperator::NotEqual},
+    {"<=", BinaryOperator::LesserOrEqual},
+    {">=", BinaryOperator::GreaterOrEqual},
+    {"<", BinaryOperator::Lesser},
+    {">", BinaryOperator::Greater},
+    {"||", BinaryOperator::Or},
+    {"%%", BinaryOperator::And},
+    {"|", BinaryOperator::BitwiseOr},
+    {"%", BinaryOperator::BitwiseAnd},
+    {"^", BinaryOperator::BitwiseXor},
+};
+
+const std::unordered_map<std::string, UnaryOperator> symbolUnaryOperator{
+    {"-", UnaryOperator::Negative},
+    {"!", UnaryOperator::Not},
 };
 
 const std::unordered_set<Type::BinaryOperator> numBinaryOperator{
@@ -45,10 +77,10 @@ const std::unordered_set<Type::BinaryOperator> numBinaryOperator{
 };
 
 const std::unordered_set<Type::BinaryOperator> boolBinaryOperator{
-    Type::BinaryOperator::Equal,
-    Type::BinaryOperator::NotEqual,
-    Type::BinaryOperator::Or,
-    Type::BinaryOperator::And,
+    Type::BinaryOperator::Equal,      Type::BinaryOperator::NotEqual,
+    Type::BinaryOperator::Or,         Type::BinaryOperator::And,
+    Type::BinaryOperator::BitwiseOr,  Type::BinaryOperator::BitwiseAnd,
+    Type::BinaryOperator::BitwiseXor,
 };
 
 const std::unordered_set<Type::BinaryOperator> compBinaryOperator{
@@ -66,11 +98,6 @@ struct BinaryOperation {
   BinaryOperator binaryOperator;
   Env::Type lopt;
   Env::Type ropt;
-};
-
-enum class UnaryOperator {
-  Negative,
-  Not,
 };
 
 struct UnaryOperation {

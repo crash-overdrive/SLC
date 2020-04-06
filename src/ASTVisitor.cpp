@@ -20,6 +20,7 @@ void Visitor::visit(const SimpleType &node) { postVisit(node); }
 void Visitor::visit(const ArrayType &node) { postVisit(node); }
 void Visitor::visit(const Expression &node) { postVisit(node); }
 void Visitor::visit(const CastExpression &node) { postVisit(node); }
+void Visitor::visit(const CastType &node) { postVisit(node); }
 void Visitor::visit(const SingleVariableDeclaration &node) { postVisit(node); }
 void Visitor::visit(const Super &node) { postVisit(node); }
 void Visitor::visit(const Interfaces &node) { postVisit(node); }
@@ -43,7 +44,7 @@ void Visitor::visit(const CharacterLiteral &node) { postVisit(node); }
 void Visitor::visit(const BooleanLiteral &node) { postVisit(node); }
 void Visitor::visit(const StringLiteral &node) { postVisit(node); }
 void Visitor::visit(const NullLiteral &node) { postVisit(node); }
-void Visitor::visit(const ArgumentList &node) { postVisit(node); }
+void Visitor::visit(const Argument &node) { postVisit(node); }
 void Visitor::visit(const FieldAccess &node) { postVisit(node); }
 void Visitor::visit(const ArrayAccess &node) { postVisit(node); }
 void Visitor::visit(const ArrayCreation &node) { postVisit(node); }
@@ -134,6 +135,8 @@ void PrintVisitor::visit(const Expression &) { stream << "Expression"; }
 
 void PrintVisitor::visit(const CastExpression &) { stream << "CastExpression"; }
 
+void PrintVisitor::visit(const CastType &) { stream << "CastType"; }
+
 void PrintVisitor::visit(const SingleVariableDeclaration &) {
   stream << "SingleVariableDeclaration";
 }
@@ -208,7 +211,7 @@ void PrintVisitor::visit(const NullLiteral &nullLiteral) {
   stream << "NullLiteral: " << nullLiteral.getLiteral();
 }
 
-void PrintVisitor::visit(const ArgumentList &) { stream << "ArgumentList"; }
+void PrintVisitor::visit(const Argument &) { stream << "Argument"; }
 
 void PrintVisitor::visit(const FieldAccess &) { stream << "FieldAccess"; }
 

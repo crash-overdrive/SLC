@@ -95,6 +95,7 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
     {"UnaryExpressionNotMinus", expressionVisit<UnaryExpression>},
     {"InstanceOfExpression", expressionVisit<InstanceOfExpression>},
     {"CastExpression", inodeVisit<CastExpression>},
+    {"CastType", inodeVisit<CastType>},
     {"PostfixExpression", dispatchChildren},
     {"Primary", dispatchChildren},
     {"PrimaryExpressionNoNewArray", dispatchChildren},
@@ -131,8 +132,9 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
     {"STRING_LITERAL", leafVisit<StringLiteral>},
     {"NULL_LITERAL", leafVisit<NullLiteral>},
 
-    {"ArgumentList", inodeVisit<ArgumentList>},
+    {"ArgumentList", dispatchChildren},
     {"Arguments", dispatchChildren},
+    {"Argument", inodeVisit<Argument>},
     {"Block", inodeVisit<Block>},
 };
 

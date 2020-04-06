@@ -41,9 +41,9 @@ private:
   Env::Type type;
 };
 
-class ArgumentsVisitor : public Visitor {
+class ArgumentsDeclarationVisitor : public Visitor {
 public:
-  ArgumentsVisitor(const Env::TypeLink &typeLink);
+  ArgumentsDeclarationVisitor(const Env::TypeLink &typeLink);
   void visit(const SingleVariableDeclaration &decl) override;
   std::vector<Env::Type> getArgs();
 

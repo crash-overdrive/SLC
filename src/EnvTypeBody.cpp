@@ -186,7 +186,7 @@ void TypeBodyVisitor::visit(const AST::MethodDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
-  AST::ArgumentsVisitor argumentsVisitor(typeLink);
+  AST::ArgumentsDeclarationVisitor argumentsVisitor(typeLink);
   argumentsVisitor.dispatchChildren(decl);
 
   AST::TypeVisitor typeVisitor(typeLink);
@@ -201,7 +201,7 @@ void TypeBodyVisitor::visit(const AST::ConstructorDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
-  AST::ArgumentsVisitor argumentsVisitor(typeLink);
+  AST::ArgumentsDeclarationVisitor argumentsVisitor(typeLink);
   argumentsVisitor.dispatchChildren(decl);
   constructors.emplace_back(propertiesVisitor.getModifiers(),
                             propertiesVisitor.getIdentifier(),

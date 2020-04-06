@@ -95,6 +95,11 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
+class CastType : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
 class SingleVariableDeclaration : public Node {
 public:
   void accept(Visitor &visitor) const override;
@@ -225,7 +230,7 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
-class ArgumentList : public Node {
+class Argument : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
