@@ -11,7 +11,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   Env::TypeLink typeLink(listDecl, tree);
   typeLink.setPackage({});
   Env::Local local;
-  Name::Resolver resolver(local, typeLink, listDecl);
+  Name::Resolver resolver(local, typeLink);
 
   SECTION("Single Identifier") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");

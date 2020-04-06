@@ -9,6 +9,7 @@ namespace Env {
 class TypeLink {
 public:
   TypeLink(TypeDeclaration &decl, std::shared_ptr<PackageTree> tree);
+  const TypeDeclaration &getDeclaration() const;
   bool setPackage(std::vector<std::string> package);
   bool addSingleImport(const std::vector<std::string> &name);
   bool addDemandImport(const std::vector<std::string> &name);
