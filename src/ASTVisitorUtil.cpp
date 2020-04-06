@@ -31,10 +31,6 @@ void TypeVisitor::visit(const PrimitiveType &primitiveType) {
   type.keyword = Env::stringTypeKeyword.at(primitiveType.getType());
 }
 
-void TypeVisitor::visit(const VoidType &) {
-  type.keyword = Env::TypeKeyword::Void;
-}
-
 void TypeVisitor::visit(const SimpleType &simpleType) {
   type.keyword = Env::TypeKeyword::Simple;
   NameVisitor nameVisitor;

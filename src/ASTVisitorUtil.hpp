@@ -32,7 +32,6 @@ class TypeVisitor : public Visitor {
 public:
   TypeVisitor(const Env::TypeLink &typeLink);
   void visit(const AST::PrimitiveType &primitiveType) override;
-  void visit(const AST::VoidType &) override;
   void visit(const AST::SimpleType &simpleType) override;
   void visit(const AST::ArrayType &arrayType) override;
   Env::Type getType();

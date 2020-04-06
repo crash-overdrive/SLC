@@ -18,7 +18,6 @@ void Visitor::visit(const Name &node) { postVisit(node); }
 void Visitor::visit(const PrimitiveType &node) { postVisit(node); }
 void Visitor::visit(const SimpleType &node) { postVisit(node); }
 void Visitor::visit(const ArrayType &node) { postVisit(node); }
-void Visitor::visit(const VoidType &node) { postVisit(node); }
 void Visitor::visit(const Expression &node) { postVisit(node); }
 void Visitor::visit(const CastExpression &node) { postVisit(node); }
 void Visitor::visit(const SingleVariableDeclaration &node) { postVisit(node); }
@@ -29,16 +28,15 @@ void Visitor::visit(const IfThenStatement &node) { postVisit(node); }
 void Visitor::visit(const IfThenElseStatement &node) { postVisit(node); }
 void Visitor::visit(const WhileStatement &node) { postVisit(node); }
 void Visitor::visit(const ForStatement &node) { postVisit(node); }
-void Visitor::visit(const SimpleStatement &node) { postVisit(node); }
+void Visitor::visit(const ExpressionStatement &node) { postVisit(node); }
 void Visitor::visit(const ClassInstanceCreation &node) { postVisit(node); }
-void Visitor::visit(const OperationExpression &node) { postVisit(node); }
+void Visitor::visit(const BinaryExpression &node) { postVisit(node); }
+void Visitor::visit(const InstanceOfExpression &node) { postVisit(node); }
 void Visitor::visit(const MethodInvocation &node) { postVisit(node); }
 void Visitor::visit(const ReturnStatement &node) { postVisit(node); }
 void Visitor::visit(const VariableDeclaration &node) { postVisit(node); }
-void Visitor::visit(const ASSIGN &node) { postVisit(node); }
 void Visitor::visit(const AssignmentExpression &node) { postVisit(node); }
-void Visitor::visit(const BinaryOperator &node) { postVisit(node); }
-void Visitor::visit(const UnaryOperator &node) { postVisit(node); }
+void Visitor::visit(const Operator &node) { postVisit(node); }
 void Visitor::visit(const DecIntLiteral &node) { postVisit(node); }
 void Visitor::visit(const CharacterLiteral &node) { postVisit(node); }
 void Visitor::visit(const BooleanLiteral &node) { postVisit(node); }
@@ -51,6 +49,7 @@ void Visitor::visit(const ArrayCreation &node) { postVisit(node); }
 void Visitor::visit(const ThisExpression &node) { postVisit(node); }
 void Visitor::visit(const ForInit &node) { postVisit(node); }
 void Visitor::visit(const ForUpdate &node) { postVisit(node); }
+void Visitor::visit(const UnaryExpression &node) { postVisit(node); }
 
 void Visitor::dispatchChildren(const Node &parent) {
   for (const auto &child : parent.getChildren()) {
@@ -122,10 +121,6 @@ void PrintVisitor::visit(const SimpleType &) { stream << "SimpleType"; }
 
 void PrintVisitor::visit(const ArrayType &) { stream << "ArrayType"; }
 
-void PrintVisitor::visit(const VoidType &voidType) {
-  stream << "VoidType: " << voidType.getType();
-}
-
 void PrintVisitor::visit(const Expression &) { stream << "Expression"; }
 
 void PrintVisitor::visit(const CastExpression &) { stream << "CastExpression"; }
@@ -152,16 +147,20 @@ void PrintVisitor::visit(const WhileStatement &) { stream << "WhileStatement"; }
 
 void PrintVisitor::visit(const ForStatement &) { stream << "ForStatement"; }
 
-void PrintVisitor::visit(const SimpleStatement &) {
-  stream << "SimpleStatement";
+void PrintVisitor::visit(const ExpressionStatement &) {
+  stream << "ExpressionStatement";
 }
 
 void PrintVisitor::visit(const ClassInstanceCreation &) {
   stream << "ClassInstanceCreation";
 }
 
-void PrintVisitor::visit(const OperationExpression &) {
-  stream << "OperationExpression";
+void PrintVisitor::visit(const BinaryExpression &) {
+  stream << "BinaryExpression";
+}
+
+void PrintVisitor::visit(const InstanceOfExpression &) {
+  stream << "InstanceOfExpression";
 }
 
 void PrintVisitor::visit(const MethodInvocation &) {
@@ -180,16 +179,8 @@ void PrintVisitor::visit(const AssignmentExpression &) {
   stream << "AssignmentExpression";
 }
 
-void PrintVisitor::visit(const ASSIGN &assign) {
-  stream << "ASSIGN: " << assign.getSymbol();
-}
-
-void PrintVisitor::visit(const BinaryOperator &binaryOperator) {
-  stream << "BinaryOperator: " << binaryOperator.getBinaryOperatorSymbol();
-}
-
-void PrintVisitor::visit(const UnaryOperator &unaryOperator) {
-  stream << "UnaryOperator: " << unaryOperator.getUnaryOperatorSymbol();
+void PrintVisitor::visit(const Operator &operatorNode) {
+  stream << "Operator: " << operatorNode.getOperatorSymbol();
 }
 
 void PrintVisitor::visit(const DecIntLiteral &decIntLiteral) {
@@ -220,13 +211,15 @@ void PrintVisitor::visit(const ArrayAccess &) { stream << "ArrayAccess"; }
 
 void PrintVisitor::visit(const ArrayCreation &) { stream << "ArrayCreation"; }
 
-void PrintVisitor::visit(const ThisExpression &thisExpression) {
-  stream << "ThisExpression: " << thisExpression.getExpression();
-}
+void PrintVisitor::visit(const ThisExpression &) { stream << "ThisExpression"; }
 
 void PrintVisitor::visit(const ForInit &) { stream << "ForInit"; }
 
 void PrintVisitor::visit(const ForUpdate &) { stream << "ForUpdate"; }
+
+void PrintVisitor::visit(const UnaryExpression &) {
+  stream << "UnaryExpression";
+}
 
 void TrackVisitor::setLog(std::ostream &stream) { this->streamRef = stream; }
 

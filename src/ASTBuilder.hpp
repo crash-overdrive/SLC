@@ -8,272 +8,131 @@ namespace AST {
 
 template <typename T>
 void inodeVisit(const Parse::Node &parseNode, Node &astNode);
+template <typename T>
+void expressionVisit(const Parse::Node &parseNode, AST::Node &astNode);
+template <typename T>
+void leafVisit(const Parse::Node &parseNode, AST::Node &astNode);
+
 void identifierVisit(const Parse::Node &parseNode, Node &astNode);
 void modifierVisit(const Parse::Node &parseNode, Node &astNode);
 void primitiveTypeVisit(const Parse::Node &parseNode, Node &astNode);
-void voidTypeVisit(const Parse::Node &parseNode, Node &astNode);
-void assignVisit(const Parse::Node &parseNode, Node &astNode);
-void binaryOperatorVisit(const Parse::Node &parseNode, Node &astNode);
-void unaryOperatorVisit(const Parse::Node &parseNode, Node &astNode);
-void decIntLiteralVisit(const Parse::Node &parseNode, Node &astNode);
-void booleanLiteralVisit(const Parse::Node &parseNode, Node &astNode);
-void characterLiteralVisit(const Parse::Node &parseNode, Node &astNode);
-void stringLiteralVisit(const Parse::Node &parseNode, Node &astNode);
-void nullLiteralVisit(const Parse::Node &parseNode, Node &astNode);
 void thisExpressionVisit(const Parse::Node &parseNode, Node &astNode);
 void dispatchChildren(const Parse::Node &parseNode, Node &astNode);
 void dispatch(const Parse::Node &parseNode, Node &astNode);
 
 using ParseVisitor = void (*)(const Parse::Node &, Node &);
 const std::unordered_map<std::string, ParseVisitor> parseVisit{
-    {"Start", dispatchChildren}, // Start -> CompilationUnit
-
-    {"CompilationUnit",
-     dispatchChildren}, // CompilationUnit -> ImportDeclarations,
-                        // PackageDeclaration, TypeDeclaration
-
-    {"ImportDeclarations",
-     dispatchChildren}, // ImportDeclarations -> ImportDeclarations
-                        // ImportDeclaration
-    {"PackageDeclaration",
-     inodeVisit<PackageDeclaration>}, // PackageDeclaration -> PACKAGE Name SEMI
-    {"TypeDeclaration",
-     dispatchChildren}, // TypeDeclaration -> ClassDeclaration,
-                        // InterfaceDeclaration
-
-    {"ImportDeclaration",
-     dispatchChildren}, // ImportDeclaration -> SingleTypeImportDeclaration,
-                        // TypeImportOnDemandDeclaration
-    {"SingleTypeImportDeclaration",
-     inodeVisit<SingleImportDeclaration>}, // SingleTypeImportDeclaration IMPORT
-                                           // Name SEMI
-    {"TypeImportOnDemandDeclaration",
-     inodeVisit<DemandImportDeclaration>}, // TypeImportOnDemandDeclaration
-                                           // IMPORT Name DOT MULTIPLICATION
-                                           // SEMI
-
-    {"Name", inodeVisit<Name>}, // Name -> Name DOT IDENTIFIER
-    {"IDENTIFIER", identifierVisit},
-
-    {"InterfaceDeclaration",
-     inodeVisit<InterfaceDeclaration>}, // InterfaceDeclaration -> ModifierList
-                                        // INTERFACE IDENTIFIER Extensions LBRAC
-                                        // InterfaceBodyDeclarationList RBRAC
-
-    {"ModifierList", dispatchChildren}, // ModifierList -> ModifierList Modifier
-    {"Modifier", modifierVisit}, // Modifier -> PUBLIC, PRIVATE, PROTECTED,
-                                 // STATIC, ABSTRACT, FINAL, NATIVE
-
+    {"Start", dispatchChildren},
+    {"CompilationUnit", dispatchChildren},
+    {"ImportDeclarations", dispatchChildren},
+    {"PackageDeclaration", inodeVisit<PackageDeclaration>},
+    {"TypeDeclaration", dispatchChildren},
+    {"ImportDeclaration", dispatchChildren},
+    {"SingleTypeImportDeclaration", inodeVisit<SingleImportDeclaration>},
+    {"TypeImportOnDemandDeclaration", inodeVisit<DemandImportDeclaration>},
+    {"Name", inodeVisit<Name>},
+    {"IDENTIFIER", leafVisit<Identifier>},
+    {"InterfaceDeclaration", inodeVisit<InterfaceDeclaration>},
+    {"ModifierList", dispatchChildren},
+    {"Modifier", modifierVisit},
     {"Extensions", dispatchChildren},
-    // Extensions -> EXTENDS ExtensionList
     {"ExtensionList", dispatchChildren},
-    // ExtensionList -> ExtensionList COMMA Name
     {"ExtensionType", inodeVisit<Extensions>},
-    // ExtensionType -> Name
-
-    {"InterfaceBodyDeclarationList",
-     dispatchChildren}, // InterfaceBodyDeclarationList ->
-                        // InterfaceBodyDeclarationList InterfaceBodyDeclaration
-    {"InterfaceBodyDeclaration",
-     dispatchChildren}, // InterfaceBodyDeclaration ->
-                        // InterfaceMethodDeclaration
-    {"InterfaceMethodDeclaration",
-     inodeVisit<MethodDeclaration>}, // InterfaceMethodDeclaration ->
-                                     // MethodHeader SEMI
-
-    {"MethodHeader",
-     dispatchChildren}, // MethodHeader -> ModifierList (Type|VOID) IDENTIFIER
-                        // LPAREN FormalParameterList RPAREN
-
-    {"Type", dispatchChildren}, // Type -> PrimitiveType, ArrayType, SimpleType
-    {"PrimitiveType",
-     primitiveTypeVisit}, // PrimitiveType -> BYTE, SHORT, CHAR, INT, BOOLEAN
-    {"ArrayType",
-     inodeVisit<ArrayType>}, // ArrayType -> PrimitiveType[], Name[]
-    {"SimpleType", inodeVisit<SimpleType>}, // SimpleType -> Name
-    {"VOID", voidTypeVisit},                // VOID
-
-    {"FormalParameterList",
-     dispatchChildren}, // FormalParameterList -> FormalParameterList COMMA
-                        // SingleVariableDeclaration
-    {"SingleVariableDeclaration",
-     inodeVisit<SingleVariableDeclaration>}, // SingleVariableDeclaration ->
-                                             // Type IDENTIFIER
-
-    {"ClassDeclaration",
-     inodeVisit<ClassDeclaration>}, // ClassDeclaration -> ModifierList CLASS
-                                    // IDENTIFIER Super Interfaces LBRAC
-                                    // ClassBodyDeclarationList RBRAC
-
-    {"Super", inodeVisit<Super>}, // Super -> EXTENDS Name
-
-    {"Interfaces", dispatchChildren}, // Interfaces -> IMPLEMENTS InterfaceList
+    {"InterfaceBodyDeclarationList", dispatchChildren},
+    {"InterfaceBodyDeclaration", dispatchChildren},
+    {"InterfaceMethodDeclaration", inodeVisit<MethodDeclaration>},
+    {"MethodHeader", dispatchChildren},
+    {"Type", dispatchChildren},
+    {"PrimitiveType", primitiveTypeVisit},
+    {"VoidType", primitiveTypeVisit},
+    {"ArrayType", inodeVisit<ArrayType>},
+    {"SimpleType", inodeVisit<SimpleType>},
+    {"FormalParameterList", dispatchChildren},
+    {"SingleVariableDeclaration", inodeVisit<SingleVariableDeclaration>},
+    {"ClassDeclaration", inodeVisit<ClassDeclaration>},
+    {"Super", inodeVisit<Super>},
+    {"Interfaces", dispatchChildren},
     {"InterfaceList", dispatchChildren},
-    // InterfaceList -> InterfaceList COMMA Name, Name
+    {"InterfaceType", inodeVisit<Interfaces>},
+    {"ClassBodyDeclarationList", dispatchChildren},
+    {"ClassBodyDeclaration", dispatchChildren},
+    {"FieldDeclaration", inodeVisit<FieldDeclaration>},
+    {"ConstructorDeclaration", inodeVisit<ConstructorDeclaration>},
+    {"ClassMethodDeclaration", inodeVisit<MethodDeclaration>},
 
-    {"InterfaceType",
-     inodeVisit<Interfaces>}, // Interfaces -> IMPLEMENTS InterfaceList
+    {"StatementList", dispatchChildren},
+    {"Statement", dispatchChildren},
+    {"SimpleStatement", dispatchChildren},
+    {"Expression", dispatchChildren},
+    {"StatementExpression", inodeVisit<ExpressionStatement>},
+    {"ExpressionStatement", dispatchChildren},
+    {"AssignmentExpression", dispatchChildren},
+    {"ReturnStatement", inodeVisit<ReturnStatement>},
+    {"VariableDeclarationStatement", dispatchChildren},
+    {"VariableDeclarator", inodeVisit<VariableDeclaration>},
+    {"IfThenStatement", inodeVisit<IfThenStatement>},
+    {"IfThenElseStatement", inodeVisit<IfThenElseStatement>},
+    {"WhileStatement", inodeVisit<WhileStatement>},
+    {"ForStatement", inodeVisit<ForStatement>},
+    {"ForInit", inodeVisit<ForInit>},
+    {"ForUpdate", inodeVisit<ForUpdate>},
+    {"StatementNoShortIf", dispatchChildren},
+    {"IfThenElseStatementNoShortIf", inodeVisit<IfThenElseStatement>},
+    {"WhileStatementNoShortIf", inodeVisit<WhileStatement>},
+    {"ForStatementNoShortIf", inodeVisit<ForStatement>},
 
-    {"ClassBodyDeclarationList",
-     dispatchChildren}, // ClassBodyDeclarationList -> ClassBodyDeclarationList
-                        // ClassBodyDeclaration
-    {"ClassBodyDeclaration",
-     dispatchChildren}, // ClassBodyDeclaration -> FieldDeclaration,
-                        // ConstructorDeclaration, ClassMethodDeclaration
+    {"Assignment", inodeVisit<AssignmentExpression>},
+    {"ConditionalOrExpression", expressionVisit<BinaryExpression>},
+    {"ConditionalAndExpression", expressionVisit<BinaryExpression>},
+    {"InclusiveOrExpression", expressionVisit<BinaryExpression>},
+    {"ExclusiveOrExpression", expressionVisit<BinaryExpression>},
+    {"AndExpression", expressionVisit<BinaryExpression>},
+    {"EqualityExpression", expressionVisit<BinaryExpression>},
+    {"RelationalExpression", expressionVisit<BinaryExpression>},
+    {"AdditiveExpression", expressionVisit<BinaryExpression>},
+    {"MultiplicativeExpression", expressionVisit<BinaryExpression>},
+    {"UnaryExpression", expressionVisit<UnaryExpression>},
+    {"UnaryExpressionNotMinus", expressionVisit<UnaryExpression>},
+    {"InstanceOfExpression", expressionVisit<InstanceOfExpression>},
+    {"CastExpression", inodeVisit<CastExpression>},
+    {"PostfixExpression", dispatchChildren},
+    {"Primary", dispatchChildren},
+    {"PrimaryExpressionNoNewArray", dispatchChildren},
+    {"MethodInvocation", inodeVisit<MethodInvocation>},
+    {"ThisExpression", thisExpressionVisit},
+    {"FieldAccess", inodeVisit<FieldAccess>},
+    {"ClassInstanceCreation", inodeVisit<ClassInstanceCreation>},
+    {"ArrayAccess", inodeVisit<ArrayAccess>},
+    {"ArrayCreation", inodeVisit<ArrayCreation>},
+    {"Literal", dispatchChildren},
 
-    {"FieldDeclaration",
-     inodeVisit<FieldDeclaration>}, // FieldDeclaration -> ModifierList Type
-                                    // IDENTIFIER ASSIGN Expression SEMI
+    {"ADDITION", leafVisit<Operator>},
+    {"SUBSTRACTION", leafVisit<Operator>},
+    {"MULTIPLICATION", leafVisit<Operator>},
+    {"DIVISION", leafVisit<Operator>},
+    {"MODULUS", leafVisit<Operator>},
+    {"EQUAL", leafVisit<Operator>},
+    {"LESSER_OR_EQUAL", leafVisit<Operator>},
+    {"GREATER_OR_EQUAL", leafVisit<Operator>},
+    {"LESSER", leafVisit<Operator>},
+    {"GREATER", leafVisit<Operator>},
+    {"NOT_EQUAL", leafVisit<Operator>},
+    {"OR", leafVisit<Operator>},
+    {"AND", leafVisit<Operator>},
+    {"BITWISEAND", leafVisit<Operator>},
+    {"BITWISEOR", leafVisit<Operator>},
+    {"BITWISEXOR", leafVisit<Operator>},
+    {"EXCLAMATION", leafVisit<Operator>},
 
-    {"ConstructorDeclaration",
-     inodeVisit<ConstructorDeclaration>}, // ConstructorDeclaration ->
-                                          // ModifierList IDENTIFIER LPAREN
-                                          // FormalParameterList RPAREN Block
+    {"DEC_INT_LITERAL", leafVisit<DecIntLiteral>},
+    {"BOOLEAN_LITERAL", leafVisit<BooleanLiteral>},
+    {"CHAR_LITERAL", leafVisit<CharacterLiteral>},
+    {"STRING_LITERAL", leafVisit<StringLiteral>},
+    {"NULL_LITERAL", leafVisit<NullLiteral>},
 
-    {"ClassMethodDeclaration",
-     inodeVisit<MethodDeclaration>}, // ClassMethodDeclaration -> MethodHeader
-                                     // Block, MethodHeader SEMI
-
-    {"ASSIGN", assignVisit}, // ASSIGN -> =
-    {"Expression",
-     inodeVisit<Expression>}, // Expression -> AssignmentExpression,
-                              // OperationExpression
-
-    {"AssignmentExpression",
-     inodeVisit<AssignmentExpression>}, // AssignmentExpression -> Name ASSIGN
-                                        // Expression, FieldAccess ASSIGN
-                                        // Expression, ArrayAccess ASSIGN
-                                        // Expression
-
-    {"OperationExpression",
-     inodeVisit<OperationExpression>}, // OperationExpression ->
-                                       // UnaryExpression,  OperationExpression
-                                       // BinaryOperator UnaryExpression,
-                                       // OperationExpression InstanceOperator
-                                       // (ArrayType | SimpleType)
-    {"BinaryOperator",
-     binaryOperatorVisit}, // BinaryOperator -> +, -, /, *, %, ==, <=, >=, <, >,
-                           // !=, ||, &&, &, |, ~
-    {"InstanceOperator", binaryOperatorVisit}, // InstanceOperator -> INSTANCEOF
-
-    {"UnaryExpression",
-     dispatchChildren}, // UnaryExpression -> SUBTRACTION UnaryExpression,
-                        // UnaryExpressionNotMinus
-    {"SUBTRACTION", unaryOperatorVisit}, // SUBTRACTION -> -
-    {"UnaryExpressionNotMinus",
-     dispatchChildren}, // UnaryExpressionNotMinus -> EXCLAMATION
-                        // UnaryExpression, CastExpression, PostfixExpression
-    {"EXCLAMATION", unaryOperatorVisit}, // EXCLAMATION -> !
-    {"CastExpression",
-     inodeVisit<CastExpression>}, // CastExpression -> (Expression)
-                                  // UnaryExpressionNotMinus, (PrimitiveType |
-                                  // ArrayType) UnaryExpression
-    {"PostfixExpression",
-     dispatchChildren}, // PostfixExpression -> Name, PrimaryExpression
-    {"PrimaryExpression",
-     dispatchChildren}, // PrimaryExpression -> PrimaryExpressionNoMultiArray,
-                        // ArrayAccess, ArrayCreation
-
-    {"PrimaryExpressionNoMultiArray",
-     dispatchChildren}, // PrimaryExpressionNoMultiArray -> Literal,
-                        // (Expression), MethodInvocation, ThisExpression,
-                        // FieldAccess, ClassInstanceCreation
-    {"Literal",
-     dispatchChildren}, // Literal -> DEC_INT_LITERAL, BOOLEAN_LITERAL,
-                        // CHAR_LITERAL, STRING_LITERAL, NULL_LITERAL
-    {"DEC_INT_LITERAL", decIntLiteralVisit},  // DEC_INT_LITERAL -> [1-9][0-9]*
-    {"BOOLEAN_LITERAL", booleanLiteralVisit}, // BOOLEAN_LITERAL -> true|false
-    {"CHAR_LITERAL", characterLiteralVisit},  // CHAR_LITERAL -> '*'
-    {"STRING_LITERAL", stringLiteralVisit},   // STRING_LITERAL -> "*"
-    {"NULL_LITERAL", nullLiteralVisit},       // NULL_LITERAL -> null
-
-    {"MethodInvocation",
-     inodeVisit<MethodInvocation>}, // MethodInvocation -> PrimaryExpression DOT
-                                    // IDENTIFIER (ArgumentList), Name
-                                    // (ArgumentList)
-    {"ArgumentList", inodeVisit<ArgumentList>}, // ArgumentList -> Arguments
-    {"Arguments",
-     dispatchChildren}, // Arguments -> Arguments COMMA Expression, Expression
-
-    {"ThisExpression", thisExpressionVisit}, // ThisExpression -> THIS
-    {"FieldAccess",
-     inodeVisit<FieldAccess>}, // FieldAccess -> PrimaryExpression DOT
-                               // IDENTIFIER
-    {"ClassInstanceCreation",
-     inodeVisit<ClassInstanceCreation>}, // ClassInstanceCreation -> NEW
-                                         // SimpleType LPAREN ArgumentList
-                                         // RPAREN
-
-    {"ArrayAccess",
-     inodeVisit<ArrayAccess>}, // ArrayAccess -> PrimaryExpressionNoMultiArray
-                               // LBRKT Expression RBRKT, Name LBRKT Expression
-                               // RBRKT
-    {"ArrayCreation", inodeVisit<ArrayCreation>}, // ArrayCreation -> NEW
-                                                  // (PrimitiveType|SimpleType)
-                                                  // LBRKT Expression RBRKT
-
-    {"Block", inodeVisit<Block>}, // Block -> LBRAC StatementList RBRAC
-    {"StatementList",
-     dispatchChildren}, // StatementList -> StatementList Statement
-    {"Statement",
-     dispatchChildren}, // Statement -> SimpleStatement, IfThenStatement,
-                        // IfThenElseStatement, WhileStatement, ForStatement
-    // {"SimpleStatement", inodeVisit<SimpleStatement>},
-    {"SimpleStatement",
-     dispatchChildren}, // SimpleStatement -> Block, StatementExpression,
-                        // ReturnStatement, VariableDeclarationStatement
-
-    {"StatementExpression",
-     dispatchChildren}, // StatementExpression -> ExpressionStatement SEMI
-    {"ExpressionStatement",
-     dispatchChildren}, // ExpressionStatement -> ClassInstanceCreation,
-                        // MethodInvocation, AssignmentExpression
-
-    {"ReturnStatement",
-     inodeVisit<ReturnStatement>}, // ReturnStatement -> RETURN Expression SEMI,
-                                   // RETURN SEMI
-    {"VariableDeclarationStatement",
-     dispatchChildren}, // VariableDeclarationStatement -> VariableDeclarator
-                        // SEMI
-    {"VariableDeclarator",
-     inodeVisit<VariableDeclaration>}, // VariableDeclarator ->
-                                       // SingleVariableDeclaration ASSIGN
-                                       // Expression
-
-    {"IfThenStatement",
-     inodeVisit<IfThenStatement>}, // IfThenStatement -> IF LPAREN Expression
-                                   // RPAREN Statement
-    {"IfThenElseStatement",
-     inodeVisit<IfThenElseStatement>}, // IfThenElseStatement -> IF LPAREN
-                                       // Expression RPAREN StatementNoShortIf
-                                       // ELSE Statement
-    {"WhileStatement",
-     inodeVisit<WhileStatement>}, // WhileStatement -> WHILE LPAREN Expression
-                                  // RPAREN Statement
-    {"ForStatement",
-     inodeVisit<ForStatement>}, // ForStatement -> FOR LPAREN ForInit SEMI
-                                // Expression SEMI ForUpdate RPAREN Statement
-    {"ForInit",
-     inodeVisit<ForInit>}, // ForInit -> ExpressionStatement, VariableDeclarator
-    {"ForUpdate", inodeVisit<ForUpdate>}, // ForUpdate -> ExpressionStatement
-
-    {"StatementNoShortIf",
-     dispatchChildren}, // StatementNoShortIf -> SimpleStatement,
-                        // IfThenElseStatementNoShortIf,
-                        // WhileStatementNoShortIf, ForStatementNoShortIf
-    {"IfThenElseStatementNoShortIf",
-     inodeVisit<IfThenElseStatement>}, // IfThenElseStatementNoShortIf -> IF
-                                       // LPAREN Expression RPAREN
-                                       // StatementNoShortIf ELSE
-                                       // StatementNoShortIf
-    {"WhileStatementNoShortIf",
-     inodeVisit<WhileStatement>}, // WhileStatementNoShortIf WHILE LPAREN
-                                  // Expression RPAREN StatementNoShortIf
-    {"ForStatementNoShortIf",
-     inodeVisit<ForStatement>}, // ForStatementNoShortIf -> FOR LPAREN ForInit
-                                // SEMI Expression SEMI ForUpdate RPAREN
-                                // StatementNoShortIf
-
+    {"ArgumentList", inodeVisit<ArgumentList>},
+    {"Arguments", dispatchChildren},
+    {"Block", inodeVisit<Block>},
 };
 
 } // namespace AST
