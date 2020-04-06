@@ -34,12 +34,15 @@ private:
   std::vector<VariableTable> tables;
 };
 
-class LocalVisitor : public AST::TrackVisitor {
+class LocalTrackVisitor : public AST::TrackVisitor {
 public:
-  LocalVisitor(const TypeLink &typeLink, bool log = false);
+  LocalTrackVisitor(const TypeLink &typeLink, bool log = false);
   void visit(const AST::SingleVariableDeclaration &decl) override;
   void visit(const AST::Block &block) override;
   void visit(const AST::SimpleType &simpleType) override;
+
+protected:
+  const Local &getLocal() const;
 
 private:
   const TypeLink &typeLink;

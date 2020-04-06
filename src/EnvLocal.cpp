@@ -68,10 +68,10 @@ void Local::removeVariableTable() {
   tables.pop_back();
 }
 
-LocalVisitor::LocalVisitor(const TypeLink &typeLink, bool log)
+LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), local(log) {}
 
-void LocalVisitor::visit(const AST::SingleVariableDeclaration &decl) {
+void LocalTrackVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
@@ -86,7 +86,7 @@ void LocalVisitor::visit(const AST::SingleVariableDeclaration &decl) {
   }
 }
 
-void LocalVisitor::visit(const AST::SimpleType &simpleType) {
+void LocalTrackVisitor::visit(const AST::SimpleType &simpleType) {
   AST::TypeVisitor typeVisitor(typeLink);
   simpleType.accept(typeVisitor);
   if (typeVisitor.isErrorState()) {
@@ -95,10 +95,12 @@ void LocalVisitor::visit(const AST::SimpleType &simpleType) {
   }
 }
 
-void LocalVisitor::visit(const AST::Block &block) {
+void LocalTrackVisitor::visit(const AST::Block &block) {
   local.addVariableTable();
   dispatchChildren(block);
   local.removeVariableTable();
 }
+
+const Local &LocalTrackVisitor::getLocal() const { return local; }
 
 } // namespace Env
