@@ -34,6 +34,12 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     REQUIRE(resolver.findField({"List", "foo"}));
   }
 
+  SECTION("Static field cannot be called implicit") {
+    Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
+    listDecl.contain.addDeclareField(&field);
+    REQUIRE_FALSE(resolver.findField({"foo"}));
+  }
+
   SECTION("Local Variable field") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
     listDecl.contain.addDeclareField(&field);
@@ -45,6 +51,13 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Method method({}, Env::TypeKeyword::Integer, "foo", {});
     listDecl.contain.addDeclareMethod(&method);
     REQUIRE_FALSE(resolver.findMethod({"List", "foo"}, {}));
+  }
+
+  SECTION("Static cannot be called implicitly") {
+    Env::Method method({Env::Modifier::Static}, Env::TypeKeyword::Integer,
+                       "foo", {});
+    listDecl.contain.addDeclareMethod(&method);
+    REQUIRE_FALSE(resolver.findMethod({"foo"}, {}));
   }
 
   SECTION("Static call") {

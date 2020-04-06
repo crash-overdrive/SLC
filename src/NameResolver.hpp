@@ -37,8 +37,7 @@ private:
   std::optional<Env::Type> matchObject(const std::string &identifier) const;
   template <class T>
   bool isVisible(const Env::TypeDeclaration *other, T t) const;
-  template <class T>
-  bool isStaticVisible(const Env::TypeDeclaration *other, T t) const;
+  template <class T> bool isStatic(T t) const;
 
   const Env::Local &local;
   const Env::TypeLink &typeLink;
