@@ -30,9 +30,10 @@ void Visitor::visit(const WhileStatement &node) { postVisit(node); }
 void Visitor::visit(const ForStatement &node) { postVisit(node); }
 void Visitor::visit(const ExpressionStatement &node) { postVisit(node); }
 void Visitor::visit(const ClassInstanceCreation &node) { postVisit(node); }
+void Visitor::visit(const MethodNameInvocation &node) { postVisit(node); }
+void Visitor::visit(const MethodPrimaryInvocation &node) { postVisit(node); }
 void Visitor::visit(const BinaryExpression &node) { postVisit(node); }
 void Visitor::visit(const InstanceOfExpression &node) { postVisit(node); }
-void Visitor::visit(const MethodInvocation &node) { postVisit(node); }
 void Visitor::visit(const ReturnStatement &node) { postVisit(node); }
 void Visitor::visit(const VariableDeclaration &node) { postVisit(node); }
 void Visitor::visit(const AssignmentExpression &node) { postVisit(node); }
@@ -97,12 +98,20 @@ void PrintVisitor::visit(const ConstructorDeclaration &) {
   stream << "ConstructorDeclaration";
 }
 
+void PrintVisitor::visit(const MethodDeclaration &) {
+  stream << "MethodDeclaration";
+}
+
 void PrintVisitor::visit(const Extensions &) { stream << "Extensions"; }
 
 void PrintVisitor::visit(const Name &) { stream << "Name"; }
 
-void PrintVisitor::visit(const MethodDeclaration &) {
-  stream << "MethodDeclaration";
+void PrintVisitor::visit(const MethodNameInvocation &) {
+  stream << "MethodNameInvocation";
+}
+
+void PrintVisitor::visit(const MethodPrimaryInvocation &) {
+  stream << "MethodPrimaryInvocation";
 }
 
 void PrintVisitor::visit(const Modifier &modifier) {
@@ -161,10 +170,6 @@ void PrintVisitor::visit(const BinaryExpression &) {
 
 void PrintVisitor::visit(const InstanceOfExpression &) {
   stream << "InstanceOfExpression";
-}
-
-void PrintVisitor::visit(const MethodInvocation &) {
-  stream << "MethodInvocation";
 }
 
 void PrintVisitor::visit(const ReturnStatement &) {

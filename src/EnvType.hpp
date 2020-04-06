@@ -9,13 +9,12 @@ namespace Env {
 struct TypeDeclaration;
 
 enum class TypeKeyword {
-  None,
+  Void,
   Integer,
   Boolean,
   Byte,
   Short,
   Null,
-  Void,
   Character,
   Simple,
 };
@@ -38,7 +37,7 @@ struct Type {
   TypeKeyword keyword;
   const TypeDeclaration *declare;
   bool isArray;
-  Type(TypeKeyword keyword = TypeKeyword::None, bool isArray = false);
+  Type(TypeKeyword keyword = TypeKeyword::Void, bool isArray = false);
   explicit Type(const TypeDeclaration *declare, bool isArray = false);
   bool operator==(const Type &type) const;
   bool operator!=(const Type &type) const;

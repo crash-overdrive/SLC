@@ -190,7 +190,12 @@ private:
   std::string operatorSymbol;
 };
 
-class MethodInvocation : public Node {
+class MethodNameInvocation : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
+class MethodPrimaryInvocation : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };

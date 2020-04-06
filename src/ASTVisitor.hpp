@@ -40,7 +40,8 @@ public:
   virtual void visit(const ClassInstanceCreation &node);
   virtual void visit(const BinaryExpression &node);
   virtual void visit(const InstanceOfExpression &node);
-  virtual void visit(const MethodInvocation &node);
+  virtual void visit(const MethodNameInvocation &node);
+  virtual void visit(const MethodPrimaryInvocation &node);
   virtual void visit(const ReturnStatement &node);
   virtual void visit(const VariableDeclaration &node);
   virtual void visit(const AssignmentExpression &node);
@@ -103,7 +104,8 @@ public:
   void visit(const ClassInstanceCreation &) override;
   void visit(const BinaryExpression &) override;
   void visit(const InstanceOfExpression &node) override;
-  void visit(const MethodInvocation &) override;
+  void visit(const MethodNameInvocation &) override;
+  void visit(const MethodPrimaryInvocation &) override;
   void visit(const ReturnStatement &) override;
   void visit(const VariableDeclaration &) override;
   void visit(const AssignmentExpression &) override;

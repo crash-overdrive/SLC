@@ -108,7 +108,13 @@ const std::string &Operator::getOperatorSymbol() const {
 
 void Operator::accept(Visitor &visitor) const { visitor.visit(*this); }
 
-void MethodInvocation::accept(Visitor &visitor) const { visitor.visit(*this); }
+void MethodNameInvocation::accept(Visitor &visitor) const {
+  visitor.visit(*this);
+}
+
+void MethodPrimaryInvocation::accept(Visitor &visitor) const {
+  visitor.visit(*this);
+}
 
 void FieldAccess::accept(Visitor &visitor) const { visitor.visit(*this); }
 
