@@ -8,8 +8,7 @@ namespace Type {
 class StatementVisitor : public Env::LocalTrackVisitor {
 public:
   using LocalTrackVisitor::visit;
-  StatementVisitor(const Env::TypeDeclaration &decl,
-                   const Env::TypeLink &typeLink, const Env::PackageTree &tree);
+  StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree);
 
   void visit(const AST::ReturnStatement &node) override;
   Env::Type getReturnType();
@@ -26,8 +25,12 @@ class ExpressionVisitor : public AST::Visitor {
 public:
   ExpressionVisitor(const Checker &checker, const Name::Resolver &resolver,
                     const Env::TypeLink &typeLink);
+  void visit(const AST::AssignmentExpression &node) override;
+  void visit(const AST::BinaryExpression &node) override;
   void visit(const AST::CastType &node) override;
   void visit(const AST::CastExpression &node) override;
+  void visit(const AST::ArrayCreation &node) override;
+  void visit(const AST::ClassInstanceCreation &node) override;
   void visit(const AST::FieldAccess &node) override;
   void visit(const AST::MethodNameInvocation &node) override;
   void visit(const AST::Name &node) override;
@@ -35,6 +38,8 @@ public:
   void visit(const AST::BooleanLiteral &node) override;
   void visit(const AST::CharacterLiteral &node) override;
   void visit(const AST::NullLiteral &node) override;
+  void visit(const AST::ThisExpression &node) override;
+  void visit(const AST::StringLiteral &node) override;
   Env::Type getType();
 
 private:

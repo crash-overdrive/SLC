@@ -119,6 +119,8 @@ public:
                                            Env::Type ropt) const;
   std::optional<Env::Type> checkArrayIndex(Env::Type lopt,
                                            Env::Type ropt) const;
+  std::optional<Env::Type> checkArrayCreation(Env::Type lopt,
+                                              Env::Type ropt) const;
 
 private:
   std::optional<Env::Type> checkArrayAssignment(Env::Type lopt,

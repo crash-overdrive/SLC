@@ -122,6 +122,15 @@ std::optional<Env::Type> Checker::checkArrayAssignment(Env::Type lopt,
   return std::nullopt;
 }
 
+std::optional<Env::Type> Checker::checkArrayCreation(Env::Type lopt,
+                                                     Env::Type ropt) const {
+  if (!isNum(ropt)) {
+    return std::nullopt;
+  }
+  lopt.isArray = true;
+  return lopt;
+}
+
 bool Checker::isNum(Env::Type type) const {
   return numKeyword.find(type.keyword) != numKeyword.end();
 }

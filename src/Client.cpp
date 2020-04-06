@@ -1,6 +1,7 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
 #include "EnvLocal.hpp"
+#include "TypeCheckerVisitor.hpp"
 #include <fstream>
 #include <iterator>
 
@@ -256,7 +257,7 @@ void Client::localVariableAnalysis() {
   for (auto &environment : environments) {
     Env::TypeBody &body = environment.decl.body;
     for (auto const &constructor : body.getConstructors()) {
-      Env::LocalVisitor visitor(environment.typeLink, log);
+      Env::LocalTrackVisitor visitor(environment.typeLink, log);
 
       if (log) {
         std::cerr << "Local Variable Analysis for Constructor: "
@@ -277,7 +278,7 @@ void Client::localVariableAnalysis() {
       }
     }
     for (auto const &method : body.getMethods()) {
-      Env::LocalVisitor visitor(environment.typeLink, log);
+      Env::LocalTrackVisitor visitor(environment.typeLink, log);
 
       if (log) {
         std::cerr << "Local Variable Analysis for Method: " << method.identifier
@@ -329,6 +330,9 @@ void Client::buildHierarchy() {
     std::cerr << "Error building contains set\n";
     errorState = true;
     return;
+  }
+  if (breakPoint != Hierarchy) {
+    typeCheck();
   }
 }
 
@@ -387,12 +391,40 @@ bool Client::buildInterfaceHierarchy(Env::HierarchyGraph &graph,
   }
   Env::TypeDeclaration *base =
       environment.typeLink.find({"java", "lang", "Object"});
+  if (!base) {
+    std::cerr << "Missing Java Base Object\n";
+    return false;
+  }
   if (!interfaceHierarchy.setBaseObject(base)) {
     std::cerr << "Error setting base interface\n";
     return false;
   }
   graph.addInterface(std::move(interfaceHierarchy));
   return true;
+}
+
+void Client::typeCheck() {
+  Type::Checker checker(*tree);
+  for (auto &environment : environments) {
+    if (environment.decl.keyword == Env::DeclarationKeyword::Interface) {
+      continue;
+    }
+    std::cerr << environment.fullName << '\n';
+    Env::TypeBody &body = environment.decl.body;
+    for (const auto &method : body.getMethods()) {
+      Type::StatementVisitor visitor(environment.typeLink, *tree);
+      method.astNode->accept(visitor);
+      if (visitor.isErrorState()) {
+        std::cerr << body << '\n';
+        std::cerr << method << '\n';
+        std::cerr << "Type Error in " << environment.fullName << '\n';
+        errorState = true;
+        return;
+      }
+    }
+  }
+  if (breakPoint != TypeCheck) {
+  }
 }
 
 std::unique_ptr<AST::Start> Client::buildAST(std::string fullName) {
