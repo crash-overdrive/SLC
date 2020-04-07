@@ -61,7 +61,7 @@ const std::unordered_map<std::string, BinaryOperator> symbolBinaryOperator{
     {"||", BinaryOperator::Or},
     {"&&", BinaryOperator::And},
     {"|", BinaryOperator::BitwiseOr},
-    {"%", BinaryOperator::BitwiseAnd},
+    {"&", BinaryOperator::BitwiseAnd},
     {"^", BinaryOperator::BitwiseXor},
 };
 
