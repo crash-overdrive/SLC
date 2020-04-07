@@ -73,6 +73,8 @@ void ForStatement::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void ForInit::accept(Visitor &visitor) const { visitor.visit(*this); }
 
+void ForCond::accept(Visitor &visitor) const { visitor.visit(*this); }
+
 void ForUpdate::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void ExpressionStatement::accept(Visitor &visitor) const {

@@ -75,6 +75,7 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
     {"WhileStatement", inodeVisit<WhileStatement>},
     {"ForStatement", inodeVisit<ForStatement>},
     {"ForInit", inodeVisit<ForInit>},
+    {"ForCond", inodeVisit<ForCond>},
     {"ForUpdate", inodeVisit<ForUpdate>},
     {"StatementNoShortIf", dispatchChildren},
     {"IfThenElseStatementNoShortIf", inodeVisit<IfThenElseStatement>},

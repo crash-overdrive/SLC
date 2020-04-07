@@ -57,6 +57,7 @@ public:
   virtual void visit(const ArrayCreation &node);
   virtual void visit(const ThisExpression &node);
   virtual void visit(const ForInit &node);
+  virtual void visit(const ForCond &node);
   virtual void visit(const ForUpdate &node);
   virtual void visit(const UnaryExpression &node);
 
@@ -121,6 +122,7 @@ public:
   void visit(const ArrayCreation &) override;
   void visit(const ThisExpression &thisExpression) override;
   void visit(const ForInit &) override;
+  void visit(const ForCond &) override;
   void visit(const ForUpdate &) override;
   void visit(const UnaryExpression &) override;
 

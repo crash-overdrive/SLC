@@ -22,21 +22,28 @@ void StatementVisitor::visit(const AST::VariableDeclaration &node) {
   dispatchChildren(node);
 }
 
-// void StatementVisitor::visit(const AST::IfThenStatement &node) {
-// visitExpression(node);
-//}
+void StatementVisitor::visit(const AST::IfThenStatement &node) {
+  visitExpression(node);
+  dispatchChildren(node);
+}
 
-// void StatementVisitor::visit(const AST::IfThenElseStatement &node) {
-// visitExpression(node);
-//}
+void StatementVisitor::visit(const AST::IfThenElseStatement &node) {
+  visitExpression(node);
+  dispatchChildren(node);
+}
 
-// void StatementVisitor::visit(const AST::WhileStatement &node) {
-// visitExpression(node);
-//}
+void StatementVisitor::visit(const AST::WhileStatement &node) {
+  visitExpression(node);
+  dispatchChildren(node);
+}
 
-// void StatementVisitor::visit(const AST::ForStatement &node) {
-// visitExpression(node);
-//}
+void StatementVisitor::visit(const AST::ForCond &node) {
+  visitExpression(node);
+}
+
+void StatementVisitor::visit(const AST::ForUpdate &node) {
+  visitExpression(node);
+}
 
 Env::Type StatementVisitor::visitExpression(const AST::Node &node) {
   ExpressionVisitor visitor(checker, resolver, typeLink);

@@ -2365,14 +2365,14 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_Assignable_NamedCastOfComplement.java",
     },
+    {
+        "Je_2_For_LocalVarInUpdate.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_16_StaticThis_StaticFieldInitializer.java",
-    },
-    {
-        "Je_2_For_LocalVarInUpdate.java",
     },
     {
         "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",

@@ -140,6 +140,11 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
+class ForCond : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
 class ForUpdate : public Node {
 public:
   void accept(Visitor &visitor) const override;

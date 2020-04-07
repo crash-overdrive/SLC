@@ -49,6 +49,7 @@ void Visitor::visit(const ArrayAccess &node) { postVisit(node); }
 void Visitor::visit(const ArrayCreation &node) { postVisit(node); }
 void Visitor::visit(const ThisExpression &node) { postVisit(node); }
 void Visitor::visit(const ForInit &node) { postVisit(node); }
+void Visitor::visit(const ForCond &node) { postVisit(node); }
 void Visitor::visit(const ForUpdate &node) { postVisit(node); }
 void Visitor::visit(const UnaryExpression &node) { postVisit(node); }
 
@@ -219,6 +220,8 @@ void PrintVisitor::visit(const ArrayCreation &) { stream << "ArrayCreation"; }
 void PrintVisitor::visit(const ThisExpression &) { stream << "ThisExpression"; }
 
 void PrintVisitor::visit(const ForInit &) { stream << "ForInit"; }
+
+void PrintVisitor::visit(const ForCond &) { stream << "ForCond"; }
 
 void PrintVisitor::visit(const ForUpdate &) { stream << "ForUpdate"; }
 
