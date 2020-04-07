@@ -6,6 +6,10 @@ Checker::Checker(const Env::PackageTree &tree) : tree(tree) {}
 
 std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
                                                   Env::Type ropt) const {
+  if (lopt.keyword == Env::TypeKeyword::Void ||
+      ropt.keyword == Env::TypeKeyword::Void) {
+    return std::nullopt;
+  }
   if (lopt == ropt) {
     return lopt;
   }
@@ -37,6 +41,10 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
 
 std::optional<Env::Type>
 Checker::checkBinaryOperation(const BinaryOperation &operation) const {
+  if (operation.lopt.keyword == Env::TypeKeyword::Void ||
+      operation.ropt.keyword == Env::TypeKeyword::Void) {
+    return std::nullopt;
+  }
   Env::TypeDeclaration *string =
       tree.findDeclaration({"java", "lang", "String"});
   if ((operation.lopt.declare == string || operation.ropt.declare == string) &&
@@ -118,26 +126,13 @@ std::optional<Env::Type> Checker::checkArrayAccess(Env::Type lopt,
   return std::nullopt;
 }
 
-std::optional<Env::Type> Checker::checkArrayAssignment(Env::Type lopt,
-                                                       Env::Type ropt) const {
-  if (lopt.keyword != Env::TypeKeyword::Simple ||
-      ropt.keyword != Env::TypeKeyword::Simple) {
-    return std::nullopt;
-  }
-  if (lopt.isArray &&
-      lopt.declare->subType.find(ropt.declare) != lopt.declare->subType.end()) {
+std::optional<Env::Type> Checker::checkArrayCreation(Env::Type lopt,
+                                                     Env::Type ropt) const {
+  if (isNum(ropt)) {
+    lopt.isArray = true;
     return lopt;
   }
   return std::nullopt;
-}
-
-std::optional<Env::Type> Checker::checkArrayCreation(Env::Type lopt,
-                                                     Env::Type ropt) const {
-  if (!isNum(ropt)) {
-    return std::nullopt;
-  }
-  lopt.isArray = true;
-  return lopt;
 }
 
 bool Checker::isNum(Env::Type type) const {

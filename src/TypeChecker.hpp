@@ -123,8 +123,6 @@ public:
                                               Env::Type ropt) const;
 
 private:
-  std::optional<Env::Type> checkArrayAssignment(Env::Type lopt,
-                                                Env::Type ropt) const;
   bool isStringAddition(Env::Type lopt, Env::Type ropt) const;
   bool isNum(Env::Type type) const;
   bool isAssignable(Env::Type lopt, Env::Type ropt) const;

@@ -2420,6 +2420,12 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_Equality_int.java",
     },
+    {
+        "Je_6_Equality_Void.java",
+    },
+    {
+        "Je_6_Expression_StringConcat_Void.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
@@ -2497,12 +2503,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_Constructor_WrongName.java",
-    },
-    {
-        "Je_6_Equality_Void.java",
-    },
-    {
-        "Je_6_Expression_StringConcat_Void.java",
     },
     {
         "Je_6_FinalField_ArrayLength.java",
