@@ -2259,11 +2259,19 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Main.java",
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Foo.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a3Error{
     {
-        "Je_6_ConstructorPresent_SameLastArg.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/C/C.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/A/A.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/Main.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/D/D.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/B/B.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/C/C.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/A/A.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/Main.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/D/D.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/B/B.java",
     },
     {
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/C.java",
@@ -2271,6 +2279,12 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/B.java",
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/Main.java",
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/A.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_6_ConstructorPresent_SameLastArg.java",
     },
     {
         "Je_16_StaticThis_StaticFieldInitializer.java",
@@ -2488,20 +2502,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
         "JButton.java",
         "Je_6_ProtectedAccess_InstanceField_NoRelation_External/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/C/C.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/A/A.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/Main.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/D/D.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/B/B.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/C/C.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/A/A.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/Main.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/D/D.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/B/B.java",
     },
     {
         "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",

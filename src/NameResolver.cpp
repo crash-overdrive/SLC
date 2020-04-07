@@ -25,7 +25,6 @@ Resolver::findField(const std::vector<std::string> &name) const {
   if (!staticField || !isStaticVisible(staticField)) {
     return std::nullopt;
   }
-  std::cerr << *staticField;
   return findField(staticField->type, ++it, name.end());
 }
 
@@ -156,8 +155,9 @@ bool Resolver::isInstanceVisible(const Env::TypeDeclaration *other, T t) const {
   if (t->modifiers.find(Env::Modifier::Static) != t->modifiers.end()) {
     return false;
   }
-  if (typeLink.belongSamePackage(other) ||
-      other->subType.find(&decl) != other->subType.end()) {
+  if (typeLink.belongSamePackage(t->declaration) ||
+      (other->subType.find(&decl) != other->subType.end() &&
+       decl.subType.find(t->declaration) != decl.subType.end())) {
     return true;
   }
   return t->modifiers.find(Env::Modifier::Protected) == t->modifiers.end();
