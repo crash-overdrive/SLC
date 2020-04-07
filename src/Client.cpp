@@ -421,6 +421,16 @@ void Client::typeCheck() {
         return;
       }
     }
+    for (const auto &constructor : body.getConstructors()) {
+      Type::StatementVisitor visitor(environment.typeLink, *tree);
+      constructor.astNode->accept(visitor);
+      if (visitor.isErrorState()) {
+        std::cerr << "Type Error in " << environment.fullName << '\n';
+        std::cerr << constructor << '\n';
+        errorState = true;
+        return;
+      }
+    }
   }
   if (breakPoint != TypeCheck) {
   }

@@ -2246,13 +2246,22 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_AccessToStaticFieldWithImplicitThis/Main.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotInSubclass/"
+        "Main.java",
+        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotInSubclass/"
+        "Foo.java",
+    },
+    {
+        "Je_6_Assignable_NonstaticField.java",
+    },
     {
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Main.java",
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Foo.java",
     },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_6_ConstructorPresent_SameLastArg.java",
     },
@@ -2388,9 +2397,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_Assignable_NamedCastOfComplement.java",
     },
     {
-        "Je_6_Assignable_NonstaticField.java",
-    },
-    {
         "Je_6_Assignable_RefType_RefTypeArray.java",
     },
     {
@@ -2500,12 +2506,6 @@ const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",
         "Je_6_ProtectedAccess_SuperConstructor_NewExp/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotInSubclass/"
-        "Main.java",
-        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotInSubclass/"
-        "Foo.java",
     },
     {
         "Je_6_StaticThis_AfterStaticInvoke.java",
