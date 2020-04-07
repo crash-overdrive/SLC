@@ -69,7 +69,7 @@ TypeDeclaration *TypeLink::find(const std::string &name) const {
   if (singleImportsIt != singleImports.end()) {
     return singleImportsIt->second;
   }
-  TypeDeclaration *samePackageDecl = findSamePackage(name);
+  TypeDeclaration *samePackageDecl = findPackage(name);
   if (samePackageDecl != nullptr) {
     return samePackageDecl;
   }
@@ -109,7 +109,11 @@ TypeLink::find<std::vector<std::string>::const_iterator>(
     std::vector<std::string>::const_iterator first,
     std::vector<std::string>::const_iterator last) const;
 
-TypeDeclaration *TypeLink::findSamePackage(const std::string &name) const {
+bool TypeLink::belongSamePackage(const TypeDeclaration *decl) const {
+  return decl == findPackage(decl->identifier);
+}
+
+TypeDeclaration *TypeLink::findPackage(const std::string &name) const {
   if (package.size() == 0) {
     return tree->findDefault(name);
   }

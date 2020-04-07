@@ -21,11 +21,12 @@ Resolver::findField(const std::vector<std::string> &name) const {
   if (!matchDecl) {
     return std::nullopt;
   }
-  const Env::Field *staticMethod = matchDecl->contain.findField(*it);
-  if (!staticMethod || !isStaticVisible(staticMethod)) {
+  const Env::Field *staticField = matchDecl->contain.findField(*it);
+  if (!staticField || !isStaticVisible(staticField)) {
     return std::nullopt;
   }
-  return findField(staticMethod->type, ++it, name.end());
+  std::cerr << *staticField;
+  return findField(staticField->type, ++it, name.end());
 }
 
 std::optional<Env::Type>
@@ -155,7 +156,7 @@ bool Resolver::isInstanceVisible(const Env::TypeDeclaration *other, T t) const {
   if (t->modifiers.find(Env::Modifier::Static) != t->modifiers.end()) {
     return false;
   }
-  if (typeLink.findSamePackage(other->identifier) ||
+  if (typeLink.belongSamePackage(other) ||
       other->subType.find(&decl) != other->subType.end()) {
     return true;
   }
@@ -166,7 +167,7 @@ template <class T> bool Resolver::isStaticVisible(T t) const {
   if (t->modifiers.find(Env::Modifier::Static) == t->modifiers.end()) {
     return false;
   }
-  if (typeLink.findSamePackage(t->declaration->identifier) ||
+  if (typeLink.belongSamePackage(t->declaration) ||
       decl.subType.find(t->declaration) != decl.subType.end()) {
     return true;
   }
