@@ -2280,14 +2280,8 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/Main.java",
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/A.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_6_ConstructorPresent_SameLastArg.java",
-    },
-    {
-        "Je_16_StaticThis_StaticFieldInitializer.java",
     },
     {
         "Je_1_Dot_ParenthesizedType_Field.java",
@@ -2305,13 +2299,7 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_2_Cast_NegativeToQualifiedNamedType.java",
     },
     {
-        "Je_2_For_LocalVarInUpdate.java",
-    },
-    {
-        "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
-    },
-    {
-        "Je_5_AmbiguousName_FieldVsType_Initializer.java",
+        "Je_6_StringMinus.java",
     },
     {
         "Je_5_AmbiguousName_LinkToFirstFound/javax/swing/Action.java",
@@ -2323,6 +2311,74 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_5_AmbiguousName_NoDeclaration.java",
+    },
+    {
+        "Je_6_Array_NonNumericIndex.java",
+    },
+    {
+        "Je_6_Array_NullTypeIndex.java",
+    },
+    {
+        "Je_6_Assignable_Instanceof_SimpleType.java",
+    },
+    {
+        "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",
+        "Je_6_ProtectedAccess_SuperConstructor_NewExp/Main.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
+        "JComponent.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
+        "JButton.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/Main.java",
+    },
+    {
+        "Je_6_ProtectedAccess_External/javax/swing/JComponent.java",
+        "Je_6_ProtectedAccess_External/Main.java",
+    },
+    {
+        "Je_6_ProtectedAccess_Constructor/Main.java",
+        "Je_6_ProtectedAccess_Constructor/A.java",
+    },
+    {
+        "Je_6_InstantiateInterface.java",
+    },
+    {
+        "Je_6_InstantiateAbstract.java",
+    },
+    {
+        "Je_6_Equality_StringInteger.java",
+    },
+    {
+        "Je_6_Equality_int_NamedType.java",
+    },
+    {
+        "Je_6_ConstructorPresent_PresentInSubclass/Main.java",
+        "Je_6_ConstructorPresent_PresentInSubclass/A.java",
+    },
+    {
+        "Je_6_ClosestMatch_ArrayTypes.java",
+    },
+    {
+        "Je_6_BinopExp_LogicalBitwise.java",
+    },
+    {
+        "Je_6_Assignable_NamedCastOfComplement.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_16_StaticThis_StaticFieldInitializer.java",
+    },
+    {
+        "Je_2_For_LocalVarInUpdate.java",
+    },
+    {
+        "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
+    },
+    {
+        "Je_5_AmbiguousName_FieldVsType_Initializer.java",
     },
     {
         "Je_5_ForwardReference_ArrayLength.java",
@@ -2352,12 +2408,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_5_ForwardReference_MethodCall.java",
-    },
-    {
-        "Je_6_Array_NonNumericIndex.java",
-    },
-    {
-        "Je_6_Array_NullTypeIndex.java",
     },
     {
         "Je_6_Assignable_Array_Object.java",
@@ -2393,9 +2443,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_Assignable_Instanceof_Result.java",
     },
     {
-        "Je_6_Assignable_Instanceof_SimpleType.java",
-    },
-    {
         "Je_6_Assignable_intArray_byteArray.java",
     },
     {
@@ -2406,9 +2453,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_Assignable_int_null.java",
-    },
-    {
-        "Je_6_Assignable_NamedCastOfComplement.java",
     },
     {
         "Je_6_Assignable_RefType_RefTypeArray.java",
@@ -2445,16 +2489,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_Assignable_ValueReturn_InConstructor.java",
     },
     {
-        "Je_6_BinopExp_LogicalBitwise.java",
-    },
-    {
-        "Je_6_ClosestMatch_ArrayTypes.java",
-    },
-    {
-        "Je_6_ConstructorPresent_PresentInSubclass/Main.java",
-        "Je_6_ConstructorPresent_PresentInSubclass/A.java",
-    },
-    {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",
         "Je_6_ConstructorPresent_Super_NoDefault/Foo.java",
     },
@@ -2463,12 +2497,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_Equality_int.java",
-    },
-    {
-        "Je_6_Equality_int_NamedType.java",
-    },
-    {
-        "Je_6_Equality_StringInteger.java",
     },
     {
         "Je_6_Equality_Void.java",
@@ -2481,31 +2509,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_For_NullInCondition.java",
-    },
-    {
-        "Je_6_InstantiateAbstract.java",
-    },
-    {
-        "Je_6_InstantiateInterface.java",
-    },
-    {
-        "Je_6_ProtectedAccess_Constructor/Main.java",
-        "Je_6_ProtectedAccess_Constructor/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_External/javax/swing/JComponent.java",
-        "Je_6_ProtectedAccess_External/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
-        "JComponent.java",
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
-        "JButton.java",
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",
-        "Je_6_ProtectedAccess_SuperConstructor_NewExp/Main.java",
     },
     {
         "Je_6_StaticThis_AfterStaticInvoke.java",
@@ -2521,9 +2524,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_StaticThis_NonstaticField.java",
-    },
-    {
-        "Je_6_StringMinus.java",
     },
     {
         "Je_BadConstructorName.java",

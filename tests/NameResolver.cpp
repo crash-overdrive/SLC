@@ -15,6 +15,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
 
   SECTION("Single Identifier") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
+    field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
     REQUIRE(*resolver.findField({"foo"}) == Env::TypeKeyword::Integer);
 
@@ -74,6 +75,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("Same class protected") {
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
+    field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
     local.addVariable("list", listType);
     REQUIRE(resolver.findField({"list", "foo"}));
@@ -83,6 +85,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     typeLink.setPackage({"bar"});
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
+    field.declaration = &arrayDecl;
     arrayDecl.contain.addDeclareField(&field);
     tree->update({"bar"}, arrayDecl);
 
@@ -93,7 +96,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("Subclass protected") {
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
-    field.declaration = &arrayDecl;
+    field.declaration = &listDecl;
     arrayDecl.contain.addDeclareField(&field);
     arrayDecl.subType.emplace(&listDecl);
     local.addVariable("array", arrayType);

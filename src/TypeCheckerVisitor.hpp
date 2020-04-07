@@ -11,6 +11,11 @@ public:
   StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree);
   void visit(const AST::ReturnStatement &node) override;
   void visit(const AST::ExpressionStatement &node) override;
+  void visit(const AST::VariableDeclaration &node) override;
+  // void visit(const AST::IfThenStatement &node) override;
+  // void visit(const AST::IfThenElseStatement &node) override;
+  // void visit(const AST::WhileStatement &node) override;
+  // void visit(const AST::ForStatement &node) override;
 
 private:
   Env::Type visitExpression(const AST::Node &node);

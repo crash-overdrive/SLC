@@ -17,6 +17,27 @@ void StatementVisitor::visit(const AST::ExpressionStatement &node) {
   visitExpression(node);
 }
 
+void StatementVisitor::visit(const AST::VariableDeclaration &node) {
+  visitExpression(node);
+  dispatchChildren(node);
+}
+
+// void StatementVisitor::visit(const AST::IfThenStatement &node) {
+// visitExpression(node);
+//}
+
+// void StatementVisitor::visit(const AST::IfThenElseStatement &node) {
+// visitExpression(node);
+//}
+
+// void StatementVisitor::visit(const AST::WhileStatement &node) {
+// visitExpression(node);
+//}
+
+// void StatementVisitor::visit(const AST::ForStatement &node) {
+// visitExpression(node);
+//}
+
 Env::Type StatementVisitor::visitExpression(const AST::Node &node) {
   ExpressionVisitor visitor(checker, resolver, typeLink);
   visitor.dispatchChildren(node);
