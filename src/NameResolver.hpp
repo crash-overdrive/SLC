@@ -33,9 +33,11 @@ private:
                                       InputIt first, InputIt last) const;
 
   std::optional<Env::Type> matchObject(const std::string &identifier) const;
+
   template <class T>
-  bool isVisible(const Env::TypeDeclaration *other, T t) const;
-  template <class T> bool isStatic(T t) const;
+  bool isInstanceVisible(const Env::TypeDeclaration *other, T t) const;
+
+  template <class T> bool isStaticVisible(T t) const;
 
   const Env::Local &local;
   const Env::TypeLink &typeLink;

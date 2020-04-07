@@ -296,6 +296,7 @@ void Client::localVariableAnalysis() {
         return;
       }
     }
+    body.setDeclaration(&environment.decl);
   }
   if (breakPoint != LocalVariable) {
     buildHierarchy();

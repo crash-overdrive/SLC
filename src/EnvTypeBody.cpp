@@ -143,6 +143,15 @@ void TypeBody::setAbstract() {
   }
 }
 
+void TypeBody::setDeclaration(const TypeDeclaration *declaration) {
+  for (auto &field : fields) {
+    field.declaration = declaration;
+  }
+  for (auto &method : methods) {
+    method.declaration = declaration;
+  }
+}
+
 std::ostream &operator<<(std::ostream &stream, const TypeBody &body) {
   for (auto const &field : body.fields) {
     stream << field;

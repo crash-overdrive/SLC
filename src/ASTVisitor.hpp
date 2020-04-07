@@ -26,7 +26,6 @@ public:
   virtual void visit(const PrimitiveType &node);
   virtual void visit(const ArrayType &node);
   virtual void visit(const SimpleType &node);
-  virtual void visit(const Expression &node);
   virtual void visit(const CastExpression &node);
   virtual void visit(const CastType &node);
   virtual void visit(const SingleVariableDeclaration &node);
@@ -91,7 +90,6 @@ public:
   void visit(const PrimitiveType &primitiveType) override;
   void visit(const SimpleType &simpleType) override;
   void visit(const ArrayType &) override;
-  void visit(const Expression &) override;
   void visit(const CastExpression &) override;
   void visit(const CastType &) override;
   void visit(const SingleVariableDeclaration &) override;

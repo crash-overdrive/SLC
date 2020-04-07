@@ -109,6 +109,7 @@ std::optional<Env::Type> Checker::checkInstanceOf(Env::Type lopt,
 std::optional<Env::Type> Checker::checkArrayAccess(Env::Type lopt,
                                                    Env::Type ropt) const {
   if (lopt.isArray && isNum(ropt)) {
+    lopt.isArray = false;
     return lopt;
   }
   return std::nullopt;

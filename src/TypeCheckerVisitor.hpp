@@ -9,16 +9,14 @@ class StatementVisitor : public Env::LocalTrackVisitor {
 public:
   using LocalTrackVisitor::visit;
   StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree);
-
   void visit(const AST::ReturnStatement &node) override;
-  Env::Type getReturnType();
+  void visit(const AST::ExpressionStatement &node) override;
 
 private:
+  Env::Type visitExpression(const AST::Node &node);
   Checker checker;
   Name::Resolver resolver;
   const Env::TypeLink &typeLink;
-
-  Env::Type returnType;
 };
 
 class ExpressionVisitor : public AST::Visitor {
@@ -30,6 +28,7 @@ public:
   void visit(const AST::UnaryExpression &node) override;
   void visit(const AST::CastType &node) override;
   void visit(const AST::CastExpression &node) override;
+  void visit(const AST::InstanceOfExpression &node) override;
   void visit(const AST::ArrayCreation &node) override;
   void visit(const AST::ArrayAccess &node) override;
   void visit(const AST::ClassInstanceCreation &node) override;

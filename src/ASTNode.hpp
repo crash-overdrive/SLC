@@ -85,11 +85,6 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
-class Expression : public Node {
-public:
-  void accept(Visitor &visitor) const override;
-};
-
 class CastExpression : public Node {
 public:
   void accept(Visitor &visitor) const override;

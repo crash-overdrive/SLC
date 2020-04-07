@@ -47,8 +47,6 @@ void ArrayType::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void SimpleType::accept(Visitor &visitor) const { visitor.visit(*this); }
 
-void Expression::accept(Visitor &visitor) const { visitor.visit(*this); }
-
 void CastExpression::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void CastType::accept(Visitor &visitor) const { visitor.visit(*this); }

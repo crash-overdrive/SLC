@@ -2136,9 +2136,79 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_MethodPresent_TooManyArguments.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_6_ConstructorPresent_MultipleArgumentsOneMismatch.java",
+    },
+    {
+        "Je_16_MethodPresent_WrongName_Array.java",
+    },
+    {
+        "Je_1_Dot_ParenthesizedType_Method.java",
+    },
+    {
+        "Je_5_AmbiguousInvoke_Static_TypeNonExisting.java",
+    },
+    {
+        "Je_5_AmbiguousName_SamePackageAndClassName.java",
+    },
+    {
+        "Je_6_Assignable_ToSubtype/Main.java",
+        "Je_6_Assignable_ToSubtype/java/lang/Thread.java",
+    },
+    {
+        "Je_6_ClosestMatch_Constructor_NoClosestMatch/Main.java",
+        "Je_6_ClosestMatch_Constructor_NoClosestMatch/java/lang/"
+        "Runnable.java",
+        "Je_6_ClosestMatch_Constructor_NoClosestMatch/java/lang/Thread.java",
+    },
+    {
+        "Je_6_ClosestMatch_MultipleClosest_1.java",
+    },
+    {
+        "Je_6_ClosestMatch_MultipleClosest_2.java",
+    },
+    {
+        "Je_6_ClosestMatch_MultipleClosest_3.java",
+    },
+    {
+        "Je_6_ClosestMatch_MultipleClosest_SimpleTypes.java",
+    },
+    {
+        "Je_6_ConstructorPresent_ArgumentTypeMismatch.java",
+    },
+    {
+        "Je_6_ConstructorPresent_IllegalConversion.java",
+    },
+    {
+        "Je_6_ConstructorPresent_TooFewArguments.java",
+    },
+    {
+        "Je_6_InstanceOf_Primitive_3.java",
+    },
+    {
+        "Je_6_MethodPresent_IllegalConversion.java",
+    },
+    {
+        "Je_6_ProtectedAccess_ClassCreation_Super/C.java",
+        "Je_6_ProtectedAccess_ClassCreation_Super/D.java",
+        "Je_6_ProtectedAccess_ClassCreation_Super/B.java",
+        "Je_6_ProtectedAccess_ClassCreation_Super/Main.java",
+        "Je_6_ProtectedAccess_ClassCreation_Super/A.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceField_SuperVar/C.java",
+        "Je_6_ProtectedAccess_InstanceField_SuperVar/D.java",
+        "Je_6_ProtectedAccess_InstanceField_SuperVar/B.java",
+        "Je_6_ProtectedAccess_InstanceField_SuperVar/Main.java",
+        "Je_6_ProtectedAccess_InstanceField_SuperVar/A.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/C.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/D.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/B.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/Main.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/A.java",
+    },
     {
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotBySubclass/Main.java",
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotBySubclass/A.java",
@@ -2147,13 +2217,44 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ConstructorPresent_TooManyArguments.java",
     },
     {
+        "Je_6_ClosestMatch_Constructor_NoClosestMatch_SimpleTypes.java",
+    },
+    {
+        "Je_6_ProtectedAccess_ClassCreation_Sub/C.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/D.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/B.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/Main.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/A.java",
+    },
+    {
+        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotBySubclass/"
+        "Main.java",
+        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotBySubclass/A.java",
+    },
+    {
+        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/C.java",
+        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/D.java",
+        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/B.java",
+        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/Main.java",
+        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/A.java",
+    },
+    {
+        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotBySubclass/"
+        "Main.java",
+        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotBySubclass/A.java",
+    },
+    {
+        "Je_AccessToStaticFieldWithImplicitThis/Main.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Main.java",
+        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Foo.java",
+    },
+    {
         "Je_6_ConstructorPresent_SameLastArg.java",
-    },
-    {
-        "Je_6_ConstructorPresent_MultipleArgumentsOneMismatch.java",
-    },
-    {
-        "Je_16_MethodPresent_WrongName_Array.java",
     },
     {
         "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/C.java",
@@ -2167,9 +2268,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_1_Dot_ParenthesizedType_Field.java",
-    },
-    {
-        "Je_1_Dot_ParenthesizedType_Method.java",
     },
     {
         "Je_1_MethodInvocation_Primitive.java",
@@ -2190,9 +2288,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
     },
     {
-        "Je_5_AmbiguousInvoke_Static_TypeNonExisting.java",
-    },
-    {
         "Je_5_AmbiguousName_FieldVsType_Initializer.java",
     },
     {
@@ -2205,9 +2300,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_5_AmbiguousName_NoDeclaration.java",
-    },
-    {
-        "Je_5_AmbiguousName_SamePackageAndClassName.java",
     },
     {
         "Je_5_ForwardReference_ArrayLength.java",
@@ -2323,10 +2415,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_Assignable_short_int.java",
     },
     {
-        "Je_6_Assignable_ToSubtype/Main.java",
-        "Je_6_Assignable_ToSubtype/java/lang/Thread.java",
-    },
-    {
         "Je_6_Assignable_ToSubtype_DeclInit/Main.java",
         "Je_6_Assignable_ToSubtype_DeclInit/java/lang/Thread.java",
     },
@@ -2343,42 +2431,12 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ClosestMatch_ArrayTypes.java",
     },
     {
-        "Je_6_ClosestMatch_Constructor_NoClosestMatch/Main.java",
-        "Je_6_ClosestMatch_Constructor_NoClosestMatch/java/lang/"
-        "Runnable.java",
-        "Je_6_ClosestMatch_Constructor_NoClosestMatch/java/lang/Thread.java",
-    },
-    {
-        "Je_6_ClosestMatch_Constructor_NoClosestMatch_SimpleTypes.java",
-    },
-    {
-        "Je_6_ClosestMatch_MultipleClosest_1.java",
-    },
-    {
-        "Je_6_ClosestMatch_MultipleClosest_2.java",
-    },
-    {
-        "Je_6_ClosestMatch_MultipleClosest_3.java",
-    },
-    {
-        "Je_6_ClosestMatch_MultipleClosest_SimpleTypes.java",
-    },
-    {
-        "Je_6_ConstructorPresent_ArgumentTypeMismatch.java",
-    },
-    {
-        "Je_6_ConstructorPresent_IllegalConversion.java",
-    },
-    {
         "Je_6_ConstructorPresent_PresentInSubclass/Main.java",
         "Je_6_ConstructorPresent_PresentInSubclass/A.java",
     },
     {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",
         "Je_6_ConstructorPresent_Super_NoDefault/Foo.java",
-    },
-    {
-        "Je_6_ConstructorPresent_TooFewArguments.java",
     },
     {
         "Je_6_Constructor_WrongName.java",
@@ -2405,30 +2463,10 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_For_NullInCondition.java",
     },
     {
-        "Je_6_InstanceOf_Primitive_3.java",
-    },
-    {
         "Je_6_InstantiateAbstract.java",
     },
     {
         "Je_6_InstantiateInterface.java",
-    },
-    {
-        "Je_6_MethodPresent_IllegalConversion.java",
-    },
-    {
-        "Je_6_ProtectedAccess_ClassCreation_Sub/C.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/D.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/B.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/Main.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_ClassCreation_Super/C.java",
-        "Je_6_ProtectedAccess_ClassCreation_Super/D.java",
-        "Je_6_ProtectedAccess_ClassCreation_Super/B.java",
-        "Je_6_ProtectedAccess_ClassCreation_Super/Main.java",
-        "Je_6_ProtectedAccess_ClassCreation_Super/A.java",
     },
     {
         "Je_6_ProtectedAccess_Constructor/Main.java",
@@ -2453,13 +2491,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/B/B.java",
     },
     {
-        "Je_6_ProtectedAccess_InstanceField_SuperVar/C.java",
-        "Je_6_ProtectedAccess_InstanceField_SuperVar/D.java",
-        "Je_6_ProtectedAccess_InstanceField_SuperVar/B.java",
-        "Je_6_ProtectedAccess_InstanceField_SuperVar/Main.java",
-        "Je_6_ProtectedAccess_InstanceField_SuperVar/A.java",
-    },
-    {
         "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/C/C.java",
         "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/A/A.java",
         "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/Main.java",
@@ -2467,36 +2498,8 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/B/B.java",
     },
     {
-        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/C.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/D.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/B.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/Main.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SuperVar/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Main.java",
-        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Foo.java",
-    },
-    {
-        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotBySubclass/"
-        "Main.java",
-        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotBySubclass/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/C.java",
-        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/D.java",
-        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/B.java",
-        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/Main.java",
-        "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/A.java",
-    },
-    {
         "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",
         "Je_6_ProtectedAccess_SuperConstructor_NewExp/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotBySubclass/"
-        "Main.java",
-        "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotBySubclass/A.java",
     },
     {
         "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotInSubclass/"
@@ -2521,9 +2524,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_StringMinus.java",
-    },
-    {
-        "Je_AccessToStaticFieldWithImplicitThis/Main.java",
     },
     {
         "Je_BadConstructorName.java",

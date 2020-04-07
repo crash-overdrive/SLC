@@ -24,18 +24,21 @@ TEST_CASE("Resolve names", "[NameResolver]") {
 
   SECTION("Static cannot resolve to non-static") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
+    field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
     REQUIRE_FALSE(resolver.findField({"List", "foo"}));
   }
 
   SECTION("Static field can be called") {
     Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
+    field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
     REQUIRE(resolver.findField({"List", "foo"}));
   }
 
   SECTION("Static field cannot be called implicit") {
     Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
+    field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
     REQUIRE_FALSE(resolver.findField({"foo"}));
   }
@@ -63,6 +66,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("Static call") {
     Env::Method method({Env::Modifier::Static}, Env::TypeKeyword::Integer,
                        "foo", {});
+    method.declaration = &listDecl;
     listDecl.contain.addDeclareMethod(&method);
     REQUIRE(resolver.findMethod({"List", "foo"}, {}));
   }
@@ -89,8 +93,9 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("Subclass protected") {
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
+    field.declaration = &arrayDecl;
     arrayDecl.contain.addDeclareField(&field);
-    listDecl.subType.emplace(&arrayDecl);
+    arrayDecl.subType.emplace(&listDecl);
     local.addVariable("array", arrayType);
     REQUIRE(resolver.findField({"array", "foo"}));
   }
@@ -98,6 +103,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("World cannot see protected") {
     Env::Field field({Env::Modifier::Static, Env::Modifier::Protected},
                      Env::TypeKeyword::Integer, "foo");
+    field.declaration = &arrayDecl;
     arrayDecl.contain.addDeclareField(&field);
     tree->update({"bar"}, arrayDecl);
     REQUIRE_FALSE(resolver.findField({"bar", "Array", "foo"}));
@@ -106,6 +112,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("World can see public") {
     Env::Field field({Env::Modifier::Static, Env::Modifier::Public},
                      Env::TypeKeyword::Integer, "foo");
+    field.declaration = &arrayDecl;
     arrayDecl.contain.addDeclareField(&field);
     tree->update({"bar"}, arrayDecl);
     REQUIRE(resolver.findField({"bar", "Array", "foo"}));

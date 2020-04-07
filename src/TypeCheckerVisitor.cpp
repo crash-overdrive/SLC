@@ -10,13 +10,20 @@ StatementVisitor::StatementVisitor(const Env::TypeLink &typeLink,
       resolver(getLocal(), typeLink), typeLink(typeLink) {}
 
 void StatementVisitor::visit(const AST::ReturnStatement &node) {
+  visitExpression(node);
+}
+
+void StatementVisitor::visit(const AST::ExpressionStatement &node) {
+  visitExpression(node);
+}
+
+Env::Type StatementVisitor::visitExpression(const AST::Node &node) {
   ExpressionVisitor visitor(checker, resolver, typeLink);
   visitor.dispatchChildren(node);
   if (visitor.isErrorState()) {
     setError();
-    return;
   }
-  returnType = visitor.getType();
+  return visitor.getType();
 }
 
 ExpressionVisitor::ExpressionVisitor(const Checker &checker,
@@ -65,6 +72,15 @@ void ExpressionVisitor::visit(const AST::CastExpression &node) {
   binaryVisitor.setCastExpression();
   binaryVisitor.dispatchChildren(node);
   setType(checker.checkCasting(binaryVisitor.getLHS(), binaryVisitor.getRHS()));
+}
+
+void ExpressionVisitor::visit(const AST::InstanceOfExpression &node) {
+  ExpressionVisitor expressionVisitor(checker, resolver, typeLink);
+  expressionVisitor.dispatchChildren(node);
+  AST::TypeVisitor typeVisitor(typeLink);
+  typeVisitor.dispatchChildren(node);
+  setType(checker.checkInstanceOf(expressionVisitor.getType(),
+                                  typeVisitor.getType()));
 }
 
 void ExpressionVisitor::visit(const AST::ArrayCreation &node) {

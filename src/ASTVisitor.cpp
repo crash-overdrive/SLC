@@ -18,7 +18,6 @@ void Visitor::visit(const Name &node) { postVisit(node); }
 void Visitor::visit(const PrimitiveType &node) { postVisit(node); }
 void Visitor::visit(const SimpleType &node) { postVisit(node); }
 void Visitor::visit(const ArrayType &node) { postVisit(node); }
-void Visitor::visit(const Expression &node) { postVisit(node); }
 void Visitor::visit(const CastExpression &node) { postVisit(node); }
 void Visitor::visit(const CastType &node) { postVisit(node); }
 void Visitor::visit(const SingleVariableDeclaration &node) { postVisit(node); }
@@ -130,8 +129,6 @@ void PrintVisitor::visit(const PrimitiveType &primitiveType) {
 void PrintVisitor::visit(const SimpleType &) { stream << "SimpleType"; }
 
 void PrintVisitor::visit(const ArrayType &) { stream << "ArrayType"; }
-
-void PrintVisitor::visit(const Expression &) { stream << "Expression"; }
 
 void PrintVisitor::visit(const CastExpression &) { stream << "CastExpression"; }
 
