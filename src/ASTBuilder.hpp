@@ -109,7 +109,7 @@ const std::unordered_map<std::string, ParseVisitor> parseVisit{
     {"Literal", dispatchChildren},
 
     {"ADDITION", leafVisit<Operator>},
-    {"SUBSTRACTION", leafVisit<Operator>},
+    {"SUBTRACTION", leafVisit<Operator>},
     {"MULTIPLICATION", leafVisit<Operator>},
     {"DIVISION", leafVisit<Operator>},
     {"MODULUS", leafVisit<Operator>},

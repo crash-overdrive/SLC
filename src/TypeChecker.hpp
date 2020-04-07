@@ -14,7 +14,7 @@ const std::unordered_set<Env::TypeKeyword> numKeyword{
     Env::TypeKeyword::Byte,
 };
 
-const std::vector<std::array<Env::Type, 2>> primitiveAssignment{
+const std::vector<std::array<Env::TypeKeyword, 2>> primitiveAssignment{
     {Env::TypeKeyword::Simple, Env::TypeKeyword::Null},
     {Env::TypeKeyword::Integer, Env::TypeKeyword::Short},
     {Env::TypeKeyword::Integer, Env::TypeKeyword::Byte},

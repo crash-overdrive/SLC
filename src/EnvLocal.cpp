@@ -39,7 +39,7 @@ std::optional<Type> Local::findVariable(const std::string &name) const {
 }
 
 bool Local::addVariable(const std::string &name, Type type) {
-  if (findVariable(name)) {
+  if (findVariable(name) || type == TypeKeyword::Void) {
     std::cerr << "ERROR!! Variable: " << name << " with descriptor: " << type
               << " could not be added\n";
     return false;

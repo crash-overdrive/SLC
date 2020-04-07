@@ -34,6 +34,7 @@ public:
   void visit(const AST::PrimitiveType &primitiveType) override;
   void visit(const AST::SimpleType &simpleType) override;
   void visit(const AST::ArrayType &arrayType) override;
+  void visit(const AST::Name &name) override;
   Env::Type getType();
 
 private:

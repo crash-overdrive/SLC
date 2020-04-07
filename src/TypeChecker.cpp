@@ -15,14 +15,17 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
        lopt.declare == tree.findDeclaration({"java", "io", "Serializable"}))) {
     return lopt;
   }
+  if (lopt.isArray != ropt.isArray) {
+    return std::nullopt;
+  }
+
   if (lopt.keyword == Env::TypeKeyword::Simple &&
       ropt.keyword == Env::TypeKeyword::Simple &&
-      lopt.isArray == ropt.isArray &&
-      lopt.declare->subType.find(ropt.declare) != lopt.declare->subType.end()) {
+      ropt.declare->subType.find(lopt.declare) != ropt.declare->subType.end()) {
     return lopt;
   }
   for (const auto &assignment : primitiveAssignment) {
-    if (lopt == assignment.at(0) && ropt == assignment.at(1)) {
+    if (lopt.keyword == assignment.at(0) && ropt.keyword == assignment.at(1)) {
       return lopt;
     }
   }
@@ -88,7 +91,8 @@ Checker::checkUnaryOperation(const UnaryOperation &operation) const {
 
 std::optional<Env::Type> Checker::checkCasting(Env::Type lopt,
                                                Env::Type ropt) const {
-  if ((isNum(lopt) && isNum(ropt)) || isAssignable(lopt, ropt)) {
+  if (ropt.keyword == Env::TypeKeyword::Null || (isNum(lopt) && isNum(ropt)) ||
+      isAssignable(lopt, ropt)) {
     return lopt;
   }
   return std::nullopt;
@@ -104,7 +108,7 @@ std::optional<Env::Type> Checker::checkInstanceOf(Env::Type lopt,
 
 std::optional<Env::Type> Checker::checkArrayAccess(Env::Type lopt,
                                                    Env::Type ropt) const {
-  if (isNum(ropt)) {
+  if (lopt.isArray && isNum(ropt)) {
     return lopt;
   }
   return std::nullopt;

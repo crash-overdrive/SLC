@@ -90,8 +90,6 @@ Resolver::findMethod(Env::Type type, const std::string &identifier,
   const Env::Method *method =
       type.declare->contain.findMethod(identifier, args);
   if (!method || !isVisible(type.declare, method) || isStatic(method)) {
-    std::cerr << method;
-    std::cerr << "hello";
     return std::nullopt;
   }
   return method->returnType;

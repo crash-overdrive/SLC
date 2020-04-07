@@ -46,6 +46,16 @@ void TypeVisitor::visit(const ArrayType &arrayType) {
   dispatchChildren(arrayType);
 }
 
+void TypeVisitor::visit(const AST::Name &name) {
+  if (!type.isArray || type.keyword != Env::TypeKeyword::Void) {
+    return;
+  }
+  NameVisitor nameVisitor;
+  name.accept(nameVisitor);
+  type.keyword = Env::TypeKeyword::Simple;
+  type.declare = typeLink.find(nameVisitor.getName());
+}
+
 Env::Type TypeVisitor::getType() { return std::move(type); }
 
 ArgumentsDeclarationVisitor::ArgumentsDeclarationVisitor(

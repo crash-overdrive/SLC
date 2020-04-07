@@ -41,6 +41,16 @@ void ExpressionVisitor::visit(const AST::BinaryExpression &node) {
   setType(checker.checkBinaryOperation(operation));
 }
 
+void ExpressionVisitor::visit(const AST::UnaryExpression &node) {
+  ExpressionVisitor expressionVisitor(checker, resolver, typeLink);
+  expressionVisitor.dispatchChildren(node);
+  UnaryOperatorVisitor operatorVisitor;
+  operatorVisitor.dispatchChildren(node);
+  UnaryOperation operation{operatorVisitor.getUnaryOperator(),
+                           expressionVisitor.getType()};
+  setType(checker.checkUnaryOperation(operation));
+}
+
 void ExpressionVisitor::visit(const AST::CastType &node) {
   AST::TypeVisitor typeVisitor(typeLink);
   typeVisitor.dispatchChildren(node);
@@ -66,6 +76,22 @@ void ExpressionVisitor::visit(const AST::ArrayCreation &node) {
                                      expressionVisitor.getType()));
 }
 
+void ExpressionVisitor::visit(const AST::ArrayAccess &node) {
+  BinaryExpressionVisitor binaryVisitor(checker, resolver, typeLink);
+  binaryVisitor.dispatchChildren(node);
+  setType(
+      checker.checkArrayAccess(binaryVisitor.getLHS(), binaryVisitor.getRHS()));
+}
+
+void ExpressionVisitor::visit(const AST::ClassInstanceCreation &node) {
+  AST::TypeVisitor typeVisitor(typeLink);
+  typeVisitor.dispatchChildren(node);
+  ArgumentsVisitor argumentsVisitor(checker, resolver, typeLink);
+  argumentsVisitor.dispatchChildren(node);
+  setType(resolver.findConstructor(typeVisitor.getType(),
+                                   argumentsVisitor.getArgs()));
+}
+
 void ExpressionVisitor::visit(const AST::FieldAccess &node) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(node);
@@ -82,6 +108,18 @@ void ExpressionVisitor::visit(const AST::MethodNameInvocation &node) {
   argumentsVisitor.dispatchChildren(node);
   setType(
       resolver.findMethod(nameVisitor.getName(), argumentsVisitor.getArgs()));
+}
+
+void ExpressionVisitor::visit(const AST::MethodPrimaryInvocation &node) {
+  ExpressionVisitor expressionVisitor(checker, resolver, typeLink);
+  expressionVisitor.dispatchChildren(node);
+  AST::PropertiesVisitor propertiesVisitor;
+  propertiesVisitor.dispatchChildren(node);
+  ArgumentsVisitor argumentsVisitor(checker, resolver, typeLink);
+  argumentsVisitor.dispatchChildren(node);
+  setType(resolver.findMethod(expressionVisitor.getType(),
+                              propertiesVisitor.getIdentifier(),
+                              argumentsVisitor.getArgs()));
 }
 
 void ExpressionVisitor::visit(const AST::Name &node) {
