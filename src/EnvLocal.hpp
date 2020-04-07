@@ -12,11 +12,13 @@ class VariableTable {
 public:
   std::optional<Type> findVariable(const std::string &name) const;
   bool addVariable(const std::string &name, Type type);
+  Env::Type lastVariable() const;
 
 private:
   friend std::ostream &operator<<(std::ostream &stream,
                                   const VariableTable &table);
   std::map<std::string, Type> variableMap;
+  Type last;
 };
 
 std::ostream &operator<<(std::ostream &stream, const VariableTable &table);
@@ -28,6 +30,7 @@ public:
   bool addVariable(const std::string &name, Type type);
   void addVariableTable();
   void removeVariableTable();
+  Env::Type lastVariable() const;
 
 private:
   bool log;

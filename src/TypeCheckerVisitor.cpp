@@ -18,8 +18,11 @@ void StatementVisitor::visit(const AST::ExpressionStatement &node) {
 }
 
 void StatementVisitor::visit(const AST::VariableDeclaration &node) {
-  visitExpression(node);
+  Env::Type expressionType = visitExpression(node);
   dispatchChildren(node);
+  if (!checker.checkAssignment(getLocal().lastVariable(), expressionType)) {
+    setError();
+  }
 }
 
 void StatementVisitor::visit(const AST::IfThenStatement &node) {

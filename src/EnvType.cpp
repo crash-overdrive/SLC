@@ -1,4 +1,5 @@
 #include "EnvType.hpp"
+#include "EnvTypeDeclaration.hpp"
 
 namespace Env {
 
@@ -19,7 +20,11 @@ bool Type::operator!=(const Type &type) const {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Type &type) {
-  stream << typeKeywordString.at(type.keyword) << '\n';
+  stream << typeKeywordString.at(type.keyword) << '\n'
+         << "isArray: " << std::boolalpha << type.isArray << '\n';
+  if (type.keyword == TypeKeyword::Simple) {
+    stream << "Declaration: " << type.declare->identifier << '\n';
+  }
   return stream;
 }
 

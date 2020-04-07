@@ -15,8 +15,11 @@ bool VariableTable::addVariable(const std::string &name, Type type) {
     return false;
   }
   variableMap[name] = type;
+  last = type;
   return true;
 }
+
+Env::Type VariableTable::lastVariable() const { return last; }
 
 std::ostream &operator<<(std::ostream &stream, const VariableTable &table) {
   for (auto const &variable : table.variableMap) {
@@ -67,6 +70,8 @@ void Local::removeVariableTable() {
   }
   tables.pop_back();
 }
+
+Env::Type Local::lastVariable() const { return tables.back().lastVariable(); }
 
 LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), local(log) {}

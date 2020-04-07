@@ -15,6 +15,9 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
        lopt.declare == tree.findDeclaration({"java", "io", "Serializable"}))) {
     return lopt;
   }
+  if (lopt.isArray && ropt.keyword == Env::TypeKeyword::Null) {
+    return lopt;
+  }
   if (lopt.isArray != ropt.isArray) {
     return std::nullopt;
   }

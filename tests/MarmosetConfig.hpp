@@ -2368,6 +2368,58 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_2_For_LocalVarInUpdate.java",
     },
+    {
+        "Je_6_Assignable_Array_Object.java",
+    },
+    {
+        "Je_6_Assignable_byteArray_intArray.java",
+    },
+    {
+        "Je_6_Assignable_byte_char.java",
+    },
+    {
+        "Je_6_Assignable_byte_int.java",
+    },
+    {
+        "Je_6_Assignable_char_byte_1.java",
+    },
+    {
+        "Je_6_Assignable_char_byte_2.java",
+    },
+    {
+        "Je_6_Assignable_char_int.java",
+    },
+    {
+        "Je_6_Assignable_Instanceof_Result.java",
+    },
+    {
+        "Je_6_Assignable_intArray_int.java",
+    },
+    {
+        "Je_6_Assignable_int_null.java",
+    },
+    {
+        "Je_6_Assignable_RefType_RefTypeArray.java",
+    },
+    {
+        "Je_6_Assignable_ResultTypeOfAssignment.java",
+    },
+    {
+        "Je_6_Assignable_short_char.java",
+    },
+    {
+        "Je_6_Assignable_short_int.java",
+    },
+    {
+        "Je_6_Assignable_int_intArray.java",
+    },
+    {
+        "Je_6_Assignable_ToSubtype_DeclInit/Main.java",
+        "Je_6_Assignable_ToSubtype_DeclInit/java/lang/Thread.java",
+    },
+    {
+        "Je_6_Equality_int.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
@@ -2410,27 +2462,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_5_ForwardReference_MethodCall.java",
     },
     {
-        "Je_6_Assignable_Array_Object.java",
-    },
-    {
-        "Je_6_Assignable_byteArray_intArray.java",
-    },
-    {
-        "Je_6_Assignable_byte_char.java",
-    },
-    {
-        "Je_6_Assignable_byte_int.java",
-    },
-    {
-        "Je_6_Assignable_char_byte_1.java",
-    },
-    {
-        "Je_6_Assignable_char_byte_2.java",
-    },
-    {
-        "Je_6_Assignable_char_int.java",
-    },
-    {
         "Je_6_Assignable_Condition.java",
     },
     {
@@ -2440,25 +2471,7 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_Assignable_Condition_While.java",
     },
     {
-        "Je_6_Assignable_Instanceof_Result.java",
-    },
-    {
         "Je_6_Assignable_intArray_byteArray.java",
-    },
-    {
-        "Je_6_Assignable_intArray_int.java",
-    },
-    {
-        "Je_6_Assignable_int_intArray.java",
-    },
-    {
-        "Je_6_Assignable_int_null.java",
-    },
-    {
-        "Je_6_Assignable_RefType_RefTypeArray.java",
-    },
-    {
-        "Je_6_Assignable_ResultTypeOfAssignment.java",
     },
     {
         "Je_6_Assignable_ReturnInElse.java",
@@ -2473,16 +2486,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_Assignable_Return_Void.java",
     },
     {
-        "Je_6_Assignable_short_char.java",
-    },
-    {
-        "Je_6_Assignable_short_int.java",
-    },
-    {
-        "Je_6_Assignable_ToSubtype_DeclInit/Main.java",
-        "Je_6_Assignable_ToSubtype_DeclInit/java/lang/Thread.java",
-    },
-    {
         "Je_6_Assignable_ToSubtype_FieldInit.java",
     },
     {
@@ -2494,9 +2497,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_Constructor_WrongName.java",
-    },
-    {
-        "Je_6_Equality_int.java",
     },
     {
         "Je_6_Equality_Void.java",
