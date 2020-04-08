@@ -10,7 +10,14 @@ StatementVisitor::StatementVisitor(const Env::TypeLink &typeLink,
       resolver(getLocal(), typeLink), typeLink(typeLink) {}
 
 void StatementVisitor::visit(const AST::ReturnStatement &node) {
-  visitExpression(node);
+  Env::Type expressionReturnType{visitExpression(node)};
+  if (returnType == Env::TypeKeyword::Void &&
+      expressionReturnType == Env::TypeKeyword::None) {
+    return;
+  }
+  if (!checker.checkAssignment(returnType, expressionReturnType)) {
+    setError();
+  }
 }
 
 void StatementVisitor::visit(const AST::ExpressionStatement &node) {
@@ -20,8 +27,8 @@ void StatementVisitor::visit(const AST::ExpressionStatement &node) {
 void StatementVisitor::visit(const AST::VariableDeclaration &node) {
   dispatchChildren(node);
   getLocal().setUndefined();
-  Env::Type expressionType = visitExpression(node);
-  Env::Type defineType = getLocal().clearUndefined();
+  Env::Type expressionType{visitExpression(node)};
+  Env::Type defineType{getLocal().clearUndefined()};
   if (!checker.checkAssignment(defineType, expressionType)) {
     setError();
   }
@@ -56,7 +63,6 @@ void StatementVisitor::visit(const AST::ForCond &node) {
     setError();
     return;
   }
-  visitExpression(node);
 }
 
 void StatementVisitor::visit(const AST::ForUpdate &node) {
@@ -71,6 +77,8 @@ Env::Type StatementVisitor::visitExpression(const AST::Node &node) {
   }
   return visitor.getType();
 }
+
+void StatementVisitor::setReturnType(Env::Type type) { returnType = type; }
 
 ExpressionVisitor::ExpressionVisitor(const Checker &checker,
                                      const Name::Resolver &resolver,

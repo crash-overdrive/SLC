@@ -2444,6 +2444,21 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_Assignable_Condition_While.java",
     },
+    {
+        "Je_6_Assignable_ReturnInElse.java",
+    },
+    {
+        "Je_6_Assignable_Return_ToSubType.java",
+    },
+    {
+        "Je_6_Assignable_ValueReturn_InConstructor.java",
+    },
+    {
+        "Je_6_Assignable_Return_Void.java",
+    },
+    {
+        "Je_6_Assignable_Return_VoidInVoidMethod.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
@@ -2483,22 +2498,7 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_5_ForwardReference_MethodCall.java",
     },
     {
-        "Je_6_Assignable_ReturnInElse.java",
-    },
-    {
-        "Je_6_Assignable_Return_ToSubType.java",
-    },
-    {
-        "Je_6_Assignable_Return_VoidInVoidMethod.java",
-    },
-    {
-        "Je_6_Assignable_Return_Void.java",
-    },
-    {
         "Je_6_Assignable_ToSubtype_FieldInit.java",
-    },
-    {
-        "Je_6_Assignable_ValueReturn_InConstructor.java",
     },
     {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",

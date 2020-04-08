@@ -17,12 +17,14 @@ public:
   void visit(const AST::WhileStatement &node) override;
   void visit(const AST::ForCond &node) override;
   void visit(const AST::ForUpdate &node) override;
+  void setReturnType(Env::Type type);
 
 private:
   Env::Type visitExpression(const AST::Node &node);
   Checker checker;
   Name::Resolver resolver;
   const Env::TypeLink &typeLink;
+  Env::Type returnType;
 };
 
 class ExpressionVisitor : public AST::Visitor {
@@ -55,7 +57,7 @@ private:
   const Checker &checker;
   const Name::Resolver &resolver;
   const Env::TypeLink &typeLink;
-  Env::Type type;
+  Env::Type type{Env::TypeKeyword::None};
 };
 
 } // namespace Type

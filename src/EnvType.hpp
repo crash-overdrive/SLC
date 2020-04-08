@@ -9,6 +9,7 @@ namespace Env {
 struct TypeDeclaration;
 
 enum class TypeKeyword {
+  None,
   Void,
   Integer,
   Boolean,

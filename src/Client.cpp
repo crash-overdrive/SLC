@@ -410,9 +410,10 @@ void Client::typeCheck() {
     if (environment.decl.keyword == Env::DeclarationKeyword::Interface) {
       continue;
     }
-    Env::TypeBody &body = environment.decl.body;
+    Env::TypeBody &body{environment.decl.body};
     for (const auto &method : body.getMethods()) {
       Type::StatementVisitor visitor(environment.typeLink, *tree);
+      visitor.setReturnType(method.returnType);
       method.astNode->accept(visitor);
       if (visitor.isErrorState()) {
         std::cerr << "Type Error in " << environment.fullName << '\n';
