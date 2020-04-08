@@ -5,4 +5,4 @@ export CXX = /usr/bin/g++-9
 all:
 	/usr/local/bin/cmake -H. -Bbuild
 	/usr/local/bin/cmake --build build
-	ln -s build/bin/joosc .
+	ln -s ../build/bin/joosc ..

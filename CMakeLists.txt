@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13.3)
 
 project(slc)
 
@@ -19,3 +19,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(tools)
