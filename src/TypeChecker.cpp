@@ -22,14 +22,18 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
   if (lopt.isArray && ropt.keyword == Env::TypeKeyword::Null) {
     return lopt;
   }
+
   if (lopt.isArray != ropt.isArray) {
     return std::nullopt;
   }
-
   if (lopt.keyword == Env::TypeKeyword::Simple &&
       ropt.keyword == Env::TypeKeyword::Simple &&
       ropt.declare->subType.find(lopt.declare) != ropt.declare->subType.end()) {
     return lopt;
+  }
+
+  if (lopt.isArray || ropt.isArray) {
+    return std::nullopt;
   }
   for (const auto &assignment : primitiveAssignment) {
     if (lopt.keyword == assignment.at(0) && ropt.keyword == assignment.at(1)) {

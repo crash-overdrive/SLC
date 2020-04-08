@@ -18,9 +18,11 @@ void StatementVisitor::visit(const AST::ExpressionStatement &node) {
 }
 
 void StatementVisitor::visit(const AST::VariableDeclaration &node) {
-  Env::Type expressionType = visitExpression(node);
   dispatchChildren(node);
-  if (!checker.checkAssignment(getLocal().lastVariable(), expressionType)) {
+  getLocal().setUndefined();
+  Env::Type expressionType = visitExpression(node);
+  Env::Type defineType = getLocal().clearUndefined();
+  if (!checker.checkAssignment(defineType, expressionType)) {
     setError();
   }
 }

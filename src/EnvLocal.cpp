@@ -1,6 +1,6 @@
 #include "EnvLocal.hpp"
 #include "ASTVisitorUtil.hpp"
-#include <optional>
+#include <utility>
 
 namespace Env {
 
@@ -15,11 +15,8 @@ bool VariableTable::addVariable(const std::string &name, Type type) {
     return false;
   }
   variableMap[name] = type;
-  last = type;
   return true;
 }
-
-Env::Type VariableTable::lastVariable() const { return last; }
 
 std::ostream &operator<<(std::ostream &stream, const VariableTable &table) {
   for (auto const &variable : table.variableMap) {
@@ -42,6 +39,7 @@ std::optional<Type> Local::findVariable(const std::string &name) const {
 }
 
 bool Local::addVariable(const std::string &name, Type type) {
+  last = std::make_pair(name, type);
   if (findVariable(name) || type == TypeKeyword::Void) {
     std::cerr << "ERROR!! Variable: " << name << " with descriptor: " << type
               << " could not be added\n";
@@ -71,7 +69,19 @@ void Local::removeVariableTable() {
   tables.pop_back();
 }
 
-Env::Type Local::lastVariable() const { return tables.back().lastVariable(); }
+void Local::setUndefined() { lastUndefined = true; }
+
+bool Local::isUndefined(const std::string &name) const {
+  if (lastUndefined) {
+    return name == last.first;
+  }
+  return false;
+}
+
+Env::Type Local::clearUndefined() {
+  lastUndefined = false;
+  return last.second;
+}
 
 LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), local(log) {}
@@ -106,6 +116,6 @@ void LocalTrackVisitor::visit(const AST::Block &block) {
   local.removeVariableTable();
 }
 
-const Local &LocalTrackVisitor::getLocal() const { return local; }
+Local &LocalTrackVisitor::getLocal() { return local; }
 
 } // namespace Env

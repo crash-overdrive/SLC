@@ -2426,14 +2426,17 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_Expression_StringConcat_Void.java",
     },
+    {
+        "Je_6_Assignable_intArray_byteArray.java",
+    },
+    {
+        "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_16_StaticThis_StaticFieldInitializer.java",
-    },
-    {
-        "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
     },
     {
         "Je_5_AmbiguousName_FieldVsType_Initializer.java",
@@ -2475,9 +2478,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_Assignable_Condition_While.java",
-    },
-    {
-        "Je_6_Assignable_intArray_byteArray.java",
     },
     {
         "Je_6_Assignable_ReturnInElse.java",

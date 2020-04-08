@@ -11,7 +11,10 @@ Resolver::findField(const std::vector<std::string> &name) const {
   if (name.empty()) {
     return std::nullopt;
   }
-  auto objectType = matchObject(*name.begin());
+  if (local.isUndefined(name.at(0))) {
+    return std::nullopt;
+  }
+  auto objectType = matchObject(name.at(0));
   if (objectType) {
     return findField(*objectType, ++name.begin(), name.end());
   }
@@ -26,6 +29,20 @@ Resolver::findField(const std::vector<std::string> &name) const {
     return std::nullopt;
   }
   return findField(staticField->type, ++it, name.end());
+}
+
+template <class InputIt>
+std::optional<Env::Type> Resolver::findField(Env::Type type, InputIt first,
+                                             InputIt last) const {
+  Env::Type resultType = type;
+  for (auto it = first; it != last; ++it) {
+    auto result = findField(resultType, *it);
+    if (!result) {
+      return std::nullopt;
+    }
+    resultType = *result;
+  }
+  return resultType;
 }
 
 std::optional<Env::Type>
@@ -54,7 +71,7 @@ Resolver::findMethod(const std::vector<std::string> &name,
   if (name.size() == 1) {
     return findMethod(Env::Type(&decl), args, name.begin(), name.end());
   }
-  auto objectType = matchObject(*name.begin());
+  auto objectType = matchObject(name.at(0));
   if (objectType) {
     return findMethod(*objectType, args, ++name.begin(), name.end());
   }
@@ -92,6 +109,17 @@ Resolver::findMethod(Env::Type type, const std::string &identifier,
   return method->returnType;
 }
 
+template <class InputIt>
+std::optional<Env::Type>
+Resolver::findMethod(Env::Type type, const std::vector<Env::Type> &args,
+                     InputIt first, InputIt last) const {
+  auto result = findField(type, first, last - 1);
+  if (!result) {
+    return std::nullopt;
+  }
+  return findMethod(type, *(last - 1), args);
+}
+
 std::optional<Env::Type>
 Resolver::findConstructor(Env::Type type,
                           const std::vector<Env::Type> &args) const {
@@ -110,31 +138,6 @@ Resolver::findConstructor(Env::Type type,
     return std::nullopt;
   }
   return type;
-}
-
-template <class InputIt>
-std::optional<Env::Type> Resolver::findField(Env::Type type, InputIt first,
-                                             InputIt last) const {
-  Env::Type resultType = type;
-  for (auto it = first; it != last; ++it) {
-    auto result = findField(resultType, *it);
-    if (!result) {
-      return std::nullopt;
-    }
-    resultType = *result;
-  }
-  return resultType;
-}
-
-template <class InputIt>
-std::optional<Env::Type>
-Resolver::findMethod(Env::Type type, const std::vector<Env::Type> &args,
-                     InputIt first, InputIt last) const {
-  auto result = findField(type, first, last - 1);
-  if (!result) {
-    return std::nullopt;
-  }
-  return findMethod(type, *(last - 1), args);
 }
 
 std::optional<Env::Type>
