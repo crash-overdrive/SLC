@@ -11,7 +11,7 @@ TEST_CASE("Check type with function", "[TypeChecker]") {
     REQUIRE(*type == Env::TypeKeyword::Integer);
   }
 
-  SECTION("Self assingment") {
+  SECTION("Self assignment") {
     REQUIRE(checker.checkAssignment(Env::TypeKeyword::Integer,
                                     Env::TypeKeyword::Integer));
   }
@@ -31,9 +31,9 @@ TEST_CASE("Check type with function", "[TypeChecker]") {
     Env::TypeDeclaration arrayDecl({}, Env::DeclarationKeyword::Class, "Array");
     listDecl.subType.emplace(&arrayDecl);
     REQUIRE_FALSE(
-        checker.checkAssignment(Env::Type(&arrayDecl), Env::Type(&listDecl)));
-    REQUIRE(
         checker.checkAssignment(Env::Type(&listDecl), Env::Type(&arrayDecl)));
+    REQUIRE(
+        checker.checkAssignment(Env::Type(&arrayDecl), Env::Type(&listDecl)));
   }
 
   SECTION("Num comparison") {

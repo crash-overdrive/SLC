@@ -3,16 +3,15 @@
 
 namespace Name {
 
-Resolver::Resolver(const Env::Local &local, const Env::TypeLink &typeLink,
-                   const Env::TypeDeclaration &decl)
-    : local(local), typeLink(typeLink), decl(decl) {}
+Resolver::Resolver(const Env::Local &local, const Env::TypeLink &typeLink)
+    : local(local), typeLink(typeLink), decl(typeLink.getDeclaration()) {}
 
 std::optional<Env::Type>
 Resolver::findField(const std::vector<std::string> &name) const {
   if (name.empty()) {
     return std::nullopt;
   }
-  auto objectType = matchObject(*name.begin());
+  auto objectType = matchObject(name.at(0));
   if (objectType) {
     return findField(*objectType, ++name.begin(), name.end());
   }
@@ -22,85 +21,11 @@ Resolver::findField(const std::vector<std::string> &name) const {
   if (!matchDecl) {
     return std::nullopt;
   }
-  const Env::Field *staticMethod = matchDecl->contain.findField(*it);
-  if (!staticMethod || !isStaticVisible(matchDecl, staticMethod)) {
+  const Env::Field *staticField = matchDecl->contain.findField(*it);
+  if (!staticField || !isStaticVisible(staticField)) {
     return std::nullopt;
   }
-  return findField(staticMethod->type, ++it, name.end());
-}
-
-std::optional<Env::Type>
-Resolver::findField(Env::Type type, const std::string &identifier) const {
-  if (type.isArray && identifier == "length") {
-    return Env::TypeKeyword::Integer;
-  }
-  if (type.keyword != Env::TypeKeyword::Simple) {
-    return std::nullopt;
-  }
-  const Env::TypeDeclaration *matchDecl = type.declare;
-  const Env::Field *field = matchDecl->contain.findField(identifier);
-  if (!field || !isVisible(matchDecl, field)) {
-    return std::nullopt;
-  }
-  return field->type;
-}
-
-std::optional<Env::Type>
-Resolver::findMethod(const std::vector<std::string> &name,
-                     const std::vector<Env::Type> &args) const {
-
-  if (name.empty()) {
-    return std::nullopt;
-  }
-  if (name.size() == 1) {
-    return findMethod(Env::Type(&decl), args, name.begin(), name.end());
-  }
-  auto objectType = matchObject(*name.begin());
-  if (objectType) {
-    return findMethod(*objectType, args, ++name.begin(), name.end());
-  }
-  auto [it, matchDecl] = typeLink.find(name.begin(), name.end() - 1);
-  if (!matchDecl) {
-    return std::nullopt;
-  }
-  if (it == name.end() - 1) {
-    const Env::Method *staticMethod = matchDecl->contain.findMethod(*it, args);
-    if (!staticMethod || !isStaticVisible(matchDecl, staticMethod)) {
-      return std::nullopt;
-    }
-    return staticMethod->returnType;
-  } else {
-    const Env::Field *staticField = matchDecl->contain.findField(*it);
-    if (!staticField || !isStaticVisible(matchDecl, staticField)) {
-      return std::nullopt;
-    }
-    return findMethod(staticField->type, args, ++it, name.end());
-  }
-}
-
-std::optional<Env::Type>
-Resolver::findMethod(Env::Type type, const std::string &identifier,
-                     const std::vector<Env::Type> &args) const {
-  const Env::Method *method = decl.contain.findMethod(identifier, args);
-  if (!method || !isVisible(type.declare, method)) {
-    return std::nullopt;
-  }
-  return method->returnType;
-}
-
-std::optional<Env::Type>
-Resolver::findConstructor(const std::vector<std::string> &name,
-                          const std::vector<Env::Type> &args) const {
-  Env::TypeDeclaration *foundDecl = typeLink.find(name);
-  if (!foundDecl || foundDecl->modifiers.find(Env::Modifier::Abstract) !=
-                        foundDecl->modifiers.end()) {
-    return std::nullopt;
-  }
-  const Env::Constructor *constructor = foundDecl->body.findConstructors(args);
-  if (!constructor || !isVisible(foundDecl, constructor)) {
-    return std::nullopt;
-  }
-  return Env::Type{foundDecl};
+  return findField(staticField->type, ++it, name.end());
 }
 
 template <class InputIt>
@@ -117,6 +42,70 @@ std::optional<Env::Type> Resolver::findField(Env::Type type, InputIt first,
   return resultType;
 }
 
+std::optional<Env::Type>
+Resolver::findField(Env::Type type, const std::string &identifier) const {
+  if (type.isArray && identifier == "length") {
+    return Env::TypeKeyword::Integer;
+  }
+  if (type.keyword != Env::TypeKeyword::Simple) {
+    return std::nullopt;
+  }
+  const Env::TypeDeclaration *matchDecl = type.declare;
+  const Env::Field *field = matchDecl->contain.findField(identifier);
+  if (!field || !isInstanceVisible(matchDecl, field)) {
+    return std::nullopt;
+  }
+  return field->type;
+}
+
+std::optional<Env::Type>
+Resolver::findMethod(const std::vector<std::string> &name,
+                     const std::vector<Env::Type> &args) const {
+
+  if (name.empty()) {
+    return std::nullopt;
+  }
+  if (name.size() == 1) {
+    return findMethod(Env::Type(&decl), args, name.begin(), name.end());
+  }
+  auto objectType = matchObject(name.at(0));
+  if (objectType) {
+    return findMethod(*objectType, args, ++name.begin(), name.end());
+  }
+  auto [it, matchDecl] = typeLink.find(name.begin(), name.end() - 1);
+  if (!matchDecl) {
+    return std::nullopt;
+  }
+  // Found type
+  if (it == name.end() - 1) {
+    const Env::Method *staticMethod = matchDecl->contain.findMethod(*it, args);
+    if (!staticMethod || !isStaticVisible(staticMethod)) {
+      return std::nullopt;
+    }
+    return staticMethod->returnType;
+  } else {
+    const Env::Field *staticField = matchDecl->contain.findField(*it);
+    if (!staticField || !isStaticVisible(staticField)) {
+      return std::nullopt;
+    }
+    return findMethod(staticField->type, args, ++it, name.end());
+  }
+}
+
+std::optional<Env::Type>
+Resolver::findMethod(Env::Type type, const std::string &identifier,
+                     const std::vector<Env::Type> &args) const {
+  if (type.keyword != Env::TypeKeyword::Simple) {
+    return std::nullopt;
+  }
+  const Env::Method *method =
+      type.declare->contain.findMethod(identifier, args);
+  if (!method || !isInstanceVisible(type.declare, method)) {
+    return std::nullopt;
+  }
+  return method->returnType;
+}
+
 template <class InputIt>
 std::optional<Env::Type>
 Resolver::findMethod(Env::Type type, const std::vector<Env::Type> &args,
@@ -129,31 +118,60 @@ Resolver::findMethod(Env::Type type, const std::vector<Env::Type> &args,
 }
 
 std::optional<Env::Type>
+Resolver::findConstructor(Env::Type type,
+                          const std::vector<Env::Type> &args) const {
+  const Env::TypeDeclaration *typeDecl = type.declare;
+  if (!typeDecl || typeDecl->modifiers.find(Env::Modifier::Abstract) !=
+                       typeDecl->modifiers.end()) {
+    return std::nullopt;
+  }
+  const Env::Constructor *constructor = typeDecl->body.findConstructors(args);
+  if (!constructor) {
+    return std::nullopt;
+  }
+  if (typeDecl != &decl &&
+      constructor->modifiers.find(Env::Modifier::Protected) !=
+          constructor->modifiers.end()) {
+    return std::nullopt;
+  }
+  return type;
+}
+
+std::optional<Env::Type>
 Resolver::matchObject(const std::string &identifier) const {
   auto variableType = local.findVariable(identifier);
   if (variableType) {
     return *variableType;
   }
   const Env::Field *field = decl.contain.findField(identifier);
-  if (field) {
+  if (field && isInstanceVisible(&decl, field)) {
     return field->type;
   }
   return std::nullopt;
 }
 
 template <class T>
-bool Resolver::isVisible(const Env::TypeDeclaration *other, T t) const {
-  if (typeLink.findSamePackage(other->identifier) ||
-      decl.subType.find(other) != decl.subType.end()) {
+bool Resolver::isInstanceVisible(const Env::TypeDeclaration *other, T t) const {
+  if (t->modifiers.find(Env::Modifier::Static) != t->modifiers.end()) {
+    return false;
+  }
+  if (typeLink.belongSamePackage(t->declaration) ||
+      (other->subType.find(&decl) != other->subType.end() &&
+       decl.subType.find(t->declaration) != decl.subType.end())) {
     return true;
   }
   return t->modifiers.find(Env::Modifier::Protected) == t->modifiers.end();
 }
 
-template <class T>
-bool Resolver::isStaticVisible(const Env::TypeDeclaration *other, T t) const {
-  return isVisible(other, t) &&
-         t->modifiers.find(Env::Modifier::Static) != t->modifiers.end();
+template <class T> bool Resolver::isStaticVisible(T t) const {
+  if (t->modifiers.find(Env::Modifier::Static) == t->modifiers.end()) {
+    return false;
+  }
+  if (typeLink.belongSamePackage(t->declaration) ||
+      decl.subType.find(t->declaration) != decl.subType.end()) {
+    return true;
+  }
+  return t->modifiers.find(Env::Modifier::Protected) == t->modifiers.end();
 }
 
 } // namespace Name

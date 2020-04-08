@@ -85,12 +85,12 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
-class Expression : public Node {
+class CastExpression : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class CastExpression : public Node {
+class CastType : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
@@ -135,27 +135,22 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
-class SimpleStatement : public Node {
+class ForInit : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class ClassInstanceCreation : public Node {
+class ForCond : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class OperationExpression : public Node {
+class ForUpdate : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class MethodInvocation : public Node {
-public:
-  void accept(Visitor &visitor) const override;
-};
-
-class ReturnStatement : public Node {
+class ExpressionStatement : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
@@ -165,17 +160,47 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
+class ReturnStatement : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
+class ClassInstanceCreation : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
 class AssignmentExpression : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class UnaryExpression : public Node {
+class BinaryExpression : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class ArgumentList : public Node {
+class InstanceOfExpression : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
+class Operator : public Node {
+public:
+  Operator(const std::string &operatorSymbol);
+  const std::string &getOperatorSymbol() const;
+  void accept(Visitor &visitor) const override;
+
+private:
+  std::string operatorSymbol;
+};
+
+class MethodNameInvocation : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
+class MethodPrimaryInvocation : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
@@ -195,12 +220,17 @@ public:
   void accept(Visitor &visitor) const override;
 };
 
-class ForInit : public Node {
+class UnaryExpression : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
 
-class ForUpdate : public Node {
+class ThisExpression : public Node {
+public:
+  void accept(Visitor &visitor) const override;
+};
+
+class Argument : public Node {
 public:
   void accept(Visitor &visitor) const override;
 };
@@ -233,46 +263,6 @@ public:
 
 private:
   std::string type;
-};
-
-class VoidType : public Node {
-public:
-  VoidType(const std::string &type);
-  const std::string &getType() const;
-  void accept(Visitor &visitor) const override;
-
-private:
-  std::string type;
-};
-
-class ASSIGN : public Node {
-public:
-  ASSIGN(const std::string &symbol);
-  const std::string &getSymbol() const;
-  void accept(Visitor &visitor) const override;
-
-private:
-  std::string symbol;
-};
-
-class BinaryOperator : public Node {
-public:
-  BinaryOperator(const std::string &binaryOperator);
-  const std::string &getBinaryOperatorSymbol() const;
-  void accept(Visitor &visitor) const override;
-
-private:
-  std::string binaryOperatorSymbol;
-};
-
-class UnaryOperator : public Node {
-public:
-  UnaryOperator(const std::string &unaryOperator);
-  const std::string &getUnaryOperatorSymbol() const;
-  void accept(Visitor &visitor) const override;
-
-private:
-  std::string unaryOperatorSymbol;
 };
 
 class DecIntLiteral : public Node {
@@ -323,16 +313,6 @@ public:
 
 private:
   std::string literal;
-};
-
-class ThisExpression : public Node {
-public:
-  ThisExpression(const std::string &expression);
-  const std::string &getExpression() const;
-  void accept(Visitor &visitor) const override;
-
-private:
-  std::string expression;
 };
 
 std::ostream &operator<<(std::ostream &stream, const Node &node);

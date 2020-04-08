@@ -32,9 +32,9 @@ class TypeVisitor : public Visitor {
 public:
   TypeVisitor(const Env::TypeLink &typeLink);
   void visit(const AST::PrimitiveType &primitiveType) override;
-  void visit(const AST::VoidType &) override;
   void visit(const AST::SimpleType &simpleType) override;
   void visit(const AST::ArrayType &arrayType) override;
+  void visit(const AST::Name &name) override;
   Env::Type getType();
 
 private:
@@ -42,9 +42,23 @@ private:
   Env::Type type;
 };
 
-class ArgumentsVisitor : public Visitor {
+class DeclarationVisitor : public Visitor {
 public:
-  ArgumentsVisitor(const Env::TypeLink &typeLink);
+  DeclarationVisitor(const Env::TypeLink &typeLink);
+  void visit(const VariableDeclaration &node) override;
+  void visit(const SingleVariableDeclaration &node) override;
+  Env::Type getType();
+  std::string getIdentifier();
+
+private:
+  const Env::TypeLink &typeLink;
+  Env::Type type;
+  std::string identifier;
+};
+
+class ArgumentsDeclarationVisitor : public Visitor {
+public:
+  ArgumentsDeclarationVisitor(const Env::TypeLink &typeLink);
   void visit(const SingleVariableDeclaration &decl) override;
   std::vector<Env::Type> getArgs();
 

@@ -6,6 +6,10 @@ Checker::Checker(const Env::PackageTree &tree) : tree(tree) {}
 
 std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
                                                   Env::Type ropt) const {
+  if (lopt.keyword == Env::TypeKeyword::Void ||
+      ropt.keyword == Env::TypeKeyword::Void) {
+    return std::nullopt;
+  }
   if (lopt == ropt) {
     return lopt;
   }
@@ -15,14 +19,24 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
        lopt.declare == tree.findDeclaration({"java", "io", "Serializable"}))) {
     return lopt;
   }
-  if (lopt.keyword == Env::TypeKeyword::Simple &&
-      ropt.keyword == Env::TypeKeyword::Simple &&
-      lopt.isArray == ropt.isArray &&
-      lopt.declare->subType.find(ropt.declare) != lopt.declare->subType.end()) {
+  if (lopt.isArray && ropt.keyword == Env::TypeKeyword::Null) {
     return lopt;
   }
+
+  if (lopt.isArray != ropt.isArray) {
+    return std::nullopt;
+  }
+  if (lopt.keyword == Env::TypeKeyword::Simple &&
+      ropt.keyword == Env::TypeKeyword::Simple &&
+      ropt.declare->subType.find(lopt.declare) != ropt.declare->subType.end()) {
+    return lopt;
+  }
+
+  if (lopt.isArray || ropt.isArray) {
+    return std::nullopt;
+  }
   for (const auto &assignment : primitiveAssignment) {
-    if (lopt == assignment.at(0) && ropt == assignment.at(1)) {
+    if (lopt.keyword == assignment.at(0) && ropt.keyword == assignment.at(1)) {
       return lopt;
     }
   }
@@ -31,6 +45,17 @@ std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
 
 std::optional<Env::Type>
 Checker::checkBinaryOperation(const BinaryOperation &operation) const {
+  if (operation.lopt.keyword == Env::TypeKeyword::Void ||
+      operation.ropt.keyword == Env::TypeKeyword::Void) {
+    return std::nullopt;
+  }
+  Env::TypeDeclaration *string =
+      tree.findDeclaration({"java", "lang", "String"});
+  if ((operation.lopt.declare == string || operation.ropt.declare == string) &&
+      operation.binaryOperator == BinaryOperator::Addition) {
+    return Env::Type(string);
+  }
+
   if (isNum(operation.lopt) && isNum(operation.ropt)) {
     if (numBinaryOperator.find(operation.binaryOperator) !=
         numBinaryOperator.end()) {
@@ -59,12 +84,6 @@ Checker::checkBinaryOperation(const BinaryOperation &operation) const {
       return std::nullopt;
     }
   }
-  Env::TypeDeclaration *string =
-      tree.findDeclaration({"java", "lang", "String"});
-  if (operation.lopt.declare == string && operation.ropt.declare == string &&
-      operation.binaryOperator == BinaryOperator::Addition) {
-    // return operation.lopt;
-  }
   return std::nullopt;
 }
 
@@ -87,7 +106,8 @@ Checker::checkUnaryOperation(const UnaryOperation &operation) const {
 
 std::optional<Env::Type> Checker::checkCasting(Env::Type lopt,
                                                Env::Type ropt) const {
-  if ((isNum(lopt) && isNum(ropt)) || isAssignable(lopt, ropt)) {
+  if (ropt.keyword == Env::TypeKeyword::Null || (isNum(lopt) && isNum(ropt)) ||
+      isAssignable(lopt, ropt)) {
     return lopt;
   }
   return std::nullopt;
@@ -101,22 +121,19 @@ std::optional<Env::Type> Checker::checkInstanceOf(Env::Type lopt,
   return std::nullopt;
 }
 
-std::optional<Env::Type> Checker::checkArrayIndex(Env::Type lopt,
-                                                  Env::Type ropt) const {
-  if (isNum(ropt)) {
+std::optional<Env::Type> Checker::checkArrayAccess(Env::Type lopt,
+                                                   Env::Type ropt) const {
+  if (lopt.isArray && isNum(ropt)) {
+    lopt.isArray = false;
     return lopt;
   }
   return std::nullopt;
 }
 
-std::optional<Env::Type> Checker::checkArrayAssignment(Env::Type lopt,
-                                                       Env::Type ropt) const {
-  if (lopt.keyword != Env::TypeKeyword::Simple ||
-      ropt.keyword != Env::TypeKeyword::Simple) {
-    return std::nullopt;
-  }
-  if (lopt.isArray &&
-      lopt.declare->subType.find(ropt.declare) != lopt.declare->subType.end()) {
+std::optional<Env::Type> Checker::checkArrayCreation(Env::Type lopt,
+                                                     Env::Type ropt) const {
+  if (isNum(ropt)) {
+    lopt.isArray = true;
     return lopt;
   }
   return std::nullopt;

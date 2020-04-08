@@ -34,6 +34,7 @@ struct Field {
   Type type;
   std::string identifier;
   const AST::FieldDeclaration *astNode;
+  const TypeDeclaration *declaration;
   Field(std::set<Modifier> modifiers, Type type, std::string identifier,
         const AST::FieldDeclaration *astNode = nullptr);
   bool operator==(const Field &field) const;
@@ -47,6 +48,7 @@ struct Method {
   std::string identifier;
   std::vector<Type> args;
   const AST::MethodDeclaration *astNode;
+  const TypeDeclaration *declaration;
   Method() = default;
   Method(std::set<Modifier> modifiers, Type returnType, std::string identifier,
          std::vector<Type> args,
@@ -82,6 +84,7 @@ public:
   bool addConstructor(Constructor other);
 
   void setAbstract();
+  void setDeclaration(const TypeDeclaration *declaration);
 
 private:
   friend std::ostream &operator<<(std::ostream &stream, const TypeBody &body);

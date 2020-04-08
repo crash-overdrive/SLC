@@ -143,6 +143,15 @@ void TypeBody::setAbstract() {
   }
 }
 
+void TypeBody::setDeclaration(const TypeDeclaration *declaration) {
+  for (auto &field : fields) {
+    field.declaration = declaration;
+  }
+  for (auto &method : methods) {
+    method.declaration = declaration;
+  }
+}
+
 std::ostream &operator<<(std::ostream &stream, const TypeBody &body) {
   for (auto const &field : body.fields) {
     stream << field;
@@ -175,18 +184,19 @@ void TypeBodyVisitor::visit(const AST::FieldDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
-  AST::TypeVisitor typeVisitor(typeLink);
-  typeVisitor.dispatchChildren(decl);
+  AST::DeclarationVisitor declarationVisitor(typeLink);
+  declarationVisitor.dispatchChildren(decl);
 
-  fields.emplace_back(propertiesVisitor.getModifiers(), typeVisitor.getType(),
-                      propertiesVisitor.getIdentifier(), &decl);
+  fields.emplace_back(propertiesVisitor.getModifiers(),
+                      declarationVisitor.getType(),
+                      declarationVisitor.getIdentifier(), &decl);
 }
 
 void TypeBodyVisitor::visit(const AST::MethodDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
-  AST::ArgumentsVisitor argumentsVisitor(typeLink);
+  AST::ArgumentsDeclarationVisitor argumentsVisitor(typeLink);
   argumentsVisitor.dispatchChildren(decl);
 
   AST::TypeVisitor typeVisitor(typeLink);
@@ -201,7 +211,7 @@ void TypeBodyVisitor::visit(const AST::ConstructorDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
-  AST::ArgumentsVisitor argumentsVisitor(typeLink);
+  AST::ArgumentsDeclarationVisitor argumentsVisitor(typeLink);
   argumentsVisitor.dispatchChildren(decl);
   constructors.emplace_back(propertiesVisitor.getModifiers(),
                             propertiesVisitor.getIdentifier(),

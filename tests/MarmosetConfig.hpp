@@ -1066,7 +1066,7 @@ const std::vector<std::vector<std::string>> a2ErrorTypeLink{
     },
 };
 
-const std::vector<std::vector<std::string>> a2ErrorLocalVariable{
+const std::vector<std::vector<std::string>> a2ErrorLocal{
     {
         "Je_2_ConstructorParameter_Duplicate.java",
     },
@@ -2050,24 +2050,20 @@ const std::vector<std::vector<std::string>> a3ErrorParse{
     {
         "Je_16_IncDec_Final_PreDec.java",
     },
+    {
+        "Je_6_Assignable_Cast_intArray_int.java",
+    },
 };
 
-const std::vector<std::vector<std::string>> a3Error{
+const std::vector<std::vector<std::string>> a3ErrorLocal{
+    {
+        "Je_6_MethodInvocation_NonJoos_ReturnType.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_16_ClosestMatch_Array.java",
-    },
-    {
-        "Je_16_MethodPresent_WrongName_Array.java",
-    },
-    {
-        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/C.java",
-        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/D.java",
-        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/B.java",
-        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/Main.java",
-        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/A.java",
-    },
-    {
-        "Je_16_StaticThis_StaticFieldInitializer.java",
     },
     {
         "Je_1_Cast_NamedCastNegativeint.java",
@@ -2076,205 +2072,94 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_1_Complement_OfIntLiteral.java",
     },
     {
-        "Je_1_Dot_ParenthesizedType_Field.java",
-    },
-    {
-        "Je_1_Dot_ParenthesizedType_Method.java",
-    },
-    {
-        "Je_1_MethodInvocation_Primitive.java",
-    },
-    {
-        "Je_2_Cast_NegativeComplexExpressionToNamedType.java",
-    },
-    {
-        "Je_2_Cast_NegativeToNamedType.java",
-    },
-    {
-        "Je_2_Cast_NegativeToQualifiedNamedType.java",
-    },
-    {
-        "Je_2_For_LocalVarInUpdate.java",
-    },
-    {
         "Je_3_Resolve_LinkToCorrectPackage/Main.java",
         "Je_3_Resolve_LinkToCorrectPackage/Zoo.java",
         "Je_3_Resolve_LinkToCorrectPackage/Foo.java",
-    },
-    {
-        "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
-    },
-    {
-        "Je_5_AmbiguousInvoke_Static_TypeNonExisting.java",
     },
     {
         "Je_5_AmbiguousName_DefaultPackageNotVisible/foo/Bar.java",
         "Je_5_AmbiguousName_DefaultPackageNotVisible/Main.java",
     },
     {
-        "Je_5_AmbiguousName_FieldVsType_Initializer.java",
-    },
-    {
-        "Je_5_AmbiguousName_LinkToFirstFound/javax/swing/Action.java",
-        "Je_5_AmbiguousName_LinkToFirstFound/Main.java",
-        "Je_5_AmbiguousName_LinkToFirstFound/javax.java",
-    },
-    {
-        "Je_5_AmbiguousName_Local_UseBeforeDeclare.java",
-    },
-    {
-        "Je_5_AmbiguousName_NoDeclaration.java",
-    },
-    {
-        "Je_5_AmbiguousName_SamePackageAndClassName.java",
-    },
-    {
-        "Je_5_ForwardReference_ArrayLength.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldDeclaredLater_ComplexExp.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldDeclaredLater.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_ComplexExpression.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_Direct.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_ReadAfterAssignment."
-        "java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_RightSideOfAssignment."
-        "java",
-    },
-    {
-        "Je_5_ForwardReference_InAssignment.java",
-    },
-    {
-        "Je_5_ForwardReference_MethodCall.java",
-    },
-    {
         "Je_6_ArrayLength_Invoke.java",
     },
     {
-        "Je_6_Array_NonNumericIndex.java",
+        "Je_6_MethodPresent_ArgumentTypeMismatch.java",
     },
     {
-        "Je_6_Array_NullTypeIndex.java",
+        "Je_6_MethodPresent_PresentInSubclass/Main.java",
+        "Je_6_MethodPresent_PresentInSubclass/A.java",
     },
     {
-        "Je_6_Assignable_Array_Object.java",
+        "Je_6_MethodPresent_Static_SameLastArg.java",
     },
     {
-        "Je_6_Assignable_byteArray_intArray.java",
+        "Je_6_MethodPresent_TooFewArguments.java",
     },
     {
-        "Je_6_Assignable_byte_char.java",
+        "Je_6_NonStaticAccessToStatic_Field.java",
     },
     {
-        "Je_6_Assignable_byte_int.java",
+        "Je_6_NonStaticAccessToStatic_Method.java",
     },
     {
-        "Je_6_Assignable_Cast_intArray_int.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_Internal/B.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_Internal/Main.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_Internal/A.java",
     },
     {
-        "Je_6_Assignable_char_byte_1.java",
+        "Je_6_ProtectedAccess_TwoSubtypes/B.java",
+        "Je_6_ProtectedAccess_TwoSubtypes/Main.java",
+        "Je_6_ProtectedAccess_TwoSubtypes/A.java",
     },
     {
-        "Je_6_Assignable_char_byte_2.java",
+        "Je_6_StaticAccessToNontatic_Field.java",
     },
     {
-        "Je_6_Assignable_char_int.java",
+        "Je_6_StaticAccessToNontatic_Method.java",
     },
     {
-        "Je_6_Assignable_Condition.java",
+        "Je_6_StaticThis_InvokeStatic.java",
     },
     {
-        "Je_6_Assignable_Condition_SimpleType.java",
+        "Je_6_MethodPresent_MultipleArgumentsOneMismatch.java",
     },
     {
-        "Je_6_Assignable_Condition_While.java",
+        "Je_6_MethodPresent_Nonstatic_SameLastArg.java",
     },
     {
-        "Je_6_Assignable_Instanceof_Result.java",
+        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotInSubclass/"
+        "Main.java",
+        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotInSubclass/"
+        "Foo.java",
     },
     {
-        "Je_6_Assignable_Instanceof_SimpleType.java",
+        "Je_6_MethodPresent_TooManyArguments.java",
     },
     {
-        "Je_6_Assignable_intArray_byteArray.java",
+        "Je_6_ConstructorPresent_MultipleArgumentsOneMismatch.java",
     },
     {
-        "Je_6_Assignable_intArray_int.java",
+        "Je_16_MethodPresent_WrongName_Array.java",
     },
     {
-        "Je_6_Assignable_int_intArray.java",
+        "Je_1_Dot_ParenthesizedType_Method.java",
     },
     {
-        "Je_6_Assignable_int_null.java",
+        "Je_5_AmbiguousInvoke_Static_TypeNonExisting.java",
     },
     {
-        "Je_6_Assignable_NamedCastOfComplement.java",
-    },
-    {
-        "Je_6_Assignable_NonstaticField.java",
-    },
-    {
-        "Je_6_Assignable_RefType_RefTypeArray.java",
-    },
-    {
-        "Je_6_Assignable_ResultTypeOfAssignment.java",
-    },
-    {
-        "Je_6_Assignable_ReturnInElse.java",
-    },
-    {
-        "Je_6_Assignable_Return_ToSubType.java",
-    },
-    {
-        "Je_6_Assignable_Return_VoidInVoidMethod.java",
-    },
-    {
-        "Je_6_Assignable_Return_Void.java",
-    },
-    {
-        "Je_6_Assignable_short_char.java",
-    },
-    {
-        "Je_6_Assignable_short_int.java",
+        "Je_5_AmbiguousName_SamePackageAndClassName.java",
     },
     {
         "Je_6_Assignable_ToSubtype/Main.java",
         "Je_6_Assignable_ToSubtype/java/lang/Thread.java",
     },
     {
-        "Je_6_Assignable_ToSubtype_DeclInit/Main.java",
-        "Je_6_Assignable_ToSubtype_DeclInit/java/lang/Thread.java",
-    },
-    {
-        "Je_6_Assignable_ToSubtype_FieldInit.java",
-    },
-    {
-        "Je_6_Assignable_ValueReturn_InConstructor.java",
-    },
-    {
-        "Je_6_BinopExp_LogicalBitwise.java",
-    },
-    {
-        "Je_6_ClosestMatch_ArrayTypes.java",
-    },
-    {
         "Je_6_ClosestMatch_Constructor_NoClosestMatch/Main.java",
         "Je_6_ClosestMatch_Constructor_NoClosestMatch/java/lang/"
         "Runnable.java",
         "Je_6_ClosestMatch_Constructor_NoClosestMatch/java/lang/Thread.java",
-    },
-    {
-        "Je_6_ClosestMatch_Constructor_NoClosestMatch_SimpleTypes.java",
     },
     {
         "Je_6_ClosestMatch_MultipleClosest_1.java",
@@ -2295,98 +2180,13 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ConstructorPresent_IllegalConversion.java",
     },
     {
-        "Je_6_ConstructorPresent_MultipleArgumentsOneMismatch.java",
-    },
-    {
-        "Je_6_ConstructorPresent_PresentInSubclass/Main.java",
-        "Je_6_ConstructorPresent_PresentInSubclass/A.java",
-    },
-    {
-        "Je_6_ConstructorPresent_SameLastArg.java",
-    },
-    {
-        "Je_6_ConstructorPresent_Super_NoDefault/Main.java",
-        "Je_6_ConstructorPresent_Super_NoDefault/Foo.java",
-    },
-    {
         "Je_6_ConstructorPresent_TooFewArguments.java",
-    },
-    {
-        "Je_6_ConstructorPresent_TooManyArguments.java",
-    },
-    {
-        "Je_6_Constructor_WrongName.java",
-    },
-    {
-        "Je_6_Equality_int.java",
-    },
-    {
-        "Je_6_Equality_int_NamedType.java",
-    },
-    {
-        "Je_6_Equality_StringInteger.java",
-    },
-    {
-        "Je_6_Equality_Void.java",
-    },
-    {
-        "Je_6_Expression_StringConcat_Void.java",
-    },
-    {
-        "Je_6_FinalField_ArrayLength.java",
-    },
-    {
-        "Je_6_For_NullInCondition.java",
     },
     {
         "Je_6_InstanceOf_Primitive_3.java",
     },
     {
-        "Je_6_InstantiateAbstract.java",
-    },
-    {
-        "Je_6_InstantiateInterface.java",
-    },
-    {
-        "Je_6_MethodInvocation_NonJoos_ReturnType.java",
-    },
-    {
-        "Je_6_MethodPresent_ArgumentTypeMismatch.java",
-    },
-    {
         "Je_6_MethodPresent_IllegalConversion.java",
-    },
-    {
-        "Je_6_MethodPresent_MultipleArgumentsOneMismatch.java",
-    },
-    {
-        "Je_6_MethodPresent_Nonstatic_SameLastArg.java",
-    },
-    {
-        "Je_6_MethodPresent_PresentInSubclass/Main.java",
-        "Je_6_MethodPresent_PresentInSubclass/A.java",
-    },
-    {
-        "Je_6_MethodPresent_Static_SameLastArg.java",
-    },
-    {
-        "Je_6_MethodPresent_TooFewArguments.java",
-    },
-    {
-        "Je_6_MethodPresent_TooManyArguments.java",
-    },
-    {
-        "Je_6_NonStaticAccessToStatic_Field.java",
-    },
-    {
-        "Je_6_NonStaticAccessToStatic_Method.java",
-    },
-    {
-        "Je_6_ProtectedAccess_ClassCreation_Sub/C.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/D.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/B.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/Main.java",
-        "Je_6_ProtectedAccess_ClassCreation_Sub/A.java",
     },
     {
         "Je_6_ProtectedAccess_ClassCreation_Super/C.java",
@@ -2396,45 +2196,11 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ProtectedAccess_ClassCreation_Super/A.java",
     },
     {
-        "Je_6_ProtectedAccess_Constructor/Main.java",
-        "Je_6_ProtectedAccess_Constructor/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_External/javax/swing/JComponent.java",
-        "Je_6_ProtectedAccess_External/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
-        "JComponent.java",
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
-        "JButton.java",
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_Internal/B.java",
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_Internal/Main.java",
-        "Je_6_ProtectedAccess_InstanceField_NoRelation_Internal/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/C/C.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/A/A.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/Main.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/D/D.java",
-        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/B/B.java",
-    },
-    {
         "Je_6_ProtectedAccess_InstanceField_SuperVar/C.java",
         "Je_6_ProtectedAccess_InstanceField_SuperVar/D.java",
         "Je_6_ProtectedAccess_InstanceField_SuperVar/B.java",
         "Je_6_ProtectedAccess_InstanceField_SuperVar/Main.java",
         "Je_6_ProtectedAccess_InstanceField_SuperVar/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/C/C.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/A/A.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/Main.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/D/D.java",
-        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/B/B.java",
     },
     {
         "Je_6_ProtectedAccess_InstanceMethod_SuperVar/C.java",
@@ -2448,19 +2214,22 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ProtectedAccess_Method_OutsidePackage_NotBySubclass/A.java",
     },
     {
-        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Main.java",
-        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Foo.java",
+        "Je_6_ConstructorPresent_TooManyArguments.java",
+    },
+    {
+        "Je_6_ClosestMatch_Constructor_NoClosestMatch_SimpleTypes.java",
+    },
+    {
+        "Je_6_ProtectedAccess_ClassCreation_Sub/C.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/D.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/B.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/Main.java",
+        "Je_6_ProtectedAccess_ClassCreation_Sub/A.java",
     },
     {
         "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotBySubclass/"
         "Main.java",
         "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotBySubclass/A.java",
-    },
-    {
-        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotInSubclass/"
-        "Main.java",
-        "Je_6_ProtectedAccess_ReadField_OutsidePackage_NotInSubclass/"
-        "Foo.java",
     },
     {
         "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/C.java",
@@ -2470,18 +2239,12 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_ProtectedAccess_StaticMethod_Sub_DeclaredInSub/A.java",
     },
     {
-        "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",
-        "Je_6_ProtectedAccess_SuperConstructor_NewExp/Main.java",
-    },
-    {
-        "Je_6_ProtectedAccess_TwoSubtypes/B.java",
-        "Je_6_ProtectedAccess_TwoSubtypes/Main.java",
-        "Je_6_ProtectedAccess_TwoSubtypes/A.java",
-    },
-    {
         "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotBySubclass/"
         "Main.java",
         "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotBySubclass/A.java",
+    },
+    {
+        "Je_AccessToStaticFieldWithImplicitThis/Main.java",
     },
     {
         "Je_6_ProtectedAccess_WriteField_OutsidePackage_NotInSubclass/"
@@ -2490,10 +2253,262 @@ const std::vector<std::vector<std::string>> a3Error{
         "Foo.java",
     },
     {
-        "Je_6_StaticAccessToNontatic_Field.java",
+        "Je_6_Assignable_NonstaticField.java",
     },
     {
-        "Je_6_StaticAccessToNontatic_Method.java",
+        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Main.java",
+        "Je_6_ProtectedAccess_Method_OutsidePackage_NotInSubclass/Foo.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/C/C.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/A/A.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/Main.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/D/D.java",
+        "Je_6_ProtectedAccess_InstanceField_SubDeclare_SubVar/B/B.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/C/C.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/A/A.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/Main.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/D/D.java",
+        "Je_6_ProtectedAccess_InstanceMethod_SubDeclare_SubVar/B/B.java",
+    },
+    {
+        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/C.java",
+        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/D.java",
+        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/B.java",
+        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/Main.java",
+        "Je_16_ProtectedAccess_StaticField_Sub_DeclaredInSub/A.java",
+    },
+    {
+        "Je_6_ConstructorPresent_SameLastArg.java",
+    },
+    {
+        "Je_1_Dot_ParenthesizedType_Field.java",
+    },
+    {
+        "Je_1_MethodInvocation_Primitive.java",
+    },
+    {
+        "Je_2_Cast_NegativeComplexExpressionToNamedType.java",
+    },
+    {
+        "Je_2_Cast_NegativeToNamedType.java",
+    },
+    {
+        "Je_2_Cast_NegativeToQualifiedNamedType.java",
+    },
+    {
+        "Je_6_StringMinus.java",
+    },
+    {
+        "Je_5_AmbiguousName_LinkToFirstFound/javax/swing/Action.java",
+        "Je_5_AmbiguousName_LinkToFirstFound/Main.java",
+        "Je_5_AmbiguousName_LinkToFirstFound/javax.java",
+    },
+    {
+        "Je_5_AmbiguousName_Local_UseBeforeDeclare.java",
+    },
+    {
+        "Je_5_AmbiguousName_NoDeclaration.java",
+    },
+    {
+        "Je_6_Array_NonNumericIndex.java",
+    },
+    {
+        "Je_6_Array_NullTypeIndex.java",
+    },
+    {
+        "Je_6_Assignable_Instanceof_SimpleType.java",
+    },
+    {
+        "Je_6_ProtectedAccess_SuperConstructor_NewExp/foo/Bar.java",
+        "Je_6_ProtectedAccess_SuperConstructor_NewExp/Main.java",
+    },
+    {
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
+        "JComponent.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/javax/swing/"
+        "JButton.java",
+        "Je_6_ProtectedAccess_InstanceField_NoRelation_External/Main.java",
+    },
+    {
+        "Je_6_ProtectedAccess_External/javax/swing/JComponent.java",
+        "Je_6_ProtectedAccess_External/Main.java",
+    },
+    {
+        "Je_6_ProtectedAccess_Constructor/Main.java",
+        "Je_6_ProtectedAccess_Constructor/A.java",
+    },
+    {
+        "Je_6_InstantiateInterface.java",
+    },
+    {
+        "Je_6_InstantiateAbstract.java",
+    },
+    {
+        "Je_6_Equality_StringInteger.java",
+    },
+    {
+        "Je_6_Equality_int_NamedType.java",
+    },
+    {
+        "Je_6_ConstructorPresent_PresentInSubclass/Main.java",
+        "Je_6_ConstructorPresent_PresentInSubclass/A.java",
+    },
+    {
+        "Je_6_ClosestMatch_ArrayTypes.java",
+    },
+    {
+        "Je_6_BinopExp_LogicalBitwise.java",
+    },
+    {
+        "Je_6_Assignable_NamedCastOfComplement.java",
+    },
+    {
+        "Je_2_For_LocalVarInUpdate.java",
+    },
+    {
+        "Je_6_Assignable_Array_Object.java",
+    },
+    {
+        "Je_6_Assignable_byteArray_intArray.java",
+    },
+    {
+        "Je_6_Assignable_byte_char.java",
+    },
+    {
+        "Je_6_Assignable_byte_int.java",
+    },
+    {
+        "Je_6_Assignable_char_byte_1.java",
+    },
+    {
+        "Je_6_Assignable_char_byte_2.java",
+    },
+    {
+        "Je_6_Assignable_char_int.java",
+    },
+    {
+        "Je_6_Assignable_Instanceof_Result.java",
+    },
+    {
+        "Je_6_Assignable_intArray_int.java",
+    },
+    {
+        "Je_6_Assignable_int_null.java",
+    },
+    {
+        "Je_6_Assignable_RefType_RefTypeArray.java",
+    },
+    {
+        "Je_6_Assignable_ResultTypeOfAssignment.java",
+    },
+    {
+        "Je_6_Assignable_short_char.java",
+    },
+    {
+        "Je_6_Assignable_short_int.java",
+    },
+    {
+        "Je_6_Assignable_int_intArray.java",
+    },
+    {
+        "Je_6_Assignable_ToSubtype_DeclInit/Main.java",
+        "Je_6_Assignable_ToSubtype_DeclInit/java/lang/Thread.java",
+    },
+    {
+        "Je_6_Equality_int.java",
+    },
+    {
+        "Je_6_Equality_Void.java",
+    },
+    {
+        "Je_6_Expression_StringConcat_Void.java",
+    },
+    {
+        "Je_6_Assignable_intArray_byteArray.java",
+    },
+    {
+        "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
+    },
+    {
+        "Je_6_Assignable_Condition.java",
+    },
+    {
+        "Je_6_Assignable_Condition_SimpleType.java",
+    },
+    {
+        "Je_6_For_NullInCondition.java",
+    },
+    {
+        "Je_6_Assignable_Condition_While.java",
+    },
+    {
+        "Je_6_Assignable_ReturnInElse.java",
+    },
+    {
+        "Je_6_Assignable_Return_ToSubType.java",
+    },
+    {
+        "Je_6_Assignable_ValueReturn_InConstructor.java",
+    },
+    {
+        "Je_6_Assignable_Return_Void.java",
+    },
+    {
+        "Je_6_Assignable_Return_VoidInVoidMethod.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_ComplexExpression.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_Direct.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_ReadAfterAssignment."
+        "java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_RightSideOfAssignment."
+        "java",
+    },
+    {
+        "Je_5_ForwardReference_InAssignment.java",
+    },
+    {
+        "Je_6_Assignable_ToSubtype_FieldInit.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_16_StaticThis_StaticFieldInitializer.java",
+    },
+    {
+        "Je_5_AmbiguousName_FieldVsType_Initializer.java",
+    },
+    {
+        "Je_5_ForwardReference_ArrayLength.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldDeclaredLater_ComplexExp.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldDeclaredLater.java",
+    },
+    {
+        "Je_5_ForwardReference_MethodCall.java",
+    },
+    {
+        "Je_6_ConstructorPresent_Super_NoDefault/Main.java",
+        "Je_6_ConstructorPresent_Super_NoDefault/Foo.java",
+    },
+    {
+        "Je_6_Constructor_WrongName.java",
+    },
+    {
+        "Je_6_FinalField_ArrayLength.java",
     },
     {
         "Je_6_StaticThis_AfterStaticInvoke.java",
@@ -2505,19 +2520,10 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_6_StaticThis_InvokeNonStatic.java",
     },
     {
-        "Je_6_StaticThis_InvokeStatic.java",
-    },
-    {
         "Je_6_StaticThis_NonStaticField_ImplicitThis.java",
     },
     {
         "Je_6_StaticThis_NonstaticField.java",
-    },
-    {
-        "Je_6_StringMinus.java",
-    },
-    {
-        "Je_AccessToStaticFieldWithImplicitThis/Main.java",
     },
     {
         "Je_BadConstructorName.java",

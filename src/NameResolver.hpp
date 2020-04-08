@@ -7,8 +7,7 @@ namespace Name {
 
 class Resolver {
 public:
-  Resolver(const Env::Local &local, const Env::TypeLink &typeLink,
-           const Env::TypeDeclaration &decl);
+  Resolver(const Env::Local &local, const Env::TypeLink &typeLink);
 
   std::optional<Env::Type>
   findField(const std::vector<std::string> &name) const;
@@ -22,8 +21,7 @@ public:
                                       const std::vector<Env::Type> &args) const;
 
   std::optional<Env::Type>
-  findConstructor(const std::vector<std::string> &name,
-                  const std::vector<Env::Type> &args) const;
+  findConstructor(Env::Type type, const std::vector<Env::Type> &args) const;
 
 private:
   template <class InputIt>
@@ -35,10 +33,11 @@ private:
                                       InputIt first, InputIt last) const;
 
   std::optional<Env::Type> matchObject(const std::string &identifier) const;
+
   template <class T>
-  bool isVisible(const Env::TypeDeclaration *other, T t) const;
-  template <class T>
-  bool isStaticVisible(const Env::TypeDeclaration *other, T t) const;
+  bool isInstanceVisible(const Env::TypeDeclaration *other, T t) const;
+
+  template <class T> bool isStaticVisible(T t) const;
 
   const Env::Local &local;
   const Env::TypeLink &typeLink;

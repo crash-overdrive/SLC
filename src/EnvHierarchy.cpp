@@ -16,9 +16,10 @@ bool InterfaceHierarchy::addExtends(const TypeDeclaration *decl) {
 }
 
 bool InterfaceHierarchy::setBaseObject(const TypeDeclaration *base) {
-  if (extends.size()) {
+  if (!extends.empty()) {
     return true;
   }
+  decl.subType.emplace(base);
   for (const auto &method : base->body.getMethods()) {
     // Skip getClass
     if (isGetClass(method)) {

@@ -69,7 +69,7 @@ TEST_CASE("client process", "[client]") {
 
     SECTION("error-localvariable") {
       client.setBreakPoint(Client::LocalVariable);
-      for (const auto &group : a2ErrorLocalVariable) {
+      for (const auto &group : a2ErrorLocal) {
         SECTION(group[0]) {
           REQUIRE_FALSE(client.compile(createMarmosetTest(2, group)));
         }
@@ -138,6 +138,32 @@ TEST_CASE("client process", "[client]") {
         }
       }
     }
+
+    SECTION("local-error") {
+      client.setBreakPoint(Client::LocalVariable);
+      for (const auto &group : a3ErrorLocal) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(3, group)));
+        }
+      }
+    }
+
+    SECTION("typecheck-error") {
+      client.setBreakPoint(Client::TypeCheck);
+      for (const auto &group : a3ErrorTypeCheck) {
+        SECTION(group[0]) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(3, group)));
+        }
+      }
+    }
+
+    // SECTION("error") {
+    // for (const auto &group : a3Error) {
+    // SECTION(group[0]) {
+    // CHECK(client.compile(createMarmosetTest(3, group)));
+    //}
+    //}
+    //}
   }
 
   SECTION("a4") {

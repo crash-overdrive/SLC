@@ -20,6 +20,7 @@ public:
     Weed,
     LocalVariable,
     Hierarchy,
+    TypeCheck,
     None,
   };
 
@@ -46,6 +47,7 @@ public:
   void weed();
   void localVariableAnalysis();
   void buildHierarchy();
+  void typeCheck();
 
   // buildAST is for debugging and testing
   std::unique_ptr<AST::Start> buildAST(std::string fullName);
@@ -59,6 +61,8 @@ private:
     Environment(Env::TypeDeclaration decl,
                 std::shared_ptr<Env::PackageTree> tree, std::string fullName);
   };
+  std::vector<Environment> environments;
+
   std::unique_ptr<Lex::Scanner> scanner;
   std::unique_ptr<Parse::DFA> parser;
 
@@ -66,7 +70,6 @@ private:
                            Environment &environment);
   bool buildInterfaceHierarchy(Env::HierarchyGraph &graph,
                                Environment &environment);
-  std::vector<Environment> environments;
   std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;

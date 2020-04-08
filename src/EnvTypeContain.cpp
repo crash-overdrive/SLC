@@ -41,6 +41,12 @@ bool TypeContain::inheritField(const Field *field) {
 }
 
 bool TypeContain::addDeclareField(const Field *field) {
+  for (auto &base : fields) {
+    if (*base == *field) {
+      base = field;
+      return true;
+    }
+  }
   fields.emplace_back(field);
   return true;
 }

@@ -1,6 +1,6 @@
 #include "EnvLocal.hpp"
 #include "ASTVisitorUtil.hpp"
-#include <optional>
+#include <utility>
 
 namespace Env {
 
@@ -39,7 +39,8 @@ std::optional<Type> Local::findVariable(const std::string &name) const {
 }
 
 bool Local::addVariable(const std::string &name, Type type) {
-  if (findVariable(name)) {
+  lastVariable = std::make_pair(name, type);
+  if (findVariable(name) || type == TypeKeyword::Void) {
     std::cerr << "ERROR!! Variable: " << name << " with descriptor: " << type
               << " could not be added\n";
     return false;
@@ -68,25 +69,25 @@ void Local::removeVariableTable() {
   tables.pop_back();
 }
 
-LocalVisitor::LocalVisitor(const TypeLink &typeLink, bool log)
+const std::pair<std::string, Type> &Local::getLastVariable() const {
+  return lastVariable;
+}
+
+LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), local(log) {}
 
-void LocalVisitor::visit(const AST::SingleVariableDeclaration &decl) {
-  AST::PropertiesVisitor propertiesVisitor;
-  propertiesVisitor.dispatchChildren(decl);
+void LocalTrackVisitor::visit(const AST::SingleVariableDeclaration &decl) {
+  AST::DeclarationVisitor visitor(typeLink);
+  decl.accept(visitor);
 
-  AST::TypeVisitor typeVisitor(typeLink);
-  typeVisitor.dispatchChildren(decl);
-
-  if (typeVisitor.isErrorState() ||
-      !local.addVariable(propertiesVisitor.getIdentifier(),
-                         typeVisitor.getType())) {
+  if (visitor.isErrorState() ||
+      !local.addVariable(visitor.getIdentifier(), visitor.getType())) {
     setError();
     return;
   }
 }
 
-void LocalVisitor::visit(const AST::SimpleType &simpleType) {
+void LocalTrackVisitor::visit(const AST::SimpleType &simpleType) {
   AST::TypeVisitor typeVisitor(typeLink);
   simpleType.accept(typeVisitor);
   if (typeVisitor.isErrorState()) {
@@ -95,10 +96,12 @@ void LocalVisitor::visit(const AST::SimpleType &simpleType) {
   }
 }
 
-void LocalVisitor::visit(const AST::Block &block) {
+void LocalTrackVisitor::visit(const AST::Block &block) {
   local.addVariableTable();
   dispatchChildren(block);
   local.removeVariableTable();
 }
+
+const Local &LocalTrackVisitor::getLocal() const { return local; }
 
 } // namespace Env

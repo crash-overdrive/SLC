@@ -9,6 +9,7 @@ namespace Env {
 class TypeLink {
 public:
   TypeLink(TypeDeclaration &decl, std::shared_ptr<PackageTree> tree);
+  const TypeDeclaration &getDeclaration() const;
   bool setPackage(std::vector<std::string> package);
   bool addSingleImport(const std::vector<std::string> &name);
   bool addDemandImport(const std::vector<std::string> &name);
@@ -16,15 +17,17 @@ public:
   TypeDeclaration *find(const std::string &name) const;
   template <class InputIt>
   std::pair<InputIt, TypeDeclaration *> find(InputIt first, InputIt last) const;
-  TypeDeclaration *findSamePackage(const std::string &name) const;
+  bool belongSamePackage(const TypeDeclaration *decl) const;
 
 private:
+  TypeDeclaration *findPackage(const std::string &name) const;
+  TypeDeclaration *findDemand(const std::string &name) const;
+
   TypeDeclaration &decl;
   std::vector<std::string> package;
   std::shared_ptr<PackageTree> tree;
   std::unordered_map<std::string, TypeDeclaration *> singleImports;
   std::unordered_set<PackageNode *> onDemandImports;
-  TypeDeclaration *findDemand(const std::string &name) const;
 };
 
 class TypeLinkVisitor : public AST::Visitor {
