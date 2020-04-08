@@ -6,6 +6,7 @@ if [[ ! -d output ]]; then
 fi
 
 cp -u ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/stdlib/5.0/runtime.s output
-make -s -f ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Makefile.joos
-./main
-echo "Exit code:" $?
+make -s -f ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Makefile.joos && {
+  ./output/main
+  echo "Exit code:" $?
+}

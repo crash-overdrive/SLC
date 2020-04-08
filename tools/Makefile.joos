@@ -4,9 +4,10 @@ LD = ld
 LDFLAGS = -melf_i386
 
 ASRCDIR = output
+BINDIR = output
 ASRC = $(wildcard $(ASRCDIR)/*.s)
 OBJ = $(ASRC:%.s=%.o)
-TARGET = main
+TARGET = $(BINDIR)/main
 
 .PHONY : all
 all : $(TARGET)
@@ -15,4 +16,4 @@ $(ASRCDIR)/%.o : $(ASRCDIR)/%.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(TARGET) : $(OBJ)
-	ld $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^
