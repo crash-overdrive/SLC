@@ -11,9 +11,6 @@ Resolver::findField(const std::vector<std::string> &name) const {
   if (name.empty()) {
     return std::nullopt;
   }
-  if (local.isUndefined(name.at(0))) {
-    return std::nullopt;
-  }
   auto objectType = matchObject(name.at(0));
   if (objectType) {
     return findField(*objectType, ++name.begin(), name.end());

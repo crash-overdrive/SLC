@@ -66,4 +66,32 @@ void ArgumentsVisitor::visit(const AST::Argument &node) {
 
 std::vector<Env::Type> ArgumentsVisitor::getArgs() { return std::move(args); }
 
+SelfInitializeVisitor::SelfInitializeVisitor(const std::string &identifier)
+    : identifier(identifier) {}
+
+void SelfInitializeVisitor::visit(const AST::SimpleType &) {}
+
+void SelfInitializeVisitor::visit(const AST::AssignmentExpression &node) {
+  lhsAssignment = true;
+  dispatchChildren(node);
+}
+
+void SelfInitializeVisitor::visit(const AST::Name &name) {
+  if (lhsAssignment) {
+    lhsAssignment = false;
+    return;
+  }
+  AST::NameVisitor visitor;
+  name.accept(visitor);
+  std::vector<std::string> fullName = visitor.getName();
+  if (fullName.size() == 1 && fullName.at(0) == identifier) {
+    setError();
+  }
+}
+
+void SelfInitializeVisitor::postVisit(const AST::Node &parent) {
+  lhsAssignment = false;
+  dispatchChildren(parent);
+}
+
 } // namespace Type

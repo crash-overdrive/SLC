@@ -39,7 +39,7 @@ std::optional<Type> Local::findVariable(const std::string &name) const {
 }
 
 bool Local::addVariable(const std::string &name, Type type) {
-  last = std::make_pair(name, type);
+  lastVariable = std::make_pair(name, type);
   if (findVariable(name) || type == TypeKeyword::Void) {
     std::cerr << "ERROR!! Variable: " << name << " with descriptor: " << type
               << " could not be added\n";
@@ -69,18 +69,8 @@ void Local::removeVariableTable() {
   tables.pop_back();
 }
 
-void Local::setUndefined() { lastUndefined = true; }
-
-bool Local::isUndefined(const std::string &name) const {
-  if (lastUndefined) {
-    return name == last.first;
-  }
-  return false;
-}
-
-Env::Type Local::clearUndefined() {
-  lastUndefined = false;
-  return last.second;
+const std::pair<std::string, Type> &Local::getLastVariable() const {
+  return lastVariable;
 }
 
 LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
@@ -112,6 +102,6 @@ void LocalTrackVisitor::visit(const AST::Block &block) {
   local.removeVariableTable();
 }
 
-Local &LocalTrackVisitor::getLocal() { return local; }
+const Local &LocalTrackVisitor::getLocal() const { return local; }
 
 } // namespace Env

@@ -2459,6 +2459,26 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_Assignable_Return_VoidInVoidMethod.java",
     },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_ComplexExpression.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_Direct.java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_ReadAfterAssignment."
+        "java",
+    },
+    {
+        "Je_5_ForwardReference_FieldInOwnInitializer_RightSideOfAssignment."
+        "java",
+    },
+    {
+        "Je_5_ForwardReference_InAssignment.java",
+    },
+    {
+        "Je_6_Assignable_ToSubtype_FieldInit.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
@@ -2478,27 +2498,7 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_5_ForwardReference_FieldDeclaredLater.java",
     },
     {
-        "Je_5_ForwardReference_FieldInOwnInitializer_ComplexExpression.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_Direct.java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_ReadAfterAssignment."
-        "java",
-    },
-    {
-        "Je_5_ForwardReference_FieldInOwnInitializer_RightSideOfAssignment."
-        "java",
-    },
-    {
-        "Je_5_ForwardReference_InAssignment.java",
-    },
-    {
         "Je_5_ForwardReference_MethodCall.java",
-    },
-    {
-        "Je_6_Assignable_ToSubtype_FieldInit.java",
     },
     {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",

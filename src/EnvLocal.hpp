@@ -28,15 +28,12 @@ public:
   bool addVariable(const std::string &name, Type type);
   void addVariableTable();
   void removeVariableTable();
-  void setUndefined();
-  bool isUndefined(const std::string &name) const;
-  Env::Type clearUndefined();
+  const std::pair<std::string, Type> &getLastVariable() const;
 
 private:
   bool log;
   std::vector<VariableTable> tables;
-  std::pair<std::string, Type> last;
-  bool lastUndefined = false;
+  std::pair<std::string, Type> lastVariable;
 };
 
 class LocalTrackVisitor : public AST::TrackVisitor {
@@ -47,7 +44,7 @@ public:
   void visit(const AST::SimpleType &simpleType) override;
 
 protected:
-  Local &getLocal();
+  const Local &getLocal() const;
 
 private:
   const TypeLink &typeLink;

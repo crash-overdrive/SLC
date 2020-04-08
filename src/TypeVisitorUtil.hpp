@@ -61,6 +61,19 @@ private:
   std::vector<Env::Type> args;
 };
 
+class SelfInitializeVisitor : public AST::Visitor {
+public:
+  SelfInitializeVisitor(const std::string &identifier);
+  void visit(const AST::AssignmentExpression &node) override;
+  void visit(const AST::SimpleType &node) override;
+  void visit(const AST::Name &name) override;
+
+private:
+  void postVisit(const AST::Node &parent) override;
+  bool lhsAssignment = false;
+  const std::string &identifier;
+};
+
 } // namespace Type
 
 #endif // TYPEVISITORUTIL_HPP

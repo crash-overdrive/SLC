@@ -26,10 +26,15 @@ void StatementVisitor::visit(const AST::ExpressionStatement &node) {
 
 void StatementVisitor::visit(const AST::VariableDeclaration &node) {
   dispatchChildren(node);
-  getLocal().setUndefined();
+  auto variable = getLocal().getLastVariable();
+  SelfInitializeVisitor visitor(variable.first);
+  visitor.dispatchChildren(node);
+  if (visitor.isErrorState()) {
+    setError();
+  }
+
   Env::Type expressionType{visitExpression(node)};
-  Env::Type defineType{getLocal().clearUndefined()};
-  if (!checker.checkAssignment(defineType, expressionType)) {
+  if (!checker.checkAssignment(variable.second, expressionType)) {
     setError();
   }
 }

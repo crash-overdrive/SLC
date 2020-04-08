@@ -432,8 +432,19 @@ void Client::typeCheck() {
         return;
       }
     }
-  }
-  if (breakPoint != TypeCheck) {
+
+    Type::StatementVisitor fieldVisitor(environment.typeLink, *tree);
+    for (const auto &field : body.getFields()) {
+      field.astNode->accept(fieldVisitor);
+      if (fieldVisitor.isErrorState()) {
+        std::cerr << "Type Error in " << environment.fullName << '\n';
+        std::cerr << field << '\n';
+        errorState = true;
+        return;
+      }
+    }
+    if (breakPoint != TypeCheck) {
+    }
   }
 }
 
