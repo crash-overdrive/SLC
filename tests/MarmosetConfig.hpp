@@ -2432,6 +2432,18 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_5_AmbiguousInvoke_LocalInOwnInitializer.java",
     },
+    {
+        "Je_6_Assignable_Condition.java",
+    },
+    {
+        "Je_6_Assignable_Condition_SimpleType.java",
+    },
+    {
+        "Je_6_For_NullInCondition.java",
+    },
+    {
+        "Je_6_Assignable_Condition_While.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
@@ -2471,15 +2483,6 @@ const std::vector<std::vector<std::string>> a3Error{
         "Je_5_ForwardReference_MethodCall.java",
     },
     {
-        "Je_6_Assignable_Condition.java",
-    },
-    {
-        "Je_6_Assignable_Condition_SimpleType.java",
-    },
-    {
-        "Je_6_Assignable_Condition_While.java",
-    },
-    {
         "Je_6_Assignable_ReturnInElse.java",
     },
     {
@@ -2506,9 +2509,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_FinalField_ArrayLength.java",
-    },
-    {
-        "Je_6_For_NullInCondition.java",
     },
     {
         "Je_6_StaticThis_AfterStaticInvoke.java",

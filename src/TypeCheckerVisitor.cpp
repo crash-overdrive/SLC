@@ -28,21 +28,34 @@ void StatementVisitor::visit(const AST::VariableDeclaration &node) {
 }
 
 void StatementVisitor::visit(const AST::IfThenStatement &node) {
-  visitExpression(node);
+  if (visitExpression(node) != Env::TypeKeyword::Boolean) {
+    setError();
+    return;
+  }
   dispatchChildren(node);
 }
 
 void StatementVisitor::visit(const AST::IfThenElseStatement &node) {
-  visitExpression(node);
+  if (visitExpression(node) != Env::TypeKeyword::Boolean) {
+    setError();
+    return;
+  }
   dispatchChildren(node);
 }
 
 void StatementVisitor::visit(const AST::WhileStatement &node) {
-  visitExpression(node);
+  if (visitExpression(node) != Env::TypeKeyword::Boolean) {
+    setError();
+    return;
+  }
   dispatchChildren(node);
 }
 
 void StatementVisitor::visit(const AST::ForCond &node) {
+  if (visitExpression(node) != Env::TypeKeyword::Boolean) {
+    setError();
+    return;
+  }
   visitExpression(node);
 }
 
