@@ -42,6 +42,20 @@ private:
   Env::Type type;
 };
 
+class DeclarationVisitor : public Visitor {
+public:
+  DeclarationVisitor(const Env::TypeLink &typeLink);
+  void visit(const VariableDeclaration &node) override;
+  void visit(const SingleVariableDeclaration &node) override;
+  Env::Type getType();
+  std::string getIdentifier();
+
+private:
+  const Env::TypeLink &typeLink;
+  Env::Type type;
+  std::string identifier;
+};
+
 class ArgumentsDeclarationVisitor : public Visitor {
 public:
   ArgumentsDeclarationVisitor(const Env::TypeLink &typeLink);

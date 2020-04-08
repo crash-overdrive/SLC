@@ -184,11 +184,12 @@ void TypeBodyVisitor::visit(const AST::FieldDeclaration &decl) {
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(decl);
 
-  AST::TypeVisitor typeVisitor(typeLink);
-  typeVisitor.dispatchChildren(decl);
+  AST::DeclarationVisitor declarationVisitor(typeLink);
+  declarationVisitor.dispatchChildren(decl);
 
-  fields.emplace_back(propertiesVisitor.getModifiers(), typeVisitor.getType(),
-                      propertiesVisitor.getIdentifier(), &decl);
+  fields.emplace_back(propertiesVisitor.getModifiers(),
+                      declarationVisitor.getType(),
+                      declarationVisitor.getIdentifier(), &decl);
 }
 
 void TypeBodyVisitor::visit(const AST::MethodDeclaration &decl) {

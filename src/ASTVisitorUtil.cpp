@@ -58,6 +58,31 @@ void TypeVisitor::visit(const AST::Name &name) {
 
 Env::Type TypeVisitor::getType() { return std::move(type); }
 
+DeclarationVisitor::DeclarationVisitor(const Env::TypeLink &typeLink)
+    : typeLink(typeLink) {}
+
+void DeclarationVisitor::visit(const VariableDeclaration &node) {
+  dispatchChildren(node);
+}
+
+void DeclarationVisitor::visit(const SingleVariableDeclaration &node) {
+  AST::PropertiesVisitor propertiesVisitor;
+  propertiesVisitor.dispatchChildren(node);
+  identifier = propertiesVisitor.getIdentifier();
+  AST::TypeVisitor typeVisitor(typeLink);
+  typeVisitor.dispatchChildren(node);
+  if (typeVisitor.isErrorState()) {
+    setError();
+  }
+  type = typeVisitor.getType();
+}
+
+Env::Type DeclarationVisitor::getType() { return std::move(type); }
+
+std::string DeclarationVisitor::getIdentifier() {
+  return std::move(identifier);
+}
+
 ArgumentsDeclarationVisitor::ArgumentsDeclarationVisitor(
     const Env::TypeLink &typeLink)
     : typeLink(typeLink) {}

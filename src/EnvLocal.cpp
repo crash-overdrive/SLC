@@ -87,15 +87,11 @@ LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), local(log) {}
 
 void LocalTrackVisitor::visit(const AST::SingleVariableDeclaration &decl) {
-  AST::PropertiesVisitor propertiesVisitor;
-  propertiesVisitor.dispatchChildren(decl);
+  AST::DeclarationVisitor visitor(typeLink);
+  decl.accept(visitor);
 
-  AST::TypeVisitor typeVisitor(typeLink);
-  typeVisitor.dispatchChildren(decl);
-
-  if (typeVisitor.isErrorState() ||
-      !local.addVariable(propertiesVisitor.getIdentifier(),
-                         typeVisitor.getType())) {
+  if (visitor.isErrorState() ||
+      !local.addVariable(visitor.getIdentifier(), visitor.getType())) {
     setError();
     return;
   }
