@@ -1,0 +1,19 @@
+AS = nasm
+ASFLAGS = -O1 -f elf -g -F dwarf
+LD = ld
+LDFLAGS = -melf_i386
+
+ASRCDIR = output
+BINDIR = output
+ASRC = $(wildcard $(ASRCDIR)/*.s)
+OBJ = $(ASRC:%.s=%.o)
+TARGET = $(BINDIR)/main
+
+.PHONY : all
+all : $(TARGET)
+
+$(ASRCDIR)/%.o : $(ASRCDIR)/%.s
+	$(AS) $(ASFLAGS) -o $@ $<
+
+$(TARGET) : $(OBJ)
+	$(LD) $(LDFLAGS) -o $@ $^
