@@ -1,6 +1,8 @@
 #ifndef ASM_SERVICES_H
 #define ASM_SERVICES_H
 
+#include <string>
+
 namespace ASM{
 
 class AnonymousLabelService{
