@@ -9,6 +9,8 @@ class StatementVisitor : public Env::LocalTrackVisitor {
 public:
   using LocalTrackVisitor::visit;
   StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree);
+  StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree,
+                   Name::ResolverListener &listener);
   void visit(const AST::ReturnStatement &node) override;
   void visit(const AST::ExpressionStatement &node) override;
   void visit(const AST::VariableDeclaration &node) override;
@@ -18,18 +20,22 @@ public:
   void visit(const AST::ForCond &node) override;
   void visit(const AST::ForUpdate &node) override;
   void setReturnType(Env::Type type);
+  void setCheckSelfReference();
 
 private:
   Env::Type visitExpression(const AST::Node &node);
   Checker checker;
-  Name::Resolver resolver;
+  Name::ResolverFactory resolverFactory;
   const Env::TypeLink &typeLink;
+
   Env::Type returnType;
+  bool checkSelfReference = true;
 };
 
 class ExpressionVisitor : public AST::Visitor {
 public:
-  ExpressionVisitor(const Checker &checker, const Name::Resolver &resolver,
+  ExpressionVisitor(const Checker &checker,
+                    Name::ResolverFactory &resolverFactory,
                     const Env::TypeLink &typeLink);
   void visit(const AST::AssignmentExpression &node) override;
   void visit(const AST::BinaryExpression &node) override;
@@ -55,7 +61,7 @@ public:
 private:
   void setType(std::optional<Env::Type> result);
   const Checker &checker;
-  const Name::Resolver &resolver;
+  Name::ResolverFactory &resolverFactory;
   const Env::TypeLink &typeLink;
   Env::Type type{Env::TypeKeyword::None};
 };

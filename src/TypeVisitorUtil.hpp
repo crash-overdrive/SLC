@@ -10,7 +10,7 @@ namespace Type {
 class BinaryExpressionVisitor : public AST::Visitor {
 public:
   BinaryExpressionVisitor(const Checker &checker,
-                          const Name::Resolver &resolver,
+                          Name::ResolverFactory &resolverFactory,
                           const Env::TypeLink &typeLink);
   // Skip operator visit
   void visit(const AST::Operator &node) override;
@@ -22,7 +22,7 @@ public:
 private:
   void postVisit(const AST::Node &node) override;
   const Checker &checker;
-  const Name::Resolver &resolver;
+  Name::ResolverFactory &resolverFactory;
   const Env::TypeLink &typeLink;
   bool castExpression = false;
   Env::Type lhs;
@@ -49,29 +49,41 @@ private:
 
 class ArgumentsVisitor : public AST::Visitor {
 public:
-  ArgumentsVisitor(const Checker &checker, const Name::Resolver &resolver,
+  ArgumentsVisitor(const Checker &checker,
+                   Name::ResolverFactory &resolverFactory,
                    const Env::TypeLink &typeLink);
   void visit(const AST::Argument &node) override;
   std::vector<Env::Type> getArgs();
 
 private:
   const Checker &checker;
-  const Name::Resolver &resolver;
+  Name::ResolverFactory &resolverFactory;
   const Env::TypeLink &typeLink;
   std::vector<Env::Type> args;
 };
 
-class SelfInitializeVisitor : public AST::Visitor {
+class SelfReferenceVisitor : public AST::Visitor {
 public:
-  SelfInitializeVisitor(const std::string &identifier);
-  void visit(const AST::AssignmentExpression &node) override;
+  SelfReferenceVisitor(std::string identifier);
   void visit(const AST::SimpleType &node) override;
+  void visit(const AST::AssignmentExpression &node) override;
   void visit(const AST::Name &name) override;
 
 private:
   void postVisit(const AST::Node &parent) override;
   bool lhsAssignment = false;
-  const std::string &identifier;
+  std::string identifier;
+};
+
+class FieldInitializerListener : public Name::ResolverListener {
+public:
+  FieldInitializerListener(const Env::TypeDeclaration &decl);
+  void listenField(const Env::Field &field);
+  bool isErrorState() const;
+
+private:
+  bool errorState = false;
+  const Env::TypeDeclaration &decl;
 };
 
 } // namespace Type

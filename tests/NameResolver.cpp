@@ -11,57 +11,61 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   Env::TypeLink typeLink(listDecl, tree);
   typeLink.setPackage({});
   Env::Local local;
-  Name::Resolver resolver(local, typeLink);
+  Name::ResolverFactory Resolver(local, typeLink);
+  Name::FieldResolver fieldResolver = Resolver.getField();
+  Name::MethodResolver methodResolver = Resolver.getMethod();
+  Name::ConstructorResolver constructorResolver = Resolver.getConstructor();
 
   SECTION("Single Identifier") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
-    REQUIRE(*resolver.findField({"foo"}) == Env::TypeKeyword::Integer);
+    REQUIRE(fieldResolver.match({"foo"}) == Env::TypeKeyword::Integer);
 
     local.addVariable("foo", Env::TypeKeyword::Boolean);
-    REQUIRE(*resolver.findField({"foo"}) == Env::TypeKeyword::Boolean);
+    Name::FieldResolver fieldResolver2 = Resolver.getField();
+    REQUIRE(fieldResolver2.match({"foo"}) == Env::TypeKeyword::Boolean);
   }
 
   SECTION("Static cannot resolve to non-static") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
-    REQUIRE_FALSE(resolver.findField({"List", "foo"}));
+    REQUIRE_FALSE(fieldResolver.match({"List", "foo"}));
   }
 
   SECTION("Static field can be called") {
     Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
-    REQUIRE(resolver.findField({"List", "foo"}));
+    REQUIRE(fieldResolver.match({"List", "foo"}));
   }
 
   SECTION("Static field cannot be called implicit") {
     Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
-    REQUIRE_FALSE(resolver.findField({"foo"}));
+    REQUIRE_FALSE(fieldResolver.match({"foo"}));
   }
 
   SECTION("Local Variable field") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
     listDecl.contain.addDeclareField(&field);
     local.addVariable("list", listType);
-    REQUIRE(resolver.findField({"list", "foo"}));
+    REQUIRE(fieldResolver.match({"list", "foo"}));
   }
 
   SECTION("Static cannot call non-static") {
     Env::Method method({}, Env::TypeKeyword::Integer, "foo", {});
     listDecl.contain.addDeclareMethod(&method);
-    REQUIRE_FALSE(resolver.findMethod({"List", "foo"}, {}));
+    REQUIRE_FALSE(methodResolver.match({"List", "foo"}));
   }
 
   SECTION("Static cannot be called implicitly") {
     Env::Method method({Env::Modifier::Static}, Env::TypeKeyword::Integer,
                        "foo", {});
     listDecl.contain.addDeclareMethod(&method);
-    REQUIRE_FALSE(resolver.findMethod({"foo"}, {}));
+    REQUIRE_FALSE(methodResolver.match({"foo"}));
   }
 
   SECTION("Static call") {
@@ -69,7 +73,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
                        "foo", {});
     method.declaration = &listDecl;
     listDecl.contain.addDeclareMethod(&method);
-    REQUIRE(resolver.findMethod({"List", "foo"}, {}));
+    REQUIRE(methodResolver.match({"List", "foo"}));
   }
 
   SECTION("Same class protected") {
@@ -78,7 +82,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     field.declaration = &listDecl;
     listDecl.contain.addDeclareField(&field);
     local.addVariable("list", listType);
-    REQUIRE(resolver.findField({"list", "foo"}));
+    REQUIRE(fieldResolver.match({"list", "foo"}));
   }
 
   SECTION("Same package protected") {
@@ -90,7 +94,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     tree->update({"bar"}, arrayDecl);
 
     local.addVariable("array", arrayType);
-    REQUIRE(resolver.findField({"array", "foo"}));
+    REQUIRE(fieldResolver.match({"array", "foo"}));
   }
 
   SECTION("Subclass protected") {
@@ -100,7 +104,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     arrayDecl.contain.addDeclareField(&field);
     arrayDecl.subType.emplace(&listDecl);
     local.addVariable("array", arrayType);
-    REQUIRE(resolver.findField({"array", "foo"}));
+    REQUIRE(fieldResolver.match({"array", "foo"}));
   }
 
   SECTION("World cannot see protected") {
@@ -109,7 +113,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     field.declaration = &arrayDecl;
     arrayDecl.contain.addDeclareField(&field);
     tree->update({"bar"}, arrayDecl);
-    REQUIRE_FALSE(resolver.findField({"bar", "Array", "foo"}));
+    REQUIRE_FALSE(fieldResolver.match({"bar", "Array", "foo"}));
   }
 
   SECTION("World can see public") {
@@ -118,7 +122,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     field.declaration = &arrayDecl;
     arrayDecl.contain.addDeclareField(&field);
     tree->update({"bar"}, arrayDecl);
-    REQUIRE(resolver.findField({"bar", "Array", "foo"}));
+    REQUIRE(fieldResolver.match({"bar", "Array", "foo"}));
   }
 
   SECTION("Cannot construct object of abstract class") {
@@ -126,14 +130,14 @@ TEST_CASE("Resolve names", "[NameResolver]") {
                                   Env::DeclarationKeyword::Class, "Base");
     baseDecl.body.addConstructor({{Env::Modifier::Public}, "Base", {}});
     tree->update({"bar"}, baseDecl);
-    REQUIRE_FALSE(resolver.findConstructor(Env::Type{&baseDecl}, {}));
+    REQUIRE_FALSE(constructorResolver.match(Env::Type{&baseDecl}, {}));
   }
 
   SECTION("World cannot use protected constructor") {
     Env::TypeDeclaration baseDecl({}, Env::DeclarationKeyword::Class, "Base");
     baseDecl.body.addConstructor({{Env::Modifier::Protected}, "Base", {}});
     tree->update({"bar"}, baseDecl);
-    REQUIRE_FALSE(resolver.findConstructor(Env::Type{&baseDecl}, {}));
+    REQUIRE_FALSE(constructorResolver.match(Env::Type{&baseDecl}, {}));
   }
 
   SECTION("Found Constructor") {
@@ -141,6 +145,15 @@ TEST_CASE("Resolve names", "[NameResolver]") {
                                   Env::DeclarationKeyword::Class, "Base");
     baseDecl.body.addConstructor({{Env::Modifier::Public}, "Base", {}});
     tree->update({"bar"}, baseDecl);
-    REQUIRE(resolver.findConstructor(Env::Type{&baseDecl}, {}));
+    REQUIRE(constructorResolver.match(Env::Type{&baseDecl}, {}));
+  }
+
+  SECTION("Array length") {
+    REQUIRE(fieldResolver.match({Env::TypeKeyword::Integer, true}, "length"));
+  }
+
+  SECTION("Array other fields") {
+    REQUIRE_FALSE(
+        fieldResolver.match({Env::TypeKeyword::Integer, true}, "abs"));
   }
 }

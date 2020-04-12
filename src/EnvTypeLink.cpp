@@ -81,8 +81,8 @@ TypeDeclaration *TypeLink::find(const std::string &name) const {
 }
 
 template <typename InputIt>
-std::pair<InputIt, TypeDeclaration *> TypeLink::find(InputIt first,
-                                                     InputIt last) const {
+std::pair<InputIt, TypeDeclaration *> TypeLink::match(InputIt first,
+                                                      InputIt last) const {
   if (first == last) {
     return std::make_pair(last, nullptr);
   }
@@ -105,7 +105,7 @@ std::pair<InputIt, TypeDeclaration *> TypeLink::find(InputIt first,
 }
 
 template std::pair<std::vector<std::string>::const_iterator, TypeDeclaration *>
-TypeLink::find<std::vector<std::string>::const_iterator>(
+TypeLink::match<std::vector<std::string>::const_iterator>(
     std::vector<std::string>::const_iterator first,
     std::vector<std::string>::const_iterator last) const;
 
