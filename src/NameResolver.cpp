@@ -19,6 +19,7 @@ FieldResolver::FieldResolver(const Env::Local &local,
 std::optional<Env::Type>
 FieldResolver::match(const std::vector<std::string> &name) {
   if (name.empty()) {
+    type.reset();
     return type;
   }
   first = name.begin();
@@ -32,6 +33,10 @@ std::optional<Env::Type> FieldResolver::match(Env::Type type,
   this->type.emplace(type);
   matchIdentifier(identifier);
   return this->type;
+}
+
+std::vector<std::string>::const_iterator FieldResolver::getFirst() const {
+  return first;
 }
 
 void FieldResolver::matchLocal() {
@@ -128,55 +133,43 @@ void MethodResolver::matchImplicit() {
     type.emplace(&typeLink.getDeclaration());
     matchIdentifier(*first);
   } else {
-    matchLocal();
-  }
-}
-
-void MethodResolver::matchLocal() {
-  auto variableType = local.findVariable(*first);
-  if (variableType) {
-    type.emplace(*variableType);
-    ++first;
-    listener.listenLocal();
-    matchName();
-  } else {
     matchField();
   }
 }
 
 void MethodResolver::matchField() {
-  const Env::TypeDeclaration &decl = typeLink.getDeclaration();
-  const Env::Field *field = decl.contain.findField(*first);
-  if (field && isInstanceVisible(typeLink, &decl, field)) {
-    type = field->type;
-    ++first;
-    listener.listenField(*field);
-    matchName();
-  } else {
-    matchStatic();
+  FieldResolver fieldResolver(local, typeLink, listener);
+  std::vector<std::string> qualifiedName{first, last - 1};
+  auto fieldType = fieldResolver.match(qualifiedName);
+  if (fieldType) {
+    type = fieldType;
+    first = last - 1;
+    matchIdentifier(*first);
+    return;
   }
+  if (qualifiedName.begin() == fieldResolver.getFirst()) {
+    matchStaticMethod();
+    return;
+  }
+  type.reset();
 }
 
-void MethodResolver::matchStatic() {
+void MethodResolver::matchStaticMethod() {
   auto [it, matchDecl] = typeLink.match(first, last - 1);
   if (!matchDecl) {
+    type.reset();
     return;
   }
   if (it == last - 1) {
     const Env::Method *staticMethod = matchDecl->contain.findMethod(*it, args);
     if (staticMethod && isStaticVisible(typeLink, staticMethod)) {
-      std::cerr << *staticMethod;
       type = staticMethod->returnType;
-      first = ++it;
-    }
-  } else {
-    const Env::Field *staticField = matchDecl->contain.findField(*it);
-    if (staticField && isStaticVisible(typeLink, staticField)) {
-      type = staticField->type;
-      first = ++it;
-      matchName();
+      first = last;
+      listener.listenStaticMethod(*staticMethod);
+      return;
     }
   }
+  type.reset();
 }
 
 void MethodResolver::matchIdentifier(const std::string &identifier) {
@@ -188,6 +181,7 @@ void MethodResolver::matchIdentifier(const std::string &identifier) {
       type->declare->contain.findMethod(identifier, args);
   if (method && isInstanceVisible(typeLink, type->declare, method)) {
     type = method->returnType;
+    listener.listenMethod(*method);
     return;
   }
   type.reset();
@@ -198,16 +192,6 @@ std::optional<Env::Type> MethodResolver::match(Env::Type type,
   this->type.emplace(type);
   matchIdentifier(identifier);
   return this->type;
-}
-
-void MethodResolver::matchName() {
-  while (first != last) {
-    matchIdentifier(*first);
-    if (!type) {
-      return;
-    }
-    ++first;
-  }
 }
 
 void MethodResolver::setArgs(std::vector<Env::Type> args) {

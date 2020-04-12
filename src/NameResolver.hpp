@@ -27,6 +27,7 @@ public:
   std::optional<Env::Type> match(const std::vector<std::string> &name);
 
   std::optional<Env::Type> match(Env::Type type, const std::string &identifier);
+  std::vector<std::string>::const_iterator getFirst() const;
 
 private:
   void matchLocal();
@@ -53,11 +54,9 @@ public:
 
 private:
   void matchImplicit();
-  void matchLocal();
   void matchField();
-  void matchStatic();
+  void matchStaticMethod();
   void matchIdentifier(const std::string &identifier);
-  void matchName();
 
   std::vector<std::string>::const_iterator first;
   std::vector<std::string>::const_iterator last;
