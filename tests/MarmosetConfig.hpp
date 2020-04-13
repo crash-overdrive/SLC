@@ -2512,6 +2512,9 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_StaticThis_NonstaticField.java",
     },
+    {
+        "Je_6_FinalField_ArrayLength.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
@@ -2521,9 +2524,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_Constructor_WrongName.java",
-    },
-    {
-        "Je_6_FinalField_ArrayLength.java",
     },
     {
         "Je_BadConstructorName.java",

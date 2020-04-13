@@ -83,6 +83,7 @@ void FieldResolver::matchStatic() {
 void FieldResolver::matchIdentifier(const std::string &identifier) {
   if (type->isArray && identifier == "length") {
     type.emplace(Env::TypeKeyword::Integer);
+    type->isFinal = true;
     listener.listenArrayLength();
     return;
   }

@@ -6,6 +6,9 @@ Checker::Checker(const Env::PackageTree &tree) : tree(tree) {}
 
 std::optional<Env::Type> Checker::checkAssignment(Env::Type lopt,
                                                   Env::Type ropt) const {
+  if (lopt.isFinal) {
+    return std::nullopt;
+  }
   if (lopt.keyword == Env::TypeKeyword::Void ||
       ropt.keyword == Env::TypeKeyword::Void) {
     return std::nullopt;
