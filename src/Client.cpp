@@ -246,6 +246,15 @@ void Client::buildTypeBody() {
 }
 
 void Client::weed() {
+  for (const auto &environment : environments) {
+    for (const auto &constructor : environment.decl.body.getConstructors()) {
+      if (constructor.identifier != environment.decl.identifier) {
+        std::cerr << "Weeder error in constructor\n";
+        errorState = true;
+        return;
+      }
+    }
+  }
   if (breakPoint != Weed) {
     localVariableAnalysis();
   }

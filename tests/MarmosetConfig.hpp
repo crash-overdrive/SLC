@@ -2515,18 +2515,18 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_FinalField_ArrayLength.java",
     },
+    {
+        "Je_6_Constructor_WrongName.java",
+    },
+    {
+        "Je_BadConstructorName.java",
+    },
 };
 
 const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",
         "Je_6_ConstructorPresent_Super_NoDefault/Foo.java",
-    },
-    {
-        "Je_6_Constructor_WrongName.java",
-    },
-    {
-        "Je_BadConstructorName.java",
     },
 };
 
