@@ -2479,18 +2479,6 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_6_Assignable_ToSubtype_FieldInit.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a3Error{
-    {
-        "Je_16_StaticThis_StaticFieldInitializer.java",
-    },
-    {
-        "Je_5_AmbiguousName_FieldVsType_Initializer.java",
-    },
-    {
-        "Je_5_ForwardReference_ArrayLength.java",
-    },
     {
         "Je_5_ForwardReference_FieldDeclaredLater_ComplexExp.java",
     },
@@ -2499,6 +2487,18 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_5_ForwardReference_MethodCall.java",
+    },
+    {
+        "Je_5_ForwardReference_ArrayLength.java",
+    },
+    {
+        "Je_5_AmbiguousName_FieldVsType_Initializer.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
+    {
+        "Je_16_StaticThis_StaticFieldInitializer.java",
     },
     {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",

@@ -4,6 +4,7 @@
 namespace Name {
 
 void ResolverListener::listenLocal() {}
+void ResolverListener::listenImplicit() {}
 void ResolverListener::listenField(const Env::Field &) {}
 void ResolverListener::listenStaticField(const Env::Field &) {}
 void ResolverListener::listenMethod(const Env::Method &) {}
@@ -57,6 +58,7 @@ void FieldResolver::matchField() {
   if (field && isInstanceVisible(typeLink, &decl, field)) {
     type.emplace(field->type);
     ++first;
+    listener.listenImplicit();
     listener.listenField(*field);
     matchName();
   } else {
@@ -130,6 +132,7 @@ MethodResolver::match(const std::vector<std::string> &name) {
 
 void MethodResolver::matchImplicit() {
   if (std::distance(first, last) == 1) {
+    listener.listenImplicit();
     type.emplace(&typeLink.getDeclaration());
     matchIdentifier(*first);
   } else {
@@ -237,6 +240,10 @@ MethodResolver ResolverFactory::getMethod() {
 
 ConstructorResolver ResolverFactory::getConstructor() {
   return ConstructorResolver(typeLink, listener);
+}
+
+void ResolverFactory::setListener(ResolverListener &listener) {
+  this->listener = listener;
 }
 
 template <class T>

@@ -62,9 +62,11 @@ private:
   std::vector<Env::Type> args;
 };
 
-class SelfReferenceVisitor : public AST::Visitor {
+class FieldVisitor : public AST::TrackVisitor {
 public:
-  SelfReferenceVisitor(std::string identifier);
+  FieldVisitor(std::string identifier,
+               const std::unordered_set<std::string> &declare,
+               const Env::TypeBody &body);
   void visit(const AST::SimpleType &node) override;
   void visit(const AST::AssignmentExpression &node) override;
   void visit(const AST::Name &name) override;
@@ -73,17 +75,8 @@ private:
   void postVisit(const AST::Node &parent) override;
   bool lhsAssignment = false;
   std::string identifier;
-};
-
-class FieldInitializerListener : public Name::ResolverListener {
-public:
-  FieldInitializerListener(const Env::TypeDeclaration &decl);
-  void listenField(const Env::Field &field);
-  bool isErrorState() const;
-
-private:
-  bool errorState = false;
-  const Env::TypeDeclaration &decl;
+  const std::unordered_set<std::string> &declare;
+  const Env::TypeBody &body;
 };
 
 } // namespace Type

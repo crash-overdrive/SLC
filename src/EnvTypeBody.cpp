@@ -89,6 +89,15 @@ std::ostream &operator<<(std::ostream &stream, const Constructor &constructor) {
   return stream << "\n";
 }
 
+const Field *TypeBody::findField(const std::string &identifier) const {
+  for (auto const &field : fields) {
+    if (field.identifier == identifier) {
+      return &field;
+    }
+  }
+  return nullptr;
+}
+
 const std::vector<Field> &TypeBody::getFields() const { return fields; }
 
 bool TypeBody::addField(Field other) {

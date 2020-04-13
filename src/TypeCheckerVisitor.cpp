@@ -33,15 +33,6 @@ void StatementVisitor::visit(const AST::ExpressionStatement &node) {
 void StatementVisitor::visit(const AST::VariableDeclaration &node) {
   dispatchChildren(node);
   auto variable = getLocal().getLastVariable();
-
-  if (checkSelfReference) {
-    SelfReferenceVisitor selfReferenceVisitor(variable.first);
-    selfReferenceVisitor.dispatchChildren(node);
-    if (selfReferenceVisitor.isErrorState()) {
-      setError();
-    }
-  }
-
   Env::Type expressionType{visitExpression(node)};
   if (!checker.checkAssignment(variable.second, expressionType)) {
     setError();
@@ -93,6 +84,10 @@ Env::Type StatementVisitor::visitExpression(const AST::Node &node) {
 }
 
 void StatementVisitor::setReturnType(Env::Type type) { returnType = type; }
+
+void StatementVisitor::setListener(Name::ResolverListener &listener) {
+  resolverFactory.setListener(listener);
+}
 
 ExpressionVisitor::ExpressionVisitor(const Checker &checker,
                                      Name::ResolverFactory &resolverFactory,

@@ -9,6 +9,7 @@ class ResolverListener {
 public:
   virtual ~ResolverListener() = default;
   virtual void listenLocal();
+  virtual void listenImplicit();
   virtual void listenField(const Env::Field &field);
   virtual void listenStaticField(const Env::Field &field);
   virtual void listenMethod(const Env::Method &method);
@@ -87,11 +88,12 @@ public:
   FieldResolver getField();
   MethodResolver getMethod();
   ConstructorResolver getConstructor();
+  void setListener(ResolverListener &listener);
 
 private:
   const Env::Local &local;
   const Env::TypeLink &typeLink;
-  ResolverListener &listener;
+  std::reference_wrapper<ResolverListener> listener;
 };
 
 template <class T>

@@ -66,17 +66,19 @@ void ArgumentsVisitor::visit(const AST::Argument &node) {
 
 std::vector<Env::Type> ArgumentsVisitor::getArgs() { return std::move(args); }
 
-SelfReferenceVisitor::SelfReferenceVisitor(std::string identifier)
-    : identifier(std::move(identifier)) {}
+FieldVisitor::FieldVisitor(std::string identifier,
+                           const std::unordered_set<std::string> &declare,
+                           const Env::TypeBody &body)
+    : identifier(std::move(identifier)), declare(declare), body(body) {}
 
-void SelfReferenceVisitor::visit(const AST::SimpleType &) {}
+void FieldVisitor::visit(const AST::SimpleType &) {}
 
-void SelfReferenceVisitor::visit(const AST::AssignmentExpression &node) {
+void FieldVisitor::visit(const AST::AssignmentExpression &node) {
   lhsAssignment = true;
   dispatchChildren(node);
 }
 
-void SelfReferenceVisitor::visit(const AST::Name &name) {
+void FieldVisitor::visit(const AST::Name &name) {
   if (lhsAssignment) {
     lhsAssignment = false;
     return;
@@ -84,22 +86,18 @@ void SelfReferenceVisitor::visit(const AST::Name &name) {
   AST::NameVisitor visitor;
   name.accept(visitor);
   std::vector<std::string> fullName = visitor.getName();
-  if (fullName.size() == 1 && fullName.at(0) == identifier) {
+  if (fullName.at(0) == identifier) {
+    setError();
+  }
+  if (declare.find(fullName.at(0)) == declare.end() &&
+      body.findField(fullName.at(0))) {
     setError();
   }
 }
 
-void SelfReferenceVisitor::postVisit(const AST::Node &parent) {
+void FieldVisitor::postVisit(const AST::Node &parent) {
   lhsAssignment = false;
   dispatchChildren(parent);
 }
-
-void FieldInitializerListener::listenField(const Env::Field &field) {
-  if (field.declaration == &decl) {
-    errorState = true;
-  }
-}
-
-bool FieldInitializerListener::isErrorState() const { return errorState; }
 
 } // namespace Type

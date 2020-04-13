@@ -20,16 +20,14 @@ public:
   void visit(const AST::ForCond &node) override;
   void visit(const AST::ForUpdate &node) override;
   void setReturnType(Env::Type type);
-  void setCheckSelfReference();
+  void setListener(Name::ResolverListener &listener);
 
 private:
   Env::Type visitExpression(const AST::Node &node);
   Checker checker;
   Name::ResolverFactory resolverFactory;
   const Env::TypeLink &typeLink;
-
   Env::Type returnType;
-  bool checkSelfReference = true;
 };
 
 class ExpressionVisitor : public AST::Visitor {

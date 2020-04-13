@@ -433,11 +433,22 @@ void Client::typeCheck() {
       }
     }
 
-    Type::StatementVisitor fieldVisitor(environment.typeLink, *tree);
+    std::unordered_set<std::string> fieldDeclared;
     for (const auto &field : body.getFields()) {
+      Type::StatementVisitor typeVisitor(environment.typeLink, *tree);
+      field.astNode->accept(typeVisitor);
+      if (typeVisitor.isErrorState()) {
+        std::cerr << "Type Error in " << environment.fullName << '\n';
+        std::cerr << field << '\n';
+        errorState = true;
+        return;
+      }
+      fieldDeclared.emplace(field.identifier);
+      Type::FieldVisitor fieldVisitor(field.identifier, fieldDeclared,
+                                      environment.decl.body);
       field.astNode->accept(fieldVisitor);
       if (fieldVisitor.isErrorState()) {
-        std::cerr << "Type Error in " << environment.fullName << '\n';
+        std::cerr << "Field Error in " << environment.fullName << '\n';
         std::cerr << field << '\n';
         errorState = true;
         return;
