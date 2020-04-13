@@ -9,12 +9,6 @@ StatementVisitor::StatementVisitor(const Env::TypeLink &typeLink,
     : LocalTrackVisitor(typeLink), checker(tree),
       resolverFactory(getLocal(), typeLink), typeLink(typeLink) {}
 
-StatementVisitor::StatementVisitor(const Env::TypeLink &typeLink,
-                                   const Env::PackageTree &tree,
-                                   Name::ResolverListener &listener)
-    : LocalTrackVisitor(typeLink), checker(tree),
-      resolverFactory(getLocal(), typeLink, listener), typeLink(typeLink) {}
-
 void StatementVisitor::visit(const AST::ReturnStatement &node) {
   Env::Type expressionReturnType{visitExpression(node)};
   if (returnType == Env::TypeKeyword::Void &&

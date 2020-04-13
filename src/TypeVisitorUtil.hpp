@@ -79,6 +79,24 @@ private:
   const Env::TypeBody &body;
 };
 
+class StaticThisVisitor : public AST::TrackVisitor {
+public:
+  void visit(const AST::ThisExpression &node) override;
+  bool isErrorState() const;
+
+private:
+  bool errorState = false;
+};
+
+class StaticListener : public Name::ResolverListener {
+public:
+  void listenImplicit() override;
+  bool isErrorState() const;
+
+private:
+  bool errorState = false;
+};
+
 } // namespace Type
 
 #endif // TYPEVISITORUTIL_HPP

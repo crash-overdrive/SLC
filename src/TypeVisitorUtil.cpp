@@ -100,4 +100,14 @@ void FieldVisitor::postVisit(const AST::Node &parent) {
   dispatchChildren(parent);
 }
 
+void StaticThisVisitor::visit(const AST::ThisExpression &) {
+  errorState = true;
+}
+
+bool StaticThisVisitor::isErrorState() const { return errorState; }
+
+void StaticListener::listenImplicit() { errorState = true; }
+
+bool StaticListener::isErrorState() const { return errorState; }
+
 } // namespace Type

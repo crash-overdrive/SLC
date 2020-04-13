@@ -2494,12 +2494,27 @@ const std::vector<std::vector<std::string>> a3ErrorTypeCheck{
     {
         "Je_5_AmbiguousName_FieldVsType_Initializer.java",
     },
-};
-
-const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_16_StaticThis_StaticFieldInitializer.java",
     },
+    {
+        "Je_6_StaticThis_InvokeNonstatic_Implicit.java",
+    },
+    {
+        "Je_6_StaticThis_NonStaticField_ImplicitThis.java",
+    },
+    {
+        "Je_6_StaticThis_AfterStaticInvoke.java",
+    },
+    {
+        "Je_6_StaticThis_InvokeNonStatic.java",
+    },
+    {
+        "Je_6_StaticThis_NonstaticField.java",
+    },
+};
+
+const std::vector<std::vector<std::string>> a3Error{
     {
         "Je_6_ConstructorPresent_Super_NoDefault/Main.java",
         "Je_6_ConstructorPresent_Super_NoDefault/Foo.java",
@@ -2509,21 +2524,6 @@ const std::vector<std::vector<std::string>> a3Error{
     },
     {
         "Je_6_FinalField_ArrayLength.java",
-    },
-    {
-        "Je_6_StaticThis_AfterStaticInvoke.java",
-    },
-    {
-        "Je_6_StaticThis_InvokeNonstatic_Implicit.java",
-    },
-    {
-        "Je_6_StaticThis_InvokeNonStatic.java",
-    },
-    {
-        "Je_6_StaticThis_NonStaticField_ImplicitThis.java",
-    },
-    {
-        "Je_6_StaticThis_NonstaticField.java",
     },
     {
         "Je_BadConstructorName.java",

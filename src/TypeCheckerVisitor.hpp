@@ -9,8 +9,6 @@ class StatementVisitor : public Env::LocalTrackVisitor {
 public:
   using LocalTrackVisitor::visit;
   StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree);
-  StatementVisitor(const Env::TypeLink &typeLink, const Env::PackageTree &tree,
-                   Name::ResolverListener &listener);
   void visit(const AST::ReturnStatement &node) override;
   void visit(const AST::ExpressionStatement &node) override;
   void visit(const AST::VariableDeclaration &node) override;
