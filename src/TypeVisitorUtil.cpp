@@ -4,10 +4,10 @@
 
 namespace Type {
 
-BinaryExpressionVisitor::BinaryExpressionVisitor(const Checker &checker,
-                                                 const Name::Resolver &resolver,
-                                                 const Env::TypeLink &typeLink)
-    : checker(checker), resolver(resolver), typeLink(typeLink) {}
+BinaryExpressionVisitor::BinaryExpressionVisitor(
+    const Checker &checker, Name::ResolverFactory &resolverFactory,
+    const Env::TypeLink &typeLink)
+    : checker(checker), resolverFactory(resolverFactory), typeLink(typeLink) {}
 
 void BinaryExpressionVisitor::visit(const AST::Operator &) {}
 
@@ -24,7 +24,7 @@ void BinaryExpressionVisitor::visit(const AST::Name &node) {
 void BinaryExpressionVisitor::setCastExpression() { castExpression = true; }
 
 void BinaryExpressionVisitor::postVisit(const AST::Node &node) {
-  ExpressionVisitor visitor(checker, resolver, typeLink);
+  ExpressionVisitor visitor(checker, resolverFactory, typeLink);
   node.accept(visitor);
   if (lhs.keyword == Env::TypeKeyword::Void) {
     lhs = visitor.getType();
@@ -54,29 +54,31 @@ UnaryOperator UnaryOperatorVisitor::getUnaryOperator() {
 }
 
 ArgumentsVisitor::ArgumentsVisitor(const Checker &checker,
-                                   const Name::Resolver &resolver,
+                                   Name::ResolverFactory &resolverFactory,
                                    const Env::TypeLink &typeLink)
-    : checker(checker), resolver(resolver), typeLink(typeLink) {}
+    : checker(checker), resolverFactory(resolverFactory), typeLink(typeLink) {}
 
 void ArgumentsVisitor::visit(const AST::Argument &node) {
-  ExpressionVisitor visitor(checker, resolver, typeLink);
+  ExpressionVisitor visitor(checker, resolverFactory, typeLink);
   visitor.dispatchChildren(node);
   args.emplace_back(visitor.getType());
 }
 
 std::vector<Env::Type> ArgumentsVisitor::getArgs() { return std::move(args); }
 
-SelfInitializeVisitor::SelfInitializeVisitor(const std::string &identifier)
-    : identifier(identifier) {}
+FieldVisitor::FieldVisitor(std::string identifier,
+                           const std::unordered_set<std::string> &declare,
+                           const Env::TypeBody &body)
+    : identifier(std::move(identifier)), declare(declare), body(body) {}
 
-void SelfInitializeVisitor::visit(const AST::SimpleType &) {}
+void FieldVisitor::visit(const AST::SimpleType &) {}
 
-void SelfInitializeVisitor::visit(const AST::AssignmentExpression &node) {
+void FieldVisitor::visit(const AST::AssignmentExpression &node) {
   lhsAssignment = true;
   dispatchChildren(node);
 }
 
-void SelfInitializeVisitor::visit(const AST::Name &name) {
+void FieldVisitor::visit(const AST::Name &name) {
   if (lhsAssignment) {
     lhsAssignment = false;
     return;
@@ -84,14 +86,28 @@ void SelfInitializeVisitor::visit(const AST::Name &name) {
   AST::NameVisitor visitor;
   name.accept(visitor);
   std::vector<std::string> fullName = visitor.getName();
-  if (fullName.size() == 1 && fullName.at(0) == identifier) {
+  if (fullName.at(0) == identifier) {
+    setError();
+  }
+  if (declare.find(fullName.at(0)) == declare.end() &&
+      body.findField(fullName.at(0))) {
     setError();
   }
 }
 
-void SelfInitializeVisitor::postVisit(const AST::Node &parent) {
+void FieldVisitor::postVisit(const AST::Node &parent) {
   lhsAssignment = false;
   dispatchChildren(parent);
 }
+
+void StaticThisVisitor::visit(const AST::ThisExpression &) {
+  errorState = true;
+}
+
+bool StaticThisVisitor::isErrorState() const { return errorState; }
+
+void StaticListener::listenImplicit() { errorState = true; }
+
+bool StaticListener::isErrorState() const { return errorState; }
 
 } // namespace Type

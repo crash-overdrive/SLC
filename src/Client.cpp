@@ -246,6 +246,15 @@ void Client::buildTypeBody() {
 }
 
 void Client::weed() {
+  for (const auto &environment : environments) {
+    for (const auto &constructor : environment.decl.body.getConstructors()) {
+      if (constructor.identifier != environment.decl.identifier) {
+        std::cerr << "Weeder error in constructor\n";
+        errorState = true;
+        return;
+      }
+    }
+  }
   if (breakPoint != Weed) {
     localVariableAnalysis();
   }
@@ -413,9 +422,17 @@ void Client::typeCheck() {
     Env::TypeBody &body{environment.decl.body};
     for (const auto &method : body.getMethods()) {
       Type::StatementVisitor visitor(environment.typeLink, *tree);
+      Type::StaticListener listener;
+      Type::StaticThisVisitor staticThisVisitor;
+      if (method.modifiers.find(Env::Modifier::Static) !=
+          method.modifiers.end()) {
+        visitor.setListener(listener);
+        method.astNode->accept(staticThisVisitor);
+      }
       visitor.setReturnType(method.returnType);
       method.astNode->accept(visitor);
-      if (visitor.isErrorState()) {
+      if (visitor.isErrorState() || listener.isErrorState() ||
+          staticThisVisitor.isErrorState()) {
         std::cerr << "Type Error in " << environment.fullName << '\n';
         std::cerr << method << '\n';
         errorState = true;
@@ -433,11 +450,30 @@ void Client::typeCheck() {
       }
     }
 
-    Type::StatementVisitor fieldVisitor(environment.typeLink, *tree);
+    std::unordered_set<std::string> fieldDeclared;
     for (const auto &field : body.getFields()) {
+      Type::StatementVisitor typeVisitor(environment.typeLink, *tree);
+      Type::StaticListener listener;
+      Type::StaticThisVisitor staticThisVisitor;
+      if (field.modifiers.find(Env::Modifier::Static) !=
+          field.modifiers.end()) {
+        typeVisitor.setListener(listener);
+        field.astNode->accept(staticThisVisitor);
+      }
+      field.astNode->accept(typeVisitor);
+      if (typeVisitor.isErrorState() || listener.isErrorState() ||
+          staticThisVisitor.isErrorState()) {
+        std::cerr << "Type Error in " << environment.fullName << '\n';
+        std::cerr << field << '\n';
+        errorState = true;
+        return;
+      }
+      fieldDeclared.emplace(field.identifier);
+      Type::FieldVisitor fieldVisitor(field.identifier, fieldDeclared,
+                                      environment.decl.body);
       field.astNode->accept(fieldVisitor);
       if (fieldVisitor.isErrorState()) {
-        std::cerr << "Type Error in " << environment.fullName << '\n';
+        std::cerr << "Field Error in " << environment.fullName << '\n';
         std::cerr << field << '\n';
         errorState = true;
         return;

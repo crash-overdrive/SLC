@@ -18,18 +18,20 @@ public:
   void visit(const AST::ForCond &node) override;
   void visit(const AST::ForUpdate &node) override;
   void setReturnType(Env::Type type);
+  void setListener(Name::ResolverListener &listener);
 
 private:
   Env::Type visitExpression(const AST::Node &node);
   Checker checker;
-  Name::Resolver resolver;
+  Name::ResolverFactory resolverFactory;
   const Env::TypeLink &typeLink;
   Env::Type returnType;
 };
 
 class ExpressionVisitor : public AST::Visitor {
 public:
-  ExpressionVisitor(const Checker &checker, const Name::Resolver &resolver,
+  ExpressionVisitor(const Checker &checker,
+                    Name::ResolverFactory &resolverFactory,
                     const Env::TypeLink &typeLink);
   void visit(const AST::AssignmentExpression &node) override;
   void visit(const AST::BinaryExpression &node) override;
@@ -55,7 +57,7 @@ public:
 private:
   void setType(std::optional<Env::Type> result);
   const Checker &checker;
-  const Name::Resolver &resolver;
+  Name::ResolverFactory &resolverFactory;
   const Env::TypeLink &typeLink;
   Env::Type type{Env::TypeKeyword::None};
 };

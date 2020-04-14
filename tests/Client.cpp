@@ -157,13 +157,13 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
-    // SECTION("error") {
-    // for (const auto &group : a3Error) {
-    // SECTION(group[0]) {
-    // CHECK(client.compile(createMarmosetTest(3, group)));
-    //}
-    //}
-    //}
+    SECTION("error") {
+      for (const auto &group : a3Error) {
+        SECTION(group[0]) {
+          CHECK(client.compile(createMarmosetTest(3, group)));
+        }
+      }
+    }
   }
 
   SECTION("a4") {

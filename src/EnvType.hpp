@@ -38,6 +38,7 @@ struct Type {
   TypeKeyword keyword;
   const TypeDeclaration *declare;
   bool isArray;
+  bool isFinal = false;
   Type(TypeKeyword keyword = TypeKeyword::Void, bool isArray = false);
   explicit Type(const TypeDeclaration *declare, bool isArray = false);
   bool operator==(const Type &type) const;

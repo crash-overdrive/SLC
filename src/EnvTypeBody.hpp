@@ -73,6 +73,7 @@ std::ostream &operator<<(std::ostream &stream, const Constructor &constructor);
 
 class TypeBody {
 public:
+  const Field *findField(const std::string &identifier) const;
   const std::vector<Field> &getFields() const;
   bool addField(Field other);
 

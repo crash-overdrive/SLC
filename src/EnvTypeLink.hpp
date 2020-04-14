@@ -16,7 +16,8 @@ public:
   TypeDeclaration *find(const std::vector<std::string> &name) const;
   TypeDeclaration *find(const std::string &name) const;
   template <class InputIt>
-  std::pair<InputIt, TypeDeclaration *> find(InputIt first, InputIt last) const;
+  std::pair<InputIt, TypeDeclaration *> match(InputIt first,
+                                              InputIt last) const;
   bool belongSamePackage(const TypeDeclaration *decl) const;
 
 private:
