@@ -1,37 +1,62 @@
 #include "ASMStructuralLib.hpp"
 #include "ASMServices.hpp"
 
-namespace ASM{
+namespace ASM {
 
-StructuralLib::StructuralLib(AnonymousLabelService& label): label(label){}
+StructuralLib::StructuralLib(AnonymousLabelService &label) : label(label) {}
 
-std::string StructuralLib::IfThenElse(const std::string& condition, const std::string& s1, const std::string& s2){
-	std::string s2label = label.getUniqueLabel();
-	std::string end = label.getUniqueLabel();
-	std::string cmpNjmp = "cmp eax, 0; \nje " + s2label + "\n";
-	std::string jmp = "jmp " + end + "\n";
-	return condition + cmpNjmp + s1 + jmp + s2label + ":\n" + s2 + end + ":\n";
-}	
-
-std::string StructuralLib::WhileLoop(const std::string& condition, const std::string& statement){
-	std::string beg = label.getUniqueLabel();
-	std::string end = label.getUniqueLabel();
-
-	std::string cmpNjmp = "cmp eax, 0;\nje " + end + "\n";
-	std::string jmp = "jmp " + beg + "\n";
-
-	return beg + ":\n" + condition + cmpNjmp + statement + jmp + end + ":\n";
+std::string StructuralLib::IfThenElse(const std::string &condition,
+                                      const std::string &s1,
+                                      const std::string &s2) {
+  std::string s2label = label.getUniqueLabel();
+  std::string end = label.getUniqueLabel();
+  std::string cmpNjmp = "cmp eax, 0; \nje " + s2label + "\n";
+  std::string jmp = "jmp " + end + "\n";
+  return condition + cmpNjmp + s1 + jmp + s2label + ":\n" + s2 + end + ":\n";
 }
 
-std::string StructuralLib::ForLoop(const std::string& init, const std::string& condition, const std::string& increment, const std::string& statement){
-	std::string beg = label.getUniqueLabel();
-	std::string end = label.getUniqueLabel();
+std::string StructuralLib::WhileLoop(const std::string &condition,
+                                     const std::string &statement) {
+  std::string beg = label.getUniqueLabel();
+  std::string end = label.getUniqueLabel();
 
-	std::string cmpNjmp = "cmp eax, 0; \n je " + end + "\n";
-	std::string jmp = "jmp " + beg + "\n";
+  std::string cmpNjmp = "cmp eax, 0;\nje " + end + "\n";
+  std::string jmp = "jmp " + beg + "\n";
 
-	
-	return init + beg + ":\n" + condition + cmpNjmp + statement + increment + jmp + end + ":\n";
+  return beg + ":\n" + condition + cmpNjmp + statement + jmp + end + ":\n";
 }
 
+std::string StructuralLib::ForLoop(const std::string &init,
+                                   const std::string &condition,
+                                   const std::string &increment,
+                                   const std::string &statement) {
+  std::string beg = label.getUniqueLabel();
+  std::string end = label.getUniqueLabel();
+
+  std::string cmpNjmp = "cmp eax, 0; \n je " + end + "\n";
+  std::string jmp = "jmp " + beg + "\n";
+
+  return init + beg + ":\n" + condition + cmpNjmp + statement + increment +
+         jmp + end + ":\n";
 }
+
+std::ostream &printSection(std::ostream &ostream, const std::string &section) {
+  ostream << "section ." << section << '\n';
+  return ostream;
+}
+
+std::ostream &printLabel(std::ostream &ostream, const std::string &label) {
+  ostream << "global " << label << '\n' << label << ":\n";
+  return ostream;
+}
+
+std::ostream &printSysExit(std::ostream &ostream, unsigned int exitCode) {
+  ostream << "mov ebx, " << exitCode << "\nmov eax, 1\n int 0x80\n";
+  return ostream;
+}
+
+std::ostream &printFunctionPrologue(std::ostream &ostream) { return ostream; }
+
+std::ostream &printFunctionEpilogue(std::ostream &ostream) { return ostream; }
+
+} // namespace ASM
