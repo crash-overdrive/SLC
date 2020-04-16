@@ -1,5 +1,5 @@
-#ifndef ENVTYPECONTAIN
-#define ENVTYPECONTAIN
+#ifndef ENVTYPECONTAIN_HPP
+#define ENVTYPECONTAIN_HPP
 
 #include "EnvTypeBody.hpp"
 
@@ -71,4 +71,4 @@ private:
 
 } // namespace Env
 
-#endif // ENVTYPECONTAIN
+#endif // ENVTYPECONTAIN_HPP

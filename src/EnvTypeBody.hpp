@@ -35,6 +35,8 @@ struct Field {
   std::string identifier;
   const AST::FieldDeclaration *astNode;
   const TypeDeclaration *declaration;
+  std::string label;
+  off_t offset;
   Field(std::set<Modifier> modifiers, Type type, std::string identifier,
         const AST::FieldDeclaration *astNode = nullptr);
   bool operator==(const Field &field) const;
@@ -49,6 +51,8 @@ struct Method {
   std::vector<Type> args;
   const AST::MethodDeclaration *astNode;
   const TypeDeclaration *declaration;
+  std::string label;
+  off_t offset;
   Method() = default;
   Method(std::set<Modifier> modifiers, Type returnType, std::string identifier,
          std::vector<Type> args,
@@ -63,6 +67,8 @@ struct Constructor {
   std::string identifier;
   std::vector<Type> args;
   const AST::ConstructorDeclaration *astNode;
+  std::string label;
+  off_t offset;
   Constructor(std::set<Modifier> modifiers, std::string identifier,
               std::vector<Type> args,
               const AST::ConstructorDeclaration *astNode = nullptr);
