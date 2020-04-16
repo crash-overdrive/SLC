@@ -41,9 +41,9 @@ std::vector<std::string>::const_iterator FieldResolver::getFirst() const {
 }
 
 void FieldResolver::matchLocal() {
-  auto variableType = local.findVariable(*first);
-  if (variableType) {
-    type.emplace(*variableType);
+  auto variable = local.findVariable(*first);
+  if (variable) {
+    type.emplace(variable->type);
     ++first;
     listener.listenLocal();
     matchName();

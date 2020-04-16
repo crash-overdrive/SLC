@@ -28,7 +28,7 @@ void StatementVisitor::visit(const AST::VariableDeclaration &node) {
   dispatchChildren(node);
   auto variable = getLocal().getLastVariable();
   Env::Type expressionType{visitExpression(node)};
-  if (!checker.checkAssignment(variable.second, expressionType)) {
+  if (!checker.checkAssignment(variable.type, expressionType)) {
     setError();
   }
 }
