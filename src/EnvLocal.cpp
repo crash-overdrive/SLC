@@ -7,13 +7,7 @@ namespace Env {
 Variable::Variable(std::string identifier, Type type)
     : identifier(std::move(identifier)), type(std::move(type)) {}
 
-VariableTable::VariableTable(bool args) : args(args) {
-  if (args) {
-    offset = 12;
-  } else {
-    offset = -4;
-  }
-}
+VariableTable::VariableTable(bool args) : args(args) {}
 
 std::optional<Variable>
 VariableTable::findVariable(const std::string &identifier) const {
@@ -27,10 +21,13 @@ bool VariableTable::addVariable(std::string identifier, Type type) {
   if (!flag) {
     return false;
   }
-  it->second.offset = offset;
   if (args) {
-    offset += 4;
+    for (auto &[key, value] : variableMap) {
+      value.offset += 4;
+    }
+    it->second.offset = 12;
   } else {
+    it->second.offset = offset;
     offset -= 4;
   }
   return true;

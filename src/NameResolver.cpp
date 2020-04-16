@@ -3,7 +3,7 @@
 
 namespace Name {
 
-void ResolverListener::listenLocal() {}
+void ResolverListener::listenLocal(off_t) {}
 void ResolverListener::listenImplicit() {}
 void ResolverListener::listenField(const Env::Field &) {}
 void ResolverListener::listenStaticField(const Env::Field &) {}
@@ -45,7 +45,7 @@ void FieldResolver::matchLocal() {
   if (variable) {
     type.emplace(variable->type);
     ++first;
-    listener.listenLocal();
+    listener.listenLocal(variable->offset);
     matchName();
   } else {
     matchField();
