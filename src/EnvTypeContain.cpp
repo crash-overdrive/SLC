@@ -40,7 +40,7 @@ bool isReplace(const Method *derived, const Method *base) {
          base->modifiers.find(Modifier::Abstract) != base->modifiers.end();
 }
 
-ClassVTable::ClassVTable() { vTables.emplace_back(); }
+ClassVTable::ClassVTable() { addVTable(); }
 
 const Method *ClassVTable::findMethod(const std::string &identifier,
                                       const std::vector<Type> &args) const {
@@ -107,6 +107,20 @@ bool ClassVTable::hasAbstract() const {
 }
 
 void ClassVTable::addVTable() { vTables.emplace_back(); }
+
+void ClassVTable::updateOffset() {
+  off_t offset = 0;
+  for (auto &vTable : vTables) {
+    for (auto &method : vTable.methods) {
+      method->offset = offset;
+      offset += 4;
+    }
+    for (auto &field : vTable.fields) {
+      field->offset = offset;
+      offset += 4;
+    }
+  }
+}
 
 Selector::Selector(const Method *signature, const Method *implement)
     : signature(signature), implement(implement) {}
@@ -210,6 +224,15 @@ bool TypeContain::hasAbstract() const {
     }
   }
   return classVTable.hasAbstract();
+}
+
+void TypeContain::updateOffset() {
+  classVTable.updateOffset();
+  off_t offset = 0;
+  for (auto &objField : objFields) {
+    objField->offset = offset;
+    offset += 4;
+  }
 }
 
 void TypeContain::updateObjField(Field *field) {

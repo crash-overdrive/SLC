@@ -23,6 +23,7 @@ public:
   void update(Field *field);
   bool hasAbstract() const;
   void addVTable();
+  void updateOffset();
 
 private:
   struct VTable {
@@ -57,6 +58,7 @@ public:
   const Method *findMethod(const std::string &identifier,
                            const std::vector<Type> &args) const;
   bool hasAbstract() const;
+  void updateOffset();
 
 private:
   void updateObjField(Field *field);

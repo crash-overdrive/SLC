@@ -139,6 +139,24 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
     REQUIRE(contain.addDeclare(&method));
     REQUIRE(contain.hasAbstract());
   }
+
+  SECTION("offset update") {
+    Env::Method method3(method);
+    method3.identifier = "boo";
+    REQUIRE(contain.addDeclare(&method3));
+    REQUIRE(contain.addDeclare(&method));
+    contain.updateOffset();
+    REQUIRE(method3.offset == 0);
+    REQUIRE(method.offset == 4);
+
+    // Override
+    Env::Method method2(method);
+    REQUIRE(contain.addDeclare(&method2));
+    contain.updateOffset();
+    REQUIRE(method3.offset == 0);
+    REQUIRE(method2.offset == 4);
+    REQUIRE(method.offset == 4);
+  }
 }
 
 TEST_CASE("EnvJoosContain find methods", "[EnvTypeContainFind]") {
