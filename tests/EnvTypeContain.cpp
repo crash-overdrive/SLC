@@ -16,53 +16,53 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
   SECTION("override signature different return") {
     Env::Method method2(method);
     method2.returnType = stringType;
-    contain.inheritMethod(&method2);
-    REQUIRE_FALSE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE_FALSE(contain.addDeclare(&method));
   }
 
   SECTION("override static method with non-static") {
     Env::Method method2(method);
     method2.modifiers = {Env::Modifier::Static};
-    contain.inheritMethod(&method2);
-    REQUIRE_FALSE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE_FALSE(contain.addDeclare(&method));
   }
 
   SECTION("override non-static method with static") {
     Env::Method method2(method);
     method.modifiers = {Env::Modifier::Static};
-    contain.inheritMethod(&method2);
-    REQUIRE_FALSE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE_FALSE(contain.addDeclare(&method));
   }
 
   SECTION("override public with protected") {
     Env::Method method2(method);
     method2.modifiers = {Env::Modifier::Public};
     method.modifiers = {Env::Modifier::Protected};
-    contain.inheritMethod(&method2);
-    REQUIRE_FALSE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE_FALSE(contain.addDeclare(&method));
   }
 
   SECTION("override protected with public") {
     Env::Method method2(method);
     method2.modifiers = {Env::Modifier::Protected};
     method.modifiers = {Env::Modifier::Public};
-    contain.inheritMethod(&method2);
-    REQUIRE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE(contain.addDeclare(&method));
   }
 
   SECTION("override final method") {
     Env::Method method2(method);
     method2.modifiers = {Env::Modifier::Final};
-    contain.inheritMethod(&method2);
-    REQUIRE_FALSE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE_FALSE(contain.addDeclare(&method));
   }
 
   SECTION("find override") {
     auto astNode = std::make_unique<AST::MethodDeclaration>();
     method.astNode = astNode.get();
     Env::Method method2(method);
-    contain.inheritMethod(&method2);
-    REQUIRE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE(contain.addDeclare(&method));
 
     const Env::Method *foundmethod =
         contain.findMethod(method2.identifier, method2.args);
@@ -77,8 +77,8 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
     method2.astNode = astNode2.get();
     method2.args.emplace_back(Env::TypeKeyword::Integer);
 
-    contain.inheritMethod(&method2);
-    REQUIRE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE(contain.addDeclare(&method));
 
     const Env::Method *foundmethod =
         contain.findMethod(method2.identifier, method2.args);
@@ -93,9 +93,8 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
     method3.identifier = "bar";
     method3.modifiers = {Env::Modifier::Abstract};
 
-    contain.inheritMethod(&method2);
-    contain.inheritMethod(&method3);
-    REQUIRE(contain.addDeclareMethod(&method));
+    REQUIRE(contain.addDeclare(&method3));
+    REQUIRE(contain.addDeclare(&method2));
 
     const Env::Method *foundmethod =
         contain.findMethod(method2.identifier, method2.args);
@@ -110,9 +109,9 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
     method3.identifier = "bar";
     method3.modifiers = {Env::Modifier::Abstract};
 
-    contain.inheritMethod(&method2);
-    contain.inheritMethod(&method3);
-    REQUIRE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    contain.addDeclare(&method3);
+    REQUIRE(contain.addDeclare(&method));
 
     const Env::Method *foundmethod =
         contain.findMethod(method2.identifier, method2.args);
@@ -125,8 +124,8 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
     method.modifiers = {Env::Modifier::Abstract};
     method2.modifiers.clear();
 
-    contain.inheritMethod(&method2);
-    REQUIRE(contain.addDeclareMethod(&method));
+    contain.addDeclare(&method2);
+    REQUIRE(contain.addDeclare(&method));
 
     const Env::Method *foundmethod =
         contain.findMethod(method2.identifier, method2.args);
@@ -137,7 +136,7 @@ TEST_CASE("EnvTypeContain created from Env", "[EnvTypeContain]") {
   SECTION("has abstract") {
     REQUIRE_FALSE(contain.hasAbstract());
     method.modifiers = {Env::Modifier::Abstract};
-    REQUIRE(contain.addDeclareMethod(&method));
+    REQUIRE(contain.addDeclare(&method));
     REQUIRE(contain.hasAbstract());
   }
 }
@@ -153,7 +152,7 @@ TEST_CASE("EnvJoosContain find methods", "[EnvTypeContainFind]") {
       stringType,
       "str",
       nullptr};
-  contain.addDeclareField(&field);
+  contain.addDeclare(&field);
 
   Env::Method method{
       {Env::Modifier::Protected, Env::Modifier::Final, Env::Modifier::Static},
@@ -166,7 +165,7 @@ TEST_CASE("EnvJoosContain find methods", "[EnvTypeContainFind]") {
           Env::TypeKeyword::Character,
       },
       nullptr};
-  contain.addDeclareMethod(&method);
+  contain.addDeclare(&method);
 
   SECTION("Field find successful") {
     std::set<Env::Modifier> modifiers = {

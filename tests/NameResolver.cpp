@@ -19,7 +19,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("Single Identifier") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
-    listDecl.contain.addDeclareField(&field);
+    listDecl.contain.addDeclare(&field);
     REQUIRE(fieldResolver.match({"foo"}) == Env::TypeKeyword::Integer);
 
     local.addVariable("foo", Env::TypeKeyword::Boolean);
@@ -30,41 +30,41 @@ TEST_CASE("Resolve names", "[NameResolver]") {
   SECTION("Static cannot resolve to non-static") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
-    listDecl.contain.addDeclareField(&field);
+    listDecl.contain.addDeclare(&field);
     REQUIRE_FALSE(fieldResolver.match({"List", "foo"}));
   }
 
   SECTION("Static field can be called") {
     Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
-    listDecl.contain.addDeclareField(&field);
+    listDecl.contain.addDeclare(&field);
     REQUIRE(fieldResolver.match({"List", "foo"}));
   }
 
   SECTION("Static field cannot be called implicit") {
     Env::Field field({Env::Modifier::Static}, Env::TypeKeyword::Integer, "foo");
     field.declaration = &listDecl;
-    listDecl.contain.addDeclareField(&field);
+    listDecl.contain.addDeclare(&field);
     REQUIRE_FALSE(fieldResolver.match({"foo"}));
   }
 
   SECTION("Local Variable field") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
-    listDecl.contain.addDeclareField(&field);
+    listDecl.contain.addDeclare(&field);
     local.addVariable("list", listType);
     REQUIRE(fieldResolver.match({"list", "foo"}));
   }
 
   SECTION("Static cannot call non-static") {
     Env::Method method({}, Env::TypeKeyword::Integer, "foo", {});
-    listDecl.contain.addDeclareMethod(&method);
+    listDecl.contain.addDeclare(&method);
     REQUIRE_FALSE(methodResolver.match({"List", "foo"}));
   }
 
   SECTION("Static cannot be called implicitly") {
     Env::Method method({Env::Modifier::Static}, Env::TypeKeyword::Integer,
                        "foo", {});
-    listDecl.contain.addDeclareMethod(&method);
+    listDecl.contain.addDeclare(&method);
     REQUIRE_FALSE(methodResolver.match({"foo"}));
   }
 
@@ -72,7 +72,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Method method({Env::Modifier::Static}, Env::TypeKeyword::Integer,
                        "foo", {});
     method.declaration = &listDecl;
-    listDecl.contain.addDeclareMethod(&method);
+    listDecl.contain.addDeclare(&method);
     REQUIRE(methodResolver.match({"List", "foo"}));
   }
 
@@ -80,7 +80,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
     field.declaration = &listDecl;
-    listDecl.contain.addDeclareField(&field);
+    listDecl.contain.addDeclare(&field);
     local.addVariable("list", listType);
     REQUIRE(fieldResolver.match({"list", "foo"}));
   }
@@ -90,7 +90,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
     field.declaration = &arrayDecl;
-    arrayDecl.contain.addDeclareField(&field);
+    arrayDecl.contain.addDeclare(&field);
     tree->update({"bar"}, arrayDecl);
 
     local.addVariable("array", arrayType);
@@ -101,7 +101,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Field field({Env::Modifier::Protected}, Env::TypeKeyword::Integer,
                      "foo");
     field.declaration = &listDecl;
-    arrayDecl.contain.addDeclareField(&field);
+    arrayDecl.contain.addDeclare(&field);
     arrayDecl.subType.emplace(&listDecl);
     local.addVariable("array", arrayType);
     REQUIRE(fieldResolver.match({"array", "foo"}));
@@ -111,7 +111,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Field field({Env::Modifier::Static, Env::Modifier::Protected},
                      Env::TypeKeyword::Integer, "foo");
     field.declaration = &arrayDecl;
-    arrayDecl.contain.addDeclareField(&field);
+    arrayDecl.contain.addDeclare(&field);
     tree->update({"bar"}, arrayDecl);
     REQUIRE_FALSE(fieldResolver.match({"bar", "Array", "foo"}));
   }
@@ -120,7 +120,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
     Env::Field field({Env::Modifier::Static, Env::Modifier::Public},
                      Env::TypeKeyword::Integer, "foo");
     field.declaration = &arrayDecl;
-    arrayDecl.contain.addDeclareField(&field);
+    arrayDecl.contain.addDeclare(&field);
     tree->update({"bar"}, arrayDecl);
     REQUIRE(fieldResolver.match({"bar", "Array", "foo"}));
   }
