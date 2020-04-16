@@ -74,10 +74,10 @@ std::ostream &operator<<(std::ostream &stream, const Constructor &constructor);
 class TypeBody {
 public:
   const Field *findField(const std::string &identifier) const;
-  const std::vector<Field> &getFields() const;
+  std::vector<Field> &getFields();
   bool addField(Field other);
 
-  const std::vector<Method> &getMethods() const;
+  std::vector<Method> &getMethods();
   bool addMethod(Method other);
 
   const Constructor *findConstructors(const std::vector<Env::Type> &args) const;

@@ -98,7 +98,7 @@ const Field *TypeBody::findField(const std::string &identifier) const {
   return nullptr;
 }
 
-const std::vector<Field> &TypeBody::getFields() const { return fields; }
+std::vector<Field> &TypeBody::getFields() { return fields; }
 
 bool TypeBody::addField(Field other) {
   for (auto const &field : fields) {
@@ -110,7 +110,7 @@ bool TypeBody::addField(Field other) {
   return true;
 }
 
-const std::vector<Method> &TypeBody::getMethods() const { return methods; }
+std::vector<Method> &TypeBody::getMethods() { return methods; }
 
 bool TypeBody::addMethod(Method other) {
   for (auto const &method : methods) {

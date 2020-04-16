@@ -15,7 +15,7 @@ bool InterfaceHierarchy::addExtends(const TypeDeclaration *decl) {
   return flag;
 }
 
-bool InterfaceHierarchy::setBaseObject(const TypeDeclaration *base) {
+bool InterfaceHierarchy::setBaseObject(TypeDeclaration *base) {
   if (!extends.empty()) {
     return true;
   }
@@ -43,7 +43,7 @@ void InterfaceHierarchy::buildSubType() const {
   decl.subType.emplace(&decl);
 }
 
-bool InterfaceHierarchy::buildContains() const {
+bool InterfaceHierarchy::buildContains() {
   decl.body.setAbstract();
   for (const auto &extend : extends) {
     if (!decl.contain.mergeContain(extend->contain)) {
@@ -52,7 +52,7 @@ bool InterfaceHierarchy::buildContains() const {
   }
   for (const auto &method : decl.body.getMethods()) {
     // Interface cannot override getclass method
-    if (isGetClass(method) || !decl.contain.addDeclareMethod(&method)) {
+    if (isGetClass(method) || !decl.contain.mergeInterfaceMethod(&method)) {
       return false;
     }
   }
@@ -65,7 +65,7 @@ bool InterfaceHierarchy::isGetClass(const Method &method) {
 
 ClassHierarchy::ClassHierarchy(TypeDeclaration &decl) : decl(decl) {}
 
-bool ClassHierarchy::setExtends(const TypeDeclaration *decl) {
+bool ClassHierarchy::setExtends(TypeDeclaration *decl) {
   if (decl->keyword != DeclarationKeyword::Class ||
       decl->modifiers.find(Modifier::Final) != decl->modifiers.end()) {
     return false;
@@ -82,7 +82,7 @@ bool ClassHierarchy::addImplements(const TypeDeclaration *decl) {
   return flag;
 }
 
-bool ClassHierarchy::setBaseObject(const TypeDeclaration *base) {
+bool ClassHierarchy::setBaseObject(TypeDeclaration *base) {
   if (!extends && base->astNode != decl.astNode) {
     extends = base;
   }
@@ -99,20 +99,20 @@ void ClassHierarchy::buildSubType() const {
   decl.subType.emplace(&decl);
 }
 
-bool ClassHierarchy::buildContains() const {
-  if (extends && !decl.contain.mergeContain(extends->contain)) {
-    return false;
+bool ClassHierarchy::buildContains() {
+  if (extends) {
+    decl.contain.inheritContain(extends->contain);
   }
   for (const auto &implement : implements) {
     if (!decl.contain.mergeContain(implement->contain)) {
       return false;
     }
   }
-  for (const auto &field : decl.body.getFields()) {
-    decl.contain.addDeclareField(&field);
+  for (auto &field : decl.body.getFields()) {
+    decl.contain.addDeclare(&field);
   }
-  for (const auto &method : decl.body.getMethods()) {
-    if (!decl.contain.addDeclareMethod(&method)) {
+  for (auto &method : decl.body.getMethods()) {
+    if (!decl.contain.addDeclare(&method)) {
       return false;
     }
   }

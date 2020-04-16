@@ -13,8 +13,8 @@ class Hierarchy {
 public:
   virtual ~Hierarchy() = default;
   virtual void buildSubType() const = 0;
-  virtual bool buildContains() const = 0;
-  virtual bool setBaseObject(const TypeDeclaration *base) = 0;
+  virtual bool buildContains() = 0;
+  virtual bool setBaseObject(TypeDeclaration *base) = 0;
 };
 
 class InterfaceHierarchy : public Hierarchy {
@@ -22,9 +22,9 @@ public:
   explicit InterfaceHierarchy(TypeDeclaration &decl);
   bool addExtends(const TypeDeclaration *decl);
 
-  bool setBaseObject(const TypeDeclaration *base) override;
+  bool setBaseObject(TypeDeclaration *base) override;
   void buildSubType() const override;
-  bool buildContains() const override;
+  bool buildContains() override;
 
 private:
   friend HierarchyGraph;
@@ -38,17 +38,17 @@ private:
 class ClassHierarchy : public Hierarchy {
 public:
   explicit ClassHierarchy(TypeDeclaration &decl);
-  bool setExtends(const TypeDeclaration *decl);
+  bool setExtends(TypeDeclaration *decl);
   bool addImplements(const TypeDeclaration *decl);
 
-  bool setBaseObject(const TypeDeclaration *base) override;
+  bool setBaseObject(TypeDeclaration *base) override;
   void buildSubType() const override;
-  bool buildContains() const override;
+  bool buildContains() override;
 
 private:
   friend HierarchyGraph;
   TypeDeclaration &decl;
-  const TypeDeclaration *extends = nullptr;
+  TypeDeclaration *extends = nullptr;
   std::unordered_set<const TypeDeclaration *> implements;
 };
 
