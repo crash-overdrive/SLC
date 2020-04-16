@@ -3,12 +3,16 @@
 
 #include "EnvTypeContain.hpp"
 
+namespace CodeGen {
+
 class InterfaceOffsetGenerator {
 public:
-  void generateInterfaceMethod(Env::Method &method);
+  void update(Env::Method &method);
+  size_t getSize() const;
 
 private:
-  std::vector<Env::Method> interfaceMethods;
+  std::vector<std::reference_wrapper<Env::Method>> baseMethods;
+  off_t offset = 0;
 };
 
 } // namespace CodeGen
