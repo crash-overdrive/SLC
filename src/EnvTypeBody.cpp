@@ -112,6 +112,8 @@ bool TypeBody::addField(Field other) {
 
 std::vector<Method> &TypeBody::getMethods() { return methods; }
 
+const std::vector<Method> &TypeBody::getMethods() const { return methods; }
+
 bool TypeBody::addMethod(Method other) {
   for (auto const &method : methods) {
     if (method == other) {

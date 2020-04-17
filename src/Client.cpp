@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
+#include "CodeGenStart.hpp"
 #include "EnvLocal.hpp"
 #include "TypeCheckerVisitor.hpp"
 #include <fstream>
@@ -479,9 +480,30 @@ void Client::typeCheck() {
         return;
       }
     }
-    if (breakPoint != TypeCheck) {
-    }
   }
+  if (breakPoint != TypeCheck) {
+    codeGen();
+  }
+}
+
+void Client::codeGen() {
+  CodeGen::prepareOutput();
+
+  std::ofstream ofstream;
+  std::streambuf *buf = nullptr;
+  if (printPoints.find(CodeGen) != printPoints.end()) {
+    buf = std::cerr.rdbuf();
+  }
+
+  if (!buf) {
+    ofstream.close();
+    ofstream.open(CodeGen::outputStart);
+    buf = ofstream.rdbuf();
+  }
+  std::ostream ostream(buf);
+  CodeGen::StartGenerator startGenerator(ostream);
+  startGenerator.generateHeader();
+  startGenerator.generateEntry();
 }
 
 std::unique_ptr<AST::Start> Client::buildAST(std::string fullName) {

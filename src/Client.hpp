@@ -21,6 +21,7 @@ public:
     LocalVariable,
     Hierarchy,
     TypeCheck,
+    CodeGen,
     None,
   };
 
@@ -48,6 +49,7 @@ public:
   void localVariableAnalysis();
   void buildHierarchy();
   void typeCheck();
+  void codeGen();
 
   // buildAST is for debugging and testing
   std::unique_ptr<AST::Start> buildAST(std::string fullName);
