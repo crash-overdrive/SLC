@@ -84,6 +84,7 @@ public:
   bool addField(Field other);
 
   std::vector<Method> &getMethods();
+  const std::vector<Method> &getMethods() const;
   bool addMethod(Method other);
 
   const Constructor *findConstructors(const std::vector<Env::Type> &args) const;

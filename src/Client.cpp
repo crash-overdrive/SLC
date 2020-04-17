@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
+#include "CodeGenStart.hpp"
 #include "EnvLocal.hpp"
 #include "TypeCheckerVisitor.hpp"
 #include <fstream>
@@ -65,9 +66,6 @@ void Client::verifyFileName(std::string fullName) {
     std::cerr << fileName << " is invalid\n";
     errorState = true;
     return;
-  }
-  if (printPoints.size() > 0) {
-    std::cerr << fullName << '\n';
   }
   if (breakPoint != VerifyName) {
     openFile(std::move(fullName));
@@ -479,9 +477,59 @@ void Client::typeCheck() {
         return;
       }
     }
-    if (breakPoint != TypeCheck) {
+  }
+  if (breakPoint != TypeCheck) {
+    codeGen();
+  }
+}
+
+void Client::codeGen() {
+  CodeGen::prepareOutput();
+
+  std::streambuf *buf = nullptr;
+  if (printPoints.find(CodeGen) != printPoints.end()) {
+    buf = std::cerr.rdbuf();
+  }
+  codeGenFiles(buf);
+  codeGenStart(buf);
+}
+
+void Client::codeGenFiles(std::streambuf *log) const {
+  std::streambuf *buf = log;
+  for (const auto &environment : environments) {
+    std::ofstream ofstream;
+    if (!log) {
+      ofstream.open(CodeGen::getASMFile(environment.fullName));
+      buf = ofstream.rdbuf();
+    }
+    std::ostream ostream(buf);
+    if (log) {
+      ostream << "--------";
+      ostream << CodeGen::getASMFile(environment.fullName);
+      ostream << "--------\n";
     }
   }
+}
+
+void Client::codeGenStart(std::streambuf *log) const {
+  std::streambuf *buf = log;
+  std::ofstream ofstream;
+  if (!log) {
+    ofstream.open(CodeGen::outputStart);
+    buf = ofstream.rdbuf();
+  }
+  std::ostream ostream(buf);
+  if (log) {
+    ostream << "--------";
+    ostream << CodeGen::outputStart;
+    ostream << "--------\n";
+  }
+  CodeGen::StartGenerator startGenerator(ostream);
+  for (const auto &environment : environments) {
+    startGenerator.generateStaticInit(environment.decl.body);
+  }
+  startGenerator.generateHeader();
+  startGenerator.generateEntry();
 }
 
 std::unique_ptr<AST::Start> Client::buildAST(std::string fullName) {
