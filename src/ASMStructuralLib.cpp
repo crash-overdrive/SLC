@@ -45,6 +45,11 @@ std::ostream &printDataSection(std::ostream &ostream) {
   return ostream;
 }
 
+std::ostream &printTextSection(std::ostream &ostream) {
+  ostream << "section .text\n";
+  return ostream;
+}
+
 std::ostream &printLabel(std::ostream &ostream, const std::string &label) {
   ostream << "global " << label << '\n';
   ostream << label << ":\n";

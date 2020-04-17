@@ -23,6 +23,7 @@ public:
 };
 
 std::ostream &printDataSection(std::ostream &ostream);
+std::ostream &printTextSection(std::ostream &ostream);
 std::ostream &printLabel(std::ostream &ostream, const std::string &label);
 std::ostream &printExit(std::ostream &ostream);
 

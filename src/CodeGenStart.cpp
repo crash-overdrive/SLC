@@ -15,7 +15,7 @@ std::string getASMFile(const std::string &fullName) {
 StartGenerator::StartGenerator(std::ostream &ostream) : ostream(ostream) {}
 
 void StartGenerator::generateHeader() {
-  ASM::printDataSection(ostream);
+  ASM::printTextSection(ostream);
   ASM::printLabel(ostream, "_start");
 }
 

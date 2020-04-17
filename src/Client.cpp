@@ -67,9 +67,6 @@ void Client::verifyFileName(std::string fullName) {
     errorState = true;
     return;
   }
-  if (printPoints.size() > 0) {
-    std::cerr << fullName << '\n';
-  }
   if (breakPoint != VerifyName) {
     openFile(std::move(fullName));
   }
@@ -506,16 +503,27 @@ void Client::codeGenFiles(std::streambuf *log) const {
       buf = ofstream.rdbuf();
     }
     std::ostream ostream(buf);
+    if (log) {
+      ostream << "--------";
+      ostream << CodeGen::getASMFile(environment.fullName);
+      ostream << "--------\n";
+    }
   }
 }
 
-void Client::codeGenStart(std::streambuf *buf) const {
+void Client::codeGenStart(std::streambuf *log) const {
+  std::streambuf *buf = log;
   std::ofstream ofstream;
-  if (!buf) {
+  if (!log) {
     ofstream.open(CodeGen::outputStart);
     buf = ofstream.rdbuf();
   }
   std::ostream ostream(buf);
+  if (log) {
+    ostream << "--------";
+    ostream << CodeGen::outputStart;
+    ostream << "--------\n";
+  }
   CodeGen::StartGenerator startGenerator(ostream);
   for (const auto &environment : environments) {
     startGenerator.generateStaticInit(environment.decl.body);
