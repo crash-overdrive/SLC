@@ -489,19 +489,37 @@ void Client::typeCheck() {
 void Client::codeGen() {
   CodeGen::prepareOutput();
 
-  std::ofstream ofstream;
   std::streambuf *buf = nullptr;
   if (printPoints.find(CodeGen) != printPoints.end()) {
     buf = std::cerr.rdbuf();
   }
+  codeGenFiles(buf);
+  codeGenStart(buf);
+}
 
+void Client::codeGenFiles(std::streambuf *log) const {
+  std::streambuf *buf = log;
+  for (const auto &environment : environments) {
+    std::ofstream ofstream;
+    if (!log) {
+      ofstream.open(CodeGen::getASMFile(environment.fullName));
+      buf = ofstream.rdbuf();
+    }
+    std::ostream ostream(buf);
+  }
+}
+
+void Client::codeGenStart(std::streambuf *buf) const {
+  std::ofstream ofstream;
   if (!buf) {
-    ofstream.close();
     ofstream.open(CodeGen::outputStart);
     buf = ofstream.rdbuf();
   }
   std::ostream ostream(buf);
   CodeGen::StartGenerator startGenerator(ostream);
+  for (const auto &environment : environments) {
+    startGenerator.generateStaticInit(environment.decl.body);
+  }
   startGenerator.generateHeader();
   startGenerator.generateEntry();
 }

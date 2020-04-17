@@ -9,7 +9,7 @@ void prepareOutput() { std::filesystem::create_directory(outputDirectory); }
 std::string getASMFile(const std::string &fullName) {
   std::string fileName = fullName.substr(fullName.find_last_of('/') + 1);
   fileName.erase(fileName.find("."));
-  return outputDirectory + '/' + fileName + ".s";
+  return outputDirectory + '/' + fileName + ".asm";
 }
 
 StartGenerator::StartGenerator(std::ostream &ostream) : ostream(ostream) {}

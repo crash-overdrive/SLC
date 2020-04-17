@@ -55,7 +55,6 @@ public:
   std::unique_ptr<AST::Start> buildAST(std::string fullName);
 
 private:
-  std::shared_ptr<Env::PackageTree> tree = std::make_shared<Env::PackageTree>();
   struct Environment {
     Env::TypeDeclaration decl;
     Env::TypeLink typeLink;
@@ -63,6 +62,7 @@ private:
     Environment(Env::TypeDeclaration decl,
                 std::shared_ptr<Env::PackageTree> tree, std::string fullName);
   };
+  std::shared_ptr<Env::PackageTree> tree = std::make_shared<Env::PackageTree>();
   std::vector<Environment> environments;
 
   std::unique_ptr<Lex::Scanner> scanner;
@@ -72,6 +72,10 @@ private:
                            Environment &environment);
   bool buildInterfaceHierarchy(Env::HierarchyGraph &graph,
                                Environment &environment);
+
+  void codeGenFiles(std::streambuf *log) const;
+  void codeGenStart(std::streambuf *buf) const;
+
   std::unique_ptr<AST::Start> logAstRoot;
   BreakPointType breakPoint{None};
   std::unordered_set<BreakPointType> printPoints;
