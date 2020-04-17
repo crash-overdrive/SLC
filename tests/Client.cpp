@@ -48,6 +48,15 @@ TEST_CASE("client process", "[client]") {
       }
     }
 
+    SECTION("error-weed") {
+      client.setBreakPoint(Client::Weed);
+      for (const auto &fileName : a1ErrorWeed) {
+        SECTION(fileName) {
+          REQUIRE_FALSE(client.compile(createMarmosetTest(1, {fileName})));
+        }
+      }
+    }
+
     SECTION("accept") {
       for (const auto &fileName : a1Valid) {
         SECTION(fileName) {

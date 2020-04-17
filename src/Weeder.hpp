@@ -45,6 +45,21 @@ private:
   // bool noExplicitThisOrSuperCallsInMethodOrConstructors();
 };
 
+class MethodBodyVisitor : public AST::Visitor {
+public:
+  MethodBodyVisitor();
+  void visit(const AST::MethodDeclaration &methodDeclaration) override;
+  void visit(const AST::Block &block) override;
+  bool isBlockPresentInMethod();
+private:
+  bool isBlockFound;
+};
+
+class LiteralVisitor : public AST::TrackVisitor {
+public:
+  void visit(const AST::DecIntLiteral &decIntLiteral) override;
+};
+
 } // namespace Weed
 
 #endif

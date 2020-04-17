@@ -119,15 +119,35 @@ bool Weeder::interfaceMethodNotStaticNorFinalNorNative() {
 }
 
 bool Weeder::methodBodyExistsIffNotAbstractNorNative() {
-  // std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
-  // for (auto const &method : methods) {
-  //   std::set<Env::Modifier> methodModifiers = method.modifiers;
-  //   bool isAbstract =
-  //       (methodModifiers.find(Env::Modifier::Abstract) != methodModifiers.end());
-  //   bool isNative =
-  //       (methodModifiers.find(Env::Modifier::Native) != methodModifiers.end());
+  if (typeDeclaration.keyword == Env::DeclarationKeyword::Class) {
+    std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+    for (auto const &method : methods) {
+      std::set<Env::Modifier> methodModifiers = method.modifiers;
+      bool isAbstract =
+          (methodModifiers.find(Env::Modifier::Abstract) != methodModifiers.end());
+      bool isNative =
+          (methodModifiers.find(Env::Modifier::Native) != methodModifiers.end());
 
-  // }
+      MethodBodyVisitor visitor;
+      method.astNode->accept(visitor);
+      bool isBodyPresent = visitor.isBlockPresentInMethod();
+
+      if (isAbstract == false && isNative == false) {
+        if (isBodyPresent == false) {
+          std::cerr << "Non-Abstract/Non-Native methods must have a body, method: "
+                    << method.identifier << ", in file: " << fileName << '\n';
+          return false;
+        }
+      }
+      else { // method is either Abstract or Native
+        if (isBodyPresent == true) {
+          std::cerr << "Abstract/Native methods can not have a body, method: "
+                    << method.identifier << ", in file: " << fileName << '\n';
+          return false;
+        }
+      }
+    }
+  }
   return true;
 }
 
@@ -210,5 +230,55 @@ bool Weeder::fieldNotFinal() {
 }
 
 bool Weeder::verifyLiterals() { return true; }
+
+bool Weeder::integerLiteralInRange() {
+  for (const auto &constructor : typeDeclaration.body.getConstructors()) {
+    LiteralVisitor visitor;
+    constructor.astNode->accept(visitor);
+    if (visitor.isErrorState()) {
+      std::cerr << "Integer Literal out of range in constructor: " <<
+        constructor.identifier << ", in file: " << fileName << '\n';
+      return false;
+    }
+  }
+
+  std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+  for (auto const &method : methods) {
+    LiteralVisitor visitor;
+    method.astNode->accept(visitor);
+    if (visitor.isErrorState()) {
+      std::cerr << "Integer Literal out of range in method: " <<
+        method.identifier << ", in file: " << fileName << '\n';
+      return false;
+    }
+  }
+
+  return true;
+}
+
+MethodBodyVisitor::MethodBodyVisitor() : isBlockFound(false) {}
+
+void MethodBodyVisitor::visit(const AST::MethodDeclaration &methodDeclaration) {
+  dispatchChildren(methodDeclaration);
+}
+
+void MethodBodyVisitor::visit(const AST::Block &block) {
+  (void)block;
+  isBlockFound = true;
+}
+
+bool MethodBodyVisitor::isBlockPresentInMethod() {
+  return isBlockFound;
+}
+
+void LiteralVisitor::visit(const AST::DecIntLiteral &decIntLiteral) {
+  std::string stringLiteral = decIntLiteral.getLiteral();
+  long long literal = std::stoll(stringLiteral);
+
+  if (literal >= 2147483648) {
+    std::cerr << literal << " is out of int range\n";
+    setError();
+  }
+}
 
 } // namespace Weed
