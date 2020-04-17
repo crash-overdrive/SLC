@@ -7,12 +7,12 @@ namespace Weed {
 
 class Weeder {
 public:
-  Weeder(const Env::TypeDeclaration &typeDeclaration, const std::string &fileName);
+  Weeder(Env::TypeDeclaration &typeDeclaration, std::string &fileName);
   bool verify();
 
 private:
-  const Env::TypeDeclaration &typeDeclaration;
-  const std::string &fileName;
+  Env::TypeDeclaration &typeDeclaration;
+  std::string &fileName;
 
   bool verifyType();
   bool typeNameSameAsFileName();
@@ -20,8 +20,10 @@ private:
 
   bool verifyConstructors();
   bool classContainsConstructor();
+  bool constructorHasCorrectIdentifier();
 
   bool verifyMethods();
+  bool methodIsNotPackagePrivate();
   bool interfaceMethodNotStaticNorFinalNorNative();
   bool methodBodyExistsIffNotAbstractNorNative();
   bool abstractMethodNotStaticNorFinal();

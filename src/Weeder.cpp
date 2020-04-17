@@ -1,8 +1,9 @@
+#include "EnvTypeBody.hpp"
 #include "Weeder.hpp"
 
 namespace Weed {
 
-Weeder::Weeder(const Env::TypeDeclaration &typeDeclaration, const std::string &fileName)
+Weeder::Weeder(Env::TypeDeclaration &typeDeclaration, std::string &fileName)
     : typeDeclaration(typeDeclaration), fileName(fileName) {}
 
 bool Weeder::verify() {
@@ -42,11 +43,12 @@ bool Weeder::classNotAbstractAndFinal() {
   return true;
 }
 
-bool Weeder::verifyConstructors() { return classContainsConstructor(); }
+bool Weeder::verifyConstructors() { return classContainsConstructor() &&
+                                          constructorHasCorrectIdentifier(); }
 
 bool Weeder::classContainsConstructor() {
   if (typeDeclaration.keyword == Env::DeclarationKeyword::Class) {
-    int numberOfConstructors = joosType.declare.getConstructors().size();
+    size_t numberOfConstructors = typeDeclaration.body.getConstructors().size();
     if (numberOfConstructors == 0) {
       std::cerr
           << "Class should have atleast one explicit constructor, in file: "
@@ -57,13 +59,46 @@ bool Weeder::classContainsConstructor() {
   return true;
 }
 
+bool Weeder::constructorHasCorrectIdentifier() {
+  for (const auto &constructor : typeDeclaration.body.getConstructors()) {
+    if (constructor.identifier != typeDeclaration.identifier) {
+      std::cerr << "Constructor has incorrect identifier, expected: " <<
+                typeDeclaration.identifier << ", got: " << constructor.identifier << "\n";
+      return false;
+    }
+  }
+  return true;
+}
+
 bool Weeder::verifyMethods() {
-  return interfaceMethodNotStaticNorFinalNorNative();
+  return methodIsNotPackagePrivate() &&
+        interfaceMethodNotStaticNorFinalNorNative() &&
+        methodBodyExistsIffNotAbstractNorNative() &&
+        abstractMethodNotStaticNorFinal() &&
+        staticMethodNotFinal() &&
+        nativeMethodIsStatic();
+}
+
+bool Weeder::methodIsNotPackagePrivate() {
+  std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+  for (auto const &method : methods) {
+    std::set<Env::Modifier> methodModifiers = method.modifiers;
+    bool isPublic = (methodModifiers.find(Env::Modifier::Public) !=
+                       methodModifiers.end());
+    bool isProtected = (methodModifiers.find(Env::Modifier::Protected) !=
+                       methodModifiers.end());
+    if (!(isPublic || isProtected)) {
+      std::cerr << "Method can not be package private, method: " <<
+      method.identifier << ", in file: " << fileName << '\n';
+      return false;
+    }
+  }
+  return true;
 }
 
 bool Weeder::interfaceMethodNotStaticNorFinalNorNative() {
   if (typeDeclaration.keyword == Env::DeclarationKeyword::Interface) {
-    std::vector<Env::JoosMethod> methods = joosType.declare.getMethods();
+    std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
     for (auto const &method : methods) {
       std::set<Env::Modifier> methodModifiers = method.modifiers;
       bool isStatic = (methodModifiers.find(Env::Modifier::Static) !=
@@ -83,7 +118,96 @@ bool Weeder::interfaceMethodNotStaticNorFinalNorNative() {
   return true;
 }
 
-bool Weeder::verifyFields() { return true; }
+bool Weeder::methodBodyExistsIffNotAbstractNorNative() {
+  // std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+  // for (auto const &method : methods) {
+  //   std::set<Env::Modifier> methodModifiers = method.modifiers;
+  //   bool isAbstract =
+  //       (methodModifiers.find(Env::Modifier::Abstract) != methodModifiers.end());
+  //   bool isNative =
+  //       (methodModifiers.find(Env::Modifier::Native) != methodModifiers.end());
+
+  // }
+  return true;
+}
+
+bool Weeder::abstractMethodNotStaticNorFinal() {
+  std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+  for (auto const &method : methods) {
+    std::set<Env::Modifier> methodModifiers = method.modifiers;
+    bool isAbstract = (methodModifiers.find(Env::Modifier::Abstract) !=
+                       methodModifiers.end());
+    bool isStatic = (methodModifiers.find(Env::Modifier::Static) !=
+                      methodModifiers.end());
+    bool isFinal = (methodModifiers.find(Env::Modifier::Final) !=
+                      methodModifiers.end());
+    if (isAbstract) {
+      if (isStatic || isFinal) {
+        std::cerr << "Abstract Method can not be static or final, method: " <<
+        method.identifier << ", in file: " << fileName << '\n';
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool Weeder::staticMethodNotFinal() {
+  std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+  for (auto const &method : methods) {
+    std::set<Env::Modifier> methodModifiers = method.modifiers;
+    bool isStatic = (methodModifiers.find(Env::Modifier::Static) !=
+                      methodModifiers.end());
+    bool isFinal = (methodModifiers.find(Env::Modifier::Final) !=
+                      methodModifiers.end());
+    if (isStatic) {
+      if (isFinal) {
+        std::cerr << "Static Method can not be final, method: " <<
+        method.identifier << ", in file: " << fileName << '\n';
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool Weeder::nativeMethodIsStatic() {
+  std::vector<Env::Method> methods = typeDeclaration.body.getMethods();
+  for (auto const &method : methods) {
+    std::set<Env::Modifier> methodModifiers = method.modifiers;
+    bool isNative = (methodModifiers.find(Env::Modifier::Native) !=
+                      methodModifiers.end());
+    bool isStatic = (methodModifiers.find(Env::Modifier::Static) !=
+                      methodModifiers.end());
+    if (isNative) {
+      if (!isStatic) {
+        std::cerr << "Native Method must be static, method: " <<
+        method.identifier << ", in file: " << fileName << '\n';
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool Weeder::verifyFields() {
+  return fieldNotFinal();
+}
+
+bool Weeder::fieldNotFinal() {
+  const std::vector<Env::Field> &fields = typeDeclaration.body.getFields();
+  for (auto const &field : fields) {
+    std::set<Env::Modifier> fieldModifiers = field.modifiers;
+    bool isFinal =
+        (fieldModifiers.find(Env::Modifier::Final) != fieldModifiers.end());
+    if (isFinal) {
+        std::cerr << "Field can not be final, field: "
+                  << field.identifier << ", in file: " << fileName << '\n';
+        return false;
+    }
+  }
+  return true;
+}
 
 bool Weeder::verifyLiterals() { return true; }
 

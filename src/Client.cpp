@@ -245,16 +245,7 @@ void Client::buildTypeBody() {
 }
 
 void Client::weed() {
-  // for (const auto &environment : environments) {
-  //   for (const auto &constructor : environment.decl.body.getConstructors()) {
-  //     if (constructor.identifier != environment.decl.identifier) {
-  //       std::cerr << "Weeder error in constructor\n";
-  //       errorState = true;
-  //       return;
-  //     }
-  //   }
-  // }
-  for (const auto &environment : environments) {
+  for (auto &environment : environments) {
     Weed::Weeder weeder(environment.decl, environment.fullName);
     if (!weeder.verify()) {
       std::cerr << "Weeding failed for " << environment.fullName << '\n';
