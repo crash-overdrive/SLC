@@ -7,6 +7,7 @@ namespace CodeGen {
 
 class InterfaceOffsetGenerator {
 public:
+  void update(Env::TypeBody &body);
   void update(Env::Method &method);
   size_t getSize() const;
 

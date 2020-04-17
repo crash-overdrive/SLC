@@ -2,6 +2,12 @@
 
 namespace CodeGen {
 
+void InterfaceOffsetGenerator::update(Env::TypeBody &body) {
+  for (auto &method : body.getMethods()) {
+    update(method);
+  }
+}
+
 void InterfaceOffsetGenerator::update(Env::Method &method) {
   for (auto &base : baseMethods) {
     if (base.get() == method) {

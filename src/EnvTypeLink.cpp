@@ -113,6 +113,12 @@ bool TypeLink::belongSamePackage(const TypeDeclaration *decl) const {
   return decl == findPackage(decl->identifier);
 }
 
+std::vector<std::string> TypeLink::getPath() const {
+  std::vector<std::string> path(package);
+  path.emplace_back(decl.identifier);
+  return path;
+}
+
 TypeDeclaration *TypeLink::findPackage(const std::string &name) const {
   if (package.size() == 0) {
     return tree->findDefault(name);

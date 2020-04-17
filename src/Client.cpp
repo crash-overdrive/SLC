@@ -1,5 +1,8 @@
 #include "Client.hpp"
 #include "ASTBuilder.hpp"
+#include "CodeGenDeclaration.hpp"
+#include "CodeGenLabel.hpp"
+#include "CodeGenOffset.hpp"
 #include "CodeGenStart.hpp"
 #include "EnvLocal.hpp"
 #include "TypeCheckerVisitor.hpp"
@@ -490,13 +493,41 @@ void Client::codeGen() {
   if (printPoints.find(CodeGen) != printPoints.end()) {
     buf = std::cerr.rdbuf();
   }
+  codeGenOffset();
+  codeGenLabel();
   codeGenFiles(buf);
   codeGenStart(buf);
+}
+
+void Client::codeGenOffset() {
+  CodeGen::InterfaceOffsetGenerator interfaceGenerator;
+  for (auto &environment : environments) {
+    switch (environment.decl.keyword) {
+    case Env::DeclarationKeyword::Interface:
+      interfaceGenerator.update(environment.decl.body);
+      break;
+    case Env::DeclarationKeyword::Class:
+      environment.decl.contain.updateOffset();
+      break;
+    }
+  }
+}
+
+void Client::codeGenLabel() {
+  for (auto &environment : environments) {
+    if (environment.decl.keyword == Env::DeclarationKeyword::Class) {
+      CodeGen::LabelGenerator labelGenerator(environment.typeLink.getPath());
+      labelGenerator.generateDeclaration(environment.decl);
+    }
+  }
 }
 
 void Client::codeGenFiles(std::streambuf *log) const {
   std::streambuf *buf = log;
   for (const auto &environment : environments) {
+    if (environment.decl.keyword != Env::DeclarationKeyword::Class) {
+      continue;
+    }
     std::ofstream ofstream;
     if (!log) {
       ofstream.open(CodeGen::getASMFile(environment.fullName));
@@ -508,6 +539,9 @@ void Client::codeGenFiles(std::streambuf *log) const {
       ostream << CodeGen::getASMFile(environment.fullName);
       ostream << "--------\n";
     }
+    CodeGen::DeclarationGenerator declGenerator(ostream, environment.typeLink);
+    declGenerator.generateBody(environment.decl.body);
+    declGenerator.generateContain(environment.decl.contain);
   }
 }
 

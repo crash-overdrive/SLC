@@ -8,6 +8,7 @@ namespace CodeGen {
 class LabelGenerator {
 public:
   LabelGenerator(std::vector<std::string> path);
+  void generateDeclaration(Env::TypeDeclaration &decl);
   void generateConstructor(Env::Constructor &constructor);
   void generateStaticFieldInit(Env::TypeBody &body);
   void generateFieldInit(Env::TypeBody &body);
