@@ -105,8 +105,6 @@ int main(int argc, char *argv[]) {
     return errorCode;
   }
 
-  // TODO: take the line below out
-  client.setBreakPoint(client.Weed);
   bool compileResult = client.compile(files);
 
   if (!compileResult) {
