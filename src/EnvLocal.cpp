@@ -4,56 +4,81 @@
 
 namespace Env {
 
-std::optional<Type> VariableTable::findVariable(const std::string &name) const {
-  auto it = variableMap.find(name);
+Variable::Variable(std::string identifier, Type type)
+    : identifier(std::move(identifier)), type(std::move(type)) {}
+
+VariableTable::VariableTable(bool args) : args(args) {}
+
+std::optional<Variable>
+VariableTable::findVariable(const std::string &identifier) const {
+  auto it = variableMap.find(identifier);
   return (it != variableMap.end()) ? std::make_optional(it->second)
                                    : std::nullopt;
 }
 
-bool VariableTable::addVariable(const std::string &name, Type type) {
-  if (findVariable(name)) {
+bool VariableTable::addVariable(std::string identifier, Type type) {
+  auto [it, flag] = variableMap.emplace(identifier, Variable{identifier, type});
+  if (!flag) {
     return false;
   }
-  variableMap[name] = type;
+  if (args) {
+    for (auto &[key, value] : variableMap) {
+      value.offset += 4;
+    }
+    it->second.offset = 12;
+  } else {
+    it->second.offset = offset;
+    offset -= 4;
+  }
   return true;
+}
+
+VariableTable VariableTable::createNextVariableTable() const {
+  VariableTable table;
+  if (!args) {
+    table.offset = offset;
+  }
+  return table;
 }
 
 std::ostream &operator<<(std::ostream &stream, const VariableTable &table) {
   for (auto const &variable : table.variableMap) {
-    stream << "Variable: " << variable.first << " with type" << variable.second
-           << "\n";
+    stream << "Variable: " << variable.first << " with type"
+           << variable.second.identifier << "\n";
   }
   return stream;
 }
 
-Local::Local(bool log) : log(log) { addVariableTable(); }
+Local::Local(bool log) : log(log) { tables.emplace_back(true); }
 
-std::optional<Type> Local::findVariable(const std::string &name) const {
-  for (auto &table : tables) {
-    auto type = table.findVariable(name);
-    if (type) {
-      return type;
+std::optional<Variable>
+Local::findVariable(const std::string &identifier) const {
+  for (const auto &table : tables) {
+    auto variable = table.findVariable(identifier);
+    if (variable) {
+      return variable;
     }
   }
   return std::nullopt;
 }
 
-bool Local::addVariable(const std::string &name, Type type) {
-  lastVariable = std::make_pair(name, type);
-  if (findVariable(name) || type == TypeKeyword::Void) {
-    std::cerr << "ERROR!! Variable: " << name << " with descriptor: " << type
-              << " could not be added\n";
+bool Local::addVariable(std::string identifier, Type type) {
+  lastVariable = Variable(identifier, type);
+  if (findVariable(identifier) || type == TypeKeyword::Void) {
+    std::cerr << "ERROR!! Variable: " << identifier
+              << " with descriptor: " << type << " could not be added\n";
     return false;
   }
-  tables.back().addVariable(name, type);
   if (log) {
-    std::cerr << "Added: Variable: " << name << " with type: " << type << "\n";
+    std::cerr << "Added: Variable: " << identifier << " with type: " << type
+              << "\n";
   }
+  tables.back().addVariable(std::move(identifier), type);
   return true;
 }
 
 void Local::addVariableTable() {
-  tables.emplace_back();
+  tables.emplace_back(tables.back().createNextVariableTable());
   if (log) {
     std::cerr << "Added: New VariableTable\n";
   }
@@ -69,9 +94,7 @@ void Local::removeVariableTable() {
   tables.pop_back();
 }
 
-const std::pair<std::string, Type> &Local::getLastVariable() const {
-  return lastVariable;
-}
+const Variable &Local::getLastVariable() const { return lastVariable; }
 
 LocalTrackVisitor::LocalTrackVisitor(const TypeLink &typeLink, bool log)
     : typeLink(typeLink), local(log) {}

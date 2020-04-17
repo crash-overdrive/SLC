@@ -8,7 +8,7 @@ namespace Name {
 class ResolverListener {
 public:
   virtual ~ResolverListener() = default;
-  virtual void listenLocal();
+  virtual void listenLocal(off_t offset);
   virtual void listenImplicit();
   virtual void listenField(const Env::Field &field);
   virtual void listenStaticField(const Env::Field &field);

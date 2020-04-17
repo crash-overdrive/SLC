@@ -50,6 +50,7 @@ TEST_CASE("Resolve names", "[NameResolver]") {
 
   SECTION("Local Variable field") {
     Env::Field field({}, Env::TypeKeyword::Integer, "foo");
+    field.declaration = &listDecl;
     listDecl.contain.addDeclare(&field);
     local.addVariable("list", listType);
     REQUIRE(fieldResolver.match({"list", "foo"}));

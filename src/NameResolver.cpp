@@ -3,7 +3,7 @@
 
 namespace Name {
 
-void ResolverListener::listenLocal() {}
+void ResolverListener::listenLocal(off_t) {}
 void ResolverListener::listenImplicit() {}
 void ResolverListener::listenField(const Env::Field &) {}
 void ResolverListener::listenStaticField(const Env::Field &) {}
@@ -41,11 +41,11 @@ std::vector<std::string>::const_iterator FieldResolver::getFirst() const {
 }
 
 void FieldResolver::matchLocal() {
-  auto variableType = local.findVariable(*first);
-  if (variableType) {
-    type.emplace(*variableType);
+  auto variable = local.findVariable(*first);
+  if (variable) {
+    type.emplace(variable->type);
     ++first;
-    listener.listenLocal();
+    listener.listenLocal(variable->offset);
     matchName();
   } else {
     matchField();

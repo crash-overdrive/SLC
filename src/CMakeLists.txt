@@ -18,8 +18,7 @@ add_custom_command(
   ${CFG_FILE} |
   ${Java_JAVA_EXECUTABLE} -jar ${JLALR_JAR} > ${LR1_FILE}
   DEPENDS ${CFG_FILE}
-  COMMENT "Converting .cfg to .lr1"
-)
+  COMMENT "Converting .cfg to .lr1")
 add_custom_target(lr1 DEPENDS ${LR1_FILE})
 
 set(TOKENSSPEC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/grammar/tokens.lex)

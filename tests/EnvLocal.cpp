@@ -4,8 +4,9 @@
 #include "catch.hpp"
 
 TEST_CASE("Local", "[local-variable]") {
-  Env::Local tables(false);
+  Env::Local tables;
   REQUIRE(tables.addVariable("outer", Env::TypeKeyword::Integer));
+  REQUIRE(tables.addVariable("outer2", Env::TypeKeyword::Integer));
   tables.addVariableTable();
   REQUIRE(tables.addVariable("middle", Env::TypeKeyword::Integer));
 
@@ -70,5 +71,13 @@ TEST_CASE("Local", "[local-variable]") {
     tables.addVariableTable();
     REQUIRE(tables.addVariable("inner", Env::TypeKeyword::Integer));
     tables.removeVariableTable();
+  }
+
+  SECTION("Offset calculation") {
+    REQUIRE(tables.findVariable("outer")->offset == 16);
+    REQUIRE(tables.findVariable("outer2")->offset == 12);
+    REQUIRE(tables.findVariable("middle")->offset == -4);
+    REQUIRE(tables.addVariable("inner", Env::TypeKeyword::Integer));
+    REQUIRE(tables.findVariable("inner")->offset == -8);
   }
 }
