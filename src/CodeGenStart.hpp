@@ -21,7 +21,7 @@ public:
 
 private:
   static bool isEntry(const Env::Method &method);
-  const Env::Method *entry;
+  const Env::Method *entry = nullptr;
   std::ostream &ostream;
 };
 

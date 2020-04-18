@@ -22,6 +22,12 @@ public:
                       const std::string &statement);
 };
 
+std::ostream &printCall(std::ostream &ostream, const std::string &identifier);
+std::ostream &printProlog(std::ostream &ostream);
+std::ostream &printEpilogue(std::ostream &ostream);
+
+std::ostream &printAssignment(std::ostream &ostream);
+std::ostream &printLocalVariable(std::ostream &ostream, off_t offset);
 std::ostream &printDataSection(std::ostream &ostream);
 std::ostream &printTextSection(std::ostream &ostream);
 std::ostream &printLabel(std::ostream &ostream, const std::string &label);

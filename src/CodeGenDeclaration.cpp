@@ -1,5 +1,6 @@
 #include "CodeGenDeclaration.hpp"
 #include "ASMStructuralLib.hpp"
+#include "CodeGenVisitor.hpp"
 
 namespace CodeGen {
 
@@ -24,6 +25,10 @@ void DeclarationGenerator::generateBody(const Env::TypeBody &body) {
 
 void DeclarationGenerator::generateMethod(const Env::Method &method) {
   ASM::printLabel(ostream, method.label);
+  ASM::printProlog(ostream);
+  CodeGen::Visitor visitor(ostream, typeLink);
+  method.astNode->accept(visitor);
+  ASM::printEpilogue(ostream);
 }
 
 void DeclarationGenerator::generateConstructor(

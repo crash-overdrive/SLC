@@ -20,7 +20,7 @@ class VariableTable {
 public:
   VariableTable(bool args = false);
   std::optional<Variable> findVariable(const std::string &identifier) const;
-  bool addVariable(std::string identifier, Type type);
+  off_t addVariable(std::string identifier, Type type);
   VariableTable createNextVariableTable() const;
 
 private:

@@ -16,10 +16,10 @@ VariableTable::findVariable(const std::string &identifier) const {
                                    : std::nullopt;
 }
 
-bool VariableTable::addVariable(std::string identifier, Type type) {
+off_t VariableTable::addVariable(std::string identifier, Type type) {
   auto [it, flag] = variableMap.emplace(identifier, Variable{identifier, type});
   if (!flag) {
-    return false;
+    return 0;
   }
   if (args) {
     for (auto &[key, value] : variableMap) {
@@ -30,7 +30,7 @@ bool VariableTable::addVariable(std::string identifier, Type type) {
     it->second.offset = offset;
     offset -= 4;
   }
-  return true;
+  return it->second.offset;
 }
 
 VariableTable VariableTable::createNextVariableTable() const {
@@ -73,7 +73,7 @@ bool Local::addVariable(std::string identifier, Type type) {
     std::cerr << "Added: Variable: " << identifier << " with type: " << type
               << "\n";
   }
-  tables.back().addVariable(std::move(identifier), type);
+  lastVariable.offset = tables.back().addVariable(std::move(identifier), type);
   return true;
 }
 

@@ -40,6 +40,37 @@ std::string StructuralLib::ForLoop(const std::string &init,
          jmp + end + ":\n";
 }
 
+std::ostream &printCall(std::ostream &ostream, const std::string &identifier) {
+  ostream << "extern " << identifier << '\n';
+  ostream << "call " << identifier << '\n';
+  return ostream;
+}
+
+std::ostream &printProlog(std::ostream &ostream) {
+  ostream << "push ebp\n";
+  ostream << "mov ebp, esp\n";
+  return ostream;
+}
+
+std::ostream &printEpilogue(std::ostream &ostream) {
+  ostream << "mov esp, ebp\n";
+  ostream << "pop ebp\n";
+  ostream << "ret\n";
+  return ostream;
+}
+
+std::ostream &printAssignment(std::ostream &ostream) {
+  ostream << "pop ebx\n";
+  ostream << "mov [ebx], eax\n";
+  return ostream;
+}
+
+std::ostream &printLocalVariable(std::ostream &ostream, off_t offset) {
+  ostream << "mov eax, ebp\n";
+  ostream << "add eax, " << offset << '\n';
+  return ostream;
+}
+
 std::ostream &printDataSection(std::ostream &ostream) {
   ostream << "section .data\n";
   return ostream;

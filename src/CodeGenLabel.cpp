@@ -69,7 +69,7 @@ void LabelGenerator::generateConstructor(Env::Constructor &constructor) {
       argName = Env::typeKeywordString.at(arg.keyword);
     }
     if (arg.isArray) {
-      argName += "[]";
+      argName += "Array";
     }
     std::string sargs = sanitizedLabelName(argName);
     argChain += '_' + sargs;
