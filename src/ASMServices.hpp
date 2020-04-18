@@ -2,17 +2,20 @@
 #define ASM_SERVICES_H
 
 #include <string>
+#include <vector>
 
-namespace ASM{
+namespace ASM {
 
-class AnonymousLabelService{
-	const std::string prefix;
-	int instanceCount;
-	public:
-	AnonymousLabelService(const std::string& prefix = ".L");
-	int getUniqueId();
-	std::string getUniqueLabel();
+class AnonymousLabelService {
+public:
+  AnonymousLabelService(const std::string &prefix = ".L");
+  int getUniqueId();
+  std::string getUniqueLabel();
+
+private:
+  const std::string prefix;
+  int instanceCount;
 };
 
-}
+} // namespace ASM
 #endif

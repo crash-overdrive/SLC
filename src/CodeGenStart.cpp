@@ -17,6 +17,7 @@ StartGenerator::StartGenerator(std::ostream &ostream) : ostream(ostream) {}
 
 void StartGenerator::generateHeader() {
   ASM::printTextSection(ostream);
+  ASM::printGlobal(ostream, "_start");
   ASM::printLabel(ostream, "_start");
 }
 

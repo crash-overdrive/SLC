@@ -1,6 +1,7 @@
 #ifndef CODEGENDECLARATION_HPP
 #define CODEGENDECLARATION_HPP
 
+#include "ASMServices.hpp"
 #include "EnvTypeContain.hpp"
 #include <iostream>
 
@@ -15,6 +16,7 @@ public:
   void generateField(const Env::TypeBody &body);
   void generateMethod(const Env::Method &method);
 
+  void generateGlobal(const Env::TypeBody &body);
   void generateContain(const Env::TypeContain &contain);
   void generateVTable(const Env::ClassVTable &vTable);
   void generateSelector(const Env::Selector &selector);

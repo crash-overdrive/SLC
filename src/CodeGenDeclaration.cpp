@@ -10,6 +10,7 @@ DeclarationGenerator::DeclarationGenerator(std::ostream &ostream,
 
 void DeclarationGenerator::generateBody(const Env::TypeBody &body) {
   ASM::printTextSection(ostream);
+  generateGlobal(body);
   for (const auto &constructor : body.getConstructors()) {
     generateConstructor(constructor);
   }
@@ -20,6 +21,19 @@ void DeclarationGenerator::generateBody(const Env::TypeBody &body) {
       continue;
     }
     generateMethod(method);
+  }
+}
+
+void DeclarationGenerator::generateGlobal(const Env::TypeBody &body) {
+  for (const auto &constructor : body.getConstructors()) {
+    ASM::printGlobal(ostream, constructor.label);
+  }
+
+  for (const auto &method : body.getMethods()) {
+    if (method.modifiers.find(Env::Modifier::Abstract) ==
+        method.modifiers.end()) {
+      ASM::printGlobal(ostream, method.label);
+    }
   }
 }
 

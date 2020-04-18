@@ -14,6 +14,7 @@ public:
   virtual ~Node() = default;
   void addChild(std::unique_ptr<Node> child);
   const std::vector<std::unique_ptr<Node>> &getChildren() const;
+  const Node &getChild(size_t index) const;
   virtual void accept(Visitor &visitor) const = 0;
 
 private:

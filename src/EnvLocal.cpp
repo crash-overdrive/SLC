@@ -25,7 +25,7 @@ off_t VariableTable::addVariable(std::string identifier, Type type) {
     for (auto &[key, value] : variableMap) {
       value.offset += 4;
     }
-    it->second.offset = 12;
+    it->second.offset = 8;
   } else {
     it->second.offset = offset;
     offset -= 4;

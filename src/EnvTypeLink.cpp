@@ -119,6 +119,8 @@ std::vector<std::string> TypeLink::getPath() const {
   return path;
 }
 
+const PackageTree &TypeLink::getTree() const { return *tree; }
+
 TypeDeclaration *TypeLink::findPackage(const std::string &name) const {
   if (package.size() == 0) {
     return tree->findDefault(name);

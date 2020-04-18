@@ -87,6 +87,7 @@ public:
                   ResolverListener &listener = nullResolverListener);
   FieldResolver getField();
   MethodResolver getMethod();
+  MethodResolver getMethod(ResolverListener &methodListener);
   ConstructorResolver getConstructor();
   void setListener(ResolverListener &listener);
 

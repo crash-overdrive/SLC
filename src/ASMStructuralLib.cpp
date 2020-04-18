@@ -40,9 +40,19 @@ std::string StructuralLib::ForLoop(const std::string &init,
          jmp + end + ":\n";
 }
 
-std::ostream &printCall(std::ostream &ostream, const std::string &identifier) {
-  ostream << "extern " << identifier << '\n';
-  ostream << "call " << identifier << '\n';
+std::ostream &printGlobal(std::ostream &ostream, const std::string &label) {
+  ostream << "global " << label << '\n';
+  return ostream;
+}
+
+std::ostream &printLabel(std::ostream &ostream, const std::string &label) {
+  ostream << label << ":\n";
+  return ostream;
+}
+
+std::ostream &printCall(std::ostream &ostream, const std::string &label) {
+  ostream << "extern " << label << '\n';
+  ostream << "call " << label << '\n';
   return ostream;
 }
 
@@ -81,12 +91,6 @@ std::ostream &printTextSection(std::ostream &ostream) {
   return ostream;
 }
 
-std::ostream &printLabel(std::ostream &ostream, const std::string &label) {
-  ostream << "global " << label << '\n';
-  ostream << label << ":\n";
-  return ostream;
-}
-
 std::ostream &printExit(std::ostream &ostream) {
   ostream << "mov ebx, eax\n";
   ostream << "mov eax, 1\n";
@@ -110,12 +114,14 @@ std::ostream &printBinaryOperator(std::ostream &ostream,
     ostream << "mov eax, ebx\n";
     break;
   case Type::BinaryOperator::Division:
+    ostream << "xor edx, edx\n";
     ostream << "xchg eax, ebx\n";
-    ostream << "div ebx\n";
+    ostream << "idiv ebx\n";
     break;
   case Type::BinaryOperator::Modulus:
+    ostream << "xor edx, edx\n";
     ostream << "xchg ebx, eax\n";
-    ostream << "div ebx\n";
+    ostream << "idiv ebx\n";
     ostream << "mov eax, edx\n";
     break;
   case Type::BinaryOperator::Equal:
