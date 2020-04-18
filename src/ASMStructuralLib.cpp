@@ -94,4 +94,94 @@ std::ostream &printExit(std::ostream &ostream) {
   return ostream;
 }
 
+std::ostream &printBinaryOperator(std::ostream &ostream,
+                                  Type::BinaryOperator binaryOperator) {
+  switch (binaryOperator) {
+  case Type::BinaryOperator::Addition:
+    ostream << "add ebx, eax\n";
+    ostream << "mov eax, ebx\n";
+    break;
+  case Type::BinaryOperator::Subtraction:
+    ostream << "sub ebx, eax\n";
+    ostream << "mov eax, ebx\n";
+    break;
+  case Type::BinaryOperator::Multiplication:
+    ostream << "imul ebx, eax\n";
+    ostream << "mov eax, ebx\n";
+    break;
+  case Type::BinaryOperator::Division:
+    ostream << "xchg eax, ebx\n";
+    ostream << "div ebx\n";
+    break;
+  case Type::BinaryOperator::Modulus:
+    ostream << "xchg ebx, eax\n";
+    ostream << "div ebx\n";
+    ostream << "mov eax, edx\n";
+    break;
+  case Type::BinaryOperator::Equal:
+    ostream << "xor ebx, eax\n";
+    ostream << "test ebx, ebx\n";
+    ostream << "xor eax, eax\n";
+    ostream << "sete al\n";
+    break;
+  case Type::BinaryOperator::NotEqual:
+    ostream << "xor ebx, eax\n";
+    ostream << "test ebx, ebx\n";
+    ostream << "xor eax, eax\n";
+    ostream << "setne al\n";
+    break;
+  case Type::BinaryOperator::LesserOrEqual:
+    ostream << "xor ebx, eax\n";
+    ostream << "test ebx, ebx\n";
+    ostream << "xor eax, eax\n";
+    ostream << "setle al\n";
+    break;
+  case Type::BinaryOperator::GreaterOrEqual:
+    ostream << "xor ebx, eax\n";
+    ostream << "test ebx, ebx\n";
+    ostream << "xor eax, eax\n";
+    ostream << "setge al\n";
+    break;
+  case Type::BinaryOperator::Lesser:
+    ostream << "xor ebx, eax\n";
+    ostream << "test ebx, ebx\n";
+    ostream << "xor eax, eax\n";
+    ostream << "setl al\n";
+    break;
+  case Type::BinaryOperator::Greater:
+    ostream << "xor ebx, eax\n";
+    ostream << "test ebx, ebx\n";
+    ostream << "xor eax, eax\n";
+    ostream << "setl al\n";
+    break;
+  case Type::BinaryOperator::Or:
+  case Type::BinaryOperator::BitwiseOr:
+    ostream << "or eax, ebx\n";
+    break;
+  case Type::BinaryOperator::And:
+  case Type::BinaryOperator::BitwiseAnd:
+    ostream << "and eax, ebx\n";
+    break;
+  case Type::BinaryOperator::BitwiseXor:
+    ostream << "xor eax, ebx\n";
+    break;
+  }
+  return ostream;
+}
+
+std::ostream &printUnaryOperator(std::ostream &ostream,
+                                 Type::UnaryOperator unaryOperator) {
+  switch (unaryOperator) {
+  case Type::UnaryOperator::Not:
+    ostream << "test eax, eax\n";
+    ostream << "xor eax, eax\n";
+    ostream << "sete al\n";
+    break;
+  case Type::UnaryOperator::Negative:
+    ostream << "neg eax\n";
+    break;
+  }
+  return ostream;
+}
+
 } // namespace ASM

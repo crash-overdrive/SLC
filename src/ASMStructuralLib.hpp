@@ -1,6 +1,7 @@
 #ifndef ASM_STRUCTURAL_LIB_H
 #define ASM_STRUCTURAL_LIB_H
 
+#include "TypeChecker.hpp"
 #include <iostream>
 #include <string>
 
@@ -32,6 +33,11 @@ std::ostream &printDataSection(std::ostream &ostream);
 std::ostream &printTextSection(std::ostream &ostream);
 std::ostream &printLabel(std::ostream &ostream, const std::string &label);
 std::ostream &printExit(std::ostream &ostream);
+
+std::ostream &printBinaryOperator(std::ostream &ostream,
+                                  Type::BinaryOperator binaryOperator);
+std::ostream &printUnaryOperator(std::ostream &ostream,
+                                 Type::UnaryOperator unaryOperator);
 
 } // namespace ASM
 

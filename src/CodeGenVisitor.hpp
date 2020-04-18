@@ -20,6 +20,9 @@ class Visitor : public Env::LocalTrackVisitor {
 
 public:
   Visitor(std::ostream &ostream, const Env::TypeLink &typeLink);
+  void visit(const AST::BinaryExpression &node) override;
+  void visit(const AST::Operator &node) override;
+  void visit(const AST::UnaryExpression &node) override;
   void visit(const AST::SingleVariableDeclaration &node) override;
   void visit(const AST::VariableDeclaration &node) override;
   void visit(const AST::AssignmentExpression &node) override;
@@ -32,6 +35,7 @@ private:
   Listener listener;
   Name::ResolverFactory resolverFactory;
   bool address = false;
+  std::string operatorInstruction;
 };
 
 } // namespace CodeGen

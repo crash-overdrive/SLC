@@ -1,6 +1,7 @@
 #include "CodeGenVisitor.hpp"
 #include "ASMStructuralLib.hpp"
 #include "ASTVisitorUtil.hpp"
+#include "TypeVisitorUtil.hpp"
 
 namespace CodeGen {
 
@@ -13,6 +14,32 @@ void Listener::listenLocal(off_t offset) {
 Visitor::Visitor(std::ostream &ostream, const Env::TypeLink &typeLink)
     : LocalTrackVisitor(typeLink), ostream(ostream), listener(ostream),
       resolverFactory(getLocal(), typeLink, listener) {}
+
+void Visitor::visit(const AST::BinaryExpression &node) {
+  Type::BinaryOperatorVisitor binaryVisitor;
+  binaryVisitor.dispatchChildren(node);
+  Type::BinaryOperator binaryOperator = binaryVisitor.getBinaryOperator();
+  if (binaryOperator == Type::BinaryOperator::Or ||
+      binaryOperator == Type::BinaryOperator::And) {
+  } else {
+    operatorInstruction = "push eax\n";
+  }
+  dispatchChildren(node);
+  ostream << "pop ebx\n";
+  ASM::printBinaryOperator(ostream, binaryOperator);
+}
+
+void Visitor::visit(const AST::Operator &) {
+  ostream << operatorInstruction;
+  operatorInstruction.clear();
+}
+
+void Visitor::visit(const AST::UnaryExpression &node) {
+  dispatchChildren(node);
+  Type::UnaryOperatorVisitor unaryVisitor;
+  unaryVisitor.dispatchChildren(node);
+  ASM::printUnaryOperator(ostream, unaryVisitor.getUnaryOperator());
+}
 
 void Visitor::visit(const AST::SingleVariableDeclaration &node) {
   Env::LocalTrackVisitor::visit(node);
