@@ -12,7 +12,7 @@ class Listener : public Name::ResolverListener {
 public:
   Listener(std::ostream &ostream);
   void listenLocal(off_t offset) override;
-  // void listenImplicit() override;
+  // void listenimplicit() override;
   // void listenField(const Env::Field &) override;
   // void listenStaticField(const Env::Field &) override;
   void listenMethod(const Env::Method &) override;

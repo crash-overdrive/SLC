@@ -48,13 +48,24 @@ void Visitor::visit(const AST::BinaryExpression &node) {
   node.getChild(0).accept(*this);
   node.getChild(1).accept(binaryVisitor);
   Type::BinaryOperator binaryOperator = binaryVisitor.getBinaryOperator();
-  if (binaryOperator != Type::BinaryOperator::And ||
-      binaryOperator != Type::BinaryOperator::Or) {
+  if (binaryOperator == Type::BinaryOperator::And) {
+    std::string label = labelService.getUniqueLabel();
+    ostream << "cmp eax, 0\n";
+    ostream << "je " << label << '\n';
+    node.getChild(2).accept(*this);
+    ASM::printLabel(ostream, label);
+  } else if (binaryOperator == Type::BinaryOperator::Or) {
+    std::string label = labelService.getUniqueLabel();
+    ostream << "cmp eax, 0\n";
+    ostream << "jne " << label << '\n';
+    node.getChild(2).accept(*this);
+    ASM::printLabel(ostream, label);
+  } else {
     ostream << "push eax\n";
+    node.getChild(2).accept(*this);
+    ostream << "pop ebx\n";
+    ASM::printBinaryOperator(ostream, binaryOperator);
   }
-  node.getChild(2).accept(*this);
-  ostream << "pop ebx\n";
-  ASM::printBinaryOperator(ostream, binaryOperator);
 }
 
 void Visitor::visit(const AST::UnaryExpression &node) {

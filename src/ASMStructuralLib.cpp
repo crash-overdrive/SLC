@@ -153,16 +153,17 @@ std::ostream &printBinaryOperator(std::ostream &ostream,
     ostream << "cmp ebx, eax\n";
     ostream << "setg al\n";
     break;
-  case Type::BinaryOperator::Or:
   case Type::BinaryOperator::BitwiseOr:
     ostream << "or eax, ebx\n";
     break;
-  case Type::BinaryOperator::And:
   case Type::BinaryOperator::BitwiseAnd:
     ostream << "and eax, ebx\n";
     break;
   case Type::BinaryOperator::BitwiseXor:
     ostream << "xor eax, ebx\n";
+    break;
+  case Type::BinaryOperator::Or:
+  case Type::BinaryOperator::And:
     break;
   }
   return ostream;
