@@ -40,6 +40,12 @@ std::string StructuralLib::ForLoop(const std::string &init,
          jmp + end + ":\n";
 }
 
+std::ostream &printExtern(std::ostream &ostream, const std::string &label) {
+  ostream << "extern " << label << '\n';
+  return ostream;
+}
+
+
 std::ostream &printGlobal(std::ostream &ostream, const std::string &label) {
   ostream << "global " << label << '\n';
   return ostream;
@@ -51,7 +57,6 @@ std::ostream &printLabel(std::ostream &ostream, const std::string &label) {
 }
 
 std::ostream &printCall(std::ostream &ostream, const std::string &label) {
-  ostream << "extern " << label << '\n';
   ostream << "call " << label << '\n';
   return ostream;
 }
@@ -100,7 +105,6 @@ std::ostream &printExit(std::ostream &ostream) {
 }
 
 std::ostream &printDeclare(std::ostream &ostream, const std::string &label) {
-  ostream << "extern " << label << '\n';
   ostream << "dd " << label << '\n';
   return ostream;
 }

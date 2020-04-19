@@ -7,7 +7,7 @@
 namespace CodeGen {
 
 const std::string outputDirectory = "output";
-const std::string outputStart = outputDirectory + "/start.asm";
+const std::string outputStart = outputDirectory + "/start.s";
 
 void prepareOutput();
 std::string getASMFile(const std::string &fullName);

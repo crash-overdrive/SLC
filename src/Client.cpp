@@ -6,6 +6,7 @@
 #include "CodeGenStart.hpp"
 #include "EnvLocal.hpp"
 #include "TypeCheckerVisitor.hpp"
+#include "ASMStructuralLib.hpp"
 #include "Weeder.hpp"
 #include <fstream>
 #include <iterator>
@@ -524,6 +525,8 @@ void Client::codeGenLabel() {
 
 void Client::codeGenFiles(std::streambuf *log) const {
   std::streambuf *buf = log;
+
+
   for (const auto &environment : environments) {
     if (environment.decl.keyword != Env::DeclarationKeyword::Class) {
       continue;
@@ -537,6 +540,23 @@ void Client::codeGenFiles(std::streambuf *log) const {
     if (log) {
       ostream << CodeGen::getASMFile(environment.fullName);
     }
+
+      for (const auto &other: environments) {
+          if (&other == &environment) {
+              continue;
+          }
+          for (const auto &constructor : other.decl.body.getConstructors()) {
+              ASM::printExtern(ostream, constructor.label);
+          }
+          for (const auto &method : other.decl.body.getMethods()) {
+              if (method.modifiers.find(Env::Modifier::Abstract) ==
+                      method.modifiers.end()) {
+                  ASM::printExtern(ostream, method.label);
+              }
+          }
+          ASM::printExtern(ostream, other.decl.contain.vtablelabel);
+      }
+
     CodeGen::DeclarationGenerator declGenerator(ostream, environment.typeLink);
     declGenerator.generateBody(environment.decl.body);
     declGenerator.generateContain(environment.decl.contain);

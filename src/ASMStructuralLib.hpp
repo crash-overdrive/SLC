@@ -40,6 +40,7 @@ std::ostream &printBinaryOperator(std::ostream &ostream,
                                   Type::BinaryOperator binaryOperator);
 std::ostream &printUnaryOperator(std::ostream &ostream,
                                  Type::UnaryOperator unaryOperator);
+std::ostream &printExtern(std::ostream &ostream, const std::string &label);
 
 } // namespace ASM
 
