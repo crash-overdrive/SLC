@@ -232,7 +232,7 @@ bool TypeContain::hasAbstract() const {
 
 void TypeContain::updateOffset() {
   classVTable.updateOffset();
-  off_t offset = 0;
+  off_t offset = 4;
   for (auto &objField : objFields) {
     objField->offset = offset;
     offset += 4;

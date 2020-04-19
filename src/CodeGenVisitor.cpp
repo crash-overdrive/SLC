@@ -9,7 +9,18 @@ Listener::Listener(std::ostream &ostream) : ostream(ostream) {}
 
 void Listener::listenLocal(off_t offset) {
   ASM::printLocalVariable(ostream, offset);
+  isValue = false;
 }
+
+void Listener::listenField(const Env::Field &field) {
+  if (!isValue) {
+    ostream << "mov eax, [eax]\n";
+  }
+  ostream << "add eax, " << field.offset << '\n';
+  isValue = false;
+}
+
+void Listener::listenStaticField(const Env::Field &) {}
 
 void Listener::listenImplicit() {
   ostream << "mov eax, [ebp + " << offset << "]\n";

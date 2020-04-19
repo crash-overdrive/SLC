@@ -535,9 +535,7 @@ void Client::codeGenFiles(std::streambuf *log) const {
     }
     std::ostream ostream(buf);
     if (log) {
-      ostream << "--------";
       ostream << CodeGen::getASMFile(environment.fullName);
-      ostream << "--------\n";
     }
     CodeGen::DeclarationGenerator declGenerator(ostream, environment.typeLink);
     declGenerator.generateBody(environment.decl.body);
@@ -554,9 +552,7 @@ void Client::codeGenStart(std::streambuf *log) const {
   }
   std::ostream ostream(buf);
   if (log) {
-    ostream << "--------";
     ostream << CodeGen::outputStart;
-    ostream << "--------\n";
   }
   CodeGen::StartGenerator startGenerator(ostream);
   for (const auto &environment : environments) {
