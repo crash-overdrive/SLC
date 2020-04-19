@@ -21,12 +21,14 @@ public:
   // void listenArrayLength() override;
   void generateMethod();
   void setOffset(off_t offset);
+  void setValue();
 
 private:
   off_t offset;
   std::ostream &ostream;
   const Env::Method *staticMethod = nullptr;
   const Env::Method *method = nullptr;
+  bool isValue = false;
 };
 
 class Visitor : public Env::LocalTrackVisitor {

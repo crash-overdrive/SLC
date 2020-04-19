@@ -13,10 +13,13 @@ void Listener::listenLocal(off_t offset) {
 
 void Listener::listenImplicit() {
   ostream << "mov eax, [ebp + " << offset << "]\n";
+  isValue = true;
 }
 
 void Listener::listenMethod(const Env::Method &method) {
-  ostream << "mov eax, [eax]\n";
+  if (!isValue) {
+    ostream << "mov eax, [eax]\n";
+  }
   ostream << "push eax\n";
   this->method = &method;
 }
@@ -43,6 +46,8 @@ void Listener::generateMethod() {
 }
 
 void Listener::setOffset(off_t offset) { this->offset = offset; }
+
+void Listener::setValue() { this->isValue = true; }
 
 Visitor::Visitor(std::ostream &ostream, const Env::TypeLink &typeLink)
     : LocalTrackVisitor(typeLink), ostream(ostream), listener(ostream),
@@ -85,12 +90,13 @@ void Visitor::visit(const AST::UnaryExpression &node) {
 
 void Visitor::visit(const AST::SingleVariableDeclaration &node) {
   Env::LocalTrackVisitor::visit(node);
-  ASM::printLocalVariable(ostream, getLocal().getLastVariable().offset);
-  ostream << "push eax\n";
 }
 
 void Visitor::visit(const AST::VariableDeclaration &node) {
-  dispatchChildren(node);
+  node.getChild(0).accept(*this);
+  ASM::printLocalVariable(ostream, getLocal().getLastVariable().offset);
+  ostream << "push eax\n";
+  node.getChild(1).accept(*this);
   ASM::printAssignment(ostream);
 }
 
@@ -134,6 +140,7 @@ void Visitor::visit(const AST::MethodPrimaryInvocation &node) {
 
   Listener listener(ostream);
   listener.setOffset(offset);
+  listener.setValue();
   Name::MethodResolver methodResolver = resolverFactory.getMethod(listener);
   std::vector<Env::Type> args = argumentsVisitor.getArgs();
   methodResolver.setArgs(args);
