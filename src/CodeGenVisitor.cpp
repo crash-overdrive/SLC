@@ -199,6 +199,22 @@ void Visitor::visit(const AST::WhileStatement &node) {
   ASM::printLabel(ostream, end);
 }
 
+void Visitor::visit(const AST::FieldAccess &node) {
+  node.getChild(0).accept(*this);
+  ostream << "push eax\n";
+  Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolverFactory,
+                                            typeLink);
+  expressionVisitor.dispatchChildren(node);
+  AST::PropertiesVisitor propertiesVisitor;
+  propertiesVisitor.dispatchChildren(node);
+
+  listener.setOffset(offset);
+  listener.setValue();
+  Name::FieldResolver fieldResolver = resolverFactory.getField();
+  fieldResolver.match(expressionVisitor.getType(),
+                      propertiesVisitor.getIdentifier());
+}
+
 void Visitor::visit(const AST::Name &node) {
   node.accept(*nameVisitor);
   nameVisitor =

@@ -52,6 +52,7 @@ public:
   void visit(const AST::DecIntLiteral &node) override;
   void visit(const AST::BooleanLiteral &node) override;
   void visit(const AST::ClassInstanceCreation &node) override;
+  void visit(const AST::FieldAccess &node) override;
   void setOffset(off_t offset);
 
 private:
