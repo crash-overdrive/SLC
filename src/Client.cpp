@@ -545,17 +545,23 @@ void Client::codeGenFiles(std::streambuf *log) const {
         continue;
       }
       for (const auto &constructor : other.decl.body.getConstructors()) {
+          if (!constructor.label.empty()) {
         ASM::printExtern(ostream, constructor.label);
+          }
       }
       for (const auto &method : other.decl.body.getMethods()) {
         if (method.modifiers.find(Env::Modifier::Abstract) ==
             method.modifiers.end()) {
+          if (!method.label.empty()) {
           ASM::printExtern(ostream, method.label);
+          }
         }
       }
+          if (!other.decl.contain.vtablelabel.empty()) {
       ASM::printExtern(ostream, other.decl.contain.vtablelabel);
-      ASM::printExtern(ostream, "__malloc");
+          }
     }
+  ASM::printExtern(ostream, "__malloc");
 
     CodeGen::DeclarationGenerator declGenerator(ostream, environment.typeLink);
     declGenerator.generateBody(environment.decl.body);
