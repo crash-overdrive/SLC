@@ -56,7 +56,10 @@ void DeclarationGenerator::generateConstructor(
 void DeclarationGenerator::generateContain(const Env::TypeContain &contain) {
   ASM::printLabel(ostream, contain.vtablelabel);
   for (const auto &method : contain.getMethods()) {
-    ASM::printDeclare(ostream, method->label);
+    if (method->modifiers.find(Env::Modifier::Abstract) ==
+        method->modifiers.end()) {
+      ASM::printDeclare(ostream, method->label);
+    }
   }
 }
 

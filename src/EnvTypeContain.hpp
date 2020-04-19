@@ -63,6 +63,7 @@ public:
   bool hasAbstract() const;
   void updateOffset();
   std::vector<Method *> getMethods() const;
+  std::vector<Field *> getFields() const;
 
 private:
   void updateObjField(Field *field);

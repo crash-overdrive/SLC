@@ -46,6 +46,7 @@ public:
   void visit(const AST::Argument &node) override;
   void visit(const AST::DecIntLiteral &node) override;
   void visit(const AST::BooleanLiteral &node) override;
+  void visit(const AST::ClassInstanceCreation &node) override;
 
 private:
   std::ostream &ostream;

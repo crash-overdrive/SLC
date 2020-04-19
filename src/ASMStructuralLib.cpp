@@ -100,6 +100,7 @@ std::ostream &printExit(std::ostream &ostream) {
 }
 
 std::ostream &printDeclare(std::ostream &ostream, const std::string &label) {
+  ostream << "extern " << label << '\n';
   ostream << "dd " << label << '\n';
   return ostream;
 }

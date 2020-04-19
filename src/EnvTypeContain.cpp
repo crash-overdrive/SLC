@@ -243,6 +243,8 @@ std::vector<Method *> TypeContain::getMethods() const {
   return classVTable.getMethods();
 }
 
+std::vector<Field *> TypeContain::getFields() const { return objFields; }
+
 void TypeContain::updateObjField(Field *field) {
   for (auto &objField : objFields) {
     if (*objField == *field) {

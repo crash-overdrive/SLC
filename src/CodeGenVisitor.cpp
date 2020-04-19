@@ -12,6 +12,8 @@ void Listener::listenLocal(off_t offset) {
 }
 
 void Listener::listenMethod(const Env::Method &method) {
+  ostream << "mov eax, [eax]\n";
+  ostream << "push eax\n";
   this->method = &method;
 }
 
@@ -28,6 +30,7 @@ void Listener::generateMethod() {
     ostream << "mov eax, [esp + " << method->args.size() * 4 << "]\n";
     ostream << "mov eax, [eax]\n";
     ostream << "mov eax, [eax + " << method->offset << "]\n";
+    ostream << "call eax\n";
     ostream << "add esp, " << (method->args.size() + 1) * 4 << '\n';
     method = nullptr;
   } else {
@@ -156,6 +159,17 @@ void Visitor::visit(const AST::BooleanLiteral &node) {
   } else {
     ostream << "mov eax, 0\n";
   }
+}
+
+void Visitor::visit(const AST::ClassInstanceCreation &node) {
+  AST::TypeVisitor typeVisitor(typeLink);
+  node.getChild(0).accept(typeVisitor);
+  Env::Type type = typeVisitor.getType();
+  const Env::TypeContain &contain = type.declare->contain;
+  ostream << "mov eax, " << (contain.getFields().size() + 1) * 4 << '\n';
+  ASM::printCall(ostream, "__malloc");
+  ostream << "mov ebx, " << contain.vtablelabel << '\n';
+  ostream << "mov [eax], ebx" << '\n';
 }
 
 MethodNameVisitor::MethodNameVisitor(Name::MethodResolver methodResolver)
