@@ -44,6 +44,9 @@ void DeclarationGenerator::generateMethod(const Env::Method &method) {
   ASM::printLabel(ostream, method.label);
   ASM::printProlog(ostream, frameVisitor.getDeclaration());
   CodeGen::Visitor visitor(ostream, typeLink);
+  if (method.modifiers.find(Env::Modifier::Static) == method.modifiers.end()) {
+    visitor.setOffset(8 + 4 * (off_t)method.args.size());
+  }
   method.astNode->accept(visitor);
   ASM::printEpilogue(ostream);
 }

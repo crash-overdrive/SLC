@@ -11,7 +11,13 @@ void Listener::listenLocal(off_t offset) {
   ASM::printLocalVariable(ostream, offset);
 }
 
+void Listener::listenImplicit() {
+  ostream << "mov eax, [ebp + " << offset << "]\n";
+}
+
 void Listener::listenMethod(const Env::Method &method) {
+  ostream << "mov eax, [eax]\n";
+  ostream << "push eax\n";
   this->method = &method;
 }
 
@@ -35,6 +41,8 @@ void Listener::generateMethod() {
     std::cerr << "Error";
   }
 }
+
+void Listener::setOffset(off_t offset) { this->offset = offset; }
 
 Visitor::Visitor(std::ostream &ostream, const Env::TypeLink &typeLink)
     : LocalTrackVisitor(typeLink), ostream(ostream), listener(ostream),
@@ -104,6 +112,7 @@ void Visitor::visit(const AST::MethodNameInvocation &node) {
   argumentsVisitor.dispatchChildren(node);
 
   Listener listener(ostream);
+  listener.setOffset(offset);
   Name::MethodResolver methodResolver = resolverFactory.getMethod(listener);
   methodResolver.setArgs(argumentsVisitor.getArgs());
   nameVisitor = std::make_unique<MethodNameVisitor>(ostream, methodResolver);
@@ -124,6 +133,7 @@ void Visitor::visit(const AST::MethodPrimaryInvocation &node) {
   argumentsVisitor.dispatchChildren(node);
 
   Listener listener(ostream);
+  listener.setOffset(offset);
   Name::MethodResolver methodResolver = resolverFactory.getMethod(listener);
   std::vector<Env::Type> args = argumentsVisitor.getArgs();
   methodResolver.setArgs(args);
@@ -205,6 +215,11 @@ void Visitor::visit(const AST::ClassInstanceCreation &node) {
   ostream << "mov [eax], ebx" << '\n';
 }
 
+void Visitor::setOffset(off_t offset) {
+  listener.setOffset(offset);
+  this->offset = offset;
+}
+
 MethodNameVisitor::MethodNameVisitor(std::ostream &ostream,
                                      Name::MethodResolver methodResolver)
     : ostream(ostream), methodResolver(std::move(methodResolver)) {}
@@ -213,8 +228,6 @@ void MethodNameVisitor::visit(const AST::Name &node) {
   AST::NameVisitor visitor;
   node.accept(visitor);
   methodResolver.match(visitor.getName());
-  ostream << "mov eax, [eax]\n";
-  ostream << "push eax\n";
 }
 
 FieldNameVisitor::FieldNameVisitor(std::ostream &ostream,

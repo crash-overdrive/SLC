@@ -12,7 +12,7 @@ class Listener : public Name::ResolverListener {
 public:
   Listener(std::ostream &ostream);
   void listenLocal(off_t offset) override;
-  // void listenimplicit() override;
+  void listenImplicit() override;
   // void listenField(const Env::Field &) override;
   // void listenStaticField(const Env::Field &) override;
   void listenMethod(const Env::Method &) override;
@@ -20,8 +20,10 @@ public:
   // void listenConstructor(const Env::Constructor &) override;
   // void listenArrayLength() override;
   void generateMethod();
+  void setOffset(off_t offset);
 
 private:
+  off_t offset;
   std::ostream &ostream;
   const Env::Method *staticMethod = nullptr;
   const Env::Method *method = nullptr;
@@ -48,12 +50,14 @@ public:
   void visit(const AST::DecIntLiteral &node) override;
   void visit(const AST::BooleanLiteral &node) override;
   void visit(const AST::ClassInstanceCreation &node) override;
+  void setOffset(off_t offset);
 
 private:
   std::ostream &ostream;
   Listener listener;
   Name::ResolverFactory resolverFactory;
   const Env::TypeLink &typeLink;
+  off_t offset;
 
   std::unique_ptr<AST::Visitor> nameVisitor;
   ASM::AnonymousLabelService labelService;
