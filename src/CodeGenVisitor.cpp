@@ -45,7 +45,6 @@ void Visitor::visit(const AST::BinaryExpression &node) {
   Type::BinaryOperatorVisitor binaryVisitor;
 
   node.getChild(0).accept(*this);
-
   node.getChild(1).accept(binaryVisitor);
   Type::BinaryOperator binaryOperator = binaryVisitor.getBinaryOperator();
   if (binaryOperator != Type::BinaryOperator::And ||
@@ -101,13 +100,26 @@ void Visitor::visit(const AST::MethodNameInvocation &node) {
 }
 
 void Visitor::visit(const AST::IfThenStatement &node) {
-  (void)node;
-  std::string endLabel = labelService.getUniqueLabel();
+  std::string end = labelService.getUniqueLabel();
   node.getChild(0).accept(*this);
   ostream << "cmp eax, 0\n";
-  ostream << "je " << endLabel + "\n";
+  ostream << "je " << end + "\n";
   node.getChild(1).accept(*this);
-  ASM::printLabel(ostream, endLabel);
+  ASM::printLabel(ostream, end);
+}
+
+void Visitor::visit(const AST::IfThenElseStatement &node) {
+  std::string elseLabel = labelService.getUniqueLabel();
+  std::string end = labelService.getUniqueLabel();
+
+  node.getChild(0).accept(*this);
+  ostream << "cmp eax, 0\n";
+  ostream << "je " << elseLabel << '\n';
+  node.getChild(1).accept(*this);
+  ostream << "jmp " << end << '\n';
+  ASM::printLabel(ostream, elseLabel);
+  node.getChild(2).accept(*this);
+  ASM::printLabel(ostream, end);
 }
 
 void Visitor::visit(const AST::Name &node) {

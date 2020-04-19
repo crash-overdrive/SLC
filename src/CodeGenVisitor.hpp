@@ -40,6 +40,7 @@ public:
   void visit(const AST::ReturnStatement &node) override;
   void visit(const AST::MethodNameInvocation &node) override;
   void visit(const AST::IfThenStatement &node) override;
+  void visit(const AST::IfThenElseStatement &node) override;
   void visit(const AST::Name &node) override;
   void visit(const AST::Argument &node) override;
   void visit(const AST::DecIntLiteral &node) override;
