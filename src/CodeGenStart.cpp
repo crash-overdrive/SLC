@@ -40,6 +40,7 @@ bool StartGenerator::isEntry(const Env::Method &method) {
 
 void StartGenerator::generateEntry() {
   if (entry) {
+    ASM::printExtern(ostream, entry->label);
     ASM::printProlog(ostream, 0);
     ASM::printCall(ostream, entry->label);
   } else {
