@@ -17,6 +17,7 @@ public:
   void listenStaticField(const Env::Field &) override;
   void listenMethod(const Env::Method &) override;
   void listenStaticMethod(const Env::Method &) override;
+  void listenConstructor(const Env::Constructor &) override;
   void listenArrayLength() override;
   void generateMethod();
   void setOffset(off_t offset);
@@ -63,6 +64,7 @@ private:
   Name::ResolverFactory resolverFactory;
   const Env::TypeLink &typeLink;
   off_t offset;
+  bool isAddress = false;
 
   std::unique_ptr<AST::Visitor> nameVisitor;
   ASM::AnonymousLabelService labelService;

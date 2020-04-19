@@ -58,6 +58,11 @@ void Listener::generateMethod() {
   }
 }
 
+void Listener::listenConstructor(const Env::Constructor &constructor) {
+  ASM::printCall(ostream, constructor.label);
+  ostream << "add esp, " << constructor.args.size() * 4 << '\n';
+}
+
 void Listener::setOffset(off_t offset) { this->offset = offset; }
 
 void Listener::setValue() { this->isValue = true; }
@@ -119,16 +124,21 @@ void Visitor::visit(const AST::ReturnStatement &node) {
 }
 
 void Visitor::visit(const AST::AssignmentExpression &node) {
+  isAddress = true;
   nameVisitor = std::make_unique<FieldAddressVisitor>(
       ostream, resolverFactory.getField());
   node.getChild(0).accept(*this);
+  nameVisitor =
+      std::make_unique<FieldNameVisitor>(ostream, resolverFactory.getField());
+  isAddress = false;
   ostream << "push eax\n";
   node.getChild(1).accept(*this);
   ASM::printAssignment(ostream);
 }
 
 void Visitor::visit(const AST::MethodNameInvocation &node) {
-  Type::ArgumentsVisitor argumentsVisitor(typeLink.getTree(), resolverFactory,
+  Name::ResolverFactory resolver(getLocal(), typeLink);
+  Type::ArgumentsVisitor argumentsVisitor(typeLink.getTree(), resolver,
                                           typeLink);
   argumentsVisitor.dispatchChildren(node);
 
@@ -141,15 +151,36 @@ void Visitor::visit(const AST::MethodNameInvocation &node) {
   listener.generateMethod();
 }
 
+void Visitor::visit(const AST::ClassInstanceCreation &node) {
+  AST::TypeVisitor typeVisitor(typeLink);
+  node.getChild(0).accept(typeVisitor);
+  Env::Type type = typeVisitor.getType();
+  const Env::TypeContain &contain = type.declare->contain;
+  ostream << "mov eax, " << (contain.getFields().size() + 1) * 4 << '\n';
+  ASM::printCall(ostream, "__malloc");
+  ostream << "mov ebx, " << contain.vtablelabel << '\n';
+  ostream << "mov [eax], ebx" << '\n';
+  ostream << "push eax\n";
+  dispatchChildren(node);
+  Name::ResolverFactory resolver2(getLocal(), typeLink);
+  Type::ArgumentsVisitor argumentsVisitor(typeLink.getTree(), resolver2,
+                                          typeLink);
+  argumentsVisitor.dispatchChildren(node);
+  Name::ConstructorResolver resolver = resolverFactory.getConstructor();
+  resolver.match(type, argumentsVisitor.getArgs());
+  ostream << "pop eax\n";
+}
+
 void Visitor::visit(const AST::MethodPrimaryInvocation &node) {
   node.getChild(0).accept(*this);
   ostream << "push eax\n";
-  Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolverFactory,
+  Name::ResolverFactory resolver(getLocal(), typeLink);
+  Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolver,
                                             typeLink);
   expressionVisitor.dispatchChildren(node);
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(node);
-  Type::ArgumentsVisitor argumentsVisitor(typeLink.getTree(), resolverFactory,
+  Type::ArgumentsVisitor argumentsVisitor(typeLink.getTree(), resolver,
                                           typeLink);
   argumentsVisitor.dispatchChildren(node);
 
@@ -207,17 +238,20 @@ void Visitor::visit(const AST::ForStatement &) {}
 
 void Visitor::visit(const AST::FieldAccess &node) {
   node.getChild(0).accept(*this);
-  Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolverFactory,
+  Name::ResolverFactory resolver2(getLocal(), typeLink);
+  Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolver2,
                                             typeLink);
   expressionVisitor.dispatchChildren(node);
   AST::PropertiesVisitor propertiesVisitor;
   propertiesVisitor.dispatchChildren(node);
 
-  listener.setOffset(offset);
   listener.setValue();
   Name::FieldResolver fieldResolver = resolverFactory.getField();
   fieldResolver.match(expressionVisitor.getType(),
                       propertiesVisitor.getIdentifier());
+  if (!isAddress) {
+    ostream << "mov eax, [eax]\n";
+  }
 }
 
 void Visitor::visit(const AST::Name &node) {
@@ -241,17 +275,6 @@ void Visitor::visit(const AST::BooleanLiteral &node) {
   } else {
     ostream << "mov eax, 0\n";
   }
-}
-
-void Visitor::visit(const AST::ClassInstanceCreation &node) {
-  AST::TypeVisitor typeVisitor(typeLink);
-  node.getChild(0).accept(typeVisitor);
-  Env::Type type = typeVisitor.getType();
-  const Env::TypeContain &contain = type.declare->contain;
-  ostream << "mov eax, " << (contain.getFields().size() + 1) * 4 << '\n';
-  ASM::printCall(ostream, "__malloc");
-  ostream << "mov ebx, " << contain.vtablelabel << '\n';
-  ostream << "mov [eax], ebx" << '\n';
 }
 
 void Visitor::visit(const AST::ThisExpression &) {
@@ -311,7 +334,6 @@ void FieldAddressVisitor::visit(const AST::Name &node) {
   AST::NameVisitor visitor;
   node.accept(visitor);
   fieldResolver.match(visitor.getName());
-  ostream << "push eax\n";
 }
 
 void FrameStackVisitor::visit(const AST::SingleVariableDeclaration &) {
