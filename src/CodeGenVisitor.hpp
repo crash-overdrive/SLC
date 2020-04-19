@@ -1,6 +1,7 @@
 #ifndef CODEGENVISITOR_HPP
 #define CODEGENVISITOR_HPP
 
+#include "ASMServices.hpp"
 #include "EnvLocal.hpp"
 #include "NameResolver.hpp"
 #include <stack>
@@ -38,9 +39,11 @@ public:
   void visit(const AST::AssignmentExpression &node) override;
   void visit(const AST::ReturnStatement &node) override;
   void visit(const AST::MethodNameInvocation &node) override;
+  void visit(const AST::IfThenStatement &node) override;
   void visit(const AST::Name &node) override;
   void visit(const AST::Argument &node) override;
   void visit(const AST::DecIntLiteral &node) override;
+  void visit(const AST::BooleanLiteral &node) override;
 
 private:
   std::ostream &ostream;
@@ -49,6 +52,7 @@ private:
   const Env::TypeLink &typeLink;
 
   std::unique_ptr<AST::Visitor> nameVisitor;
+  ASM::AnonymousLabelService labelService;
 };
 
 class MethodNameVisitor : public AST::Visitor {

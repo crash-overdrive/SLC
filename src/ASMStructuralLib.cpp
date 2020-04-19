@@ -102,16 +102,14 @@ std::ostream &printBinaryOperator(std::ostream &ostream,
                                   Type::BinaryOperator binaryOperator) {
   switch (binaryOperator) {
   case Type::BinaryOperator::Addition:
-    ostream << "add ebx, eax\n";
-    ostream << "mov eax, ebx\n";
+    ostream << "add eax, ebx\n";
     break;
   case Type::BinaryOperator::Subtraction:
     ostream << "sub ebx, eax\n";
     ostream << "mov eax, ebx\n";
     break;
   case Type::BinaryOperator::Multiplication:
-    ostream << "imul ebx, eax\n";
-    ostream << "mov eax, ebx\n";
+    ostream << "imul eax, ebx\n";
     break;
   case Type::BinaryOperator::Division:
     ostream << "xor edx, edx\n";
@@ -125,40 +123,28 @@ std::ostream &printBinaryOperator(std::ostream &ostream,
     ostream << "mov eax, edx\n";
     break;
   case Type::BinaryOperator::Equal:
-    ostream << "xor ebx, eax\n";
-    ostream << "test ebx, ebx\n";
-    ostream << "xor eax, eax\n";
+    ostream << "cmp ebx, eax\n";
     ostream << "sete al\n";
     break;
   case Type::BinaryOperator::NotEqual:
-    ostream << "xor ebx, eax\n";
-    ostream << "test ebx, ebx\n";
-    ostream << "xor eax, eax\n";
+    ostream << "cmp ebx, eax\n";
     ostream << "setne al\n";
     break;
   case Type::BinaryOperator::LesserOrEqual:
-    ostream << "xor ebx, eax\n";
-    ostream << "test ebx, ebx\n";
-    ostream << "xor eax, eax\n";
+    ostream << "cmp ebx, eax\n";
     ostream << "setle al\n";
     break;
   case Type::BinaryOperator::GreaterOrEqual:
-    ostream << "xor ebx, eax\n";
-    ostream << "test ebx, ebx\n";
-    ostream << "xor eax, eax\n";
+    ostream << "cmp ebx, eax\n";
     ostream << "setge al\n";
     break;
   case Type::BinaryOperator::Lesser:
-    ostream << "xor ebx, eax\n";
-    ostream << "test ebx, ebx\n";
-    ostream << "xor eax, eax\n";
+    ostream << "cmp ebx, eax\n";
     ostream << "setl al\n";
     break;
   case Type::BinaryOperator::Greater:
-    ostream << "xor ebx, eax\n";
-    ostream << "test ebx, ebx\n";
-    ostream << "xor eax, eax\n";
-    ostream << "setl al\n";
+    ostream << "cmp ebx, eax\n";
+    ostream << "setg al\n";
     break;
   case Type::BinaryOperator::Or:
   case Type::BinaryOperator::BitwiseOr:
@@ -179,8 +165,7 @@ std::ostream &printUnaryOperator(std::ostream &ostream,
                                  Type::UnaryOperator unaryOperator) {
   switch (unaryOperator) {
   case Type::UnaryOperator::Not:
-    ostream << "test eax, eax\n";
-    ostream << "xor eax, eax\n";
+    ostream << "cmp eax, 0\n";
     ostream << "sete al\n";
     break;
   case Type::UnaryOperator::Negative:

@@ -18,4 +18,5 @@ private:
 };
 
 } // namespace ASM
+
 #endif

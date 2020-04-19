@@ -60,7 +60,7 @@ void Visitor::visit(const AST::BinaryExpression &node) {
 void Visitor::visit(const AST::UnaryExpression &node) {
   node.getChild(1).accept(*this);
   Type::UnaryOperatorVisitor unaryVisitor;
-  node.getChild(0).accept(*this);
+  node.getChild(0).accept(unaryVisitor);
   ASM::printUnaryOperator(ostream, unaryVisitor.getUnaryOperator());
 }
 
@@ -100,6 +100,16 @@ void Visitor::visit(const AST::MethodNameInvocation &node) {
   listener.generateMethod();
 }
 
+void Visitor::visit(const AST::IfThenStatement &node) {
+  (void)node;
+  std::string endLabel = labelService.getUniqueLabel();
+  node.getChild(0).accept(*this);
+  ostream << "cmp eax, 0\n";
+  ostream << "je " << endLabel + "\n";
+  node.getChild(1).accept(*this);
+  ASM::printLabel(ostream, endLabel);
+}
+
 void Visitor::visit(const AST::Name &node) {
   node.accept(*nameVisitor);
   nameVisitor =
@@ -113,6 +123,14 @@ void Visitor::visit(const AST::Argument &node) {
 
 void Visitor::visit(const AST::DecIntLiteral &node) {
   ostream << "mov eax, " << node.getLiteral() << '\n';
+}
+
+void Visitor::visit(const AST::BooleanLiteral &node) {
+  if (node.getLiteral() == "true") {
+    ostream << "mov eax, 1\n";
+  } else {
+    ostream << "mov eax, 0\n";
+  }
 }
 
 MethodNameVisitor::MethodNameVisitor(std::ostream &ostream,
