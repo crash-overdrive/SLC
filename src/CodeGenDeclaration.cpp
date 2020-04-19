@@ -56,13 +56,14 @@ void DeclarationGenerator::generateConstructor(
     const Env::Constructor &constructor) {
   ASM::printLabel(ostream, constructor.label);
 
-  // CodeGen::FrameStackVisitor frameVisitor;
-  // constructor.astNode->accept(frameVisitor);
-  // ASM::printProlog(ostream, (unsigned int)(frameVisitor.getDeclaration() -
-  // constructor.args.size()));
-  // CodeGen::Visitor visitor(ostream, typeLink);
-  // constructor.astNode->accept(visitor);
-  // ASM::printEpilogue(ostream);
+  CodeGen::FrameStackVisitor frameVisitor;
+  constructor.astNode->accept(frameVisitor);
+  ASM::printProlog(ostream, (unsigned int)(frameVisitor.getDeclaration() -
+                                           constructor.args.size()));
+  CodeGen::Visitor visitor(ostream, typeLink);
+  visitor.setOffset(8 + 4 * (off_t)constructor.args.size());
+  constructor.astNode->accept(visitor);
+  ASM::printEpilogue(ostream);
 }
 
 void DeclarationGenerator::generateContain(const Env::TypeContain &contain) {

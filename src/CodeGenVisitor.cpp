@@ -39,6 +39,8 @@ void Listener::listenStaticMethod(const Env::Method &method) {
   this->staticMethod = &method;
 }
 
+void Listener::listenArrayLength() { ostream << "mov eax, [eax]\n"; }
+
 void Listener::generateMethod() {
   if (staticMethod) {
     ASM::printCall(ostream, staticMethod->label);
@@ -119,7 +121,9 @@ void Visitor::visit(const AST::ReturnStatement &node) {
 void Visitor::visit(const AST::AssignmentExpression &node) {
   nameVisitor = std::make_unique<FieldAddressVisitor>(
       ostream, resolverFactory.getField());
-  dispatchChildren(node);
+  node.getChild(0).accept(*this);
+  ostream << "push eax\n";
+  node.getChild(1).accept(*this);
   ASM::printAssignment(ostream);
 }
 
@@ -199,9 +203,10 @@ void Visitor::visit(const AST::WhileStatement &node) {
   ASM::printLabel(ostream, end);
 }
 
+void Visitor::visit(const AST::ForStatement &) {}
+
 void Visitor::visit(const AST::FieldAccess &node) {
   node.getChild(0).accept(*this);
-  ostream << "push eax\n";
   Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolverFactory,
                                             typeLink);
   expressionVisitor.dispatchChildren(node);
@@ -246,6 +251,29 @@ void Visitor::visit(const AST::ClassInstanceCreation &node) {
   ostream << "mov eax, " << (contain.getFields().size() + 1) * 4 << '\n';
   ASM::printCall(ostream, "__malloc");
   ostream << "mov ebx, " << contain.vtablelabel << '\n';
+  ostream << "mov [eax], ebx" << '\n';
+}
+
+void Visitor::visit(const AST::ThisExpression &) {
+  ostream << "mov eax, [ebp + " << offset << "]\n";
+}
+
+void Visitor::visit(const AST::ArrayCreation &node) {
+  AST::TypeVisitor typeVisitor(typeLink);
+  node.getChild(0).accept(typeVisitor);
+
+  node.getChild(1).accept(*this);
+  size_t size = 0;
+  if (typeVisitor.getType().keyword != Env::TypeKeyword::Simple) {
+    size = 4;
+  } else {
+    size = typeVisitor.getType().declare->contain.getFields().size() * 4;
+  }
+  ostream << "push eax\n";
+  ostream << "imul eax, " << size << '\n';
+  ostream << "add eax, 4\n";
+  ASM::printCall(ostream, "__malloc");
+  ostream << "pop ebx" << '\n';
   ostream << "mov [eax], ebx" << '\n';
 }
 

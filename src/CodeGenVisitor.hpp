@@ -17,8 +17,7 @@ public:
   void listenStaticField(const Env::Field &) override;
   void listenMethod(const Env::Method &) override;
   void listenStaticMethod(const Env::Method &) override;
-  // void listenConstructor(const Env::Constructor &) override;
-  // void listenArrayLength() override;
+  void listenArrayLength() override;
   void generateMethod();
   void setOffset(off_t offset);
   void setValue();
@@ -53,6 +52,9 @@ public:
   void visit(const AST::BooleanLiteral &node) override;
   void visit(const AST::ClassInstanceCreation &node) override;
   void visit(const AST::FieldAccess &node) override;
+  void visit(const AST::ThisExpression &node) override;
+  void visit(const AST::ArrayCreation &node) override;
+  void visit(const AST::ForStatement &node) override;
   void setOffset(off_t offset);
 
 private:
