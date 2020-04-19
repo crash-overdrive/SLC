@@ -14,6 +14,8 @@ void LabelGenerator::generateDeclaration(Env::TypeDeclaration &decl) {
   for (auto &constructor : decl.body.getConstructors()) {
     generateConstructor(constructor);
   }
+  generateVTable(decl.contain);
+  generateSelector(decl.contain);
 }
 
 // a general comment on the structure of the labels
@@ -76,6 +78,26 @@ void LabelGenerator::generateConstructor(Env::Constructor &constructor) {
   }
 
   constructor.label = className + constructor.identifier + argChain;
+}
+
+void LabelGenerator::generateVTable(Env::TypeContain &contain) {
+  std::string fullName;
+  for (const auto &name : path) {
+    fullName += name;
+    fullName += '.';
+  }
+  fullName += "$.vTable";
+  contain.vtablelabel = fullName;
+}
+
+void LabelGenerator::generateSelector(Env::TypeContain &contain) {
+  std::string fullName;
+  for (const auto &name : path) {
+    fullName += name;
+    fullName += '.';
+  }
+  fullName += "$.selector";
+  contain.selectorlabel = fullName;
 }
 
 } // namespace CodeGen

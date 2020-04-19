@@ -99,6 +99,11 @@ std::ostream &printExit(std::ostream &ostream) {
   return ostream;
 }
 
+std::ostream &printDeclare(std::ostream &ostream, const std::string &label) {
+  ostream << "dd " << label << '\n';
+  return ostream;
+}
+
 std::ostream &printBinaryOperator(std::ostream &ostream,
                                   Type::BinaryOperator binaryOperator) {
   switch (binaryOperator) {

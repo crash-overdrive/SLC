@@ -54,7 +54,10 @@ void DeclarationGenerator::generateConstructor(
 }
 
 void DeclarationGenerator::generateContain(const Env::TypeContain &contain) {
-  (void)contain;
+  ASM::printLabel(ostream, contain.vtablelabel);
+  for (const auto &method : contain.getMethods()) {
+    ASM::printDeclare(ostream, method->label);
+  }
 }
 
 } // namespace CodeGen

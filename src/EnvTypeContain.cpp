@@ -65,6 +65,14 @@ const Field *ClassVTable::findField(const std::string &identifier) const {
   return nullptr;
 }
 
+std::vector<Method *> ClassVTable::getMethods() const {
+  std::vector<Method *> methods;
+  for (const auto &vTable : vTables) {
+    methods.insert(methods.end(), vTable.methods.begin(), vTable.methods.end());
+  }
+  return methods;
+}
+
 bool ClassVTable::update(Method *method) {
   for (auto &vTable : vTables) {
     for (auto &base : vTable.methods) {
@@ -113,10 +121,6 @@ void ClassVTable::updateOffset() {
   for (auto &vTable : vTables) {
     for (auto &method : vTable.methods) {
       method->offset = offset;
-      offset += 4;
-    }
-    for (auto &field : vTable.fields) {
-      field->offset = offset;
       offset += 4;
     }
   }
@@ -233,6 +237,10 @@ void TypeContain::updateOffset() {
     objField->offset = offset;
     offset += 4;
   }
+}
+
+std::vector<Method *> TypeContain::getMethods() const {
+  return classVTable.getMethods();
 }
 
 void TypeContain::updateObjField(Field *field) {

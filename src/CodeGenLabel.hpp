@@ -10,11 +10,9 @@ public:
   LabelGenerator(std::vector<std::string> path);
   void generateDeclaration(Env::TypeDeclaration &decl);
   void generateConstructor(Env::Constructor &constructor);
-  void generateStaticFieldInit(Env::TypeBody &body);
-  void generateFieldInit(Env::TypeBody &body);
   void generateMethod(Env::Method &method);
-  void generateVTable(Env::ClassVTable &vTable);
-  void generateSelector(Env::Selector &selector);
+  void generateVTable(Env::TypeContain &contain);
+  void generateSelector(Env::TypeContain &contain);
 
 private:
   std::vector<std::string> path;

@@ -34,6 +34,7 @@ std::ostream &printLocalVariable(std::ostream &ostream, off_t offset);
 std::ostream &printDataSection(std::ostream &ostream);
 std::ostream &printTextSection(std::ostream &ostream);
 std::ostream &printExit(std::ostream &ostream);
+std::ostream &printDeclare(std::ostream &ostream, const std::string &label);
 
 std::ostream &printBinaryOperator(std::ostream &ostream,
                                   Type::BinaryOperator binaryOperator);
