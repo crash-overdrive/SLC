@@ -39,6 +39,7 @@ public:
   void visit(const AST::AssignmentExpression &node) override;
   void visit(const AST::ReturnStatement &node) override;
   void visit(const AST::MethodNameInvocation &node) override;
+  void visit(const AST::MethodPrimaryInvocation &node) override;
   void visit(const AST::IfThenStatement &node) override;
   void visit(const AST::IfThenElseStatement &node) override;
   void visit(const AST::WhileStatement &node) override;
@@ -60,10 +61,11 @@ private:
 
 class MethodNameVisitor : public AST::Visitor {
 public:
-  MethodNameVisitor(Name::MethodResolver resolver);
+  MethodNameVisitor(std::ostream &ostream, Name::MethodResolver resolver);
   void visit(const AST::Name &node) override;
 
 private:
+  std::ostream &ostream;
   Name::MethodResolver methodResolver;
 };
 

@@ -1,7 +1,7 @@
 #include "CodeGenVisitor.hpp"
 #include "ASMStructuralLib.hpp"
 #include "ASTVisitorUtil.hpp"
-#include "TypeVisitorUtil.hpp"
+#include "TypeCheckerVisitor.hpp"
 
 namespace CodeGen {
 
@@ -12,8 +12,6 @@ void Listener::listenLocal(off_t offset) {
 }
 
 void Listener::listenMethod(const Env::Method &method) {
-  ostream << "mov eax, [eax]\n";
-  ostream << "push eax\n";
   this->method = &method;
 }
 
@@ -97,8 +95,32 @@ void Visitor::visit(const AST::MethodNameInvocation &node) {
   Listener listener(ostream);
   Name::MethodResolver methodResolver = resolverFactory.getMethod(listener);
   methodResolver.setArgs(argumentsVisitor.getArgs());
-  nameVisitor = std::make_unique<MethodNameVisitor>(methodResolver);
+  nameVisitor = std::make_unique<MethodNameVisitor>(ostream, methodResolver);
   dispatchChildren(node);
+  listener.generateMethod();
+}
+
+void Visitor::visit(const AST::MethodPrimaryInvocation &node) {
+  node.getChild(0).accept(*this);
+  ostream << "push eax\n";
+  Type::ExpressionVisitor expressionVisitor(typeLink.getTree(), resolverFactory,
+                                            typeLink);
+  expressionVisitor.dispatchChildren(node);
+  AST::PropertiesVisitor propertiesVisitor;
+  propertiesVisitor.dispatchChildren(node);
+  Type::ArgumentsVisitor argumentsVisitor(typeLink.getTree(), resolverFactory,
+                                          typeLink);
+  argumentsVisitor.dispatchChildren(node);
+
+  Listener listener(ostream);
+  Name::MethodResolver methodResolver = resolverFactory.getMethod(listener);
+  std::vector<Env::Type> args = argumentsVisitor.getArgs();
+  methodResolver.setArgs(args);
+  methodResolver.match(expressionVisitor.getType(),
+                       propertiesVisitor.getIdentifier());
+  for (size_t i = 0; i < args.size(); ++i) {
+    node.getChild(2 + i).accept(*this);
+  }
   listener.generateMethod();
 }
 
@@ -172,13 +194,16 @@ void Visitor::visit(const AST::ClassInstanceCreation &node) {
   ostream << "mov [eax], ebx" << '\n';
 }
 
-MethodNameVisitor::MethodNameVisitor(Name::MethodResolver methodResolver)
-    : methodResolver(std::move(methodResolver)) {}
+MethodNameVisitor::MethodNameVisitor(std::ostream &ostream,
+                                     Name::MethodResolver methodResolver)
+    : ostream(ostream), methodResolver(std::move(methodResolver)) {}
 
 void MethodNameVisitor::visit(const AST::Name &node) {
   AST::NameVisitor visitor;
   node.accept(visitor);
   methodResolver.match(visitor.getName());
+  ostream << "mov eax, [eax]\n";
+  ostream << "push eax\n";
 }
 
 FieldNameVisitor::FieldNameVisitor(std::ostream &ostream,
