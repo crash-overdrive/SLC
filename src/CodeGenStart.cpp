@@ -40,11 +40,13 @@ bool StartGenerator::isEntry(const Env::Method &method) {
 
 void StartGenerator::generateEntry() {
   if (entry) {
+    ASM::printProlog(ostream, 0);
     ASM::printCall(ostream, entry->label);
   } else {
     ostream << "mov eax, 1\n";
   }
   ASM::printExit(ostream);
+  ASM::printEpilogue(ostream);
 }
 
 } // namespace CodeGen

@@ -56,9 +56,10 @@ std::ostream &printCall(std::ostream &ostream, const std::string &label) {
   return ostream;
 }
 
-std::ostream &printProlog(std::ostream &ostream) {
+std::ostream &printProlog(std::ostream &ostream, unsigned int decl) {
   ostream << "push ebp\n";
   ostream << "mov ebp, esp\n";
+  ostream << "sub esp, " << decl * 4 << '\n';
   return ostream;
 }
 

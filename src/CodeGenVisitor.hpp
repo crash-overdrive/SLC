@@ -41,6 +41,7 @@ public:
   void visit(const AST::MethodNameInvocation &node) override;
   void visit(const AST::IfThenStatement &node) override;
   void visit(const AST::IfThenElseStatement &node) override;
+  void visit(const AST::WhileStatement &node) override;
   void visit(const AST::Name &node) override;
   void visit(const AST::Argument &node) override;
   void visit(const AST::DecIntLiteral &node) override;
@@ -58,11 +59,10 @@ private:
 
 class MethodNameVisitor : public AST::Visitor {
 public:
-  MethodNameVisitor(std::ostream &ostream, Name::MethodResolver resolver);
+  MethodNameVisitor(Name::MethodResolver resolver);
   void visit(const AST::Name &node) override;
 
 private:
-  std::ostream &ostream;
   Name::MethodResolver methodResolver;
 };
 
@@ -84,6 +84,15 @@ public:
 private:
   std::ostream &ostream;
   Name::FieldResolver fieldResolver;
+};
+
+class FrameStackVisitor : public AST::TrackVisitor {
+public:
+  void visit(const AST::SingleVariableDeclaration &no) override;
+  unsigned int getDeclaration() const;
+
+private:
+  unsigned int declaration = 0;
 };
 
 } // namespace CodeGen

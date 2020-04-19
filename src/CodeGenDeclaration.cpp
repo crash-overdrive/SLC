@@ -38,8 +38,11 @@ void DeclarationGenerator::generateGlobal(const Env::TypeBody &body) {
 }
 
 void DeclarationGenerator::generateMethod(const Env::Method &method) {
+  CodeGen::FrameStackVisitor frameVisitor;
+  method.astNode->accept(frameVisitor);
+
   ASM::printLabel(ostream, method.label);
-  ASM::printProlog(ostream);
+  ASM::printProlog(ostream, frameVisitor.getDeclaration());
   CodeGen::Visitor visitor(ostream, typeLink);
   method.astNode->accept(visitor);
   ASM::printEpilogue(ostream);

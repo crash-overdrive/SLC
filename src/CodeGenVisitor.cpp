@@ -94,7 +94,7 @@ void Visitor::visit(const AST::MethodNameInvocation &node) {
   Listener listener(ostream);
   Name::MethodResolver methodResolver = resolverFactory.getMethod(listener);
   methodResolver.setArgs(argumentsVisitor.getArgs());
-  nameVisitor = std::make_unique<MethodNameVisitor>(ostream, methodResolver);
+  nameVisitor = std::make_unique<MethodNameVisitor>(methodResolver);
   dispatchChildren(node);
   listener.generateMethod();
 }
@@ -122,6 +122,19 @@ void Visitor::visit(const AST::IfThenElseStatement &node) {
   ASM::printLabel(ostream, end);
 }
 
+void Visitor::visit(const AST::WhileStatement &node) {
+  std::string begin = labelService.getUniqueLabel();
+  std::string end = labelService.getUniqueLabel();
+
+  ASM::printLabel(ostream, begin);
+  node.getChild(0).accept(*this);
+  ostream << "cmp eax, 0\n";
+  ostream << "je " + end + "\n";
+  node.getChild(1).accept(*this);
+  ostream << "jmp " << begin << '\n';
+  ASM::printLabel(ostream, end);
+}
+
 void Visitor::visit(const AST::Name &node) {
   node.accept(*nameVisitor);
   nameVisitor =
@@ -145,9 +158,8 @@ void Visitor::visit(const AST::BooleanLiteral &node) {
   }
 }
 
-MethodNameVisitor::MethodNameVisitor(std::ostream &ostream,
-                                     Name::MethodResolver methodResolver)
-    : ostream(ostream), methodResolver(std::move(methodResolver)) {}
+MethodNameVisitor::MethodNameVisitor(Name::MethodResolver methodResolver)
+    : methodResolver(std::move(methodResolver)) {}
 
 void MethodNameVisitor::visit(const AST::Name &node) {
   AST::NameVisitor visitor;
@@ -176,5 +188,11 @@ void FieldAddressVisitor::visit(const AST::Name &node) {
   fieldResolver.match(visitor.getName());
   ostream << "push eax\n";
 }
+
+void FrameStackVisitor::visit(const AST::SingleVariableDeclaration &) {
+  ++declaration;
+}
+
+unsigned int FrameStackVisitor::getDeclaration() const { return declaration; }
 
 } // namespace CodeGen

@@ -26,7 +26,7 @@ public:
 std::ostream &printGlobal(std::ostream &ostream, const std::string &label);
 std::ostream &printLabel(std::ostream &ostream, const std::string &label);
 std::ostream &printCall(std::ostream &ostream, const std::string &label);
-std::ostream &printProlog(std::ostream &ostream);
+std::ostream &printProlog(std::ostream &ostream, unsigned int decl);
 std::ostream &printEpilogue(std::ostream &ostream);
 
 std::ostream &printAssignment(std::ostream &ostream);
