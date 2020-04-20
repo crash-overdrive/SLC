@@ -133,8 +133,8 @@ MethodResolver::match(const std::vector<std::string> &name) {
 
 void MethodResolver::matchImplicit() {
   if (std::distance(first, last) == 1) {
-    listener.listenImplicit();
     type.emplace(&typeLink.getDeclaration());
+    listener.listenImplicit();
     matchIdentifier(*first);
   } else {
     matchField();
@@ -237,6 +237,10 @@ FieldResolver ResolverFactory::getField() {
 
 MethodResolver ResolverFactory::getMethod() {
   return MethodResolver(local, typeLink, listener);
+}
+
+MethodResolver ResolverFactory::getMethod(ResolverListener &methodListener) {
+  return MethodResolver(local, typeLink, methodListener);
 }
 
 ConstructorResolver ResolverFactory::getConstructor() {

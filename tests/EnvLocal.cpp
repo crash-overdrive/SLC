@@ -74,8 +74,8 @@ TEST_CASE("Local", "[local-variable]") {
   }
 
   SECTION("Offset calculation") {
-    REQUIRE(tables.findVariable("outer")->offset == 16);
-    REQUIRE(tables.findVariable("outer2")->offset == 12);
+    REQUIRE(tables.findVariable("outer")->offset == 12);
+    REQUIRE(tables.findVariable("outer2")->offset == 8);
     REQUIRE(tables.findVariable("middle")->offset == -4);
     REQUIRE(tables.addVariable("inner", Env::TypeKeyword::Integer));
     REQUIRE(tables.findVariable("inner")->offset == -8);

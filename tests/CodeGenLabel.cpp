@@ -1,7 +1,7 @@
 #include "CodeGenLabel.hpp"
 #include "catch.hpp"
 
-TEST_CASE("Code Generation Label", "[CodeGenLabel]") {
+TEST_CASE("Code Generation Label", "[CodeGenLabel][!hide]") {
   Env::Method method({}, Env::TypeKeyword::Integer, "foo", {});
   CodeGen::LabelGenerator generator({"abc"});
   generator.generateMethod(method);

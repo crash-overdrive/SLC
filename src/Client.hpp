@@ -73,6 +73,8 @@ private:
   bool buildInterfaceHierarchy(Env::HierarchyGraph &graph,
                                Environment &environment);
 
+  void codeGenLabel();
+  void codeGenOffset();
   void codeGenFiles(std::streambuf *log) const;
   void codeGenStart(std::streambuf *buf) const;
 

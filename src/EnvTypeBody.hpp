@@ -68,7 +68,6 @@ struct Constructor {
   std::vector<Type> args;
   const AST::ConstructorDeclaration *astNode;
   std::string label;
-  off_t offset;
   Constructor(std::set<Modifier> modifiers, std::string identifier,
               std::vector<Type> args,
               const AST::ConstructorDeclaration *astNode = nullptr);
@@ -88,6 +87,7 @@ public:
   bool addMethod(Method other);
 
   const Constructor *findConstructors(const std::vector<Env::Type> &args) const;
+  std::vector<Constructor> &getConstructors();
   const std::vector<Constructor> &getConstructors() const;
   bool addConstructor(Constructor other);
 

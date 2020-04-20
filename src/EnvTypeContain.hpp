@@ -19,6 +19,7 @@ public:
   const Method *findMethod(const std::string &identifier,
                            const std::vector<Type> &args) const;
   const Field *findField(const std::string &identifier) const;
+  std::vector<Method *> getMethods() const;
   bool update(Method *method);
   void update(Field *field);
   bool hasAbstract() const;
@@ -47,6 +48,8 @@ private:
 
 class TypeContain {
 public:
+  std::string vtablelabel;
+  std::string selectorlabel;
   void inheritContain(TypeContain &contain);
   bool mergeContain(const TypeContain &contain);
   bool mergeInterfaceMethod(const Method *base);
@@ -59,6 +62,8 @@ public:
                            const std::vector<Type> &args) const;
   bool hasAbstract() const;
   void updateOffset();
+  std::vector<Method *> getMethods() const;
+  std::vector<Field *> getFields() const;
 
 private:
   void updateObjField(Field *field);

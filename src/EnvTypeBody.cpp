@@ -134,6 +134,8 @@ TypeBody::findConstructors(const std::vector<Env::Type> &args) const {
   return nullptr;
 }
 
+std::vector<Constructor> &TypeBody::getConstructors() { return constructors; }
+
 const std::vector<Constructor> &TypeBody::getConstructors() const {
   return constructors;
 }

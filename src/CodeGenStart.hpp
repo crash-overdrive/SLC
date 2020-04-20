@@ -7,7 +7,7 @@
 namespace CodeGen {
 
 const std::string outputDirectory = "output";
-const std::string outputStart = outputDirectory + "/start.asm";
+const std::string outputStart = outputDirectory + "/start.s";
 
 void prepareOutput();
 std::string getASMFile(const std::string &fullName);
@@ -21,7 +21,7 @@ public:
 
 private:
   static bool isEntry(const Env::Method &method);
-  const Env::Method *entry;
+  const Env::Method *entry = nullptr;
   std::ostream &ostream;
 };
 

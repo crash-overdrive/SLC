@@ -19,6 +19,8 @@ public:
   std::pair<InputIt, TypeDeclaration *> match(InputIt first,
                                               InputIt last) const;
   bool belongSamePackage(const TypeDeclaration *decl) const;
+  std::vector<std::string> getPath() const;
+  const PackageTree &getTree() const;
 
 private:
   TypeDeclaration *findPackage(const std::string &name) const;

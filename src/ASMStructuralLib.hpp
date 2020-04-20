@@ -1,6 +1,7 @@
 #ifndef ASM_STRUCTURAL_LIB_H
 #define ASM_STRUCTURAL_LIB_H
 
+#include "TypeChecker.hpp"
 #include <iostream>
 #include <string>
 
@@ -22,10 +23,24 @@ public:
                       const std::string &statement);
 };
 
+std::ostream &printGlobal(std::ostream &ostream, const std::string &label);
+std::ostream &printLabel(std::ostream &ostream, const std::string &label);
+std::ostream &printCall(std::ostream &ostream, const std::string &label);
+std::ostream &printProlog(std::ostream &ostream, unsigned int decl);
+std::ostream &printEpilogue(std::ostream &ostream);
+
+std::ostream &printAssignment(std::ostream &ostream);
+std::ostream &printLocalVariable(std::ostream &ostream, off_t offset);
 std::ostream &printDataSection(std::ostream &ostream);
 std::ostream &printTextSection(std::ostream &ostream);
-std::ostream &printLabel(std::ostream &ostream, const std::string &label);
 std::ostream &printExit(std::ostream &ostream);
+std::ostream &printDeclare(std::ostream &ostream, const std::string &label);
+
+std::ostream &printBinaryOperator(std::ostream &ostream,
+                                  Type::BinaryOperator binaryOperator);
+std::ostream &printUnaryOperator(std::ostream &ostream,
+                                 Type::UnaryOperator unaryOperator);
+std::ostream &printExtern(std::ostream &ostream, const std::string &label);
 
 } // namespace ASM
 

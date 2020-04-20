@@ -11,6 +11,8 @@ const std::vector<std::unique_ptr<Node>> &Node::getChildren() const {
   return children;
 }
 
+const Node &Node::getChild(size_t index) const { return *children.at(index); }
+
 void Start::accept(Visitor &visitor) const { visitor.visit(*this); }
 
 void PackageDeclaration::accept(Visitor &visitor) const {
