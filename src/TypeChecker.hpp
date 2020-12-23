@@ -2,6 +2,7 @@
 #define TYPECHECKER_HPP
 
 #include "EnvPackageTree.hpp"
+#include <array>
 #include <unordered_set>
 #include <vector>
 
