@@ -231,7 +231,7 @@ void PrintVisitor::visit(const UnaryExpression &) {
 
 void TrackVisitor::setLog(std::ostream &stream) { this->streamRef = stream; }
 
-inline void TrackVisitor::postVisit(const Node &parent) {
+void TrackVisitor::postVisit(const Node &parent) {
   streamRef.get() << parent << '\n';
   for (const auto &child : parent.getChildren()) {
     level++;

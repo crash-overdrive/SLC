@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "Config.hpp"
+#include <array>
 #include <fstream>
 #include <set>
 #include <string>
