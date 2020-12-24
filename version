@@ -1,0 +1,63 @@
+#!/bin/bash
+
+function usage() {
+  echo "usage: $0 ( major | minor | patch )" 1>&2
+  exit 42
+}
+
+function fileMissingError() {
+  echo "missing or unreadable $1 file, please make sure $1 exists and is in root directory of the project" 1>&2
+  exit 42
+}
+
+function incorrectVersionFormat() {
+  echo "Current version: $1 in file $2 is in incorrect format, please fix the version number"
+  exit 42
+}
+
+VERSION_FILE="version.txt"
+INDEX=0
+
+if [[ $1 == "major" ]]; then
+  echo "Major version change"
+elif [[ $1 == "minor" ]]; then
+  echo "Minor version change"
+  INDEX=1
+elif [[ $1 == "patch" ]]; then
+  echo "Patch version change"
+  INDEX=2
+else
+  echo "Invalid option to change version specified"
+  usage $0
+fi
+
+if [ ! -r $VERSION_FILE ]; then
+  fileMissingError $VERSION_FILE
+fi
+
+VERSION=`head -n 1 $VERSION_FILE`
+
+if ! egrep -q "^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$" <<< "$VERSION"; then
+  incorrectVersionFormat $VERSION $VERSION_FILE
+fi
+
+echo "Current version: $VERSION"
+
+arrVersion=(${VERSION//./ })
+
+(( arrVersion[$INDEX]++ ))
+(( INDEX++ ))
+
+
+END=3
+for ((i=INDEX;i<END;i++)); do
+  arrVersion[$i]=0
+done
+
+echo "New Version: ${arrVersion[0]}.${arrVersion[1]}.${arrVersion[2]}"
+
+echo ${arrVersion[0]}.${arrVersion[1]}.${arrVersion[2]} > $VERSION_FILE
+
+git add $VERSION_FILE
+git commit -m "`cat $VERSION_FILE`"
+git tag -a v${arrVersion[0]}.${arrVersion[1]}.${arrVersion[2]}
