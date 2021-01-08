@@ -225,13 +225,15 @@ void Visitor::visit(const AST::WhileStatement &node) {
   std::string begin = labelService.getUniqueLabel();
   std::string end = labelService.getUniqueLabel();
 
-  ASM::printLabel(ostream, begin);
-  node.getChild(0).accept(*this);
-  ostream << "cmp eax, 0\n";
-  ostream << "je " + end + "\n";
-  node.getChild(1).accept(*this);
-  ostream << "jmp " << begin << '\n';
-  ASM::printLabel(ostream, end);
+  if (node.getChildren().size() > 1) {
+    ASM::printLabel(ostream, begin);
+    node.getChild(0).accept(*this);
+    ostream << "cmp eax, 0\n";
+    ostream << "je " + end + "\n";
+    node.getChild(1).accept(*this);
+    ostream << "jmp " << begin << '\n';
+    ASM::printLabel(ostream, end);
+  }
 }
 
 void Visitor::visit(const AST::ForStatement &) {}
